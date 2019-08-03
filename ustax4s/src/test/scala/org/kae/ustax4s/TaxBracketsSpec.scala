@@ -41,5 +41,11 @@ object TaxBracketsSpec
       (brackets: TaxBrackets, income: TMoney) =>
         (brackets.taxDue(income).nonZero || income.isZero) must beTrue
     }
+
+    "max tax rate is the max tax rate" >> prop {
+      (brackets: TaxBrackets, income: TMoney) =>
+        val maxTax = income * brackets.bracketStartsAscending.map(_._2).max
+        (brackets.taxDue(income) <= maxTax) must beTrue
+    }
   }
 }
