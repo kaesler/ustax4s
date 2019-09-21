@@ -8,7 +8,7 @@ trait TaxBracketsGeneration
 
   // Somewhat realistic.
   private val genBracketBorder: Gen[TMoney] =
-    Gen.choose(10, 500000).map(TMoney.unsafeFrom)
+    Gen.choose(10, 500000).map(TMoney.u)
 
   val genTaxBrackets: Gen[TaxBrackets] = {
     for {

@@ -6,6 +6,8 @@ import eu.timepit.refined.api.{Refined, RefinedTypeOps}
 import eu.timepit.refined.numeric.Interval
 import eu.timepit.refined.numeric._
 import eu.timepit.refined.types.numeric.NonNegBigDecimal
+import java.math.MathContext
+import scala.math.BigDecimal.RoundingMode
 
 package object ustax4s {
 
@@ -40,6 +42,9 @@ package object ustax4s {
 
   implicit class NonNegMoneyOps(val underlying: NonNegBigDecimal) {
 
+    def rounded: TMoney = nnbd.unsafeFrom(
+      underlying.value.setScale(0, RoundingMode.HALF_UP))
+
     def isZero: Boolean = underlying.value == NonNegMoneyOps.bdZero
     def nonZero: Boolean = ! isZero
 
@@ -70,6 +75,6 @@ package object ustax4s {
 
     def sum(ms: TMoney*): TMoney = nnbd.unsafeFrom(ms.map(_.value).sum)
 
-    def unsafeFrom(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
+    def u(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
   }
 }

@@ -12,6 +12,9 @@ case class TaxBrackets(bracketStarts: Map[TMoney, TaxRate]) {
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
+  def taxDueWholeDollar(m: TMoney): TMoney =
+    taxDue(m).rounded
+
   def taxDue(m: TMoney): TMoney = {
     val pair = bracketsStartsDescending.foldLeft(m, TMoney.zero) {
 
@@ -42,7 +45,7 @@ object TaxBrackets {
     new TaxBrackets(
       pairs.map { case (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
-        TMoney.unsafeFrom(bracketStart) ->
+        TMoney.u(bracketStart) ->
           TaxRate.unsafeFrom(ratePercentage.toDouble/100.0D)
       }
     )
