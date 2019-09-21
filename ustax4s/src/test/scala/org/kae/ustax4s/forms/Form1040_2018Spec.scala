@@ -1,7 +1,7 @@
 package org.kae.ustax4s.forms
 
+import cats.implicits._
 import java.time.Year
-import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.{Kevin, TMoney, TaxRates}
 import org.specs2.mutable.Specification
 
@@ -21,13 +21,13 @@ class Form1040_2018Spec extends Specification {
           capitalGainOrLoss = 7412.tm,
           healthSavingsAccountDeduction = 3567.tm,
           deductiblePartOfSelfEmploymentTax = 28.tm
-        ),
+        ).some,
         Schedule3(
           foreignTaxCredit = 257.tm
-        ),
+        ).some,
         Schedule4(
           selfEmploymentTax = 56.tm
-        ),
+        ).some,
         wages = 133497.tm,
         taxableInterest = TMoney.zero,
         ordinaryDividends = 7930.tm,
