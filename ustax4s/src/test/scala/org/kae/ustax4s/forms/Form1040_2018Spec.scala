@@ -28,7 +28,7 @@ class Form1040_2018Spec extends Specification {
         Schedule4(
           selfEmploymentTax = 56.tm
         ),
-        wages = 133_497.tm,
+        wages = 133497.tm,
         taxableInterest = TMoney.zero,
         ordinaryDividends = 7930.tm,
         taxableIras = TMoney.zero,
@@ -39,9 +39,9 @@ class Form1040_2018Spec extends Specification {
           Kevin.birthDate
         )
       )
-      form.totalIncome === 150_919.tm
-      form.adjustedGrossIncome === 147_324.tm
-      form.taxableIncome === 129_324.tm
+      form.totalIncome === 150919.tm
+      form.adjustedGrossIncome === 147324.tm
+      form.taxableIncome === 129324.tm
       //form.tax === 22_606.tm
       //form.totalTax === 20_405.tm
       ok

@@ -10,7 +10,7 @@ class TaxBrackets2018Spec extends Specification {
     (0, 0),
     (990, 99),
     (13500, 1350),
-    (114_547, 20_389)
+    (114547, 20389)
   ).map { case (income, tax) => (TMoney.u(income), TMoney.u(tax)) }
 
   "TaxBrackets for HOH 2018" >> {
