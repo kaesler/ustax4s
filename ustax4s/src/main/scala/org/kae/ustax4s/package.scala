@@ -40,7 +40,7 @@ package object ustax4s {
   implicit val orderForTMoney: Order[TMoney] =
     Order.by { tm: TMoney => tm.value }
 
-  implicit class NonNegMoneyOps(val underlying: NonNegBigDecimal) {
+  implicit class NonNegMoneyOps(val underlying: TMoney) {
 
     def rounded: TMoney = nnbd.unsafeFrom(
       underlying.value.setScale(0, RoundingMode.HALF_UP))
@@ -51,6 +51,7 @@ package object ustax4s {
     def +(other: NonNegBigDecimal): NonNegBigDecimal =
       nnbd.unsafeFrom(underlying.value + other.value)
 
+    def -(other: NonNegBigDecimal): NonNegBigDecimal = subtract(other)
     /**
       * Subtract other [[TMoney]] but do not go below zero.
       *

@@ -1,4 +1,6 @@
-package org.kae.ustax4s.forms
+package org.kae.ustax4s
+
+package forms
 
 import org.kae.ustax4s.TMoney
 
@@ -10,9 +12,8 @@ final case class Schedule1(
   deductiblePartOfSelfEmploymentTax: TMoney
 ) {
 
-  def additionalIncome: TMoney =
-    TMoney.sum(businessIncomeOrLoss, capitalGainOrLoss)
+  def additionalIncome: TMoney = businessIncomeOrLoss + capitalGainOrLoss
 
   def adjustmentsToIncome: TMoney =
-    TMoney.sum(healthSavingsAccountDeduction, deductiblePartOfSelfEmploymentTax)
+    healthSavingsAccountDeduction + deductiblePartOfSelfEmploymentTax
 }
