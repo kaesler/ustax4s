@@ -14,7 +14,7 @@ package object ustax4s {
   /**
     * Rate of tax payable in a given bracket.
     */
-  type TaxRateRefinement = Interval.OpenClosed[W.`0.0D`.T, W.`0.37D`.T]
+  type TaxRateRefinement = Interval.Closed[W.`0.0D`.T, W.`0.37D`.T]
   type TaxRate = Double Refined TaxRateRefinement
   object TaxRate {
     def unsafeFrom(d: Double): TaxRate = refineV[TaxRateRefinement](d).toOption.get

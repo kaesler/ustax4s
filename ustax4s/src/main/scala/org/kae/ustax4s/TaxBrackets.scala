@@ -3,7 +3,14 @@ package org.kae.ustax4s
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 
-case class TaxBrackets(bracketStarts: Map[TMoney, TaxRate]) {
+/**
+  * Calculates tax on ordinary (non-investment) income.
+  *
+  * @param bracketStarts the tax brackets in effect
+  */
+final case class TaxBrackets(
+  bracketStarts: Map[TMoney, TaxRate]
+) {
   require(bracketStarts.contains(TMoney.zero))
 
   val bracketStartsAscending: Vector[(TMoney, TaxRate)] =
@@ -11,22 +18,36 @@ case class TaxBrackets(bracketStarts: Map[TMoney, TaxRate]) {
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
+  /**
+    * @return the tax due rounded to whole dollars
+    * @param m the ordinary income
+    */
   def taxDueWholeDollar(m: TMoney): TMoney =
     taxDue(m).rounded
 
+  /**
+    * @return the tax due
+    * @param m the ordinary income
+    */
   def taxDue(m: TMoney): TMoney = {
-    val pair = bracketsStartsDescending.foldLeft(m, TMoney.zero) {
+    case class Accum(yetToBeTaxed: TMoney, taxSoFar: TMoney)
+    object Accum { def initial = apply(m, TMoney.zero) }
 
-      case ((yetToBeTaxed, taxSoFar), (bracketStart, bracketRate)) =>
-        // Note: because subtract does not give a a value below zero
-        // both the following values will be zero if the bracket does not
-        // apply.
+    val accum = bracketsStartsDescending.foldLeft(Accum.initial) {
+
+      case (Accum(yetToBeTaxed, taxSoFar), (bracketStart, bracketRate)) =>
+        // Non-negative: so zero if bracket does not apply.
         val amountInThisBracket = yetToBeTaxed - bracketStart
+
+        // Non-negative: so zero if bracket does not apply.
         val taxInThisBracket = amountInThisBracket * bracketRate
-        (yetToBeTaxed - amountInThisBracket, taxSoFar + taxInThisBracket)
+        Accum(
+          yetToBeTaxed = yetToBeTaxed - amountInThisBracket,
+          taxSoFar = taxSoFar + taxInThisBracket
+        )
     }
-    assert(pair._1.isZero)
-    pair._2
+    assert(accum.yetToBeTaxed.isZero)
+    accum.taxSoFar
   }
 
   def isProgressive: Boolean = {
@@ -41,16 +62,10 @@ case class TaxBrackets(bracketStarts: Map[TMoney, TaxRate]) {
 
 object TaxBrackets {
 
-  /**
-    * For ordinary income
-    * @param year
-    * @param status
-    * @return
-    */
   def of(year: Year, status: FilingStatus): TaxBrackets =
     (year.getValue, status) match {
       case (2018, HeadOfHousehold) =>
-        TaxBrackets.create(
+        create(
           Map(
             0 -> 10,
             13600 -> 12,
@@ -65,22 +80,10 @@ object TaxBrackets {
       case _ => ???
     }
 
-  def ofPreferentialGains(year: Year, status: FilingStatus): TaxBrackets =
-      (year.getValue, status) match {
-      case (2018, HeadOfHousehold) =>
-        TaxBrackets.create(
-          Map(
-            0 -> 0,
-            51700 -> 15,
-            452400 -> 20
-          )
-        )
-
-      case _ => ???
-    }
-
-  private def create(pairs: Map[Int, Int]): TaxBrackets =
-    new TaxBrackets(
+  private def create(
+    pairs: Map[Int, Int]
+  ): TaxBrackets =
+    TaxBrackets(
       pairs.map {
         case (bracketStart, ratePercentage) =>
           require(ratePercentage < 100)
