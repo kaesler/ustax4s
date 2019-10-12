@@ -47,11 +47,11 @@ final case class CGTaxBrackets(
     val accum =
       bracketsStartsDescending.foldLeft(Accum.initial) {
         case (
-          acc@Accum(
-          totalIncomeInHigherBrackets,
-          gainsYetToBeTaxed,
-          gainsTaxSoFar
-          ),
+            acc @ Accum(
+              totalIncomeInHigherBrackets,
+              gainsYetToBeTaxed,
+              gainsTaxSoFar
+            ),
             (bracketStart, bracketRate)
             ) =>
           val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets

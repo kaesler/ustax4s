@@ -6,9 +6,11 @@ final case class Form1040(
   schedule1: Option[Schedule1],
   schedule3: Option[Schedule3],
   schedule4: Option[Schedule4],
+  scheduleD: Option[ScheduleD],
   childTaxCredit: TMoney = TMoney.u(2000),
   wages: TMoney,
   taxableInterest: TMoney,
+  qualifiedDividends: TMoney,
   ordinaryDividends: TMoney,
   taxableIras: TMoney,
   taxableSocialSecurityBenefits: TMoney,
@@ -35,5 +37,7 @@ final case class Form1040(
 
   def totalTax: TMoney =
     tax + schedule4.map(_.totalOtherTaxes).getOrElse(TMoney.zero) -
-      (childTaxCredit + schedule3.map(_.nonRefundableCredits).getOrElse(TMoney.zero))
+      (childTaxCredit + schedule3
+        .map(_.nonRefundableCredits)
+        .getOrElse(TMoney.zero))
 }
