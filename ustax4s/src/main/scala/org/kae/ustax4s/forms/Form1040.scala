@@ -6,7 +6,6 @@ final case class Form1040(
   schedule1: Option[Schedule1],
   schedule3: Option[Schedule3],
   schedule4: Option[Schedule4],
-  scheduleD: Option[ScheduleD],
   childTaxCredit: TMoney = TMoney.u(2000),
   wages: TMoney,
   taxableInterest: TMoney,
@@ -16,6 +15,8 @@ final case class Form1040(
   taxableSocialSecurityBenefits: TMoney,
   rates: TaxRates
 ) {
+
+  def scheduleD: Option[ScheduleD] = schedule1.flatMap(_.scheduleD)
 
   def totalIncome: TMoney =
     TMoney.sum(

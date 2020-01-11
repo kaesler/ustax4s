@@ -17,8 +17,13 @@ class Form1040_2018Spec extends Specification {
       val year = Year.of(2018)
       val form = Form1040(
         Schedule1(
+          Some(
+            ScheduleD(
+            longTermCapitalGains = 7412.tm,
+              capitalGainsDistributions = 2147.tm
+            )
+          ),
           businessIncomeOrLoss = 2080.tm,
-          capitalGainOrLoss = 7412.tm,
           healthSavingsAccountDeduction = 3567.tm,
           deductiblePartOfSelfEmploymentTax = 28.tm
         ).some,
@@ -31,6 +36,7 @@ class Form1040_2018Spec extends Specification {
         wages = 133497.tm,
         taxableInterest = TMoney.zero,
         ordinaryDividends = 7930.tm,
+        qualifiedDividends = 7365.tm,
         taxableIras = TMoney.zero,
         taxableSocialSecurityBenefits = TMoney.zero,
         rates = TaxRates.of(
@@ -39,6 +45,7 @@ class Form1040_2018Spec extends Specification {
           Kevin.birthDate
         )
       )
+
       form.totalIncome === 150919.tm
       form.adjustedGrossIncome === 147324.tm
       form.taxableIncome === 129324.tm
