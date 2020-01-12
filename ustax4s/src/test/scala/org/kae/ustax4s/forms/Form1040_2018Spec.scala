@@ -19,7 +19,7 @@ class Form1040_2018Spec extends Specification {
         Schedule1(
           Some(
             ScheduleD(
-            longTermCapitalGains = 7412.tm,
+              longTermCapitalGains = 5265.tm,
               capitalGainsDistributions = 2147.tm
             )
           ),
