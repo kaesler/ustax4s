@@ -2,13 +2,16 @@ package org.kae.ustax4s
 
 package forms
 
-import org.kae.ustax4s.TMoney
-
 final case class Schedule1(
   scheduleD: Option[ScheduleD],
   // TODO: may need negative Money type here
+  // Line 12:
   businessIncomeOrLoss: TMoney,
+
+  // Line 25:
   healthSavingsAccountDeduction: TMoney,
+
+  // Line 27:
   deductiblePartOfSelfEmploymentTax: TMoney
 ) {
 

@@ -5,30 +5,30 @@ import org.specs2.ScalaCheck
 import org.specs2.matcher.MustMatchers
 import org.specs2.mutable.Specification
 
-object CGTaxBracketsSpec
-    extends Specification
-    with ScalaCheck
-    with CGTaxBracketsGeneration
-    with TMoneyGeneration
-    with MustMatchers {
+object InvestmentIncomeTaxBracketsSpec
+  extends Specification
+  with ScalaCheck
+  with InvestmentTaxBracketsGeneration
+  with TMoneyGeneration
+  with MustMatchers {
 
-  implicit val arbCgTaxBrackets: Arbitrary[CGTaxBrackets] = Arbitrary(genCgTaxBrackets)
+  implicit val arbCgTaxBrackets: Arbitrary[InvestmentIncomeTaxBrackets] = Arbitrary(genCgTaxBrackets)
   implicit val arbIncome: Arbitrary[TMoney] = Arbitrary(genMoney)
 
   val zero = TMoney.zero
 
   "CGTaxBrackets should" >> {
-    "never tax zero gains" >> prop { (ordIncome: TMoney ,brackets: CGTaxBrackets) =>
+    "never tax zero gains" >> prop { (ordIncome: TMoney ,brackets: InvestmentIncomeTaxBrackets) =>
       brackets.taxDue(ordIncome, zero) === zero
     }
 
-    "tax in lowest bracket as expected" >> prop { brackets: CGTaxBrackets =>
+    "tax in lowest bracket as expected" >> prop { brackets: InvestmentIncomeTaxBrackets =>
       val (lowBracketTop, lowBracketRate) = brackets.bracketStartsAscending.head
       brackets.taxDue(zero, lowBracketTop) === lowBracketTop * lowBracketRate
     }
 
     "tax rises monotonically with investment income" >> prop {
-      (brackets: CGTaxBrackets, gains1: TMoney, gains2: TMoney) =>
+      (brackets: InvestmentIncomeTaxBrackets, gains1: TMoney, gains2: TMoney) =>
         {
           if (gains1 < gains2)
             brackets.taxDue(zero, gains1) < brackets.taxDue(zero, gains2)
@@ -39,7 +39,7 @@ object CGTaxBracketsSpec
     }
 
     "tax rises monotonically with ordinary income" >> prop {
-      (brackets: CGTaxBrackets, gains: TMoney, income1: TMoney, income2: TMoney) =>
+      (brackets: InvestmentIncomeTaxBrackets, gains: TMoney, income1: TMoney, income2: TMoney) =>
         {
           if (income1 < income2)
             brackets.taxDue(income1, gains) <= brackets.taxDue(income1, gains)
@@ -50,12 +50,12 @@ object CGTaxBracketsSpec
     }
 
     "tax is never zero except on zero gains" >> prop {
-      (brackets: CGTaxBrackets, income: TMoney, gains: TMoney) =>
+      (brackets: InvestmentIncomeTaxBrackets, income: TMoney, gains: TMoney) =>
         (brackets.taxDue(income, gains).nonZero || gains.isZero) must beTrue
     }
 
     "max tax rate is the max tax rate" >> prop {
-      (brackets: CGTaxBrackets, gains: TMoney) =>
+      (brackets: InvestmentIncomeTaxBrackets, gains: TMoney) =>
         val maxTax = gains * brackets.bracketStartsAscending.map(_._2).max
         (brackets.taxDue(zero, gains) <= maxTax) must beTrue
     }

@@ -2,7 +2,7 @@ package org.kae.ustax4s
 
 import org.scalacheck.Gen
 
-trait CGTaxBracketsGeneration
+trait InvestmentTaxBracketsGeneration
   extends SetGeneration
   with TaxRateGeneration {
 
@@ -10,12 +10,12 @@ trait CGTaxBracketsGeneration
   private val genBracketBorder: Gen[TMoney] =
     Gen.choose(10, 500000).map(TMoney.u)
 
-  val genCgTaxBrackets: Gen[CGTaxBrackets] = {
+  val genCgTaxBrackets: Gen[InvestmentIncomeTaxBrackets] = {
     for {
       bracketCount <- Gen.choose(1, 10)
       rates <- genSet(bracketCount, genTaxRate)
       bracketBorders <- genSet(bracketCount - 1, genBracketBorder)
-    } yield CGTaxBrackets(
+    } yield InvestmentIncomeTaxBrackets(
       (TMoney.zero :: bracketBorders.toList).sorted
         .zip(rates)
         .toMap

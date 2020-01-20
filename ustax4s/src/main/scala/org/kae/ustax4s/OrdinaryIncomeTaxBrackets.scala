@@ -8,7 +8,7 @@ import org.kae.ustax4s.FilingStatus.HeadOfHousehold
   *
   * @param bracketStarts the tax brackets in effect
   */
-final case class TaxBrackets(
+final case class OrdinaryIncomeTaxBrackets(
   bracketStarts: Map[TMoney, TaxRate]
 ) {
   require(bracketStarts.contains(TMoney.zero))
@@ -19,34 +19,38 @@ final case class TaxBrackets(
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
   /**
-    * @return the tax due rounded to whole dollars
-    * @param m the ordinary income
+    * @return the tax due on the ordinary income (not LTCGs...)
+    * @param taxableOrdinaryIncome the ordinary income
     */
-  def taxDueWholeDollar(m: TMoney): TMoney =
-    taxDue(m).rounded
+  def taxDue(
+    taxableOrdinaryIncome: TMoney
+  ): TMoney = {
 
-  /**
-    * @return the tax due
-    * @param m the ordinary income
-    */
-  def taxDue(m: TMoney): TMoney = {
-    case class Accum(yetToBeTaxed: TMoney, taxSoFar: TMoney)
-    object Accum { def initial = apply(m, TMoney.zero) }
+    // Note: Qualified investment income sort of occupies the top brackets above
+    // ordinary income and so does not affect this.
+
+    case class Accum(ordinaryIncomeYetToBeTaxed: TMoney, taxSoFar: TMoney)
+    object Accum {
+      def initial: Accum = apply(taxableOrdinaryIncome, TMoney.zero)
+    }
 
     val accum = bracketsStartsDescending.foldLeft(Accum.initial) {
 
-      case (Accum(yetToBeTaxed, taxSoFar), (bracketStart, bracketRate)) =>
-        // Non-negative: so zero if bracket does not apply.
-        val amountInThisBracket = yetToBeTaxed - bracketStart
+      case (
+          Accum(ordinaryIncomeYetToBeTaxed, taxSoFar),
+          (bracketStart, bracketRate)
+          ) =>
+        // Result will be non-negative: so becomes zero if bracket does not apply.
+        val ordinaryIncomeInThisBracket = ordinaryIncomeYetToBeTaxed - bracketStart
 
         // Non-negative: so zero if bracket does not apply.
-        val taxInThisBracket = amountInThisBracket * bracketRate
+        val taxInThisBracket = ordinaryIncomeInThisBracket * bracketRate
         Accum(
-          yetToBeTaxed = yetToBeTaxed - amountInThisBracket,
+          ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket,
           taxSoFar = taxSoFar + taxInThisBracket
         )
     }
-    assert(accum.yetToBeTaxed.isZero)
+    assert(accum.ordinaryIncomeYetToBeTaxed.isZero)
     accum.taxSoFar
   }
 
@@ -60,9 +64,9 @@ final case class TaxBrackets(
   }
 }
 
-object TaxBrackets {
+object OrdinaryIncomeTaxBrackets {
 
-  def of(year: Year, status: FilingStatus): TaxBrackets =
+  def of(year: Year, status: FilingStatus): OrdinaryIncomeTaxBrackets =
     (year.getValue, status) match {
       case (2018, HeadOfHousehold) =>
         create(
@@ -82,8 +86,8 @@ object TaxBrackets {
 
   private def create(
     pairs: Map[Int, Int]
-  ): TaxBrackets =
-    TaxBrackets(
+  ): OrdinaryIncomeTaxBrackets =
+    OrdinaryIncomeTaxBrackets(
       pairs.map {
         case (bracketStart, ratePercentage) =>
           require(ratePercentage < 100)

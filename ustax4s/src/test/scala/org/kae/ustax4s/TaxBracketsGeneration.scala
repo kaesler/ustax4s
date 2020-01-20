@@ -10,12 +10,12 @@ trait TaxBracketsGeneration
   private val genBracketBorder: Gen[TMoney] =
     Gen.choose(10, 500000).map(TMoney.u)
 
-  val genTaxBrackets: Gen[TaxBrackets] = {
+  val genTaxBrackets: Gen[OrdinaryIncomeTaxBrackets] = {
     for {
       bracketCount <- Gen.choose(1, 10)
       rates <- genSet(bracketCount, genTaxRate)
       bracketBorders <- genSet(bracketCount - 1, genBracketBorder)
-    } yield TaxBrackets(
+    } yield OrdinaryIncomeTaxBrackets(
       (TMoney.zero :: bracketBorders.toList).sorted
         .zip(rates)
         .toMap

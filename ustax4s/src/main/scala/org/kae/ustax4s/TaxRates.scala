@@ -1,20 +1,38 @@
 package org.kae.ustax4s
 
 import java.time.{LocalDate, Year}
+import org.kae.ustax4s.forms.Form1040
 
 case class TaxRates(
   standardDeduction: TMoney,
-  brackets: TaxBrackets,
-  cgBrackets: CGTaxBrackets,
+  ordinaryIncomeBrackets: OrdinaryIncomeTaxBrackets,
+  investmentIncomeBrackets: InvestmentIncomeTaxBrackets,
   filingStatus: FilingStatus
-)
+) {
+  // Line 11:
+    def taxDueBeforeCredits(
+      ordinaryIncome: TMoney,
+      investmentIncome: TMoney
+    ): TMoney =
+      ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
+        investmentIncomeBrackets.taxDue(ordinaryIncome, investmentIncome)
+
+
+  // Line 15:
+  def totalTax(form: Form1040): TMoney =
+    taxDueBeforeCredits(form.taxableOrdinaryIncome, form.qualifiedInvestmentIncome) +
+      form.schedule4.map(_.totalOtherTaxes).getOrElse(TMoney.zero) -
+      (form.childTaxCredit + form.schedule3
+        .map(_.nonRefundableCredits)
+        .getOrElse(TMoney.zero))
+}
 
 object TaxRates {
   def of (year: Year, filingStatus: FilingStatus, birthDate: LocalDate): TaxRates =
     TaxRates(
       StandardDeduction.of(year, filingStatus, birthDate),
-      TaxBrackets.of(year, filingStatus),
-      CGTaxBrackets.of(year, filingStatus),
+      OrdinaryIncomeTaxBrackets.of(year, filingStatus),
+      InvestmentIncomeTaxBrackets.of(year, filingStatus),
       filingStatus
     )
 }

@@ -9,7 +9,7 @@ import org.kae.ustax4s.FilingStatus.HeadOfHousehold
   *
   * @param bracketStarts the tax brackets in effect
   */
-final case class CGTaxBrackets(
+final case class InvestmentIncomeTaxBrackets(
   bracketStarts: Map[TMoney, TaxRate]
 ) {
   require(bracketStarts.contains(TMoney.zero))
@@ -24,13 +24,13 @@ final case class CGTaxBrackets(
     * @param qualifiedInvestmentIncome the investment income
     */
   def taxDueWholeDollar(
-    ordinaryIncome: TMoney,
+    taxableOrdinaryIncome: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney =
-    taxDue(ordinaryIncome, qualifiedInvestmentIncome).rounded
+    taxDue(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
 
   def taxDue(
-    ordinaryIncome: TMoney,
+    taxableOrdinaryIncome: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney = {
 
@@ -40,14 +40,14 @@ final case class CGTaxBrackets(
       gainsTaxSoFar: TMoney
     )
     object Accum {
-      def initial = apply(TMoney.zero, qualifiedInvestmentIncome, TMoney.zero)
+      def initial: Accum = apply(TMoney.zero, qualifiedInvestmentIncome, TMoney.zero)
     }
 
-    val totalIncome = ordinaryIncome + qualifiedInvestmentIncome
+    val totalIncome = taxableOrdinaryIncome + qualifiedInvestmentIncome
     val accum =
       bracketsStartsDescending.foldLeft(Accum.initial) {
         case (
-            acc @ Accum(
+            Accum(
               totalIncomeInHigherBrackets,
               gainsYetToBeTaxed,
               gainsTaxSoFar
@@ -78,9 +78,9 @@ final case class CGTaxBrackets(
   }
 }
 
-object CGTaxBrackets {
+object InvestmentIncomeTaxBrackets {
 
-  def of(year: Year, status: FilingStatus): CGTaxBrackets =
+  def of(year: Year, status: FilingStatus): InvestmentIncomeTaxBrackets =
     (year.getValue, status) match {
       case (2018, HeadOfHousehold) =>
         create(
@@ -96,8 +96,8 @@ object CGTaxBrackets {
 
   private def create(
     pairs: Map[Int, Int]
-  ): CGTaxBrackets =
-    CGTaxBrackets(
+  ): InvestmentIncomeTaxBrackets =
+    InvestmentIncomeTaxBrackets(
       pairs.map {
         case (bracketStart, ratePercentage) =>
           require(ratePercentage < 100)
