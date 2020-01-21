@@ -16,8 +16,8 @@ class Form1040_2018Spec extends Specification with IntMoneySyntax {
         Kevin.birthDate
       )
       val form = Form1040(
-        rates.standardDeduction,
-        Schedule1(
+        standardDeduction = rates.standardDeduction,
+        schedule1 =  Schedule1(
           Some(
             ScheduleD(
               longTermCapitalGains = 5265.tm,
@@ -28,21 +28,22 @@ class Form1040_2018Spec extends Specification with IntMoneySyntax {
           healthSavingsAccountDeduction = 3567.tm,
           deductiblePartOfSelfEmploymentTax = 28.tm
         ).some,
-        Schedule3(
+        schedule3 = Schedule3(
           foreignTaxCredit = 257.tm
         ).some,
-        Schedule4(
+        schedule4 = Schedule4(
           selfEmploymentTax = 56.tm
         ).some,
-        Schedule5(
+        schedule5 = Schedule5(
           excessSocialSecurityWithheld = 1709.tm
         ).some,
         wages = 133497.tm,
+        taxExemptInterest = 2294.tm,
         taxableInterest = TMoney.zero,
         ordinaryDividends = 7930.tm,
         qualifiedDividends = 7365.tm,
         taxableIras = TMoney.zero,
-        taxableSocialSecurityBenefits = TMoney.zero,
+        socialSecurityBenefits = TMoney.zero,
         rates = rates
       )
 

@@ -2,11 +2,9 @@ package org.kae
 
 import cats.kernel.Order
 import eu.timepit.refined._
-import eu.timepit.refined.api.{Refined, RefinedTypeOps}
+import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.Interval
-import eu.timepit.refined.numeric._
-import eu.timepit.refined.types.numeric.NonNegBigDecimal
-import java.math.MathContext
+import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
 import scala.math.BigDecimal.RoundingMode
 
 package object ustax4s {
@@ -48,17 +46,17 @@ package object ustax4s {
     def isZero: Boolean = underlying.value == NonNegMoneyOps.bdZero
     def nonZero: Boolean = ! isZero
 
-    def +(other: NonNegBigDecimal): NonNegBigDecimal =
+    def +(other: TMoney): TMoney =
       nnbd.unsafeFrom(underlying.value + other.value)
 
-    def -(other: NonNegBigDecimal): NonNegBigDecimal = subtract(other)
+    def -(other: TMoney): TMoney = subtract(other)
     /**
       * Subtract other [[TMoney]] but do not go below zero.
       *
       * @param other the [[NonNegBigDecimal]]
       * @return the result of the subtraction
       */
-    def subtract(other: NonNegBigDecimal): NonNegBigDecimal =
+    def subtract(other: TMoney): TMoney =
       nnbd.unsafeFrom(
         (underlying.value - other.value).max(TMoney.zero.value))
 
@@ -66,7 +64,12 @@ package object ustax4s {
       nnbd.unsafeFrom(underlying.value min other.value)
 
     def *(rate: TaxRate): TMoney = nnbd.unsafeFrom(underlying.value * rate.value)
+
+    def mul(fraction: PosDouble): TMoney = nnbd.unsafeFrom(underlying.value * fraction.value)
+
+    def /(divisor: PosInt): TMoney = nnbd.unsafeFrom(underlying.value / divisor.value)
   }
+
   private object NonNegMoneyOps {
     private val bdZero = BigDecimal(0)
   }
@@ -77,5 +80,8 @@ package object ustax4s {
     def sum(ms: TMoney*): TMoney = nnbd.unsafeFrom(ms.map(_.value).sum)
 
     def u(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
+
+    def max(left: TMoney, right: TMoney): TMoney = orderForTMoney.max(left, right)
+    def min(left: TMoney, right: TMoney): TMoney = orderForTMoney.min(left, right)
   }
 }
