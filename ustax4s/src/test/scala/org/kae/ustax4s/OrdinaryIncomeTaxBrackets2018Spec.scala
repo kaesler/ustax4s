@@ -4,7 +4,7 @@ import java.time.Year
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.specs2.mutable.Specification
 
-class OrdinaryIncomeTaxBrackets2018Spec extends Specification with IntMoneySyntax {
+object OrdinaryIncomeTaxBrackets2018Spec extends Specification with IntMoneySyntax {
   val zero = TMoney.zero
   val headOfHouseHoldSamples = List(
     (0, 0),

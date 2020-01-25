@@ -8,23 +8,27 @@ object TaxableSocialSecurity {
 
   private val two = refineMV[Positive](2)
 
+  // Note: we assume single here.
+  private val lowBase = TMoney.u(25000)
+  private val highBase = TMoney.u(34000)
+
+
   def taxableSocialSecurityBenefits(
     relevantIncome: TMoney,
     socialSecurityBenefits: TMoney
   ): TMoney = {
     val combinedIncome = relevantIncome + socialSecurityBenefits / two
 
-    // Note: we assume single here.
     // TODO: check this algorithm
     // TODO: write some tests
-    if (combinedIncome < TMoney.u(25000))
+    if (combinedIncome < lowBase)
       TMoney.zero
-    else if (combinedIncome < TMoney.u(34000)) {
+    else if (combinedIncome < highBase) {
       val fractionTaxable = PosDouble.unsafeFrom(0.5)
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%
       TMoney.min(
-        (combinedIncome - TMoney.u(25000)) mul fractionTaxable,
+        (combinedIncome - lowBase) mul fractionTaxable,
         maxSocSecTaxable
       )
     } else {
@@ -34,7 +38,7 @@ object TaxableSocialSecurity {
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
         TMoney.u(9000) +
-          (socialSecurityBenefits - TMoney.u(34000)) mul fractionTaxable,
+          (socialSecurityBenefits - highBase) mul fractionTaxable,
         maxSocSecTaxable
       )
     }

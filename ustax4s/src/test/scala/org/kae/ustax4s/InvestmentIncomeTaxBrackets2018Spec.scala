@@ -4,7 +4,7 @@ import java.time.Year
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.specs2.mutable.Specification
 
-class InvestmentIncomeTaxBrackets2018Spec extends Specification {
+object InvestmentIncomeTaxBrackets2018Spec extends Specification {
 
   "InvestmentIncomeTaxBrackets for HOH 2018" >> {
     "should match my actual return" >> {

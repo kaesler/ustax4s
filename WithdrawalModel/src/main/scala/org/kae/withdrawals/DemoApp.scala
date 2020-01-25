@@ -10,7 +10,7 @@ object DemoApp extends App {
   val x1 = Real()
   val x2 = Real()
 
-  val lpp =  ( (x0 +  x1 * 2 + x2 * 3 )
+  val lpp: Problem =  ( (x0 +  x1 * 2 + x2 * 3 )
     subjectTo ( x0 * -1 + x1 + x2 <= 20)
     subjectTo ( x0 - x1 * 3 + x2 <= 30)
     subjectTo ( x0 <= 40 )

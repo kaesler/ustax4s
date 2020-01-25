@@ -5,7 +5,7 @@ import java.time.Year
 import org.kae.ustax4s.{IntMoneySyntax, Kevin, NonNegMoneyOps, TMoney, TaxRates}
 import org.specs2.mutable.Specification
 
-class Form1040_2018Spec extends Specification with IntMoneySyntax {
+object Form1040_2018Spec extends Specification with IntMoneySyntax {
 
   "Form1040" >> {
     "totalTax should match what I filed" >> {
