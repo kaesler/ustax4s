@@ -36,4 +36,3 @@ lazy val withdrawals = (project in file("modules/withdrawals"))
       Scalanlp.natives
     )
   )
-1
