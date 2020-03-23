@@ -27,3 +27,13 @@ lazy val taxes = (project in file("modules/taxes"))
       Specs2.scalacheck % Test
     )
   )
+
+lazy val withdrawals = (project in file("modules/withdrawals"))
+  .settings(
+    name := "withdrawals",
+    libraryDependencies ++= Seq(
+      Scalanlp.breeze,
+      Scalanlp.natives
+    )
+  )
+1
