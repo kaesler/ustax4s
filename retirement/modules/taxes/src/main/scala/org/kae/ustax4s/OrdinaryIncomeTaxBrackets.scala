@@ -68,6 +68,33 @@ object OrdinaryIncomeTaxBrackets {
 
   def of(year: Year, status: FilingStatus): OrdinaryIncomeTaxBrackets =
     (year.getValue, status) match {
+
+      case (2020, HeadOfHousehold) =>
+        create(
+          Map(
+            0 -> 10,
+            14100 -> 12,
+            53700 -> 22,
+            85500 -> 24,
+            163300 -> 32,
+            207350 -> 35,
+            518400 -> 37
+          )
+        )
+
+      case (2019, HeadOfHousehold) =>
+        create(
+          Map(
+            0 -> 10,
+            13850 -> 12,
+            52850 -> 22,
+            84200 -> 24,
+            160700 -> 32,
+            204100 -> 35,
+            510300 -> 37
+          )
+        )
+
       case (2018, HeadOfHousehold) =>
         create(
           Map(
