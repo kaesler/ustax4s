@@ -15,12 +15,12 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       28900.tm,
       5980.tm
-    ) === 2960.tm
+    ) === 2990.tm
   }
 
   "Jacskon Example from Pub 915" >> {
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
-      2550.tm,
+      25500.tm,
       11000.tm
     ) === 3000.tm
   }
