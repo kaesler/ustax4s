@@ -3,9 +3,12 @@ package org.kae.ustax4s
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 
-object StateTaxMA {
+object StateTaxMA extends IntMoneySyntax {
 
-  val rate = 0.051
+  // TODO tests for this.
+
+  // Note: Social Security is not taxed.
+  private val rate = TaxRate.unsafeFrom(0.051)
 
   private def personalExemption(
     year: Year,
@@ -16,8 +19,22 @@ object StateTaxMA {
       case (2020, HeadOfHousehold) => TMoney.u(6800)
       case (2019, HeadOfHousehold) => TMoney.u(6800)
     }
-    ???
+
+    unadjustedForAge + (if (isAge65OrOlder(birthDate, year)) 700.tm else TMoney.zero)
   }
 
-  // rate
+  private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
+    taxYear.getValue - birthDate.getYear >= 65
+
+  def taxDue(year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate)(
+    // Excludes SocSec
+    taxableIncome: TMoney
+  ): TMoney = {
+    TMoney.max(
+      TMoney.zero,
+      taxableIncome - personalExemption(year, filingStatus, birthDate)
+    ) * rate
+  }
 }
