@@ -14,10 +14,11 @@ trait InvestmentTaxBracketsGeneration
     for {
       bracketCount <- Gen.choose(1, 10)
       rates <- genSet(bracketCount, genTaxRate)
+      ratesSortedAscending = rates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genBracketBorder)
     } yield InvestmentIncomeTaxBrackets(
       (TMoney.zero :: bracketBorders.toList).sorted
-        .zip(rates)
+        .zip(ratesSortedAscending)
         .toMap
     )
   }

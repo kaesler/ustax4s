@@ -14,10 +14,12 @@ trait TaxBracketsGeneration
     for {
       bracketCount <- Gen.choose(1, 10)
       rates <- genSet(bracketCount, genTaxRate)
+      // rates should always be progressive
+      ratesSortedAscending = rates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genBracketBorder)
     } yield OrdinaryIncomeTaxBrackets(
       (TMoney.zero :: bracketBorders.toList).sorted
-        .zip(rates)
+        .zip(ratesSortedAscending)
         .toMap
     )
   }

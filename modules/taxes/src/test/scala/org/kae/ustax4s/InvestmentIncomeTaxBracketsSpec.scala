@@ -40,13 +40,20 @@ object InvestmentIncomeTaxBracketsSpec
 
     "tax rises monotonically with ordinary income" >> prop {
       (brackets: InvestmentIncomeTaxBrackets, gains: TMoney, income1: TMoney, income2: TMoney) =>
-        {
+        val res = {
           if (income1 < income2)
             brackets.taxDue(income1, gains) <= brackets.taxDue(income1, gains)
           else if (income1 > income2)
             brackets.taxDue(income1, gains) >= brackets.taxDue(income2, gains)
           else brackets.taxDue(income1, gains) == brackets.taxDue(income2, gains)
-        } must beTrue
+        }
+        if (!res) {
+          println(brackets.show)
+          println(s"gains: $gains")
+          println(s"income1: $income1; tax: ${brackets.taxDue(income1, gains)}")
+          println(s"income2: $income2; tax: ${brackets.taxDue(income2, gains)}")
+        }
+        res must beTrue
     }
 
     "tax is never zero except on zero gains" >> prop {

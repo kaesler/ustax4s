@@ -19,6 +19,10 @@ final case class InvestmentIncomeTaxBrackets(
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
+  def show: String = {
+    bracketStartsAscending.mkString("\n")
+  }
+
   /**
     * @return the tax due rounded to whole dollars
     * @param qualifiedInvestmentIncome the investment income
