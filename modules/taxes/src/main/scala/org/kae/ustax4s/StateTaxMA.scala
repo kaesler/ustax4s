@@ -18,23 +18,31 @@ object StateTaxMA extends IntMoneySyntax {
     val unadjustedForAge = (year.getValue, filingStatus) match {
       case (2020, HeadOfHousehold) => TMoney.u(6800)
       case (2019, HeadOfHousehold) => TMoney.u(6800)
+      case (2018, HeadOfHousehold) => TMoney.u(6800)
     }
 
-    unadjustedForAge + (if (isAge65OrOlder(birthDate, year)) 700.tm else TMoney.zero)
+    unadjustedForAge + (if (isAge65OrOlder(birthDate, year)) 700.tm
+                        else TMoney.zero)
   }
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     taxYear.getValue - birthDate.getYear >= 65
 
-  def taxDue(year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate)(
+  def taxDue(
+    year: Year,
+    filingStatus:
+    FilingStatus,
+    birthDate: LocalDate,
+    dependents: Int
+  )(
     // Excludes SocSec
     taxableIncome: TMoney
   ): TMoney = {
     TMoney.max(
       TMoney.zero,
-      taxableIncome - personalExemption(year, filingStatus, birthDate)
+      taxableIncome -
+        personalExemption(year, filingStatus, birthDate) -
+        (TMoney.u(1000) mul dependents)
     ) * rate
   }
 }

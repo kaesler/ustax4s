@@ -67,6 +67,8 @@ package object ustax4s {
 
     def mul(fraction: PosDouble): TMoney = nnbd.unsafeFrom(underlying.value * fraction.value)
 
+    def mul(i: Int): TMoney = nnbd.unsafeFrom(underlying.value * i)
+
     def /(divisor: PosInt): TMoney = nnbd.unsafeFrom(underlying.value / divisor.value)
   }
 
