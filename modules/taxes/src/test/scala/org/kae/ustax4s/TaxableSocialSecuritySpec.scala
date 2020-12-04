@@ -18,11 +18,18 @@ object TaxableSocialSecuritySpec
     ) === 2990.tm
   }
 
-  "Jacskon Example from Pub 915" >> {
+  "Jackson Example from Pub 915" >> {
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       25500.tm,
       11000.tm
     ) === 3000.tm
+  }
+
+  "Example like I will face" >> {
+    TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      17000.tm,
+      49000.tm
+    ) === 10875.tm
   }
   // TODO: Test at each boundary with zero ord income
 
