@@ -86,6 +86,30 @@ object InvestmentIncomeTaxBrackets {
 
   def of(year: Year, status: FilingStatus): InvestmentIncomeTaxBrackets =
     (year.getValue, status) match {
+      case (2021, HeadOfHousehold) =>
+        create(
+          Map(
+            0 -> 0,
+            54100 -> 15,
+            473750 -> 20
+          )
+        )
+      case (2020, HeadOfHousehold) =>
+        create(
+          Map(
+            0 -> 0,
+            53600 -> 15,
+            469050 -> 20
+          )
+        )
+      case (2019, HeadOfHousehold) =>
+        create(
+          Map(
+            0 -> 0,
+            52750 -> 15,
+            461700 -> 20
+          )
+        )
       case (2018, HeadOfHousehold) =>
         create(
           Map(

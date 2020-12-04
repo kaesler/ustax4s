@@ -11,6 +11,7 @@ object StandardDeduction {
 
   def unadjustedForAge(year: Year, filingStatus: FilingStatus): TMoney =
     (year.getValue, filingStatus) match {
+      case (2021, HeadOfHousehold) => TMoney.u(18800)
       case (2020, HeadOfHousehold) => TMoney.u(18650)
       case (2019, HeadOfHousehold) => TMoney.u(18350)
       case (2018, HeadOfHousehold) => TMoney.u(18000)
