@@ -13,6 +13,8 @@ object TaxableSocialSecurity {
   private val highBase = TMoney.u(34000)
 
 
+  // I think this is buggy
+  
   def taxableSocialSecurityBenefits(
     relevantIncome: TMoney,
     socialSecurityBenefits: TMoney
@@ -37,8 +39,8 @@ object TaxableSocialSecurity {
       TMoney.min(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
-        TMoney.u(9000) +
-          (socialSecurityBenefits - highBase) mul fractionTaxable,
+        TMoney.u(4500) +
+          (combinedIncome - highBase) mul fractionTaxable,
         maxSocSecTaxable
       )
     }
