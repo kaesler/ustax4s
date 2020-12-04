@@ -25,6 +25,20 @@ object TaxableSocialSecuritySpec
     ) === 0.tm
   }
 
+  "Top of middle tier 1" >> {
+    TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      0.tm,
+      68000.tm
+    ) === 4500.tm
+  }
+
+  "Top of middle tier 2" >> {
+    TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      20000.tm,
+      28000.tm
+    ) === 4500.tm
+  }
+
   "Example 1 from Pub 915" >> {
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       28900.tm,
