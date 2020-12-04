@@ -13,16 +13,13 @@ object TaxableSocialSecurity {
   private val highBase = TMoney.u(34000)
 
 
-  // I think this is buggy
-  
   def taxableSocialSecurityBenefits(
     relevantIncome: TMoney,
     socialSecurityBenefits: TMoney
   ): TMoney = {
     val combinedIncome = relevantIncome + socialSecurityBenefits / two
+    println(s"Combined income: $combinedIncome")
 
-    // TODO: check this algorithm
-    // TODO: write some tests
     if (combinedIncome < lowBase)
       TMoney.zero
     else if (combinedIncome < highBase) {
@@ -36,11 +33,11 @@ object TaxableSocialSecurity {
     } else {
       val fractionTaxable = PosDouble.unsafeFrom(0.85)
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
+
       TMoney.min(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
-        TMoney.u(4500) +
-          (combinedIncome - highBase) mul fractionTaxable,
+        TMoney.u(4500) + ((combinedIncome - highBase) mul fractionTaxable),
         maxSocSecTaxable
       )
     }

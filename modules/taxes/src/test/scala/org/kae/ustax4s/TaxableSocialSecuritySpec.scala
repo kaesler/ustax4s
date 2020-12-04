@@ -5,11 +5,25 @@ import org.specs2.matcher.MustMatchers
 import org.specs2.mutable.Specification
 
 object TaxableSocialSecuritySpec
-  extends Specification
+    extends Specification
     with ScalaCheck
     with TMoneyGeneration
     with MustMatchers
     with IntMoneySyntax {
+
+  "Untaxable 1" >> {
+    TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      0.tm,
+      50000.tm
+    ) === 0.tm
+  }
+
+  "Untaxable 2" >> {
+    TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      5000.tm,
+      40000.tm
+    ) === 0.tm
+  }
 
   "Example 1 from Pub 915" >> {
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
@@ -31,7 +45,4 @@ object TaxableSocialSecuritySpec
       49000.tm
     ) === 10875.tm
   }
-  // TODO: Test at each boundary with zero ord income
-
-  // TODO: Test at each boundary with huge ord income
 }
