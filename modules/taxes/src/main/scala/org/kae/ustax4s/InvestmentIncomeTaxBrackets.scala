@@ -1,7 +1,7 @@
 package org.kae.ustax4s
 
 import java.time.Year
-import org.kae.ustax4s.FilingStatus.HeadOfHousehold
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 /**
   * Calculates tax on qualified investment income,
@@ -92,6 +92,14 @@ object InvestmentIncomeTaxBrackets {
             0 -> 0,
             54100 -> 15,
             473750 -> 20
+          )
+        )
+      case (2021, Single) =>
+        create(
+          Map(
+            0 -> 0,
+            40400 -> 15,
+            445850 -> 20
           )
         )
       case (2020, HeadOfHousehold) =>
