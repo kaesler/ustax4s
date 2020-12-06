@@ -1,7 +1,7 @@
 package org.kae.ustax4s
 
 import java.time.Year
-import org.kae.ustax4s.FilingStatus.HeadOfHousehold
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 /**
   * Calculates tax on ordinary (non-investment) income.
@@ -78,6 +78,19 @@ object OrdinaryIncomeTaxBrackets {
             86350 -> 24,
             164900 -> 32,
             209400 -> 35,
+            523600 -> 37
+          )
+        )
+
+      case (2021, Single) =>
+        create(
+          Map(
+            0 -> 10,
+            9950 -> 12,
+            40525 -> 22,
+            86375 -> 24,
+            164925 -> 32,
+            209425 -> 35,
             523600 -> 37
           )
         )
