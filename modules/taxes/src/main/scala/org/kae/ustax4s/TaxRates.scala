@@ -19,12 +19,12 @@ case class TaxRates(
   filingStatus: FilingStatus
 ) {
   // Line 11:
-    def taxDueBeforeCredits(
-      ordinaryIncome: TMoney,
-      investmentIncome: TMoney
-    ): TMoney =
-      ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
-        investmentIncomeBrackets.taxDue(ordinaryIncome, investmentIncome)
+  def taxDueBeforeCredits(
+    ordinaryIncome: TMoney,
+    investmentIncome: TMoney
+  ): TMoney =
+    ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
+      investmentIncomeBrackets.taxDue(ordinaryIncome, investmentIncome)
 
 
   // Line 15:
