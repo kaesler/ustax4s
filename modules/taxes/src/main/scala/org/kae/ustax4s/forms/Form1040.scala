@@ -2,9 +2,6 @@ package org.kae.ustax4s
 
 package forms
 
-import eu.timepit.refined._
-import eu.timepit.refined.numeric.Positive
-
 final case class Form1040(
   standardDeduction: TMoney,
   schedule1: Option[Schedule1],
@@ -13,7 +10,9 @@ final case class Form1040(
   schedule5: Option[Schedule5],
 
   // Line 12:
-  childTaxCredit: TMoney = TMoney.u(2000),
+  // This this year-dependent. Julia must be under 17.
+  // So it only applies in 2021.
+  childTaxCredit: TMoney = TMoney.zero,
 
   // Line 1:
   wages: TMoney,
@@ -38,8 +37,6 @@ final case class Form1040(
 
   rates: TaxRates
 ) {
-  private val two = refineMV[Positive](2)
-
   // Line 5b:
   def taxableSocialSecurityBenefits: TMoney =
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
