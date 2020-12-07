@@ -18,7 +18,6 @@ object TaxableSocialSecurity {
     socialSecurityBenefits: TMoney
   ): TMoney = {
     val combinedIncome = relevantIncome + socialSecurityBenefits / two
-    println(s"Combined income: $combinedIncome")
 
     if (combinedIncome < lowBase)
       TMoney.zero
