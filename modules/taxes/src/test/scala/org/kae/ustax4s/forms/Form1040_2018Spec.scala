@@ -37,6 +37,7 @@ object Form1040_2018Spec extends Specification with IntMoneySyntax {
         schedule5 = Schedule5(
           excessSocialSecurityWithheld = 1709.tm
         ).some,
+        childTaxCredit = 2000.tm,
         wages = 133497.tm,
         taxExemptInterest = 2294.tm,
         taxableInterest = TMoney.zero,
