@@ -5,3 +5,4 @@ trait IntMoneySyntax {
     def tm: TMoney = TMoney.u(i)
   }
 }
+object IntMoneySyntax extends IntMoneySyntax
