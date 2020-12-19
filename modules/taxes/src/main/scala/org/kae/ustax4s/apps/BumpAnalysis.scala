@@ -21,7 +21,7 @@ object BumpAnalysis extends App with IntMoneySyntax{
 //      relevantIncome,
 //      socialSecurityIncome
 //    )
-    taxDue = SimpleTaxInRetirement.taxDueWithSS(filingStatus, relevantIncome, socialSecurityIncome)
+    taxDue = SimpleTaxInRetirement.taxDueWithSS_2021(filingStatus, relevantIncome, socialSecurityIncome)
   } yield (relevantIncome, taxDue)
   val res = pairs.sliding(2)
     .toList

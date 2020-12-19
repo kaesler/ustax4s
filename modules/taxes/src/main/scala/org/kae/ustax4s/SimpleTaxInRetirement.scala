@@ -10,7 +10,12 @@ import org.kae.ustax4s.forms.Form1040
  */
 object SimpleTaxInRetirement extends IntMoneySyntax {
 
-  def taxDueWithSS(
+//  def ordinaryIncomeTaxDue(
+//    year: Year,
+//
+//  )
+
+  def taxDueWithSS_2021(
     filingStatus: FilingStatus,
     incomeFrom401k: TMoney,
     ss: TMoney

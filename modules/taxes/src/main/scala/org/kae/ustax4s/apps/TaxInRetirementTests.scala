@@ -16,7 +16,7 @@ object TaxInRetirementTests extends App with IntMoneySyntax {
     // TODO: answers seem too low
     val ssTaxable = TaxableSocialSecurity.taxableSocialSecurityBenefits(income, ss)
     val totalTaxable = income + ssTaxable
-    val tax = SimpleTaxInRetirement.taxDueWithSS(Single, income, ss)
+    val tax = SimpleTaxInRetirement.taxDueWithSS_2021(Single, income, ss)
     println(s"Income: $income, ssTaxable: $ssTaxable, totalTaxable = $totalTaxable, tax: $tax")
   }
 }
