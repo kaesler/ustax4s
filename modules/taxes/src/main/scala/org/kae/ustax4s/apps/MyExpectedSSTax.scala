@@ -7,7 +7,8 @@ object MyExpectedSSTax extends App with IntMoneySyntax {
 
   val taxableSS = TaxableSocialSecurity.taxableSocialSecurityBenefits(relevantIncomeFromRmd, socialSecurityBenefits)
   val taxableIncome = relevantIncomeFromRmd + taxableSS
-  println(s"Taxable SS = $taxableSS")
+  val fractionSSTaxable = taxableSS div socialSecurityBenefits
+  println(s"Taxable SS = $taxableSS ($fractionSSTaxable)")
   println(s"Taxable income = $taxableIncome")
 
 }

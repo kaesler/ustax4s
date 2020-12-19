@@ -70,6 +70,8 @@ package object ustax4s {
     def mul(i: Int): TMoney = nnbd.unsafeFrom(underlying.value * i)
 
     def /(divisor: PosInt): TMoney = nnbd.unsafeFrom(underlying.value / divisor.value)
+
+    def div(divisor: TMoney): Double = underlying.value.toDouble / divisor.value.toDouble
   }
 
   private object NonNegMoneyOps {
