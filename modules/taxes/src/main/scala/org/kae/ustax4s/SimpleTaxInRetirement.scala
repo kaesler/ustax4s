@@ -28,7 +28,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
       socialSecurityBenefits = ss,
 
       // The rest not applicable in retirement.
-      standardDeduction = StandardDeduction.of(Year.of(2021), filingStatus, Kevin.birthDate),
+      standardDeduction = myRates.standardDeduction,
       schedule1 = None,
       schedule3 = None,
       schedule4 = None,
