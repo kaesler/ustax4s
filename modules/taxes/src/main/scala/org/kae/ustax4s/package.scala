@@ -14,8 +14,11 @@ package object ustax4s {
     */
   type TaxRateRefinement = Interval.Closed[W.`0.0D`.T, W.`0.37D`.T]
   type TaxRate = Double Refined TaxRateRefinement
+
   object TaxRate {
-    def unsafeFrom(d: Double): TaxRate = refineV[TaxRateRefinement](d).toOption.get
+
+    def unsafeFrom(d: Double): TaxRate =
+      refineV[TaxRateRefinement](d).toOption.get
   }
   implicit val orderingForTaxRate: Ordering[TaxRate] = Ordering.by(_.value)
   implicit def orderedForTaxRate(tr: TaxRate): Ordered[TaxRate] =
@@ -34,22 +37,26 @@ package object ustax4s {
   private val nnbd = NonNegBigDecimal
 
   implicit val orderingForTMoney: Ordering[TMoney] = Ordering.by(_.value)
-  implicit val orderingForBigDecimal: Order[BigDecimal] = Order.fromOrdering[BigDecimal]
+  implicit val orderingForBigDecimal: Order[BigDecimal] =
+    Order.fromOrdering[BigDecimal]
   implicit val orderForTMoney: Order[TMoney] =
-    Order.by { tm: TMoney => tm.value }
+    Order.by { tm: TMoney =>
+      tm.value
+    }
 
   implicit class NonNegMoneyOps(val underlying: TMoney) {
 
-    def rounded: TMoney = nnbd.unsafeFrom(
-      underlying.value.setScale(0, RoundingMode.HALF_UP))
+    def rounded: TMoney =
+      nnbd.unsafeFrom(underlying.value.setScale(0, RoundingMode.HALF_UP))
 
     def isZero: Boolean = underlying.value == NonNegMoneyOps.bdZero
-    def nonZero: Boolean = ! isZero
+    def nonZero: Boolean = !isZero
 
     def +(other: TMoney): TMoney =
       nnbd.unsafeFrom(underlying.value + other.value)
 
     def -(other: TMoney): TMoney = subtract(other)
+
     /**
       * Subtract other [[TMoney]] but do not go below zero.
       *
@@ -57,21 +64,24 @@ package object ustax4s {
       * @return the result of the subtraction
       */
     def subtract(other: TMoney): TMoney =
-      nnbd.unsafeFrom(
-        (underlying.value - other.value).max(TMoney.zero.value))
+      nnbd.unsafeFrom((underlying.value - other.value).max(TMoney.zero.value))
 
     def min(other: TMoney): TMoney =
       nnbd.unsafeFrom(underlying.value min other.value)
 
-    def *(rate: TaxRate): TMoney = nnbd.unsafeFrom(underlying.value * rate.value)
+    def *(rate: TaxRate): TMoney =
+      nnbd.unsafeFrom(underlying.value * rate.value)
 
-    def mul(fraction: PosDouble): TMoney = nnbd.unsafeFrom(underlying.value * fraction.value)
+    def mul(fraction: PosDouble): TMoney =
+      nnbd.unsafeFrom(underlying.value * fraction.value)
 
     def mul(i: Int): TMoney = nnbd.unsafeFrom(underlying.value * i)
 
-    def /(divisor: PosInt): TMoney = nnbd.unsafeFrom(underlying.value / divisor.value)
+    def /(divisor: PosInt): TMoney =
+      nnbd.unsafeFrom(underlying.value / divisor.value)
 
-    def div(divisor: TMoney): Double = underlying.value.toDouble / divisor.value.toDouble
+    def div(divisor: TMoney): Double =
+      underlying.value.toDouble / divisor.value.toDouble
   }
 
   private object NonNegMoneyOps {
@@ -85,7 +95,10 @@ package object ustax4s {
 
     def u(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
 
-    def max(left: TMoney, right: TMoney): TMoney = orderForTMoney.max(left, right)
-    def min(left: TMoney, right: TMoney): TMoney = orderForTMoney.min(left, right)
+    def max(left: TMoney, right: TMoney): TMoney =
+      orderForTMoney.max(left, right)
+
+    def min(left: TMoney, right: TMoney): TMoney =
+      orderForTMoney.min(left, right)
   }
 }

@@ -18,6 +18,7 @@ case class TaxRates(
   investmentIncomeBrackets: InvestmentIncomeTaxBrackets,
   filingStatus: FilingStatus
 ) {
+
   // Line 11:
   def taxDueBeforeCredits(
     ordinaryIncome: TMoney,
@@ -26,10 +27,12 @@ case class TaxRates(
     ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
       investmentIncomeBrackets.taxDue(ordinaryIncome, investmentIncome)
 
-
   // Line 15:
   def totalTax(form: Form1040): TMoney =
-    taxDueBeforeCredits(form.taxableOrdinaryIncome, form.qualifiedInvestmentIncome) +
+    taxDueBeforeCredits(
+      form.taxableOrdinaryIncome,
+      form.qualifiedInvestmentIncome
+    ) +
       form.schedule4.map(_.totalOtherTaxes).getOrElse(TMoney.zero) -
       (form.childTaxCredit + form.schedule3
         .map(_.nonRefundableCredits)
@@ -37,7 +40,12 @@ case class TaxRates(
 }
 
 object TaxRates {
-  def of (year: Year, filingStatus: FilingStatus, birthDate: LocalDate): TaxRates =
+
+  def of(
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate
+  ): TaxRates =
     TaxRates(
       StandardDeduction.of(year, filingStatus, birthDate),
       OrdinaryIncomeTaxBrackets.of(year, filingStatus),

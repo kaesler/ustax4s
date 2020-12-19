@@ -8,35 +8,27 @@ final case class Form1040(
   schedule3: Option[Schedule3],
   schedule4: Option[Schedule4],
   schedule5: Option[Schedule5],
-
   // Line 12:
   // This this year-dependent. Julia must be under 17.
   // So it only applies in 2021.
   childTaxCredit: TMoney = TMoney.zero,
-
   // Line 1:
   wages: TMoney,
-
   // Line 2a:
   taxExemptInterest: TMoney,
-
   // Line 2b:
   taxableInterest: TMoney,
-
   // Line 3a:
   qualifiedDividends: TMoney,
-
   // Line 3b:
   ordinaryDividends: TMoney,
-
   // Line 4b:
   taxableIras: TMoney,
-
   // Line 5a:
   socialSecurityBenefits: TMoney,
-
   rates: TaxRates
 ) {
+
   // Line 5b:
   def taxableSocialSecurityBenefits: TMoney =
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
@@ -55,7 +47,9 @@ final case class Form1040(
 
   // This is what gets taxed at LTCG rates.
   def qualifiedInvestmentIncome: TMoney =
-    qualifiedDividends + scheduleD.map(_.netLongTermCapitalGains).getOrElse(TMoney.zero)
+    qualifiedDividends + scheduleD
+      .map(_.netLongTermCapitalGains)
+      .getOrElse(TMoney.zero)
 
   // Line 6:
   def totalIncome: TMoney =

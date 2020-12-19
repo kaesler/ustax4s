@@ -12,4 +12,3 @@ object FilingStatus extends Enum[FilingStatus] {
 
   override def values: immutable.IndexedSeq[FilingStatus] = findValues
 }
-

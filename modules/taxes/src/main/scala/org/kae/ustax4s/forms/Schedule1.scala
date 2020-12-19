@@ -7,10 +7,8 @@ final case class Schedule1(
   // TODO: may need negative Money type here
   // Line 12:
   businessIncomeOrLoss: TMoney,
-
   // Line 25:
   healthSavingsAccountDeduction: TMoney,
-
   // Line 27:
   deductiblePartOfSelfEmploymentTax: TMoney
 ) {

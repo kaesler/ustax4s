@@ -64,21 +64,20 @@ final case class OrdinaryIncomeTaxBrackets(
   ): TMoney = {
     var ordinaryIncomeYetToBeTaxed = taxableOrdinaryIncome
     var taxSoFar = TMoney.zero
-    bracketsStartsDescending.foreach { case (bracketStart, bracketRate) =>
+    bracketsStartsDescending.foreach {
+      case (bracketStart, bracketRate) =>
+        // Result will be non-negative: so becomes zero if bracket does not apply.
+        val ordinaryIncomeInThisBracket = ordinaryIncomeYetToBeTaxed - bracketStart
 
-      // Result will be non-negative: so becomes zero if bracket does not apply.
-      val ordinaryIncomeInThisBracket = ordinaryIncomeYetToBeTaxed - bracketStart
+        // Non-negative: so zero if bracket does not apply.
+        val taxInThisBracket = ordinaryIncomeInThisBracket * bracketRate
 
-      // Non-negative: so zero if bracket does not apply.
-      val taxInThisBracket = ordinaryIncomeInThisBracket * bracketRate
-
-      ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket
-      taxSoFar = taxSoFar + taxInThisBracket
+        ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket
+        taxSoFar = taxSoFar + taxInThisBracket
     }
     assert(ordinaryIncomeYetToBeTaxed.isZero)
     taxSoFar
   }
-
 
   def isProgressive: Boolean = {
     val rates = bracketStartsAscending.map(_._2)
@@ -120,7 +119,6 @@ object OrdinaryIncomeTaxBrackets {
             523600 -> 37
           )
         )
-
 
       case (2020, HeadOfHousehold) =>
         create(
@@ -176,7 +174,7 @@ object OrdinaryIncomeTaxBrackets {
         case (bracketStart, ratePercentage) =>
           require(ratePercentage < 100)
           TMoney.u(bracketStart) ->
-          TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0D)
+          TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )
 }

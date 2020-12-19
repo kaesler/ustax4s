@@ -30,7 +30,8 @@ object StandardDeduction {
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     birthDate.isBefore(
-     LocalDate.of(taxYear.getValue, Month.JANUARY.getValue, 2)
-       .minusYears(65)
+      LocalDate
+        .of(taxYear.getValue, Month.JANUARY.getValue, 2)
+        .minusYears(65)
     )
 }

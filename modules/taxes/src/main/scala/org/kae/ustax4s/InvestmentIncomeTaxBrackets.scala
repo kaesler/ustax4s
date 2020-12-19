@@ -44,7 +44,8 @@ final case class InvestmentIncomeTaxBrackets(
       gainsTaxSoFar: TMoney
     )
     object Accum {
-      def initial: Accum = apply(TMoney.zero, qualifiedInvestmentIncome, TMoney.zero)
+      def initial: Accum =
+        apply(TMoney.zero, qualifiedInvestmentIncome, TMoney.zero)
     }
 
     val totalIncome = taxableOrdinaryIncome + qualifiedInvestmentIncome
@@ -142,7 +143,7 @@ object InvestmentIncomeTaxBrackets {
         case (bracketStart, ratePercentage) =>
           require(ratePercentage < 100)
           TMoney.u(bracketStart) ->
-          TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0D)
+          TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )
 }

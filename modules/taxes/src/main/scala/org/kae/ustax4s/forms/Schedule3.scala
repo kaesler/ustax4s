@@ -1,4 +1,5 @@
 package org.kae.ustax4s
+
 package forms
 
 final case class Schedule3(

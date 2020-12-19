@@ -10,15 +10,14 @@ object DemoApp extends App {
   val x1 = Real()
   val x2 = Real()
 
-  val lpp: Problem =  ( (x0 +  x1 * 2 + x2 * 3 )
-    subjectTo ( x0 * -1 + x1 + x2 <= 20)
-    subjectTo ( x0 - x1 * 3 + x2 <= 30)
-    subjectTo ( x0 <= 40 )
-    )
+  val lpp: Problem = ((x0 + x1 * 2 + x2 * 3)
+    subjectTo (x0 * -1 + x1 + x2 <= 20)
+    subjectTo (x0 - x1 * 3 + x2 <= 30)
+    subjectTo (x0 <= 40))
 
-  val result = maximize( lpp)
+  val result = maximize(lpp)
 
-  assert( norm(result.result - DenseVector(40.0,17.5,42.5), 2) < 1E-4)
+  assert(norm(result.result - DenseVector(40.0, 17.5, 42.5), 2) < 1e-4)
 
   println("good")
 }

@@ -30,8 +30,7 @@ object StateTaxMA extends IntMoneySyntax {
 
   def taxDue(
     year: Year,
-    filingStatus:
-    FilingStatus,
+    filingStatus: FilingStatus,
     birthDate: LocalDate,
     dependents: Int
   )(

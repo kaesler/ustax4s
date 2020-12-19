@@ -12,7 +12,6 @@ object TaxableSocialSecurity {
   private val lowBase = TMoney.u(25000)
   private val highBase = TMoney.u(34000)
 
-
   def taxableSocialSecurityBenefits(
     relevantIncome: TMoney,
     socialSecurityBenefits: TMoney

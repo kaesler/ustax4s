@@ -51,8 +51,6 @@ object Model {
   //    - ira withdrawals
   //  - finish with zero
   //  - minimum disposable income (living expenses)
-
-
   // Simple initial model
   //  - 1 IRA
   //  - 10 years
