@@ -9,7 +9,7 @@ object StandardDeduction {
     unadjustedForAge(year, filingStatus) +
       (if (isAge65OrOlder(birthDate, year)) TMoney.u(1350) else TMoney.zero)
 
-  def unadjustedForAge(year: Year, filingStatus: FilingStatus): TMoney =
+  private def unadjustedForAge(year: Year, filingStatus: FilingStatus): TMoney =
     (year.getValue, filingStatus) match {
       case (2021, HeadOfHousehold) => TMoney.u(18800)
       case (2020, HeadOfHousehold) => TMoney.u(18650)
