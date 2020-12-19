@@ -20,7 +20,12 @@ object StandardDeduction {
       case (2020, Single) => TMoney.u(12400)
       case (2019, Single) => TMoney.u(12200)
       case (2018, Single) => TMoney.u(12000)
-      case _ => ???
+
+      // TODO: for now assume 2021 rates into the future.
+      case (year, fs) if year > 2021 => unadjustedForAge(Year.of(2021), fs)
+
+      // Fail for non-applicable years.
+      case (year, _) if year < 2018 => ???
     }
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =

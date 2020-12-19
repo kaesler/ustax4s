@@ -161,7 +161,11 @@ object OrdinaryIncomeTaxBrackets {
           )
         )
 
-      case _ => ???
+      // TODO: for now assume 2021 rates in later years
+      case (year, fs) if year > 2021 => of(Year.of(2021), fs)
+
+      // Fail for non-applicable years.
+      case (year, _) if year < 2018 => ???
     }
 
   private def create(
