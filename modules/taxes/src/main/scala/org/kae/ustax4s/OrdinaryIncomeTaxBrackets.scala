@@ -24,6 +24,11 @@ final case class OrdinaryIncomeTaxBrackets(
     */
   def taxDue(
     taxableOrdinaryIncome: TMoney
+  ): TMoney =
+    taxDueFunctionally(taxableOrdinaryIncome)
+
+  private def taxDueFunctionally(
+    taxableOrdinaryIncome: TMoney
   ): TMoney = {
 
     // Note: Qualified investment income sort of occupies the top brackets above
@@ -53,6 +58,27 @@ final case class OrdinaryIncomeTaxBrackets(
     assert(accum.ordinaryIncomeYetToBeTaxed.isZero)
     accum.taxSoFar
   }
+
+  def taxDueImperatively(
+    taxableOrdinaryIncome: TMoney
+  ): TMoney = {
+    var ordinaryIncomeYetToBeTaxed = taxableOrdinaryIncome
+    var taxSoFar = TMoney.zero
+    bracketsStartsDescending.foreach { case (bracketStart, bracketRate) =>
+
+      // Result will be non-negative: so becomes zero if bracket does not apply.
+      val ordinaryIncomeInThisBracket = ordinaryIncomeYetToBeTaxed - bracketStart
+
+      // Non-negative: so zero if bracket does not apply.
+      val taxInThisBracket = ordinaryIncomeInThisBracket * bracketRate
+
+      ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket
+      taxSoFar = taxSoFar + taxInThisBracket
+    }
+    assert(ordinaryIncomeYetToBeTaxed.isZero)
+    taxSoFar
+  }
+
 
   def isProgressive: Boolean = {
     val rates = bracketStartsAscending.map(_._2)
