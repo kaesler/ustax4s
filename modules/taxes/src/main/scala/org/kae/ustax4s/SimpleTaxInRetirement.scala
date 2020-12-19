@@ -4,23 +4,34 @@ import java.time.Year
 import org.kae.ustax4s.forms.Form1040
 
 /**
- * Simplified interface to 1040 calcs.
- * 2021 rates assumed.
- * Only non-SS income is from 401k.
- */
+  * Simplified interface to 1040 calcs.
+  * Only non-SS income is from 401k.
+  */
 object SimpleTaxInRetirement extends IntMoneySyntax {
 
-//  def ordinaryIncomeTaxDue(
-//    year: Year,
-//
-//  )
+  /**
+    * Simplified calc: Directly apply tax brackets and std deduction.
+    * @param year the [[Year]]
+    * @param filingStatus the [[FilingStatus]]
+    * @param incomeFrom401k income from 401k
+    * @return
+    */
+  def ordinaryIncomeTaxDueNoSS(
+    year: Year,
+    filingStatus: FilingStatus,
+    incomeFrom401k: TMoney
+  ): TMoney = {
+    val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
+    val taxableOrdinaryIncome = incomeFrom401k - rates.standardDeduction
+    rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
+  }
 
-  def taxDueWithSS_2021(
+  def taxDueWithSS(
+    year: Year,
     filingStatus: FilingStatus,
     incomeFrom401k: TMoney,
     ss: TMoney
   ): TMoney = {
-    val year = Year.of(2021)
     val myRates = TaxRates.of(
       year,
       filingStatus,
@@ -31,7 +42,6 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
       rates = myRates,
       taxableIras = incomeFrom401k,
       socialSecurityBenefits = ss,
-
       // The rest not applicable in retirement.
       standardDeduction = myRates.standardDeduction,
       schedule1 = None,
