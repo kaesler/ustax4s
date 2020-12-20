@@ -23,7 +23,7 @@ object BumpAnalysis extends App with IntMoneySyntax {
 //      relevantIncome,
 //      socialSecurityIncome
 //    )
-    taxDue = SimpleTaxInRetirement.taxDueWithSS(
+    taxDue = SimpleTaxInRetirement.taxDueUsingForm1040(
       Year.of(2021),
       filingStatus,
       relevantIncome,

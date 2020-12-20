@@ -5,29 +5,34 @@ import org.kae.ustax4s.forms.Form1040
 
 /**
   * Simplified interface to 1040 calcs.
-  * Only non-SS income is from 401k.
+  * Assume:
+  *   - The only non-SS income is from 401k.
+  *   - No capital gains, deductions credits or other complications.
   */
 object SimpleTaxInRetirement extends IntMoneySyntax {
 
-  /**
-    * Simplified calc: Directly apply tax brackets and std deduction.
-    * @param year the [[Year]]
-    * @param filingStatus the [[FilingStatus]]
-    * @param incomeFrom401k income from 401k
-    * @return
-    */
-  def ordinaryIncomeTaxDueNoSS(
+  def taxDue(
     year: Year,
     filingStatus: FilingStatus,
-    incomeFrom401k: TMoney
+    incomeFrom401k: TMoney,
+    ss: TMoney
   ): TMoney = {
     val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
-    val taxableOrdinaryIncome = incomeFrom401k - rates.standardDeduction
-    rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome).rounded
+    val taxableSocialSecurity =
+      TaxableSocialSecurity.taxableSocialSecurityBenefits(
+        incomeFrom401k,
+        ss
+      )
+
+    // Note the order here:
+    //  1.sum all income with SS.
+    //  2. subtract standard deduction.
+    val taxableIncome = (incomeFrom401k + taxableSocialSecurity) - rates.standardDeduction
+
+    rates.ordinaryIncomeBrackets.taxDue(taxableIncome).rounded
   }
 
-  // TODO: Simplified version of this for porting to Typescript.
-  def taxDueWithSS(
+  def taxDueUsingForm1040(
     year: Year,
     filingStatus: FilingStatus,
     incomeFrom401k: TMoney,
