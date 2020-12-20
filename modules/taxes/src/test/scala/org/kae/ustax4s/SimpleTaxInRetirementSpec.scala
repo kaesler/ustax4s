@@ -12,7 +12,7 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
       val year = Year.of(2021)
       for {
         status <- List(HeadOfHousehold, Single)
-        i <- 0 to 100000 by 1000
+        i <- 0 to 100000 by 500
       } {
         import SimpleTaxInRetirement._
         val income = i.tm
