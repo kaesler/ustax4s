@@ -23,9 +23,10 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
   ): TMoney = {
     val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
     val taxableOrdinaryIncome = incomeFrom401k - rates.standardDeduction
-    rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
+    rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome).rounded
   }
 
+  // TODO: Simplified version of this for porting to Typescript.
   def taxDueWithSS(
     year: Year,
     filingStatus: FilingStatus,
