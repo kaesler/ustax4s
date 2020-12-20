@@ -16,6 +16,7 @@ object Form1040_2018Spec extends Specification with IntMoneySyntax {
         Kevin.birthDate
       )
       val form = Form1040(
+        Kevin.filingStatus(year),
         standardDeduction = rates.standardDeduction,
         schedule1 =  Schedule1(
           Some(

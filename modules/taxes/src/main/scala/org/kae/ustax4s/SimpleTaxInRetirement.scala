@@ -20,6 +20,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
+        filingStatus,
         incomeFrom401k,
         ss
       )
@@ -45,6 +46,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     )
 
     val form = Form1040(
+      filingStatus,
       rates = myRates,
       taxableIras = incomeFrom401k,
       socialSecurityBenefits = ss,

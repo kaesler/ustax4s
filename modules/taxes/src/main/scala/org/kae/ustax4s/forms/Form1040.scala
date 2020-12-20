@@ -3,6 +3,7 @@ package org.kae.ustax4s
 package forms
 
 final case class Form1040(
+  filingStatus: FilingStatus,
   standardDeduction: TMoney,
   schedule1: Option[Schedule1],
   schedule3: Option[Schedule3],
@@ -32,6 +33,7 @@ final case class Form1040(
   // Line 5b:
   def taxableSocialSecurityBenefits: TMoney =
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      filingStatus: FilingStatus,
       TMoney.sum(
         wages,
         taxExemptInterest,

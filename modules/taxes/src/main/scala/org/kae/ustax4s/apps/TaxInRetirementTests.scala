@@ -16,7 +16,7 @@ object TaxInRetirementTests extends App with IntMoneySyntax {
 
   def doCase(income: TMoney): Unit = {
     val ssTaxable =
-      TaxableSocialSecurity.taxableSocialSecurityBenefits(income, ss)
+      TaxableSocialSecurity.taxableSocialSecurityBenefits(Single, income, ss)
     val totalTaxable = income + ssTaxable
     val tax =
       SimpleTaxInRetirement.taxDueUsingForm1040(year, Single, income, ss)
