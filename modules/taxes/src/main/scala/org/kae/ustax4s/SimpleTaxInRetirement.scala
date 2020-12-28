@@ -6,10 +6,38 @@ import org.kae.ustax4s.forms.Form1040
 /**
   * Simplified interface to 1040 calcs.
   * Assume:
-  *   - The only non-SS income is from 401k.
+  *   - The only non-SS income is from 401k or LTCG
   *   - No capital gains, deductions credits or other complications.
   */
 object SimpleTaxInRetirement extends IntMoneySyntax {
+
+  def taxDueWithInvestments(
+    year: Year,
+    filingStatus: FilingStatus,
+    qualifiedInvestmentIncome: TMoney,
+    incomeFrom401k: TMoney,
+    ss: TMoney
+  ): TMoney = {
+    val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
+    val taxableSocialSecurity =
+      TaxableSocialSecurity.taxableSocialSecurityBenefits(
+        filingStatus,
+        incomeFrom401k + qualifiedInvestmentIncome,
+        ss
+      )
+    // println(s"new: taxableSS = $taxableSocialSecurity")
+    // val totalIncome = qualifiedInvestmentIncome + incomeFrom401k + taxableSocialSecurity
+    // println(s"totalIncome: $totalIncome")
+    val taxableOrdinaryIncome = (taxableSocialSecurity + incomeFrom401k) - rates.standardDeduction
+    // println(s"new: taxableOrdinaryIncome = $taxableOrdinaryIncome")
+    val taxOnOrdinaryIncome =
+      rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
+    val taxOnInvestments = rates.investmentIncomeBrackets.taxDueOnInvestments(
+      taxableOrdinaryIncome,
+      qualifiedInvestmentIncome
+    )
+    (taxOnInvestments + taxOnOrdinaryIncome).rounded
+  }
 
   def taxDue(
     year: Year,
@@ -37,7 +65,8 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     year: Year,
     filingStatus: FilingStatus,
     incomeFrom401k: TMoney,
-    ss: TMoney
+    ss: TMoney,
+    qualifiedDividends: TMoney
   ): TMoney = {
     val myRates = TaxRates.of(
       year,
@@ -48,7 +77,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     val form = Form1040(
       filingStatus,
       rates = myRates,
-      taxableIras = incomeFrom401k,
+      taxableIraDistributions = incomeFrom401k,
       socialSecurityBenefits = ss,
       // The rest not applicable in retirement.
       standardDeduction = myRates.standardDeduction,
@@ -60,9 +89,10 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
       wages = TMoney.zero,
       taxExemptInterest = TMoney.zero,
       taxableInterest = TMoney.zero,
-      qualifiedDividends = TMoney.zero,
-      ordinaryDividends = TMoney.zero
+      qualifiedDividends = qualifiedDividends,
+      ordinaryDividends = qualifiedDividends
     )
+    // println(form.showValues)
     myRates.totalTax(form).rounded
   }
 }
