@@ -56,7 +56,9 @@ final case class OrdinaryIncomeTaxBrackets(
         )
     }
     assert(accum.ordinaryIncomeYetToBeTaxed.isZero)
-    accum.taxSoFar
+    val res = accum.taxSoFar
+    // println(s"taxDueFunctionally($taxableOrdinaryIncome): $res")
+    res
   }
 
   def taxDueImperatively(

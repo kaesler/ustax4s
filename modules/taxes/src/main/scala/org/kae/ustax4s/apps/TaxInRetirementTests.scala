@@ -19,7 +19,7 @@ object TaxInRetirementTests extends App with IntMoneySyntax {
       TaxableSocialSecurity.taxableSocialSecurityBenefits(Single, income, ss)
     val totalTaxable = income + ssTaxable
     val tax =
-      SimpleTaxInRetirement.taxDueUsingForm1040(year, Single, income, ss)
+      SimpleTaxInRetirement.taxDueUsingForm1040(year, Single, income, ss, 0.tm)
     println(
       s"Income: $income, ssTaxable: $ssTaxable, totalTaxable = $totalTaxable, tax: $tax"
     )

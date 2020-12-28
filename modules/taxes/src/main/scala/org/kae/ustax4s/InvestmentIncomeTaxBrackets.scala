@@ -27,17 +27,16 @@ final case class InvestmentIncomeTaxBrackets(
     * @return the tax due rounded to whole dollars
     * @param qualifiedInvestmentIncome the investment income
     */
-  def taxDueWholeDollar(
+  def taxDueOnInvestmentsWholeDollar(
     taxableOrdinaryIncome: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney =
-    taxDue(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
+    taxDueOnInvestments(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
 
-  def taxDue(
+  def taxDueOnInvestments(
     taxableOrdinaryIncome: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney = {
-
     case class Accum(
       totalIncomeInHigherBrackets: TMoney,
       gainsYetToBeTaxed: TMoney,
@@ -79,7 +78,12 @@ final case class InvestmentIncomeTaxBrackets(
       }
     assert(accum.totalIncomeInHigherBrackets == totalIncome)
     assert(accum.gainsYetToBeTaxed.isZero)
-    accum.gainsTaxSoFar
+    val res = accum.gainsTaxSoFar
+
+//    println(
+//      s"taxDueOnInvestments(${taxableOrdinaryIncome}, $qualifiedInvestmentIncome): $res"
+//    )
+    res
   }
 }
 

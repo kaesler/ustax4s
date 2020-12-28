@@ -27,7 +27,8 @@ object BumpAnalysis extends App with IntMoneySyntax {
       Year.of(2021),
       filingStatus,
       relevantIncome,
-      socialSecurityIncome
+      socialSecurityIncome,
+      0.tm
     )
   } yield (relevantIncome, taxDue)
 

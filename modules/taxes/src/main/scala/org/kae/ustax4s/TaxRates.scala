@@ -25,7 +25,10 @@ case class TaxRates(
     investmentIncome: TMoney
   ): TMoney =
     ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
-      investmentIncomeBrackets.taxDue(ordinaryIncome, investmentIncome)
+      investmentIncomeBrackets.taxDueOnInvestments(
+        ordinaryIncome,
+        investmentIncome
+      )
 
   // Line 15:
   def totalTax(form: Form1040): TMoney =

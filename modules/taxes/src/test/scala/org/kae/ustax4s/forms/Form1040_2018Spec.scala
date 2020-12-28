@@ -44,7 +44,7 @@ object Form1040_2018Spec extends Specification with IntMoneySyntax {
         taxableInterest = TMoney.zero,
         ordinaryDividends = 7930.tm,
         qualifiedDividends = 7365.tm,
-        taxableIras = TMoney.zero,
+        taxableIraDistributions = TMoney.zero,
         socialSecurityBenefits = TMoney.zero,
         rates = rates
       )
@@ -57,7 +57,7 @@ object Form1040_2018Spec extends Specification with IntMoneySyntax {
       form.qualifiedInvestmentIncome === 14777.tm
 
       val taxOnInv = rates.investmentIncomeBrackets
-        .taxDue(form.taxableOrdinaryIncome, form.qualifiedInvestmentIncome)
+        .taxDueOnInvestments(form.taxableOrdinaryIncome, form.qualifiedInvestmentIncome)
         .rounded
       taxOnInv === 2217.tm
 
