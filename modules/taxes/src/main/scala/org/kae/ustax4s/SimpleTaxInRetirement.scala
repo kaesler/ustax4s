@@ -25,11 +25,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
         incomeFrom401k + qualifiedInvestmentIncome,
         ss
       )
-    // println(s"new: taxableSS = $taxableSocialSecurity")
-    // val totalIncome = qualifiedInvestmentIncome + incomeFrom401k + taxableSocialSecurity
-    // println(s"totalIncome: $totalIncome")
     val taxableOrdinaryIncome = (taxableSocialSecurity + incomeFrom401k) - rates.standardDeduction
-    // println(s"new: taxableOrdinaryIncome = $taxableOrdinaryIncome")
     val taxOnOrdinaryIncome =
       rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
     val taxOnInvestments = rates.investmentIncomeBrackets.taxDueOnInvestments(
