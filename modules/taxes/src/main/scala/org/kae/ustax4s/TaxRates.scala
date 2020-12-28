@@ -25,7 +25,7 @@ case class TaxRates(
     investmentIncome: TMoney
   ): TMoney =
     ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
-      investmentIncomeBrackets.taxDueOnInvestments(
+      investmentIncomeBrackets.taxDueFunctionally(
         ordinaryIncome,
         investmentIncome
       )

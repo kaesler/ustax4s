@@ -2,6 +2,7 @@ package org.kae.ustax4s
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import scala.annotation.tailrec
 
 /**
   * Calculates tax on qualified investment income,
@@ -27,13 +28,13 @@ final case class InvestmentIncomeTaxBrackets(
     * @return the tax due rounded to whole dollars
     * @param qualifiedInvestmentIncome the investment income
     */
-  def taxDueOnInvestmentsWholeDollar(
+  def taxDueWholeDollar(
     taxableOrdinaryIncome: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney =
-    taxDueOnInvestments(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
+    taxDueImperatively(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
 
-  def taxDueOnInvestments(
+  def taxDueFunctionally(
     taxableOrdinaryIncome: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney = {
@@ -85,10 +86,49 @@ final case class InvestmentIncomeTaxBrackets(
 //    )
     res
   }
+
+  def taxDueImperatively(
+    taxableOrdinaryIncome: TMoney,
+    qualifiedInvestmentIncome: TMoney
+  ): TMoney = {
+    var totalIncomeInHigherBrackets = TMoney.zero
+    var gainsYetToBeTaxed = qualifiedInvestmentIncome
+    var gainsTaxSoFar = TMoney.zero
+
+    val totalIncome = taxableOrdinaryIncome + qualifiedInvestmentIncome
+    bracketsStartsDescending.foreach {
+      case (bracketStart, bracketRate) =>
+        val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets
+        val ordinaryIncomeYetToBeTaxed = totalIncomeYetToBeTaxed - gainsYetToBeTaxed
+
+        // Non-negative: so zero if bracket does not apply.
+        val totalIncomeInThisBracket = totalIncomeYetToBeTaxed - bracketStart
+
+        // Non-negative: so zero if bracket does not apply.
+        val ordinaryIncomeInThisBracket = ordinaryIncomeYetToBeTaxed - bracketStart
+
+        val gainsInThisBracket: TMoney = totalIncomeInThisBracket - ordinaryIncomeInThisBracket
+        val taxInThisBracket = gainsInThisBracket * bracketRate
+        totalIncomeInHigherBrackets =
+          totalIncomeInHigherBrackets + totalIncomeInThisBracket
+        gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket
+        gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
+
+    }
+    assert(totalIncomeInHigherBrackets == totalIncome)
+    assert(gainsYetToBeTaxed.isZero)
+    val res = gainsTaxSoFar
+
+//    println(
+//      s"taxDueOnInvestments(${taxableOrdinaryIncome}, $qualifiedInvestmentIncome): $res"
+//    )
+    res
+  }
 }
 
 object InvestmentIncomeTaxBrackets {
 
+  @tailrec
   def of(year: Year, status: FilingStatus): InvestmentIncomeTaxBrackets =
     (year.getValue, status) match {
       case (2021, HeadOfHousehold) =>
