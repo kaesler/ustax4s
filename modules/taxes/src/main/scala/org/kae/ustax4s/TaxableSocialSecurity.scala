@@ -3,6 +3,7 @@ package org.kae.ustax4s
 import eu.timepit.refined._
 import eu.timepit.refined.numeric.Positive
 import eu.timepit.refined.types.numeric.PosDouble
+import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 object TaxableSocialSecurity extends IntMoneySyntax {
@@ -13,8 +14,30 @@ object TaxableSocialSecurity extends IntMoneySyntax {
     filingStatus match {
       case Single | HeadOfHousehold => (25000.tm, 34000.tm)
 
-      // TODO: MarriedJoint => (32000, 44000)
+      // case MarriedJoint => (32000.tm, 44000.tm)
     }
+
+  // Adjusted to deal model the fact that the bases
+  // are not adjusted annually as tas brackets are.
+  // So we just estimate: amount rises 3% per year but does not exceed 85%.
+  def taxableSocialSecurityBenefitsAdjusted(
+    filingStatus: FilingStatus,
+    relevantIncome: TMoney,
+    socialSecurityBenefits: TMoney,
+    year: Year
+  ): TMoney = {
+    val unadjusted = taxableSocialSecurityBenefits(
+      filingStatus,
+      relevantIncome,
+      socialSecurityBenefits
+    )
+    if (year.isBefore(Year.of(2022)))
+      unadjusted
+    else {
+      val factor = math.max(0.85, (year.getValue - 2021) * 0.03)
+      unadjusted mul PosDouble.unsafeFrom(factor)
+    }
+  }
 
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
