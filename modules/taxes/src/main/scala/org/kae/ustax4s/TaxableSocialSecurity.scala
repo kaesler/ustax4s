@@ -34,8 +34,13 @@ object TaxableSocialSecurity extends IntMoneySyntax {
     if (year.isBefore(Year.of(2022)))
       unadjusted
     else {
-      val factor = math.max(0.85, (year.getValue - 2021) * 0.03)
-      unadjusted mul PosDouble.unsafeFrom(factor)
+      val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
+      val adjusted = unadjusted mul PosDouble.unsafeFrom(adjustmentFactor)
+      TMoney.min(
+        adjusted,
+        socialSecurityBenefits mul PosDouble.unsafeFrom(0.85)
+      )
+      unadjusted mul PosDouble.unsafeFrom(adjustmentFactor)
     }
   }
 
