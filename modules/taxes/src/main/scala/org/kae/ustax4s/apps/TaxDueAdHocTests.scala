@@ -6,7 +6,7 @@ import org.kae.ustax4s.{IntMoneySyntax, SimpleTaxInRetirement}
 
 object TaxDueAdHocTests extends App with IntMoneySyntax {
 
-  val res = SimpleTaxInRetirement.taxDueWithInvestments(
+  val res = SimpleTaxInRetirement.taxDue(
     year = Year.of(2021),
     filingStatus = HeadOfHousehold,
     socSec = 0.tm,

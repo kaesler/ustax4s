@@ -7,11 +7,11 @@ import org.kae.ustax4s.forms.Form1040
   * Simplified interface to 1040 calcs.
   * Assume:
   *   - The only non-SS income is from 401k or LTCG
-  *   - No capital gains, deductions credits or other complications.
+  *   - No deductions credits or other complications.
   */
 object SimpleTaxInRetirement extends IntMoneySyntax {
 
-  def taxDueWithInvestments(
+  def taxDue(
     year: Year,
     filingStatus: FilingStatus,
     socSec: TMoney,
@@ -35,7 +35,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     (taxOnInvestments + taxOnOrdinaryIncome).rounded
   }
 
-  def taxDue(
+  def taxDueNoQualifiedInvestments(
     year: Year,
     filingStatus: FilingStatus,
     socSec: TMoney,

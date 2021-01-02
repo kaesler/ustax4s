@@ -33,7 +33,7 @@ object TestDataForTypescript extends App with IntMoneySyntax {
     .get
     .foreach {
       case TestCase(fs, qInv, i401k, ss) =>
-        val tax = SimpleTaxInRetirement.taxDueWithInvestments(
+        val tax = SimpleTaxInRetirement.taxDue(
           year = year,
           filingStatus = fs,
           socSec = ss,

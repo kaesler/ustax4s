@@ -20,7 +20,7 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
         val income = i.tm
         val socialSecurity = ss.tm
 
-        taxDue(
+        taxDueNoQualifiedInvestments(
           year = year,
           filingStatus = status,
           incomeFrom401kEtc = income,
@@ -51,7 +51,7 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
         val socialSecurity = ss.tm
         val qualifiedDividends = inv.tm
 
-        if (taxDueWithInvestments(
+        if (taxDue(
           year = year,
           filingStatus = status,
           socSec = socialSecurity,
@@ -67,7 +67,7 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
               )) {
           println(s"status: $status; i: $i; ss: $ss; inv: $inv")
         }
-        taxDueWithInvestments(
+        taxDue(
           year = year,
           filingStatus = status,
           socSec = socialSecurity,
