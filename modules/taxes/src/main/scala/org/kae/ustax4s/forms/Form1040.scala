@@ -52,8 +52,9 @@ final case class Form1040(
   // Line 5b:
   def taxableSocialSecurityBenefits: TMoney =
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
-      filingStatus: FilingStatus,
-      TMoney.sum(
+      filingStatus = filingStatus,
+      socialSecurityBenefits = socialSecurityBenefits,
+      relevantIncome = TMoney.sum(
         wages,
         taxableInterest,
         taxExemptInterest,
@@ -61,8 +62,7 @@ final case class Form1040(
         ordinaryDividends,
         // This pulls in capital gains.
         schedule1.map(_.additionalIncome).getOrElse(TMoney.zero)
-      ),
-      socialSecurityBenefits
+      )
     )
 
   def scheduleD: Option[ScheduleD] = schedule1.flatMap(_.scheduleD)

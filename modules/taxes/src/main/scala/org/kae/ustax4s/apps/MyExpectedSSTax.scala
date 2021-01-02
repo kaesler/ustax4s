@@ -9,9 +9,9 @@ object MyExpectedSSTax extends App with IntMoneySyntax {
   val socialSecurityBenefits = 49000.tm
 
   val taxableSS = TaxableSocialSecurity.taxableSocialSecurityBenefits(
-    Single,
-    relevantIncomeFromRmd,
-    socialSecurityBenefits
+    filingStatus = Single,
+    socialSecurityBenefits = socialSecurityBenefits,
+    relevantIncome = relevantIncomeFromRmd
   )
   val taxableIncome = relevantIncomeFromRmd + taxableSS
   val fractionSSTaxable = taxableSS div socialSecurityBenefits

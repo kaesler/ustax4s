@@ -14,18 +14,18 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
   def taxDueWithInvestments(
     year: Year,
     filingStatus: FilingStatus,
-    qualifiedInvestmentIncome: TMoney,
-    incomeFrom401k: TMoney,
-    ss: TMoney
+    socSec: TMoney,
+    incomeFrom401kEtc: TMoney,
+    qualifiedInvestmentIncome: TMoney
   ): TMoney = {
     val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
-        filingStatus,
-        incomeFrom401k + qualifiedInvestmentIncome,
-        ss
+        filingStatus = filingStatus,
+        socialSecurityBenefits = socSec,
+        relevantIncome = incomeFrom401kEtc + qualifiedInvestmentIncome
       )
-    val taxableOrdinaryIncome = (taxableSocialSecurity + incomeFrom401k) - rates.standardDeduction
+    val taxableOrdinaryIncome = (taxableSocialSecurity + incomeFrom401kEtc) - rates.standardDeduction
     val taxOnOrdinaryIncome =
       rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
     val taxOnInvestments = rates.investmentIncomeBrackets.taxDueFunctionally(
@@ -38,21 +38,21 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
   def taxDue(
     year: Year,
     filingStatus: FilingStatus,
-    incomeFrom401k: TMoney,
-    ss: TMoney
+    socSec: TMoney,
+    incomeFrom401kEtc: TMoney
   ): TMoney = {
     val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
-        filingStatus,
-        incomeFrom401k,
-        ss
+        filingStatus = filingStatus,
+        relevantIncome = incomeFrom401kEtc,
+        socialSecurityBenefits = socSec
       )
 
     // Note the order here:
     //  1.sum all income with SS.
     //  2. subtract standard deduction.
-    val taxableIncome = (incomeFrom401k + taxableSocialSecurity) - rates.standardDeduction
+    val taxableIncome = (incomeFrom401kEtc + taxableSocialSecurity) - rates.standardDeduction
 
     rates.ordinaryIncomeBrackets.taxDue(taxableIncome).rounded
   }
@@ -60,8 +60,8 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
   def taxDueUsingForm1040(
     year: Year,
     filingStatus: FilingStatus,
+    socSec: TMoney,
     incomeFrom401k: TMoney,
-    ss: TMoney,
     qualifiedDividends: TMoney
   ): TMoney = {
     val myRates = TaxRates.of(
@@ -74,7 +74,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
       filingStatus,
       rates = myRates,
       taxableIraDistributions = incomeFrom401k,
-      socialSecurityBenefits = ss,
+      socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
       standardDeduction = myRates.standardDeduction,
       schedule1 = None,

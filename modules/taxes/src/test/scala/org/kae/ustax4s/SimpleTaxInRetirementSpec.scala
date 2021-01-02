@@ -14,14 +14,25 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
       for {
         status <- List(HeadOfHousehold, Single)
         i <- 0 to 100000 by 500
-        ss <-  0 to 49000 by 500
+        ss <- 0 to 49000 by 500
       } {
         import SimpleTaxInRetirement._
         val income = i.tm
         val socialSecurity = ss.tm
 
-        taxDue(year, status, income, socialSecurity) ===
-          taxDueUsingForm1040(year, status, income, socialSecurity, 0.tm)
+        taxDue(
+          year = year,
+          filingStatus = status,
+          incomeFrom401kEtc = income,
+          socSec = socialSecurity
+        ) ===
+          taxDueUsingForm1040(
+            year = year,
+            filingStatus = status,
+            socSec = socialSecurity,
+            incomeFrom401k = income,
+            qualifiedDividends = 0.tm
+          )
       }
       success
     }
@@ -32,7 +43,7 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
       for {
         status <- List(HeadOfHousehold, Single)
         i <- 0 to 70000 by 1000
-        ss <-  0 to 49000 by 1000
+        ss <- 0 to 49000 by 1000
         inv <- 0 to 30000 by 1000
       } {
         import SimpleTaxInRetirement._
@@ -40,12 +51,36 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
         val socialSecurity = ss.tm
         val qualifiedDividends = inv.tm
 
-        if (taxDueWithInvestments(year, status,  qualifiedDividends, income, socialSecurity) !=
-          taxDueUsingForm1040(year, status, income, socialSecurity, qualifiedDividends)) {
+        if (taxDueWithInvestments(
+          year = year,
+          filingStatus = status,
+          socSec = socialSecurity,
+          incomeFrom401kEtc = income,
+          qualifiedInvestmentIncome = qualifiedDividends
+            ) !=
+              taxDueUsingForm1040(
+                year = year,
+                filingStatus = status,
+                socSec = socialSecurity,
+                incomeFrom401k = income,
+                qualifiedDividends = qualifiedDividends
+              )) {
           println(s"status: $status; i: $i; ss: $ss; inv: $inv")
         }
-        taxDueWithInvestments(year, status,  qualifiedDividends, income, socialSecurity) ===
-          taxDueUsingForm1040(year, status, income, socialSecurity, qualifiedDividends)
+        taxDueWithInvestments(
+          year = year,
+          filingStatus = status,
+          socSec = socialSecurity,
+          incomeFrom401kEtc = income,
+          qualifiedInvestmentIncome = qualifiedDividends
+        ) ===
+          taxDueUsingForm1040(
+            year = year,
+            filingStatus = status,
+            socSec = socialSecurity,
+            incomeFrom401k = income,
+            qualifiedDividends = qualifiedDividends
+          )
       }
       success
     }

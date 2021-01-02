@@ -24,11 +24,11 @@ object BumpAnalysis extends App with IntMoneySyntax {
 //      socialSecurityIncome
 //    )
     taxDue = SimpleTaxInRetirement.taxDueUsingForm1040(
-      Year.of(2021),
-      filingStatus,
-      relevantIncome,
-      socialSecurityIncome,
-      0.tm
+      year = Year.of(2021),
+      filingStatus = filingStatus,
+      socSec = socialSecurityIncome,
+      incomeFrom401k = relevantIncome,
+      qualifiedDividends = 0.tm
     )
   } yield (relevantIncome, taxDue)
 

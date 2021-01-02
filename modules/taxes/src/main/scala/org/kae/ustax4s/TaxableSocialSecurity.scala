@@ -22,14 +22,14 @@ object TaxableSocialSecurity extends IntMoneySyntax {
   // So we just estimate: amount rises 3% per year but does not exceed 85%.
   def taxableSocialSecurityBenefitsAdjusted(
     filingStatus: FilingStatus,
-    relevantIncome: TMoney,
     socialSecurityBenefits: TMoney,
+    relevantIncome: TMoney,
     year: Year
   ): TMoney = {
     val unadjusted = taxableSocialSecurityBenefits(
-      filingStatus,
-      relevantIncome,
-      socialSecurityBenefits
+      filingStatus = filingStatus,
+      socialSecurityBenefits = socialSecurityBenefits,
+      relevantIncome = relevantIncome
     )
     if (year.isBefore(Year.of(2022)))
       unadjusted
@@ -46,8 +46,8 @@ object TaxableSocialSecurity extends IntMoneySyntax {
 
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
-    relevantIncome: TMoney,
-    socialSecurityBenefits: TMoney
+    socialSecurityBenefits: TMoney,
+    relevantIncome: TMoney
   ): TMoney = {
     val (lowBase, highBase) = bases(filingStatus)
 
