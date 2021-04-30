@@ -31,7 +31,8 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
             filingStatus = status,
             socSec = socialSecurity,
             incomeFrom401k = income,
-            qualifiedDividends = 0.tm
+            qualifiedDividends = 0.tm,
+            verbose = false
           )
       }
       success
@@ -63,7 +64,8 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
                 filingStatus = status,
                 socSec = socialSecurity,
                 incomeFrom401k = income,
-                qualifiedDividends = qualifiedDividends
+                qualifiedDividends = qualifiedDividends,
+                verbose = false
               )) {
           println(s"status: $status; i: $i; ss: $ss; inv: $inv")
         }
@@ -79,7 +81,8 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
             filingStatus = status,
             socSec = socialSecurity,
             incomeFrom401k = income,
-            qualifiedDividends = qualifiedDividends
+            qualifiedDividends = qualifiedDividends,
+            verbose = false
           )
       }
       success

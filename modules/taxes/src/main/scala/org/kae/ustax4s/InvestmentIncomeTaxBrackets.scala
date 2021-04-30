@@ -4,11 +4,11 @@ import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import scala.annotation.tailrec
 
-/**
-  * Calculates tax on qualified investment income,
+/** Calculates tax on qualified investment income,
   * i.e. long-term capital gains and qualified dividends.
   *
-  * @param bracketStarts the tax brackets in effect
+  * @param bracketStarts
+  *   the tax brackets in effect
   */
 final case class InvestmentIncomeTaxBrackets(
   bracketStarts: Map[TMoney, TaxRate]
@@ -24,9 +24,10 @@ final case class InvestmentIncomeTaxBrackets(
     bracketStartsAscending.mkString("\n")
   }
 
-  /**
-    * @return the tax due rounded to whole dollars
-    * @param qualifiedInvestmentIncome the investment income
+  /** @return
+    *   the tax due rounded to whole dollars
+    * @param qualifiedInvestmentIncome
+    *   the investment income
     */
   def taxDueWholeDollar(
     taxableOrdinaryIncome: TMoney,
@@ -52,27 +53,30 @@ final case class InvestmentIncomeTaxBrackets(
     val accum =
       bracketsStartsDescending.foldLeft(Accum.initial) {
         case (
-            Accum(
-              totalIncomeInHigherBrackets,
-              gainsYetToBeTaxed,
-              gainsTaxSoFar
-            ),
-            (bracketStart, bracketRate)
+              Accum(
+                totalIncomeInHigherBrackets,
+                gainsYetToBeTaxed,
+                gainsTaxSoFar
+              ),
+              (bracketStart, bracketRate)
             ) =>
-          val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets
-          val ordinaryIncomeYetToBeTaxed = totalIncomeYetToBeTaxed - gainsYetToBeTaxed
+          val totalIncomeYetToBeTaxed =
+            totalIncome - totalIncomeInHigherBrackets
+          val ordinaryIncomeYetToBeTaxed =
+            totalIncomeYetToBeTaxed - gainsYetToBeTaxed
 
           // Non-negative: so zero if bracket does not apply.
           val totalIncomeInThisBracket = totalIncomeYetToBeTaxed - bracketStart
 
           // Non-negative: so zero if bracket does not apply.
-          val ordinaryIncomeInThisBracket = ordinaryIncomeYetToBeTaxed - bracketStart
+          val ordinaryIncomeInThisBracket =
+            ordinaryIncomeYetToBeTaxed - bracketStart
 
-          val gainsInThisBracket: TMoney = totalIncomeInThisBracket - ordinaryIncomeInThisBracket
+          val gainsInThisBracket: TMoney =
+            totalIncomeInThisBracket - ordinaryIncomeInThisBracket
           val taxInThisBracket = gainsInThisBracket * bracketRate
           Accum(
-            totalIncomeInHigherBrackets =
-              totalIncomeInHigherBrackets + totalIncomeInThisBracket,
+            totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket,
             gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket,
             gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
           )
@@ -92,27 +96,28 @@ final case class InvestmentIncomeTaxBrackets(
     qualifiedInvestmentIncome: TMoney
   ): TMoney = {
     var totalIncomeInHigherBrackets = TMoney.zero
-    var gainsYetToBeTaxed = qualifiedInvestmentIncome
-    var gainsTaxSoFar = TMoney.zero
+    var gainsYetToBeTaxed           = qualifiedInvestmentIncome
+    var gainsTaxSoFar               = TMoney.zero
 
     val totalIncome = taxableOrdinaryIncome + qualifiedInvestmentIncome
-    bracketsStartsDescending.foreach {
-      case (bracketStart, bracketRate) =>
-        val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets
-        val ordinaryIncomeYetToBeTaxed = totalIncomeYetToBeTaxed - gainsYetToBeTaxed
+    bracketsStartsDescending.foreach { case (bracketStart, bracketRate) =>
+      val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets
+      val ordinaryIncomeYetToBeTaxed =
+        totalIncomeYetToBeTaxed - gainsYetToBeTaxed
 
-        // Non-negative: so zero if bracket does not apply.
-        val totalIncomeInThisBracket = totalIncomeYetToBeTaxed - bracketStart
+      // Non-negative: so zero if bracket does not apply.
+      val totalIncomeInThisBracket = totalIncomeYetToBeTaxed - bracketStart
 
-        // Non-negative: so zero if bracket does not apply.
-        val ordinaryIncomeInThisBracket = ordinaryIncomeYetToBeTaxed - bracketStart
+      // Non-negative: so zero if bracket does not apply.
+      val ordinaryIncomeInThisBracket =
+        ordinaryIncomeYetToBeTaxed - bracketStart
 
-        val gainsInThisBracket: TMoney = totalIncomeInThisBracket - ordinaryIncomeInThisBracket
-        val taxInThisBracket = gainsInThisBracket * bracketRate
-        totalIncomeInHigherBrackets =
-          totalIncomeInHigherBrackets + totalIncomeInThisBracket
-        gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket
-        gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
+      val gainsInThisBracket: TMoney =
+        totalIncomeInThisBracket - ordinaryIncomeInThisBracket
+      val taxInThisBracket = gainsInThisBracket * bracketRate
+      totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket
+      gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket
+      gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
 
     }
     assert(totalIncomeInHigherBrackets == totalIncome)
@@ -134,40 +139,40 @@ object InvestmentIncomeTaxBrackets {
       case (2021, HeadOfHousehold) =>
         create(
           Map(
-            0 -> 0,
-            54100 -> 15,
+            0      -> 0,
+            54100  -> 15,
             473750 -> 20
           )
         )
       case (2021, Single) =>
         create(
           Map(
-            0 -> 0,
-            40400 -> 15,
+            0      -> 0,
+            40400  -> 15,
             445850 -> 20
           )
         )
       case (2020, HeadOfHousehold) =>
         create(
           Map(
-            0 -> 0,
-            53600 -> 15,
+            0      -> 0,
+            53600  -> 15,
             469050 -> 20
           )
         )
       case (2019, HeadOfHousehold) =>
         create(
           Map(
-            0 -> 0,
-            52750 -> 15,
+            0      -> 0,
+            52750  -> 15,
             461700 -> 20
           )
         )
       case (2018, HeadOfHousehold) =>
         create(
           Map(
-            0 -> 0,
-            51700 -> 15,
+            0      -> 0,
+            51700  -> 15,
             452400 -> 20
           )
         )
@@ -183,10 +188,9 @@ object InvestmentIncomeTaxBrackets {
     pairs: Map[Int, Int]
   ): InvestmentIncomeTaxBrackets =
     InvestmentIncomeTaxBrackets(
-      pairs.map {
-        case (bracketStart, ratePercentage) =>
-          require(ratePercentage < 100)
-          TMoney.u(bracketStart) ->
+      pairs.map { case (bracketStart, ratePercentage) =>
+        require(ratePercentage < 100)
+        TMoney.u(bracketStart) ->
           TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )

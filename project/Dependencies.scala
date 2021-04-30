@@ -5,8 +5,8 @@ import sbt._
 object Dependencies {
 
   object Cats {
-    val core: ModuleID = "org.typelevel" %% "cats-core" % "2.0.0"
-    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "2.0.0"
+    val core: ModuleID = "org.typelevel" %% "cats-core" % "2.6.0"
+    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "2.5.0"
   }
 
   object Enumeratum {
@@ -14,8 +14,8 @@ object Dependencies {
   }
 
   object Fs2 {
-    val core: ModuleID = "co.fs2" %% "fs2-core" % "2.1.0"
-    val io: ModuleID = "co.fs2" %% "fs2-io" % "2.1.0"
+    val core: ModuleID = "co.fs2" %% "fs2-core" % "2.5.5"
+    val io: ModuleID = "co.fs2" %% "fs2-io" % "2.5.5"
   }
 
   object Refined {

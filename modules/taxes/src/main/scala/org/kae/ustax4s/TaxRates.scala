@@ -3,14 +3,12 @@ package org.kae.ustax4s
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.forms.Form1040
 
-/**
-  * Note: does not model exemptions that pertained before 2018 and
-  * could be re-introduced in 2025
+/** Note: does not model exemptions that pertained before 2018 and could be re-introduced in 2025
   *
   * @param standardDeduction
-  * @param ordinaryIncomeBrackets
+  *   @param ordinaryIncomeBrackets
   * @param investmentIncomeBrackets
-  * @param filingStatus
+  *   @param filingStatus
   */
 case class TaxRates(
   standardDeduction: TMoney,

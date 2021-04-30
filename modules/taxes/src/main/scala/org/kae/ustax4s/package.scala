@@ -9,11 +9,10 @@ import scala.math.BigDecimal.RoundingMode
 
 package object ustax4s {
 
-  /**
-    * Rate of tax payable in a given bracket.
+  /** Rate of tax payable in a given bracket.
     */
   type TaxRateRefinement = Interval.Closed[W.`0.0D`.T, W.`0.37D`.T]
-  type TaxRate = Double Refined TaxRateRefinement
+  type TaxRate           = Double Refined TaxRateRefinement
 
   object TaxRate {
 
@@ -24,13 +23,11 @@ package object ustax4s {
   implicit def orderedForTaxRate(tr: TaxRate): Ordered[TaxRate] =
     Ordered.orderingToOrdered(tr)
 
-  /**
-    * Cost-of-living based growth rates.
+  /** Cost-of-living based growth rates.
     */
   type InflationRate = Double Refined Interval.Closed[W.`0.0D`.T, W.`0.20D`.T]
 
-  /**
-    * Type for most tax calculations.
+  /** Type for most tax calculations.
     */
   type TMoney = NonNegBigDecimal
 
@@ -49,7 +46,7 @@ package object ustax4s {
     def rounded: TMoney =
       nnbd.unsafeFrom(underlying.value.setScale(0, RoundingMode.HALF_UP))
 
-    def isZero: Boolean = underlying.value == NonNegMoneyOps.bdZero
+    def isZero: Boolean  = underlying.value == NonNegMoneyOps.bdZero
     def nonZero: Boolean = !isZero
 
     def +(other: TMoney): TMoney =
@@ -57,11 +54,12 @@ package object ustax4s {
 
     def -(other: TMoney): TMoney = subtract(other)
 
-    /**
-      * Subtract other [[TMoney]] but do not go below zero.
+    /** Subtract other [[TMoney]] but do not go below zero.
       *
-      * @param other the [[NonNegBigDecimal]]
-      * @return the result of the subtraction
+      * @param other
+      *   the [[NonNegBigDecimal]]
+      * @return
+      *   the result of the subtraction
       */
     def subtract(other: TMoney): TMoney =
       nnbd.unsafeFrom((underlying.value - other.value).max(TMoney.zero.value))

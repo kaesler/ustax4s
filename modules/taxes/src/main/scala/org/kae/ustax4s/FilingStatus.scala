@@ -7,7 +7,7 @@ import scala.collection.immutable
 sealed trait FilingStatus extends EnumEntry
 
 object FilingStatus extends Enum[FilingStatus] {
-  case object Single extends FilingStatus
+  case object Single          extends FilingStatus
   case object HeadOfHousehold extends FilingStatus
 
   override def values: immutable.IndexedSeq[FilingStatus] = findValues

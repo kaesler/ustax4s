@@ -33,20 +33,20 @@ final case class Form1040(
   def totalInvestmentIncome: TMoney = {
     // Line 3b:
     ordinaryDividends +
-    // Line 6:
-    scheduleD
-      .map(_.netLongTermCapitalGains)
-      .getOrElse(TMoney.zero)
+      // Line 6:
+      scheduleD
+        .map(_.netLongTermCapitalGains)
+        .getOrElse(TMoney.zero)
   }
 
   // This is what gets taxed at LTCG rates.
   def qualifiedInvestmentIncome: TMoney = {
     // Line 3a:
     qualifiedDividends +
-    // Line 6:
-    scheduleD
-      .map(_.netLongTermCapitalGains)
-      .getOrElse(TMoney.zero)
+      // Line 6:
+      scheduleD
+        .map(_.netLongTermCapitalGains)
+        .getOrElse(TMoney.zero)
   }
 
   // Line 5b:

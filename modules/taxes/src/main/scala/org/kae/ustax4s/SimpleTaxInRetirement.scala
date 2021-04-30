@@ -3,9 +3,7 @@ package org.kae.ustax4s
 import java.time.Year
 import org.kae.ustax4s.forms.Form1040
 
-/**
-  * Simplified interface to 1040 calcs.
-  * Assume:
+/** Simplified interface to 1040 calcs. Assume:
   *   - The only non-SS income is from 401k or LTCG
   *   - No deductions credits or other complications.
   */
@@ -25,7 +23,8 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
         socialSecurityBenefits = socSec,
         relevantIncome = incomeFrom401kEtc + qualifiedInvestmentIncome
       )
-    val taxableOrdinaryIncome = (taxableSocialSecurity + incomeFrom401kEtc) - rates.standardDeduction
+    val taxableOrdinaryIncome = (taxableSocialSecurity + incomeFrom401kEtc) -
+      rates.standardDeduction
     val taxOnOrdinaryIncome =
       rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
     val taxOnInvestments = rates.investmentIncomeBrackets.taxDueFunctionally(
@@ -52,17 +51,22 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     // Note the order here:
     //  1.sum all income with SS.
     //  2. subtract standard deduction.
-    val taxableIncome = (incomeFrom401kEtc + taxableSocialSecurity) - rates.standardDeduction
+    val taxableIncome = (incomeFrom401kEtc + taxableSocialSecurity) -
+      rates.standardDeduction
 
     rates.ordinaryIncomeBrackets.taxDue(taxableIncome).rounded
   }
 
+  // TODO: add:
+  //   - unqualified dividends
+  //   - earned income
   def taxDueUsingForm1040(
     year: Year,
     filingStatus: FilingStatus,
     socSec: TMoney,
     incomeFrom401k: TMoney,
-    qualifiedDividends: TMoney
+    qualifiedDividends: TMoney,
+    verbose: Boolean
   ): TMoney = {
     val myRates = TaxRates.of(
       year,
@@ -88,7 +92,8 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
-    // println(form.showValues)
+    if (verbose)
+      println(form.showValues)
     myRates.totalTax(form).rounded
   }
 }

@@ -28,7 +28,8 @@ object BumpAnalysis extends App with IntMoneySyntax {
       filingStatus = filingStatus,
       socSec = socialSecurityIncome,
       incomeFrom401k = relevantIncome,
-      qualifiedDividends = 0.tm
+      qualifiedDividends = 0.tm,
+      verbose = false
     )
   } yield (relevantIncome, taxDue)
 
@@ -36,10 +37,10 @@ object BumpAnalysis extends App with IntMoneySyntax {
     .sliding(2)
     .toList
     .map { pairs =>
-      val p0 = pairs(0)
-      val p1 = pairs(1)
+      val p0             = pairs(0)
+      val p1             = pairs(1)
       val relevantIncome = p0._1
-      val slope = (p1._2 - p0._2).value / 100
+      val slope          = (p1._2 - p0._2).value / 100
       println(s"Income: $relevantIncome, slope: $slope")
 
     }

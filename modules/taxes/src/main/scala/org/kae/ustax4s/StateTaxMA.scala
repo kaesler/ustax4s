@@ -17,13 +17,13 @@ object StateTaxMA extends IntMoneySyntax {
   ): TMoney = {
     val unadjustedForAge = (year.getValue, filingStatus) match {
       case (2020, HeadOfHousehold) => TMoney.u(6800)
-      case (2020, Single) => TMoney.u(4400)
+      case (2020, Single)          => TMoney.u(4400)
 
       case (2019, HeadOfHousehold) => TMoney.u(6800)
-      case (2019, Single) => TMoney.u(4400)
+      case (2019, Single)          => TMoney.u(4400)
 
       case (2018, HeadOfHousehold) => TMoney.u(6800)
-      case (2018, Single) => TMoney.u(4400)
+      case (2018, Single)          => TMoney.u(4400)
 
       // TODO: for now assume same for future years as 2020.
       case (year, fs) if year > 2020 =>
