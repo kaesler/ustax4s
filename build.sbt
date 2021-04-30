@@ -4,7 +4,7 @@ name := "retirement"
 
 version := "0.1"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.5"
 
 lazy val tagged = (project in file("modules/tagged"))
   .settings(
