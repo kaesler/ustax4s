@@ -1,22 +1,26 @@
 package org.kae.ustax4s
+package inretirement
 
-import java.time.Year
+import java.time.{LocalDate, Year}
 import org.kae.ustax4s.forms.Form1040
 
-/** Simplified interface to 1040 calcs. Assume:
-  *   - The only non-SS income is from 401k or LTCG
-  *   - No deductions credits or other complications.
+/** Simplified interface to 1040 calculations. Assume: No deductions credits or other complications.
   */
-object SimpleTaxInRetirement extends IntMoneySyntax {
+object TaxInRetirement extends IntMoneySyntax {
 
-  def taxDue(
+  // TODO: add:
+  //   - unqualified dividends
+  //   - earned income
+  //   - state tax
+  def federalTaxDue(
     year: Year,
+    birthDate: LocalDate,
     filingStatus: FilingStatus,
     socSec: TMoney,
     incomeFrom401kEtc: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney = {
-    val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
+    val rates = TaxRates.of(year, filingStatus, birthDate)
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = filingStatus,
@@ -34,13 +38,15 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     (taxOnInvestments + taxOnOrdinaryIncome).rounded
   }
 
-  def taxDueNoQualifiedInvestments(
+  // TODO: do I need this?
+  def federalTaxDueNoQualifiedInvestments(
     year: Year,
+    birthDate: LocalDate,
     filingStatus: FilingStatus,
     socSec: TMoney,
     incomeFrom401kEtc: TMoney
   ): TMoney = {
-    val rates = TaxRates.of(year, filingStatus, Kevin.birthDate)
+    val rates = TaxRates.of(year, filingStatus, birthDate)
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = filingStatus,
@@ -57,11 +63,9 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     rates.ordinaryIncomeBrackets.taxDue(taxableIncome).rounded
   }
 
-  // TODO: add:
-  //   - unqualified dividends
-  //   - earned income
-  def taxDueUsingForm1040(
+  def federalTaxDueUsingForm1040(
     year: Year,
+    birthDate: LocalDate,
     filingStatus: FilingStatus,
     socSec: TMoney,
     incomeFrom401k: TMoney,
@@ -71,7 +75,7 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
     val myRates = TaxRates.of(
       year,
       filingStatus,
-      Kevin.birthDate
+      birthDate
     )
 
     val form = Form1040(
@@ -92,8 +96,26 @@ object SimpleTaxInRetirement extends IntMoneySyntax {
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
-    if (verbose)
+    if (verbose) {
       println(form.showValues)
+    }
+
     myRates.totalTax(form).rounded
   }
+
+  def stateTaxDue(
+    year: Year,
+    // Excludes SocSec. So it is
+    //  - earned wages
+    //  - interest
+    //  - dividends
+    //  - capital gains
+    taxableIncome: TMoney
+  ): TMoney =
+    StateTaxMA.taxDue(
+      year,
+      Kevin.filingStatus(year),
+      Kevin.birthDate,
+      Kevin.numberOfDependents(year)
+    )(taxableIncome)
 }

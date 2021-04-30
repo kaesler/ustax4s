@@ -6,10 +6,17 @@ import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 object Kevin {
   val birthDate: LocalDate = LocalDate.of(1955, 10, 2)
 
-  def filingStatus(year: Year): FilingStatus = {
-    if (year.getValue <= 2027)
+  def filingStatus(year: Year): FilingStatus =
+    if (year.getValue <= 2027) {
       HeadOfHousehold
-    else
+    } else {
       Single
-  }
+    }
+
+  def numberOfDependents(year: Year): Int =
+    if (year.getValue <= 2027) {
+      1
+    } else {
+      0
+    }
 }

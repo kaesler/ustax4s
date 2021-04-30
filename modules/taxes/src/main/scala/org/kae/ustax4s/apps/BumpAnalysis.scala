@@ -1,9 +1,9 @@
 package org.kae.ustax4s.apps
 
 import java.time.Year
-import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.{IntMoneySyntax, TaxableSocialSecurity}
-import org.kae.ustax4s._
+import org.kae.ustax4s.FilingStatus.Single
+import org.kae.ustax4s.inretirement.MyTaxInRetirement
+import org.kae.ustax4s.{IntMoneySyntax, _}
 
 object BumpAnalysis extends App with IntMoneySyntax {
   // for each filing status in HOH, Single
@@ -23,9 +23,8 @@ object BumpAnalysis extends App with IntMoneySyntax {
 //      relevantIncome,
 //      socialSecurityIncome
 //    )
-    taxDue = SimpleTaxInRetirement.taxDueUsingForm1040(
+    taxDue = MyTaxInRetirement.federalTaxDueUsingForm1040(
       year = Year.of(2021),
-      filingStatus = filingStatus,
       socSec = socialSecurityIncome,
       incomeFrom401k = relevantIncome,
       qualifiedDividends = 0.tm,

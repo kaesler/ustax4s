@@ -17,9 +17,9 @@ object TaxableSocialSecurity extends IntMoneySyntax {
       // case MarriedJoint => (32000.tm, 44000.tm)
     }
 
-  // Adjusted to deal model the fact that the bases
-  // are not adjusted annually as tas brackets are.
-  // So we just estimate: amount rises 3% per year but does not exceed 85%.
+  // Adjusted to model the fact that the bases are not adjusted annually
+  // as tas brackets are. So we just estimate: amount rises 3% per year
+  // but does not exceed 85%.
   def taxableSocialSecurityBenefitsAdjusted(
     filingStatus: FilingStatus,
     socialSecurityBenefits: TMoney,

@@ -7,6 +7,27 @@ object StateTaxMA extends IntMoneySyntax {
 
   // TODO tests for this.
 
+  def taxDue(
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate,
+    dependents: Int
+  )(
+    // Excludes SocSec. So it is
+    //  - earned wages
+    //  - interest
+    //  - dividends
+    //  - capital gains
+    taxableIncome: TMoney
+  ): TMoney = {
+    TMoney.max(
+      TMoney.zero,
+      taxableIncome -
+        personalExemption(year, filingStatus, birthDate) -
+        (TMoney.u(1000) mul dependents)
+    ) * rate
+  }
+
   // Note: Social Security is not taxed.
   private val rate = TaxRate.unsafeFrom(0.051)
 
@@ -32,27 +53,14 @@ object StateTaxMA extends IntMoneySyntax {
       case (year, _) if year < 2018 => ???
     }
 
-    unadjustedForAge + (if (isAge65OrOlder(birthDate, year)) 700.tm
-                        else TMoney.zero)
+    unadjustedForAge + (
+      if (isAge65OrOlder(birthDate, year))
+        700.tm
+      else
+        TMoney.zero
+    )
   }
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     taxYear.getValue - birthDate.getYear >= 65
-
-  def taxDue(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate,
-    dependents: Int
-  )(
-    // Excludes SocSec
-    taxableIncome: TMoney
-  ): TMoney = {
-    TMoney.max(
-      TMoney.zero,
-      taxableIncome -
-        personalExemption(year, filingStatus, birthDate) -
-        (TMoney.u(1000) mul dependents)
-    ) * rate
-  }
 }

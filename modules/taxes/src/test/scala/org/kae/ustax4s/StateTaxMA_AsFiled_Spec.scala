@@ -10,11 +10,11 @@ object StateTaxMA_AsFiled_Spec extends Specification with IntMoneySyntax {
     "should match what I filed in 2018" >> {
 
       val incomeBeforeExemptions =
-        // Wages etc, line 18
+        // Line 19: 5.1% income after deductions
         122210.tm +
-          // interest and dividends
+          // Line 20: interest and dividends
           8958.tm +
-          // Line 2g
+          // Line 2g: total exemptions (these get removed in calcs)
           7800.tm
       StateTaxMA.taxDue(
         Year.of(2018),

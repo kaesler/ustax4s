@@ -1,34 +1,31 @@
-package org.kae.ustax4s
+package org.kae.ustax4s.inretirement
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.specs2.matcher.MustMatchers
 import org.specs2.mutable.Specification
 
-object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
-  import IntMoneySyntax._
+object MyTaxInRetirementSpec extends Specification with MustMatchers {
 
-  "SimpleTaxInRetirement.taxDue" >> {
-    "agrees with SimpleTaxInRetirement.taxDueUsingForm1040" >> {
+  "MyTaxInRetirement.taxDue" >> {
+    "agrees with MyTaxInRetirement.taxDueUsingForm1040" >> {
       val year = Year.of(2021)
       for {
         status <- List(HeadOfHousehold, Single)
         i <- 0 to 100000 by 500
         ss <- 0 to 49000 by 500
       } {
-        import SimpleTaxInRetirement._
+        import org.kae.ustax4s.inretirement.MyTaxInRetirement._
         val income = i.tm
         val socialSecurity = ss.tm
 
-        taxDueNoQualifiedInvestments(
+        federalTaxDueNoQualifiedInvestments(
           year = year,
-          filingStatus = status,
           incomeFrom401kEtc = income,
           socSec = socialSecurity
         ) ===
-          taxDueUsingForm1040(
+          federalTaxDueUsingForm1040(
             year = year,
-            filingStatus = status,
             socSec = socialSecurity,
             incomeFrom401k = income,
             qualifiedDividends = 0.tm,
@@ -38,8 +35,8 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
       success
     }
   }
-  "SimpleTaxInRetirement.taxDueWithInvestments" >> {
-    "agrees with SimpleTaxInRetirement.taxDueUsingForm1040" >> {
+  "MyTaxInRetirement.taxDueWithInvestments" >> {
+    "agrees with MyTaxInRetirement.taxDueUsingForm1040" >> {
       val year = Year.of(2021)
       for {
         status <- List(HeadOfHousehold, Single)
@@ -47,38 +44,34 @@ object SimpleTaxInRetirementSpec extends Specification with MustMatchers {
         ss <- 0 to 49000 by 1000
         inv <- 0 to 30000 by 1000
       } {
-        import SimpleTaxInRetirement._
+        import org.kae.ustax4s.inretirement.MyTaxInRetirement._
         val income = i.tm
         val socialSecurity = ss.tm
         val qualifiedDividends = inv.tm
 
-        if (taxDue(
+        if (federalTaxDue(
           year = year,
-          filingStatus = status,
           socSec = socialSecurity,
           incomeFrom401kEtc = income,
           qualifiedInvestmentIncome = qualifiedDividends
-            ) !=
-              taxDueUsingForm1040(
-                year = year,
-                filingStatus = status,
-                socSec = socialSecurity,
-                incomeFrom401k = income,
-                qualifiedDividends = qualifiedDividends,
-                verbose = false
-              )) {
+        ) !=
+          federalTaxDueUsingForm1040(
+            year = year,
+            socSec = socialSecurity,
+            incomeFrom401k = income,
+            qualifiedDividends = qualifiedDividends,
+            verbose = false
+          )) {
           println(s"status: $status; i: $i; ss: $ss; inv: $inv")
         }
-        taxDue(
+        federalTaxDue(
           year = year,
-          filingStatus = status,
           socSec = socialSecurity,
           incomeFrom401kEtc = income,
           qualifiedInvestmentIncome = qualifiedDividends
         ) ===
-          taxDueUsingForm1040(
+          federalTaxDueUsingForm1040(
             year = year,
-            filingStatus = status,
             socSec = socialSecurity,
             incomeFrom401k = income,
             qualifiedDividends = qualifiedDividends,

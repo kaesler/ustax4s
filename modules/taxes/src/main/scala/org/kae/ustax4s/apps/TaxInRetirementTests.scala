@@ -2,7 +2,8 @@ package org.kae.ustax4s.apps
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
-import org.kae.ustax4s.{IntMoneySyntax, SimpleTaxInRetirement, TMoney, TaxableSocialSecurity, _}
+import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.{IntMoneySyntax, TMoney, TaxableSocialSecurity, _}
 
 object TaxInRetirementTests extends App with IntMoneySyntax {
   val year = Year.of(2021)
@@ -23,8 +24,9 @@ object TaxInRetirementTests extends App with IntMoneySyntax {
       )
     val totalTaxable = income + ssTaxable
     val tax =
-      SimpleTaxInRetirement.taxDueUsingForm1040(
+      TaxInRetirement.federalTaxDueUsingForm1040(
         year = year,
+        birthDate = Kevin.birthDate,
         filingStatus = Single,
         socSec = ss,
         incomeFrom401k = income,

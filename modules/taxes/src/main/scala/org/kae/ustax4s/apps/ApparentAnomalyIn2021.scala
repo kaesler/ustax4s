@@ -1,9 +1,8 @@
 package org.kae.ustax4s.apps
 
 import java.time.Year
-
-import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s._
+import org.kae.ustax4s.inretirement.MyTaxInRetirement
 
 object ApparentAnomalyIn2021 extends App with IntMoneySyntax {
   val year = Year.of(2021)
@@ -16,9 +15,8 @@ object ApparentAnomalyIn2021 extends App with IntMoneySyntax {
   val from401k = 34689.tm.+(32150.tm)
 
   val tax =
-    SimpleTaxInRetirement.taxDueUsingForm1040(
+    MyTaxInRetirement.federalTaxDueUsingForm1040(
       year = year,
-      filingStatus = HeadOfHousehold,
       socSec = ss,
       incomeFrom401k = from401k + unqualifiedDividends,
       qualifiedDividends = qualifiedDividends,
