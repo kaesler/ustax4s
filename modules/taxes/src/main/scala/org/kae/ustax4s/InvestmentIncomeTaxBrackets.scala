@@ -33,7 +33,7 @@ final case class InvestmentIncomeTaxBrackets(
     taxableOrdinaryIncome: TMoney,
     qualifiedInvestmentIncome: TMoney
   ): TMoney =
-    taxDueImperatively(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
+    taxDueFunctionally(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
 
   def taxDueFunctionally(
     taxableOrdinaryIncome: TMoney,
