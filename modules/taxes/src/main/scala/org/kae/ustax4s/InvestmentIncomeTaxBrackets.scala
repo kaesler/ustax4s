@@ -129,6 +129,9 @@ final case class InvestmentIncomeTaxBrackets(
 //    )
     res
   }
+
+  def bracketExists(bracketRate: TaxRate): Boolean =
+    bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
 }
 
 object InvestmentIncomeTaxBrackets {

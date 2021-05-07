@@ -1,5 +1,7 @@
 package org.kae.ustax4s
 
+import java.time.Year
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.scalacheck.Arbitrary
 import org.specs2.ScalaCheck
 import org.specs2.matcher.MustMatchers
@@ -10,17 +12,54 @@ object OrdinaryIncomeTaxBracketsSpec
     with ScalaCheck
     with TaxBracketsGeneration
     with TMoneyGeneration
-    with MustMatchers {
+    with MustMatchers
+    with IntMoneySyntax {
 
-  implicit val arbTaxBrackets: Arbitrary[OrdinaryIncomeTaxBrackets] = Arbitrary(
-    genTaxBrackets)
-  implicit val arbIncome: Arbitrary[TMoney] = Arbitrary(genMoney)
+  implicit val arbTaxBrackets: Arbitrary[OrdinaryIncomeTaxBrackets] = Arbitrary(genTaxBrackets)
+  implicit val arbIncome: Arbitrary[TMoney]                         = Arbitrary(genMoney)
 
-  val zero = TMoney.zero
+  private val zero    = TMoney.zero
+  private val TheYear = Year.of(2021)
 
-  "TaxBrackets should" >> {
+  "OrdinaryIncomeTaxBrackets should" >> {
+
+    "be progressive" >> {
+
+      def isProgressive(brackets: OrdinaryIncomeTaxBrackets): Boolean = {
+        val rates = brackets.bracketStartsAscending.map(_._2)
+        (rates zip rates.tail)
+          .forall { case (left, right) =>
+            left < right
+          }
+      }
+
+      isProgressive(OrdinaryIncomeTaxBrackets.of(TheYear, Single))
+      isProgressive(OrdinaryIncomeTaxBrackets.of(TheYear, HeadOfHousehold))
+    }
+
+    "taxToEndOfBracket" >> {
+      "should be correct for 2021 HeadOfHousehold" >> {
+        val brackets = OrdinaryIncomeTaxBrackets.of(TheYear, HeadOfHousehold)
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.10)).rounded === 1420.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.12)).rounded === 6220.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.22)).rounded === 13293.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.24)).rounded === 32145.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.32)).rounded === 46385.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.35)).rounded === 156355.tm
+      }
+      "should be correct for 2021 Single" >> {
+        val brackets = OrdinaryIncomeTaxBrackets.of(TheYear, Single)
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.10)).rounded === 995.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.12)).rounded === 4664.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.22)).rounded === 14751.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.24)).rounded === 33603.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.32)).rounded === 47843.tm
+        brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.35)).rounded === 157804.tm
+      }
+    }
+
     "never tax zero" >> prop { brackets: OrdinaryIncomeTaxBrackets =>
-      brackets.taxDue(TMoney.zero) === TMoney.zero
+      brackets.taxDue(TMoney.zero) === zero
     }
 
     "tax in lowest bracket as expected" >> prop { brackets: OrdinaryIncomeTaxBrackets =>
@@ -48,6 +87,19 @@ object OrdinaryIncomeTaxBracketsSpec
       (brackets: OrdinaryIncomeTaxBrackets, income: TMoney) =>
         val maxTax = income * brackets.bracketStartsAscending.map(_._2).max
         (brackets.taxDue(income) <= maxTax) must beTrue
+    }
+
+    "give expected results at bracket boundaries for 2021" >> {
+      for {
+        filingStatus <- List(Single)
+        brackets = OrdinaryIncomeTaxBrackets.of(TheYear, filingStatus)
+        rate <- brackets.ratesForBoundedBrackets
+      } {
+        val taxableIncome = brackets.taxableIncomeToEndOfBracket(rate)
+        val expectedTax   = brackets.taxToEndOfBracket(rate)
+        brackets.taxDue(taxableIncome) === expectedTax
+      }
+      ok
     }
   }
 }

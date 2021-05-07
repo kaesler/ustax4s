@@ -1,24 +1,43 @@
 package org.kae.ustax4s
 
+import java.time.Year
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.scalacheck.Arbitrary
 import org.specs2.ScalaCheck
 import org.specs2.matcher.MustMatchers
 import org.specs2.mutable.Specification
 
 object InvestmentIncomeTaxBracketsSpec
-  extends Specification
-  with ScalaCheck
-  with InvestmentTaxBracketsGeneration
-  with TMoneyGeneration
-  with MustMatchers {
+    extends Specification
+    with ScalaCheck
+    with InvestmentTaxBracketsGeneration
+    with TMoneyGeneration
+    with MustMatchers {
 
-  implicit val arbCgTaxBrackets: Arbitrary[InvestmentIncomeTaxBrackets] = Arbitrary(genCgTaxBrackets)
+  implicit val arbCgTaxBrackets: Arbitrary[InvestmentIncomeTaxBrackets] = Arbitrary(
+    genCgTaxBrackets
+  )
   implicit val arbIncome: Arbitrary[TMoney] = Arbitrary(genMoney)
 
   val zero = TMoney.zero
 
-  "CGTaxBrackets should" >> {
-    "never tax zero gains" >> prop { (ordIncome: TMoney ,brackets: InvestmentIncomeTaxBrackets) =>
+  // TODO: verify tax due at bracket boundaries
+  "InvestmentIncomeTaxBrackets should" >> {
+
+    "be progressive" >> {
+      def isProgressive(brackets: InvestmentIncomeTaxBrackets): Boolean = {
+        val rates = brackets.bracketStartsAscending.map(_._2)
+        (rates zip rates.tail)
+          .forall { case (left, right) =>
+            left < right
+          }
+      }
+
+      isProgressive(InvestmentIncomeTaxBrackets.of(Year.of(2021), Single))
+      isProgressive(InvestmentIncomeTaxBrackets.of(Year.of(2021), HeadOfHousehold))
+    }
+
+    "never tax zero gains" >> prop { (ordIncome: TMoney, brackets: InvestmentIncomeTaxBrackets) =>
       brackets.taxDueFunctionally(ordIncome, zero) === zero
     }
 
@@ -34,7 +53,8 @@ object InvestmentIncomeTaxBracketsSpec
             brackets.taxDueFunctionally(zero, gains1) < brackets.taxDueFunctionally(zero, gains2)
           else if (gains1 > gains2)
             brackets.taxDueFunctionally(zero, gains1) > brackets.taxDueFunctionally(zero, gains2)
-          else brackets.taxDueFunctionally(zero, gains1) == brackets.taxDueFunctionally(zero, gains2)
+          else
+            brackets.taxDueFunctionally(zero, gains1) == brackets.taxDueFunctionally(zero, gains2)
         } must beTrue
     }
 
@@ -42,10 +62,16 @@ object InvestmentIncomeTaxBracketsSpec
       (brackets: InvestmentIncomeTaxBrackets, gains: TMoney, income1: TMoney, income2: TMoney) =>
         val res = {
           if (income1 < income2)
-            brackets.taxDueFunctionally(income1, gains) <= brackets.taxDueFunctionally(income1, gains)
+            brackets
+              .taxDueFunctionally(income1, gains) <= brackets.taxDueFunctionally(income1, gains)
           else if (income1 > income2)
-            brackets.taxDueFunctionally(income1, gains) >= brackets.taxDueFunctionally(income2, gains)
-          else brackets.taxDueFunctionally(income1, gains) == brackets.taxDueFunctionally(income2, gains)
+            brackets
+              .taxDueFunctionally(income1, gains) >= brackets.taxDueFunctionally(income2, gains)
+          else
+            brackets.taxDueFunctionally(income1, gains) == brackets.taxDueFunctionally(
+              income2,
+              gains
+            )
         }
         if (!res) {
           println(brackets.show)

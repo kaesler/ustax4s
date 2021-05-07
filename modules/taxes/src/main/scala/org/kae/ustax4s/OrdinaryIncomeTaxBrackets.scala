@@ -2,6 +2,7 @@ package org.kae.ustax4s
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import scala.annotation.tailrec
 
 /** Calculates tax on ordinary (non-investment) income.
   *
@@ -10,7 +11,7 @@ import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
   */
 final case class OrdinaryIncomeTaxBrackets(
   bracketStarts: Map[TMoney, TaxRate]
-) {
+) extends IntMoneySyntax {
   require(bracketStarts.contains(TMoney.zero))
 
   val bracketStartsAscending: Vector[(TMoney, TaxRate)] =
@@ -19,7 +20,7 @@ final case class OrdinaryIncomeTaxBrackets(
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
   /** @return
-    *   the tax due on the ordinary income (not LTCGs...)
+    *   the tax due on the taxable ordinary income (not LTCGs...)
     * @param taxableOrdinaryIncome
     *   the ordinary income
     */
@@ -83,18 +84,62 @@ final case class OrdinaryIncomeTaxBrackets(
     taxSoFar
   }
 
-  def isProgressive: Boolean = {
-    val rates = bracketStartsAscending.map(_._2)
-    (rates zip rates.tail)
-      .forall { case (left, right) =>
-        left < right
+  def taxableIncomeToEndOfBracket(bracketRate: TaxRate): TMoney =
+    bracketStartsAscending
+      .sliding(2)
+      .collect { case Vector((_, `bracketRate`), (nextBracketStart, _)) =>
+        nextBracketStart
       }
+      .toList
+      .headOption
+      .getOrElse(
+        throw new RuntimeException(
+          s"rate not found or has no successor: $bracketRate"
+        )
+      )
+
+  def taxToEndOfBracket(bracketRate: TaxRate): TMoney = {
+    require(bracketExists(bracketRate))
+
+    val taxes = bracketStartsAscending
+      .sliding(2)
+      .toList
+      .takeWhile { case Vector((_, rate), (_, _)) => rate <= bracketRate }
+      .map { case Vector((bracketStart, rate), (nextBracketStart, _)) =>
+        // Tax due on current bracket:
+        (nextBracketStart - bracketStart) * rate
+      }
+
+    taxes.foldLeft(0.tm)(_ + _)
   }
+
+  def bracketWidth(bracketRate: TaxRate): TMoney =
+    bracketStartsAscending
+      .sliding(2)
+      .collect { case Vector((rateStart, `bracketRate`), (nextRateStart, _)) =>
+        nextRateStart - rateStart
+      }
+      .toList
+      .headOption
+      .getOrElse(
+        throw new RuntimeException(
+          s"rate not found or has no successor: $bracketRate"
+        )
+      )
+
+  def ratesForBoundedBrackets: Vector[TaxRate] =
+    bracketsStartsDescending
+      .drop(1)
+      .reverse
+      .map(_._2)
+
+  def bracketExists(bracketRate: TaxRate): Boolean =
+    bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
 }
 
 object OrdinaryIncomeTaxBrackets {
 
-  def of(year: Year, status: FilingStatus): OrdinaryIncomeTaxBrackets =
+  @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeTaxBrackets =
     (year.getValue, status) match {
 
       case (2021, HeadOfHousehold) =>

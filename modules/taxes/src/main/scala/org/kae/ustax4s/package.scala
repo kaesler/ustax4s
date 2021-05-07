@@ -5,9 +5,13 @@ import eu.timepit.refined._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.Interval
 import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
+import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 
 package object ustax4s {
+
+  // TODO: use integers for tax rates as in Haskell/Purescript code.
+  // Or represent as a finite discrete set
 
   /** Rate of tax payable in a given bracket.
     */
