@@ -14,14 +14,13 @@ object InvestmentIncomeTaxBracketsSpec
     with TMoneyGeneration
     with MustMatchers {
 
-  implicit val arbCgTaxBrackets: Arbitrary[InvestmentIncomeTaxBrackets] = Arbitrary(
-    genCgTaxBrackets
+  private implicit val arbInvestmentTaxBrackets: Arbitrary[InvestmentIncomeTaxBrackets] = Arbitrary(
+    genInvestmentTaxBrackets
   )
-  implicit val arbIncome: Arbitrary[TMoney] = Arbitrary(genMoney)
+  private implicit val arbIncome: Arbitrary[TMoney] = Arbitrary(genMoney)
 
-  val zero = TMoney.zero
+  private val zero = TMoney.zero
 
-  // TODO: verify tax due at bracket boundaries
   "InvestmentIncomeTaxBrackets should" >> {
 
     "be progressive" >> {
@@ -41,20 +40,31 @@ object InvestmentIncomeTaxBracketsSpec
       brackets.taxDueFunctionally(ordIncome, zero) === zero
     }
 
-    "tax in lowest bracket as expected" >> prop { brackets: InvestmentIncomeTaxBrackets =>
-      val (lowBracketTop, lowBracketRate) = brackets.bracketStartsAscending.head
-      brackets.taxDueFunctionally(zero, lowBracketTop) === lowBracketTop * lowBracketRate
+    "never tax gains in the lowest (zero-rate) bracket" >> prop {
+      brackets: InvestmentIncomeTaxBrackets =>
+        val investmentIncome = brackets.startOfNonZeroRateBracket
+        brackets.taxDueFunctionally(zero, investmentIncome) === zero
     }
 
-    "tax rises monotonically with investment income" >> prop {
+    "tax rises monotonically with investment income outside the zero bracket" >> prop {
       (brackets: InvestmentIncomeTaxBrackets, gains1: TMoney, gains2: TMoney) =>
         {
+          val ordinaryIncome = brackets.startOfNonZeroRateBracket
           if (gains1 < gains2)
-            brackets.taxDueFunctionally(zero, gains1) < brackets.taxDueFunctionally(zero, gains2)
+            brackets.taxDueFunctionally(ordinaryIncome, gains1) < brackets.taxDueFunctionally(
+              ordinaryIncome,
+              gains2
+            )
           else if (gains1 > gains2)
-            brackets.taxDueFunctionally(zero, gains1) > brackets.taxDueFunctionally(zero, gains2)
+            brackets.taxDueFunctionally(ordinaryIncome, gains1) > brackets.taxDueFunctionally(
+              ordinaryIncome,
+              gains2
+            )
           else
-            brackets.taxDueFunctionally(zero, gains1) == brackets.taxDueFunctionally(zero, gains2)
+            brackets.taxDueFunctionally(ordinaryIncome, gains1) == brackets.taxDueFunctionally(
+              ordinaryIncome,
+              gains2
+            )
         } must beTrue
     }
 
@@ -82,9 +92,10 @@ object InvestmentIncomeTaxBracketsSpec
         res must beTrue
     }
 
-    "tax is never zero except on zero gains" >> prop {
-      (brackets: InvestmentIncomeTaxBrackets, income: TMoney, gains: TMoney) =>
-        (brackets.taxDueFunctionally(income, gains).nonZero || gains.isZero) must beTrue
+    "tax is never zero except on zero gains, outside the bottom rate" >> prop {
+      (brackets: InvestmentIncomeTaxBrackets, gains: TMoney) =>
+        val ordinaryIncome = brackets.startOfNonZeroRateBracket
+        (brackets.taxDueFunctionally(ordinaryIncome, gains).nonZero || gains.isZero) must beTrue
     }
 
     "max tax rate is the max tax rate" >> prop {

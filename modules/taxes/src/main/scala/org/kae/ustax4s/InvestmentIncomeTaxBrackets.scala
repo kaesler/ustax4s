@@ -13,16 +13,23 @@ import scala.annotation.tailrec
 final case class InvestmentIncomeTaxBrackets(
   bracketStarts: Map[TMoney, TaxRate]
 ) {
+  // Note: We capture "tax free LTCGs with suitably low income" by having a
+  // zero-rate lowest bracket.
   require(bracketStarts.contains(TMoney.zero))
+  require(bracketStarts.size >= 2)
 
   val bracketStartsAscending: Vector[(TMoney, TaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
+
+  require(bracketStartsAscending(0) == (TMoney.zero, TaxRate.unsafeFrom(0.0)))
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
   def show: String = {
     bracketStartsAscending.mkString("\n")
   }
+
+  def startOfNonZeroRateBracket: TMoney = bracketStartsAscending(1)._1
 
   /** @return
     *   the tax due rounded to whole dollars
