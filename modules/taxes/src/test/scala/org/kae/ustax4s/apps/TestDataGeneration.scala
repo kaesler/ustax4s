@@ -6,12 +6,12 @@ import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, Kevin, TMoney}
 import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
-object TestDataForOtherImplementations extends App with IntMoneySyntax {
+object TestDataGeneration extends IntMoneySyntax {
 
   private val year  = Year.of(2021)
   private val count = 2000
 
-  private final case class TestCase(
+  final case class TestCase(
     filingStatus: FilingStatus,
     investmentIncome: TMoney,
     incomeFrom401k: TMoney,
@@ -30,24 +30,8 @@ object TestDataForOtherImplementations extends App with IntMoneySyntax {
     ss = ss.tm
   )
 
-  private val testCases = Gen
+  def testCases: List[TestCase] = Gen
     .listOfN(count, genTestCase)
     .sample
     .get
-
-  println("filingStatus,socialSecurityBenefits,incomeFrom401k,qualifiedInvestmentIncome,tax")
-  testCases.foreach { case TestCase(fs, qInv, i401k, ss) =>
-    val tax = TaxInRetirement.federalTaxDue(
-      year = year,
-      birthDate = Kevin.birthDate,
-      filingStatus = fs,
-      socSec = ss,
-      incomeFrom401kEtc = i401k,
-      qualifiedInvestmentIncome = qInv
-    )
-    val status = fs.entryName
-    println(
-      s"$status,$ss,$i401k,$qInv,$tax"
-    )
-  }
 }
