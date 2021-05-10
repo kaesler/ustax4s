@@ -56,18 +56,16 @@ https://www.investopedia.com/terms/t/taxes.asp
 
 *** taxableIncome
  = adjustedGrossincome - standardDeduction
-
 *** ordinaryIncome
  income taxable at ordinary rates
    Excludes long term capital gains and qualified dividends
 
    = earnedIncome + taxableInterest + nonQualifiedDividends + shortTermCapitalGains +
      taxable401k
+*** taxableOrdinaryIncome
+= ordinaryIncome - standardDeduction
 *** qualifiedIncome
 == qualifiedDividends + longTermCapitalGains
-*** taxableIncome
-   = AGI - standard deduction
-
 ** Output
 *** federalTaxDue
   - aka taxOnAllTaxableIncome
