@@ -10,7 +10,7 @@ import scala.annotation.tailrec
   * @param bracketStarts
   *   the tax brackets in effect
   */
-final case class InvestmentIncomeTaxBrackets(
+final case class QualifiedIncomeBrackets(
   bracketStarts: Map[TMoney, TaxRate]
 ) {
   // Note: We capture "tax free LTCGs with suitably low income" by having a
@@ -33,18 +33,18 @@ final case class InvestmentIncomeTaxBrackets(
 
   /** @return
     *   the tax due rounded to whole dollars
-    * @param qualifiedInvestmentIncome
-    *   the investment income
+    * @param qualifiedIncome
+    *   the qualified income
     */
   def taxDueWholeDollar(
     taxableOrdinaryIncome: TMoney,
-    qualifiedInvestmentIncome: TMoney
+    qualifiedIncome: TMoney
   ): TMoney =
-    taxDueFunctionally(taxableOrdinaryIncome, qualifiedInvestmentIncome).rounded
+    taxDueFunctionally(taxableOrdinaryIncome, qualifiedIncome).rounded
 
   def taxDueFunctionally(
     taxableOrdinaryIncome: TMoney,
-    qualifiedInvestmentIncome: TMoney
+    qualifiedIncome: TMoney
   ): TMoney = {
     case class Accum(
       totalIncomeInHigherBrackets: TMoney,
@@ -53,10 +53,10 @@ final case class InvestmentIncomeTaxBrackets(
     )
     object Accum {
       def initial: Accum =
-        apply(TMoney.zero, qualifiedInvestmentIncome, TMoney.zero)
+        apply(TMoney.zero, qualifiedIncome, TMoney.zero)
     }
 
-    val totalIncome = taxableOrdinaryIncome + qualifiedInvestmentIncome
+    val totalIncome = taxableOrdinaryIncome + qualifiedIncome
     val accum =
       bracketsStartsDescending.foldLeft(Accum.initial) {
         case (
@@ -100,13 +100,13 @@ final case class InvestmentIncomeTaxBrackets(
 
   def taxDueImperatively(
     taxableOrdinaryIncome: TMoney,
-    qualifiedInvestmentIncome: TMoney
+    qualifiedIncome: TMoney
   ): TMoney = {
     var totalIncomeInHigherBrackets = TMoney.zero
-    var gainsYetToBeTaxed           = qualifiedInvestmentIncome
+    var gainsYetToBeTaxed           = qualifiedIncome
     var gainsTaxSoFar               = TMoney.zero
 
-    val totalIncome = taxableOrdinaryIncome + qualifiedInvestmentIncome
+    val totalIncome = taxableOrdinaryIncome + qualifiedIncome
     bracketsStartsDescending.foreach { case (bracketStart, bracketRate) =>
       val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets
       val ordinaryIncomeYetToBeTaxed =
@@ -141,10 +141,10 @@ final case class InvestmentIncomeTaxBrackets(
     bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
 }
 
-object InvestmentIncomeTaxBrackets {
+object QualifiedIncomeBrackets {
 
   @tailrec
-  def of(year: Year, status: FilingStatus): InvestmentIncomeTaxBrackets =
+  def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
     (year.getValue, status) match {
       case (2021, HeadOfHousehold) =>
         create(
@@ -196,8 +196,8 @@ object InvestmentIncomeTaxBrackets {
 
   private def create(
     pairs: Map[Int, Int]
-  ): InvestmentIncomeTaxBrackets =
-    InvestmentIncomeTaxBrackets(
+  ): QualifiedIncomeBrackets =
+    QualifiedIncomeBrackets(
       pairs.map { case (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
         TMoney.u(bracketStart) ->

@@ -16,7 +16,7 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = Single,
       socialSecurityBenefits = 50000.tm,
-      relevantIncome = 0.tm
+      ssRelevantOtherIncome = 0.tm
     ) === 0.tm
   }
 
@@ -24,7 +24,7 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = Single,
       socialSecurityBenefits = 40000.tm,
-      relevantIncome = 5000.tm
+      ssRelevantOtherIncome = 5000.tm
     ) === 0.tm
   }
 
@@ -32,7 +32,7 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = Single,
       socialSecurityBenefits = 68000.tm,
-      relevantIncome = 0.tm
+      ssRelevantOtherIncome = 0.tm
     ) === 4500.tm
   }
 
@@ -40,7 +40,7 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = Single,
       socialSecurityBenefits = 28000.tm,
-      relevantIncome = 20000.tm
+      ssRelevantOtherIncome = 20000.tm
     ) === 4500.tm
   }
 
@@ -48,7 +48,7 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = Single,
       socialSecurityBenefits = 5980.tm,
-      relevantIncome = 28900.tm
+      ssRelevantOtherIncome = 28900.tm
     ) === 2990.tm
   }
 
@@ -56,7 +56,7 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = Single,
       socialSecurityBenefits = 11000.tm,
-      relevantIncome = 25500.tm
+      ssRelevantOtherIncome = 25500.tm
     ) === 3000.tm
   }
 
@@ -64,7 +64,7 @@ object TaxableSocialSecuritySpec
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = Single,
       socialSecurityBenefits = 49000.tm,
-      relevantIncome = 17000.tm
+      ssRelevantOtherIncome = 17000.tm
     ) === 10875.tm
   }
 }

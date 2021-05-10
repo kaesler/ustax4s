@@ -3,36 +3,31 @@ package org.kae.ustax4s
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.forms.Form1040
 
-/** Note: does not model exemptions that pertained before 2018 and could be re-introduced in 2025
-  *
-  * @param standardDeduction
-  *   @param ordinaryIncomeBrackets
-  * @param investmentIncomeBrackets
-  *   @param filingStatus
-  */
+// Note: does not model exemptions that pertained before 2018 and could
+// be re-introduced in 2025.
 case class TaxRates(
   standardDeduction: TMoney,
-  ordinaryIncomeBrackets: OrdinaryIncomeTaxBrackets,
-  investmentIncomeBrackets: InvestmentIncomeTaxBrackets,
+  ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
+  qualifiedIncomeBrackets: QualifiedIncomeBrackets,
   filingStatus: FilingStatus
 ) {
 
   // Line 11:
   def taxDueBeforeCredits(
     ordinaryIncome: TMoney,
-    investmentIncome: TMoney
+    qualifiedIncome: TMoney
   ): TMoney =
     ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
-      investmentIncomeBrackets.taxDueFunctionally(
+      qualifiedIncomeBrackets.taxDueFunctionally(
         ordinaryIncome,
-        investmentIncome
+        qualifiedIncome
       )
 
   // Line 15:
   def totalTax(form: Form1040): TMoney =
     taxDueBeforeCredits(
       form.taxableOrdinaryIncome,
-      form.qualifiedInvestmentIncome
+      form.qualifiedIncome
     ) +
       form.schedule4.map(_.totalOtherTaxes).getOrElse(TMoney.zero) -
       (form.childTaxCredit + form.schedule3
@@ -49,8 +44,8 @@ object TaxRates {
   ): TaxRates =
     TaxRates(
       StandardDeduction.of(year, filingStatus, birthDate),
-      OrdinaryIncomeTaxBrackets.of(year, filingStatus),
-      InvestmentIncomeTaxBrackets.of(year, filingStatus),
+      OrdinaryIncomeBrackets.of(year, filingStatus),
+      QualifiedIncomeBrackets.of(year, filingStatus),
       filingStatus
     )
 }

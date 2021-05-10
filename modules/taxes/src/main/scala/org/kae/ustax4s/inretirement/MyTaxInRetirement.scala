@@ -13,36 +13,36 @@ object MyTaxInRetirement extends IntMoneySyntax {
   def federalTaxDue(
     year: Year,
     socSec: TMoney,
-    incomeFrom401kEtc: TMoney,
-    qualifiedInvestmentIncome: TMoney
+    ordinaryIncomeNonSS: TMoney,
+    qualifiedIncome: TMoney
   ): TMoney =
     TaxInRetirement.federalTaxDue(
       year,
       Kevin.birthDate,
       Kevin.filingStatus(year),
       socSec,
-      incomeFrom401kEtc,
-      qualifiedInvestmentIncome
+      ordinaryIncomeNonSS,
+      qualifiedIncome
     )
 
   // TODO: do I need this?
   def federalTaxDueNoQualifiedInvestments(
     year: Year,
     socSec: TMoney,
-    incomeFrom401kEtc: TMoney
+    ordinaryIncomeNonSS: TMoney
   ): TMoney =
     TaxInRetirement.federalTaxDueNoQualifiedInvestments(
       year,
       Kevin.birthDate,
       Kevin.filingStatus(year),
       socSec,
-      incomeFrom401kEtc
+      ordinaryIncomeNonSS
     )
 
   def federalTaxDueUsingForm1040(
     year: Year,
     socSec: TMoney,
-    incomeFrom401k: TMoney,
+    ordinaryIncomeNonSS: TMoney,
     qualifiedDividends: TMoney,
     verbose: Boolean
   ): TMoney = {
@@ -56,7 +56,7 @@ object MyTaxInRetirement extends IntMoneySyntax {
     val form = Form1040(
       filingStatus,
       rates = myRates,
-      taxableIraDistributions = incomeFrom401k,
+      taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
       standardDeduction = myRates.standardDeduction,

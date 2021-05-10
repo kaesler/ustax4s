@@ -9,7 +9,7 @@ import scala.annotation.tailrec
   * @param bracketStarts
   *   the tax brackets in effect
   */
-final case class OrdinaryIncomeTaxBrackets(
+final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[TMoney, TaxRate]
 ) extends IntMoneySyntax {
   require(bracketStarts.contains(TMoney.zero))
@@ -137,9 +137,9 @@ final case class OrdinaryIncomeTaxBrackets(
     bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
 }
 
-object OrdinaryIncomeTaxBrackets {
+object OrdinaryIncomeBrackets {
 
-  @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeTaxBrackets =
+  @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
     (year.getValue, status) match {
 
       case (2021, HeadOfHousehold) =>
@@ -216,8 +216,8 @@ object OrdinaryIncomeTaxBrackets {
 
   private def create(
     pairs: Map[Int, Int]
-  ): OrdinaryIncomeTaxBrackets =
-    OrdinaryIncomeTaxBrackets(
+  ): OrdinaryIncomeBrackets =
+    OrdinaryIncomeBrackets(
       pairs.map { case (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
         TMoney.u(bracketStart) ->

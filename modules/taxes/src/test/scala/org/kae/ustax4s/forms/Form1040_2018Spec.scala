@@ -18,7 +18,7 @@ object Form1040_2018Spec extends Specification with IntMoneySyntax {
       val form = Form1040(
         Kevin.filingStatus(year),
         standardDeduction = rates.standardDeduction,
-        schedule1 =  Schedule1(
+        schedule1 = Schedule1(
           Some(
             ScheduleD(
               longTermCapitalGains = 5265.tm,
@@ -54,10 +54,10 @@ object Form1040_2018Spec extends Specification with IntMoneySyntax {
       form.taxableIncome === 129324.tm
 
       form.taxableOrdinaryIncome === 114547.tm
-      form.qualifiedInvestmentIncome === 14777.tm
+      form.qualifiedIncome === 14777.tm
 
-      val taxOnInv = rates.investmentIncomeBrackets
-        .taxDueFunctionally(form.taxableOrdinaryIncome, form.qualifiedInvestmentIncome)
+      val taxOnInv = rates.qualifiedIncomeBrackets
+        .taxDueFunctionally(form.taxableOrdinaryIncome, form.qualifiedIncome)
         .rounded
       taxOnInv === 2217.tm
 
@@ -68,7 +68,7 @@ object Form1040_2018Spec extends Specification with IntMoneySyntax {
       rates
         .taxDueBeforeCredits(
           form.taxableOrdinaryIncome,
-          form.qualifiedInvestmentIncome
+          form.qualifiedIncome
         )
         .rounded === 22606.tm
       rates.totalTax(form).rounded === 20405.tm

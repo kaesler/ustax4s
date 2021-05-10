@@ -12,22 +12,22 @@ object MyTaxInRetirementSpec extends Specification with MustMatchers {
       val year = Year.of(2021)
       for {
         status <- List(HeadOfHousehold, Single)
-        i <- 0 to 100000 by 500
-        ss <- 0 to 49000 by 500
+        i      <- 0 to 100000 by 500
+        ss     <- 0 to 49000 by 500
       } {
         import org.kae.ustax4s.inretirement.MyTaxInRetirement._
-        val income = i.tm
+        val income         = i.tm
         val socialSecurity = ss.tm
 
         federalTaxDueNoQualifiedInvestments(
           year = year,
-          incomeFrom401kEtc = income,
+          ordinaryIncomeNonSS = income,
           socSec = socialSecurity
         ) ===
           federalTaxDueUsingForm1040(
             year = year,
             socSec = socialSecurity,
-            incomeFrom401k = income,
+            ordinaryIncomeNonSS = income,
             qualifiedDividends = 0.tm,
             verbose = false
           )
@@ -40,40 +40,42 @@ object MyTaxInRetirementSpec extends Specification with MustMatchers {
       val year = Year.of(2021)
       for {
         status <- List(HeadOfHousehold, Single)
-        i <- 0 to 70000 by 1000
-        ss <- 0 to 49000 by 1000
-        inv <- 0 to 30000 by 1000
+        i      <- 0 to 70000 by 1000
+        ss     <- 0 to 49000 by 1000
+        inv    <- 0 to 30000 by 1000
       } {
         import org.kae.ustax4s.inretirement.MyTaxInRetirement._
-        val income = i.tm
-        val socialSecurity = ss.tm
+        val income             = i.tm
+        val socialSecurity     = ss.tm
         val qualifiedDividends = inv.tm
 
-        if (federalTaxDue(
-          year = year,
-          socSec = socialSecurity,
-          incomeFrom401kEtc = income,
-          qualifiedInvestmentIncome = qualifiedDividends
-        ) !=
-          federalTaxDueUsingForm1040(
+        if (
+          federalTaxDue(
             year = year,
             socSec = socialSecurity,
-            incomeFrom401k = income,
-            qualifiedDividends = qualifiedDividends,
-            verbose = false
-          )) {
+            ordinaryIncomeNonSS = income,
+            qualifiedIncome = qualifiedDividends
+          ) !=
+            federalTaxDueUsingForm1040(
+              year = year,
+              socSec = socialSecurity,
+              ordinaryIncomeNonSS = income,
+              qualifiedDividends = qualifiedDividends,
+              verbose = false
+            )
+        ) {
           println(s"status: $status; i: $i; ss: $ss; inv: $inv")
         }
         federalTaxDue(
           year = year,
           socSec = socialSecurity,
-          incomeFrom401kEtc = income,
-          qualifiedInvestmentIncome = qualifiedDividends
+          ordinaryIncomeNonSS = income,
+          qualifiedIncome = qualifiedDividends
         ) ===
           federalTaxDueUsingForm1040(
             year = year,
             socSec = socialSecurity,
-            incomeFrom401k = income,
+            ordinaryIncomeNonSS = income,
             qualifiedDividends = qualifiedDividends,
             verbose = false
           )

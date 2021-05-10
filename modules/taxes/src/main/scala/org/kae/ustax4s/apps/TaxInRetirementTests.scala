@@ -20,7 +20,7 @@ object TaxInRetirementTests extends App with IntMoneySyntax {
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
         socialSecurityBenefits = ss,
-        relevantIncome = income
+        ssRelevantOtherIncome = income
       )
     val totalTaxable = income + ssTaxable
     val tax =
@@ -29,7 +29,7 @@ object TaxInRetirementTests extends App with IntMoneySyntax {
         birthDate = Kevin.birthDate,
         filingStatus = Single,
         socSec = ss,
-        incomeFrom401k = income,
+        ordinaryIncomeNonSS = income,
         qualifiedDividends = 0.tm,
         verbose = false
       )

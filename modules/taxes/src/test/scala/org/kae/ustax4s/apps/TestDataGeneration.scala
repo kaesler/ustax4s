@@ -1,8 +1,7 @@
 package org.kae.ustax4s.apps
 
 import java.time.Year
-import org.kae.ustax4s.inretirement.TaxInRetirement
-import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, Kevin, TMoney}
+import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, TMoney}
 import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
@@ -13,21 +12,21 @@ object TestDataGeneration extends IntMoneySyntax {
 
   final case class TestCase(
     filingStatus: FilingStatus,
-    investmentIncome: TMoney,
-    incomeFrom401k: TMoney,
-    ss: TMoney
+    qualifiedIncome: TMoney,
+    ordinaryIncomeNonSS: TMoney,
+    socSec: TMoney
   )
 
   private val genTestCase: Gen[TestCase] = for {
-    fs                        <- Gen.oneOf(FilingStatus.values)
-    qualifiedInvestmentIncome <- Gen.chooseNum(0, 50000)
-    incomeFrom401k            <- Gen.chooseNum(0, 50000)
-    ss                        <- Gen.chooseNum(0, 50000)
+    fs                  <- Gen.oneOf(FilingStatus.values)
+    qualifiedIncome     <- Gen.chooseNum(0, 50000)
+    ordinaryIncomeNonSS <- Gen.chooseNum(0, 50000)
+    ss                  <- Gen.chooseNum(0, 50000)
   } yield TestCase(
     filingStatus = fs,
-    investmentIncome = qualifiedInvestmentIncome.tm,
-    incomeFrom401k = incomeFrom401k.tm,
-    ss = ss.tm
+    qualifiedIncome = qualifiedIncome.tm,
+    ordinaryIncomeNonSS = ordinaryIncomeNonSS.tm,
+    socSec = ss.tm
   )
 
   def testCases: List[TestCase] = Gen

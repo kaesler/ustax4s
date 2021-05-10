@@ -10,19 +10,19 @@ object MakeTestDataAsCsv extends App {
 
   private val year = Year.of(2021)
 
-  println("filingStatus,socialSecurityBenefits,incomeFrom401k,qualifiedInvestmentIncome,tax")
-  testCases.foreach { case TestCase(fs, qInv, i401k, ss) =>
+  println("filingStatus,socialSecurityBenefits,ordinaryIncomeNonSS,qualifiedIncome,tax")
+  testCases.foreach { case TestCase(fs, qi, oi, ss) =>
     val tax = TaxInRetirement.federalTaxDue(
       year = year,
       birthDate = Kevin.birthDate,
       filingStatus = fs,
       socSec = ss,
-      incomeFrom401kEtc = i401k,
-      qualifiedInvestmentIncome = qInv
+      ordinaryIncomeNonSS = oi,
+      qualifiedIncome = qi
     )
     val status = fs.entryName
     println(
-      s"$status,$ss,$i401k,$qInv,$tax"
+      s"$status,$ss,$oi,$qi,$tax"
     )
   }
 }

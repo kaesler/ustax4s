@@ -3,8 +3,8 @@ package org.kae.ustax4s
 package forms
 
 final case class QualifiedDividendsAndCapitalGainsWorksheet(
-  taxBrackets: OrdinaryIncomeTaxBrackets,
-  cgTaxBrackets: InvestmentIncomeTaxBrackets
+  ordinaryBrackets: OrdinaryIncomeBrackets,
+  qualifiedBrackets: QualifiedIncomeBrackets
 ) {
 
   // TODO: how to express this in an LP model?

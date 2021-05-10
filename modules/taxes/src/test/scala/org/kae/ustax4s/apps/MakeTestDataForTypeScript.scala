@@ -17,15 +17,15 @@ object MakeTestDataForTypeScript extends App {
       birthDate = Kevin.birthDate,
       filingStatus = fs,
       socSec = ss,
-      incomeFrom401kEtc = i401k,
-      qualifiedInvestmentIncome = qInv
+      ordinaryIncomeNonSS = i401k,
+      qualifiedIncome = qInv
     )
     val status = fs match {
       case HeadOfHousehold => "FilingStatus.HOH"
       case Single          => "FilingStatus.Single"
     }
     println(
-      s"  { filingStatus: $status, socialSecurityBenefits: $ss, incomeFrom401k: $i401k, qualifiedInvestmentIncome: $qInv, tax: $tax },"
+      s"  { filingStatus: $status, socSec: $ss, ordinaryIncomeNonSS: $i401k, qualifiedIncome: $qInv, tax: $tax },"
     )
   }
 }

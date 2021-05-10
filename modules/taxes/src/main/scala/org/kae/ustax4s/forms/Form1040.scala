@@ -40,7 +40,7 @@ final case class Form1040(
   }
 
   // This is what gets taxed at LTCG rates.
-  def qualifiedInvestmentIncome: TMoney = {
+  def qualifiedIncome: TMoney = {
     // Line 3a:
     qualifiedDividends +
       // Line 6:
@@ -54,7 +54,7 @@ final case class Form1040(
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = filingStatus,
       socialSecurityBenefits = socialSecurityBenefits,
-      relevantIncome = TMoney.sum(
+      ssRelevantOtherIncome = TMoney.sum(
         wages,
         taxableInterest,
         taxExemptInterest,
@@ -91,14 +91,14 @@ final case class Form1040(
   def taxableIncome: TMoney =
     adjustedGrossIncome - standardDeduction
 
-  def taxableOrdinaryIncome: TMoney = taxableIncome - qualifiedInvestmentIncome
+  def taxableOrdinaryIncome: TMoney = taxableIncome - qualifiedIncome
 
   def showValues: String = {
     s"""
        |status: $filingStatus
        |std deduction: ${rates.standardDeduction}
        |taxableSocialSecurityBenefits: $taxableSocialSecurityBenefits
-       |qualifiedInvestmentIncome: $qualifiedInvestmentIncome
+       |qualifiedInvestmentIncome: $qualifiedIncome
        |taxableIraDistributions: $taxableIraDistributions
        |totalIncome: $totalIncome
        |adjustedGrossIncome: $adjustedGrossIncome

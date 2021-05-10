@@ -17,25 +17,25 @@ object TaxInRetirement extends IntMoneySyntax {
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     socSec: TMoney,
-    incomeFrom401kEtc: TMoney,
-    qualifiedInvestmentIncome: TMoney
+    ordinaryIncomeNonSS: TMoney,
+    qualifiedIncome: TMoney
   ): TMoney = {
     val rates = TaxRates.of(year, filingStatus, birthDate)
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = filingStatus,
         socialSecurityBenefits = socSec,
-        relevantIncome = incomeFrom401kEtc + qualifiedInvestmentIncome
+        ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
       )
-    val taxableOrdinaryIncome = (taxableSocialSecurity + incomeFrom401kEtc) -
+    val taxableOrdinaryIncome = (taxableSocialSecurity + ordinaryIncomeNonSS) -
       rates.standardDeduction
     val taxOnOrdinaryIncome =
       rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
-    val taxOnInvestments = rates.investmentIncomeBrackets.taxDueFunctionally(
+    val taxOnQualifiedIncome = rates.qualifiedIncomeBrackets.taxDueFunctionally(
       taxableOrdinaryIncome,
-      qualifiedInvestmentIncome
+      qualifiedIncome
     )
-    (taxOnInvestments + taxOnOrdinaryIncome).rounded
+    (taxOnQualifiedIncome + taxOnOrdinaryIncome).rounded
   }
 
   // TODO: do I need this?
@@ -44,20 +44,20 @@ object TaxInRetirement extends IntMoneySyntax {
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     socSec: TMoney,
-    incomeFrom401kEtc: TMoney
+    ordinaryIncomeNonSS: TMoney
   ): TMoney = {
     val rates = TaxRates.of(year, filingStatus, birthDate)
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = filingStatus,
-        relevantIncome = incomeFrom401kEtc,
+        ssRelevantOtherIncome = ordinaryIncomeNonSS,
         socialSecurityBenefits = socSec
       )
 
     // Note the order here:
     //  1.sum all income with SS.
     //  2. subtract standard deduction.
-    val taxableIncome = (incomeFrom401kEtc + taxableSocialSecurity) -
+    val taxableIncome = (ordinaryIncomeNonSS + taxableSocialSecurity) -
       rates.standardDeduction
 
     rates.ordinaryIncomeBrackets.taxDue(taxableIncome).rounded
@@ -68,7 +68,7 @@ object TaxInRetirement extends IntMoneySyntax {
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     socSec: TMoney,
-    incomeFrom401k: TMoney,
+    ordinaryIncomeNonSS: TMoney,
     qualifiedDividends: TMoney,
     verbose: Boolean
   ): TMoney = {
@@ -81,7 +81,7 @@ object TaxInRetirement extends IntMoneySyntax {
     val form = Form1040(
       filingStatus,
       rates = myRates,
-      taxableIraDistributions = incomeFrom401k,
+      taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
       standardDeduction = myRates.standardDeduction,

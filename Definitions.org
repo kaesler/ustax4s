@@ -20,7 +20,7 @@ https://www.investopedia.com/terms/t/taxes.asp
    dividends satisfying certain criteria
    most of my ordinary dividends are qualified (see 1099 div)
 
-*** socialSecurityBenefits
+*** socSec
     defined benefit 
 
 *** shortTermCapitalGains
@@ -44,11 +44,11 @@ https://www.investopedia.com/terms/t/taxes.asp
 *** ssRelevantOtherIncome
     used to calculate how much SS is taxed
    = interest + ordinaryDividends + taxable401k + capitalGains
-*** taxableSocialSecurityBenefits
+*** taxableSocSec
 
-*** nonTaxableSocialSecurityBenefits
+*** nonTaxableSocSec
 *** grossIncome
-  = earnedIncome + taxableInterest + taxable401k + taxableSocialSecurityBenefits
+  = earnedIncome + taxableInterest + taxable401k + taxableSocSec
 
 *** adjustedGrossIncome
    = (gross income) - (adjustments to income)
@@ -56,17 +56,21 @@ https://www.investopedia.com/terms/t/taxes.asp
 
 *** taxableIncome
  = adjustedGrossincome - standardDeduction
+*** ordinaryIncomeNonSS
 *** ordinaryIncome
  income taxable at ordinary rates
    Excludes long term capital gains and qualified dividends
 
    = earnedIncome + taxableInterest + nonQualifiedDividends + shortTermCapitalGains +
-     taxable401k
+     taxable401k + taxableSocSec
+*** taxableNonSocSecOrdinaryIncome
 *** taxableOrdinaryIncome
 = ordinaryIncome - standardDeduction
 *** qualifiedIncome
 == qualifiedDividends + longTermCapitalGains
 ** Output
+*** taxOnOrdinaryIncome
+*** taxOnQualifiedIncome
 *** federalTaxDue
   - aka taxOnAllTaxableIncome
   - combines the ordinary raates and the qualified rates

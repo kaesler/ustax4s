@@ -18,7 +18,7 @@ object ApparentAnomalyIn2021 extends App with IntMoneySyntax {
     MyTaxInRetirement.federalTaxDueUsingForm1040(
       year = year,
       socSec = ss,
-      incomeFrom401k = from401k + unqualifiedDividends,
+      ordinaryIncomeNonSS = from401k + unqualifiedDividends,
       qualifiedDividends = qualifiedDividends,
       verbose = false
     )
