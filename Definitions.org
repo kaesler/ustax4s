@@ -5,6 +5,7 @@ Try to clarify the data flow.
 https://www.investopedia.com/terms/t/taxes.asp
 
 ** Inputs
+*** year
 *** earnedIncome
     made from employment
    E.g. wages.
@@ -13,7 +14,11 @@ https://www.investopedia.com/terms/t/taxes.asp
 
 *** taxableInterest
 
-*** taxable401k
+*** ordinaryDividends
+ most dividends paid by companies and mutual funds
+*** qualifiedDividends:
+   dividends satisfying certain criteria
+   most of my ordinary dividends are qualified (see 1099 div)
 
 *** socialSecurityBenefits
     defined benefit 
@@ -22,15 +27,7 @@ https://www.investopedia.com/terms/t/taxes.asp
  held less than a year
 *** longTermCapitalGains
  held for a year or more
-*** standardDeduction
-
-
-*** ordinaryDividends
- most dividends paid by companies and mutual funds
-*** qualifiedDividends:
-   dividends satisfying certain criteria
-   most of my ordinary dividends are qualified (see 1099 div)
-
+*** taxable401k
 *** adjustmentsToIncome: used to derive AGI
    E.g
    - student loan interest
@@ -38,8 +35,10 @@ https://www.investopedia.com/terms/t/taxes.asp
    - 401k contributions
    - in 2020 it was $300 
   
-** Intermediate calculated values in order
-
+** Intermediate calculated values 
+*** age
+*** filingStatus
+*** standardDeduction
 *** nonQualifiedDividends
 *** capitalGains
 *** ssRelevantOtherIncome
@@ -57,7 +56,6 @@ https://www.investopedia.com/terms/t/taxes.asp
 
 *** taxableIncome
  = adjustedGrossincome - standardDeduction
-
 
 *** ordinaryIncome
  income taxable at ordinary rates
