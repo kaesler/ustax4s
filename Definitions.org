@@ -1,0 +1,81 @@
+* Definitions of tax variables relevant to me in retirement
+
+Try to clarify the data flow.
+
+https://www.investopedia.com/terms/t/taxes.asp
+
+** Inputs
+*** earnedIncome
+    made from employment
+   E.g. wages.
+
+*** interest
+
+*** taxableInterest
+
+*** taxable401k
+
+*** socialSecurityBenefits
+    defined benefit 
+
+*** shortTermCapitalGains
+ held less than a year
+*** longTermCapitalGains
+ held for a year or more
+*** standardDeduction
+
+
+*** ordinaryDividends
+ most dividends paid by companies and mutual funds
+*** qualifiedDividends:
+   dividends satisfying certain criteria
+   most of my ordinary dividends are qualified (see 1099 div)
+
+*** adjustmentsToIncome: used to derive AGI
+   E.g
+   - student loan interest
+   - alimony payments
+   - 401k contributions
+   - in 2020 it was $300 
+  
+** Intermediate calculated values in order
+
+*** nonQualifiedDividends
+*** capitalGains
+*** ssRelevantOtherIncome
+    used to calculate how much SS is taxed
+   = interest + ordinaryDividends + taxable401k + capitalGains
+*** taxableSocialSecurityBenefits
+
+*** nonTaxableSocialSecurityBenefits
+*** grossIncome
+  = earnedIncome + taxableInterest + taxable401k + taxableSocialSecurityBenefits
+
+*** adjustedGrossIncome
+   = (gross income) - (adjustments to income)
+   Me: no adjustments in retirement
+
+*** taxableIncome
+ = adjustedGrossincome - standardDeduction
+
+
+*** ordinaryIncome
+ income taxable at ordinary rates
+   Excludes long term capital gains and qualified dividends
+
+   = earnedIncome + taxableInterest + nonQualifiedDividends + shortTermCapitalGains +
+     taxable401k
+*** qualifiedIncome
+== qualifiedDividends + longTermCapitalGains
+*** taxableIncome
+   = AGI - standard deduction
+
+** Output
+*** federalTaxDue
+  - aka taxOnAllTaxableIncome
+  - combines the ordinary raates and the qualified rates
+  - calculated on the Form 1040 Qualified Dividends and CG tax
+    worksheet
+  
+*** stateTaxDue
+
