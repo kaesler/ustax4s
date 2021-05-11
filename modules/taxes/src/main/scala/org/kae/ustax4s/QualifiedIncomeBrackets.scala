@@ -29,7 +29,7 @@ final case class QualifiedIncomeBrackets(
     bracketStartsAscending.mkString("\n")
   }
 
-  def startOfNonZeroRateBracket: TMoney = bracketStartsAscending(1)._1
+  def startOfNonZeroQualifiedRateBracket: TMoney = bracketStartsAscending(1)._1
 
   /** @return
     *   the tax due rounded to whole dollars

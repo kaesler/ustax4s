@@ -42,14 +42,14 @@ object QualifiedIncomeBracketsSpec
 
     "never tax gains in the lowest (zero-rate) bracket" >> prop {
       brackets: QualifiedIncomeBrackets =>
-        val qualifiedIncome = brackets.startOfNonZeroRateBracket
+        val qualifiedIncome = brackets.startOfNonZeroQualifiedRateBracket
         brackets.taxDueFunctionally(zero, qualifiedIncome) === zero
     }
 
     "tax rises monotonically with qualified income outside the zero bracket" >> prop {
       (brackets: QualifiedIncomeBrackets, gains1: TMoney, gains2: TMoney) =>
         {
-          val ordinaryIncome = brackets.startOfNonZeroRateBracket
+          val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
           if (gains1 < gains2)
             brackets.taxDueFunctionally(ordinaryIncome, gains1) < brackets.taxDueFunctionally(
               ordinaryIncome,
@@ -94,7 +94,7 @@ object QualifiedIncomeBracketsSpec
 
     "tax is never zero except on zero gains, outside the bottom rate" >> prop {
       (brackets: QualifiedIncomeBrackets, gains: TMoney) =>
-        val ordinaryIncome = brackets.startOfNonZeroRateBracket
+        val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
         (brackets.taxDueFunctionally(ordinaryIncome, gains).nonZero || gains.isZero) must beTrue
     }
 
