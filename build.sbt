@@ -1,10 +1,15 @@
 import org.kae.Dependencies._
 
-name := "retirement"
-
-version := "0.1"
-
 ThisBuild / scalaVersion := "2.13.5"
+
+lazy val retirement = project
+  .in(file("."))
+  .aggregate(taxes)
+  .dependsOn(taxes)
+  .settings(
+    name := "retirement",
+    version := "0.1"
+  )
 
 lazy val taxes = (project in file("modules/taxes"))
   .settings(
@@ -14,7 +19,7 @@ lazy val taxes = (project in file("modules/taxes"))
       Cats.effect,
       Enumeratum.enumeratum,
       Refined.refined,
-      Specs2.core % Test,
+      Specs2.core       % Test,
       Specs2.scalacheck % Test
     )
   )
