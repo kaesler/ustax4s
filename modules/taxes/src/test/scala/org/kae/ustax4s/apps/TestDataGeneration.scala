@@ -1,13 +1,11 @@
 package org.kae.ustax4s.apps
 
-import java.time.Year
 import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, TMoney}
 import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
 object TestDataGeneration extends IntMoneySyntax {
 
-  private val year  = Year.of(2021)
   private val count = 2000
 
   final case class TestCase(

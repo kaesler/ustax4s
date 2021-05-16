@@ -1,18 +1,20 @@
 package org.kae.ustax4s
 
-import scala.annotation.tailrec
-
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.const
+import org.scalacheck.{Arbitrary, Gen}
+import scala.annotation.tailrec
 
 /* ScalaCheck generators for sets. */
 trait SetGeneration {
 
   /** Returns a Gen capable of producing a Set of elements of a specified size.
-    * @tparam T a type for which there is an Arbitrary type class instance.
-    * @param n the size of set desired
-    * @param gen the [[Gen]] for T
+    * @tparam T
+    *   a type for which there is an Arbitrary type class instance.
+    * @param n
+    *   the size of set desired
+    * @param gen
+    *   the [[Gen]] for T
     */
   def genSet[T](n: Int, gen: Gen[T]): Gen[Set[T]] = {
 
@@ -36,12 +38,12 @@ trait SetGeneration {
   }
 
   /** Returns a Gen capable of producing a Set of elements of a specified size.
-    * @tparam T a type for which there is an Arbitrary type class instance.
-    * @param n the size of set desired
+    * @tparam T
+    *   a type for which there is an Arbitrary type class instance.
+    * @param n
+    *   the size of set desired
     */
-  def genSetOfN[T: Arbitrary](
-      n: Int,
-      alreadyGenerated: Set[T] = Set[T]()): Gen[Set[T]] =
+  def genSetOfN[T: Arbitrary](n: Int): Gen[Set[T]] =
     genSet[T](n, arbitrary[T])
 }
 

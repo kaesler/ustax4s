@@ -21,6 +21,23 @@ lazy val taxes = (project in file("modules/taxes"))
       Refined.refined,
       Specs2.core       % Test,
       Specs2.scalacheck % Test
+    ),
+    scalacOptions := Seq(
+      "-feature",
+      "-deprecation",
+      "-Xfatal-warnings",
+      "-unchecked",
+      "-Xcheckinit",
+      "-Ywarn-dead-code",
+      "-Ywarn-extra-implicit",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-unused:implicits",
+      "-Ywarn-unused:imports",
+      "-Ywarn-unused:locals",
+      "-Ywarn-unused:params",
+      "-Ywarn-unused:patvars",
+      "-Ywarn-unused:privates",
+      "-Ywarn-value-discard"
     )
   )
 

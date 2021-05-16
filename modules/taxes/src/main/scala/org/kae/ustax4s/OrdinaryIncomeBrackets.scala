@@ -2,7 +2,7 @@ package org.kae.ustax4s
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import scala.annotation.tailrec
+import scala.annotation.{nowarn, tailrec}
 
 /** Calculates tax on ordinary (non-investment) income.
   *
@@ -104,8 +104,12 @@ final case class OrdinaryIncomeBrackets(
     val taxes = bracketStartsAscending
       .sliding(2)
       .toList
-      .takeWhile { case Vector((_, rate), (_, _)) => rate <= bracketRate }
-      .map { case Vector((bracketStart, rate), (nextBracketStart, _)) =>
+      .takeWhile {
+        case Vector((_, rate), (_, _)) => rate <= bracketRate
+        // Note: can't happen.
+        case _ => false
+      }
+      .collect { case Vector((bracketStart, rate), (nextBracketStart, _)) =>
         // Tax due on current bracket:
         (nextBracketStart - bracketStart) * rate
       }
@@ -139,8 +143,12 @@ final case class OrdinaryIncomeBrackets(
 
 object OrdinaryIncomeBrackets {
 
+  @nowarn("msg=match may not be exhaustive")
   @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
     (year.getValue, status) match {
+
+      // Note: for now assume 2021 rates in later years.
+      case (year, fs) if year > 2021 => of(Year.of(2021), fs)
 
       case (2021, HeadOfHousehold) =>
         create(
@@ -207,11 +215,7 @@ object OrdinaryIncomeBrackets {
           )
         )
 
-      // TODO: for now assume 2021 rates in later years
-      case (year, fs) if year > 2021 => of(Year.of(2021), fs)
-
-      // Fail for non-applicable years.
-      case (year, _) if year < 2018 => ???
+      case _ => ???
     }
 
   private def create(

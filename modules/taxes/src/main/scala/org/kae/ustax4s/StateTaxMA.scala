@@ -2,6 +2,7 @@ package org.kae.ustax4s
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import scala.annotation.nowarn
 
 object StateTaxMA extends IntMoneySyntax {
 
@@ -36,7 +37,13 @@ object StateTaxMA extends IntMoneySyntax {
     filingStatus: FilingStatus,
     birthDate: LocalDate
   ): TMoney = {
+    @nowarn("msg=match may not be exhaustive")
     val unadjustedForAge = (year.getValue, filingStatus) match {
+
+      // Note: for now assume same for future years as 2020.
+      case (year, fs) if year > 2020 =>
+        personalExemption(Year.of(2020), fs, birthDate)
+
       case (2020, HeadOfHousehold) => TMoney.u(6800)
       case (2020, Single)          => TMoney.u(4400)
 
@@ -46,11 +53,7 @@ object StateTaxMA extends IntMoneySyntax {
       case (2018, HeadOfHousehold) => TMoney.u(6800)
       case (2018, Single)          => TMoney.u(4400)
 
-      // TODO: for now assume same for future years as 2020.
-      case (year, fs) if year > 2020 =>
-        personalExemption(Year.of(2020), fs, birthDate)
-      // Fail for inapplicable past years.
-      case (year, _) if year < 2018 => ???
+      case _ => ???
     }
 
     unadjustedForAge + (

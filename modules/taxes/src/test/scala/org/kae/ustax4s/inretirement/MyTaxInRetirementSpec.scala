@@ -11,9 +11,8 @@ object MyTaxInRetirementSpec extends Specification with MustMatchers {
     "agrees with MyTaxInRetirement.taxDueUsingForm1040" >> {
       val year = Year.of(2021)
       for {
-        status <- List(HeadOfHousehold, Single)
-        i      <- 0 to 100000 by 500
-        ss     <- 0 to 49000 by 500
+        i  <- 0 to 100000 by 500
+        ss <- 0 to 49000 by 500
       } {
         import org.kae.ustax4s.inretirement.MyTaxInRetirement._
         val income         = i.tm

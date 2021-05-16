@@ -2,6 +2,7 @@ package org.kae.ustax4s
 
 import java.time.{LocalDate, Month, Year}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import scala.annotation.nowarn
 
 object StandardDeduction {
 
@@ -9,8 +10,13 @@ object StandardDeduction {
     unadjustedForAge(year, filingStatus) +
       (if (isAge65OrOlder(birthDate, year)) TMoney.u(1350) else TMoney.zero)
 
+  @nowarn("msg=match may not be exhaustive")
   private def unadjustedForAge(year: Year, filingStatus: FilingStatus): TMoney =
     (year.getValue, filingStatus) match {
+
+      // Note: for now assume 2021 rates into the future.
+      case (year, fs) if year > 2021 => unadjustedForAge(Year.of(2021), fs)
+
       case (2021, HeadOfHousehold) => TMoney.u(18800)
       case (2020, HeadOfHousehold) => TMoney.u(18650)
       case (2019, HeadOfHousehold) => TMoney.u(18350)
@@ -21,11 +27,7 @@ object StandardDeduction {
       case (2019, Single) => TMoney.u(12200)
       case (2018, Single) => TMoney.u(12000)
 
-      // TODO: for now assume 2021 rates into the future.
-      case (year, fs) if year > 2021 => unadjustedForAge(Year.of(2021), fs)
-
-      // Fail for non-applicable years.
-      case (year, _) if year < 2018 => ???
+      case _ => ???
     }
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =

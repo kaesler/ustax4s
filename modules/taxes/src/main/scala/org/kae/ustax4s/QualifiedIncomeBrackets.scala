@@ -2,7 +2,7 @@ package org.kae.ustax4s
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import scala.annotation.tailrec
+import scala.annotation.{nowarn, tailrec}
 
 /** Calculates tax on qualified investment income,
   * i.e. long-term capital gains and qualified dividends.
@@ -143,9 +143,13 @@ final case class QualifiedIncomeBrackets(
 
 object QualifiedIncomeBrackets {
 
-  @tailrec
-  def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
+  @nowarn("msg=match may not be exhaustive")
+  @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
     (year.getValue, status) match {
+
+      // Note: for now assume 2021 rates into the future.
+      case (year, fs) if year > 2021 => of(Year.of(2021), fs)
+
       case (2021, HeadOfHousehold) =>
         create(
           Map(
@@ -187,11 +191,7 @@ object QualifiedIncomeBrackets {
           )
         )
 
-      // TODO: for now assume 2021 rates into the future.
-      case (year, fs) if year > 2021 => of(Year.of(2021), fs)
-
-      // Fail for non-applicable years.
-      case (year, _) if year < 2018 => ???
+      case _ => ???
     }
 
   private def create(
