@@ -17,7 +17,8 @@ lazy val taxes = (project in file("modules/taxes"))
     libraryDependencies ++= Seq(
       Cats.core,
       Cats.effect,
-      MUnit.munit % Test,
+      MUnit.munit     % Test,
+      MUnit.scalatest % Test,
       Refined.refined,
       Specs2.core       % Test,
       Specs2.scalacheck % Test
