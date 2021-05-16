@@ -23,6 +23,7 @@ lazy val taxes = (project in file("modules/taxes"))
       Specs2.scalacheck % Test
     ),
     scalacOptions := Seq(
+      "-Xsource:3",
       "-feature",
       "-deprecation",
       "-Xfatal-warnings",
