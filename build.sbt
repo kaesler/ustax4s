@@ -4,18 +4,9 @@ name := "retirement"
 
 version := "0.1"
 
-scalaVersion := "2.13.5"
-
-lazy val tagged = (project in file("modules/tagged"))
-  .settings(
-    name := "tagged",
-    libraryDependencies ++= Seq(
-      Cats.core
-    )
-  )
+ThisBuild / scalaVersion := "2.13.5"
 
 lazy val taxes = (project in file("modules/taxes"))
-  .dependsOn(tagged)
   .settings(
     name := "taxes",
     libraryDependencies ++= Seq(
