@@ -33,7 +33,7 @@ object Dependencies {
   }
 
   object Specs2 {
-    val core: ModuleID       = "org.specs2" %% "specs2-core"       % "4.6.0"
-    val scalacheck: ModuleID = "org.specs2" %% "specs2-scalacheck" % "4.6.0"
+    val core: ModuleID       = "org.specs2" %% "specs2-core"       % "4.11.0"
+    val scalacheck: ModuleID = "org.specs2" %% "specs2-scalacheck" % "4.11.0"
   }
 }
