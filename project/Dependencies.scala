@@ -14,6 +14,10 @@ object Dependencies {
     val io: ModuleID   = "co.fs2" %% "fs2-io"   % "3.0.3"
   }
 
+  object MUnit {
+    val munit: ModuleID = "org.scalameta" %% "munit" % "0.7.26"
+  }
+
   object Refined {
     val refined: ModuleID = "eu.timepit" %% "refined" % "0.9.25"
   }

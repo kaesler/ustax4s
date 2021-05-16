@@ -17,6 +17,7 @@ lazy val taxes = (project in file("modules/taxes"))
     libraryDependencies ++= Seq(
       Cats.core,
       Cats.effect,
+      MUnit.munit % Test,
       Refined.refined,
       Specs2.core       % Test,
       Specs2.scalacheck % Test
@@ -38,7 +39,8 @@ lazy val taxes = (project in file("modules/taxes"))
       "-Ywarn-unused:patvars",
       "-Ywarn-unused:privates",
       "-Ywarn-value-discard"
-    )
+    ),
+    testFrameworks += new TestFramework("munit.Framework")
   )
 
 lazy val withdrawals = (project in file("modules/withdrawals"))
