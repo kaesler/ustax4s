@@ -17,7 +17,6 @@ lazy val taxes = (project in file("modules/taxes"))
     libraryDependencies ++= Seq(
       Cats.core,
       Cats.effect,
-      Enumeratum.enumeratum,
       Refined.refined,
       Specs2.core       % Test,
       Specs2.scalacheck % Test

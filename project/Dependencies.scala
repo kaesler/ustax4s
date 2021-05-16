@@ -9,10 +9,6 @@ object Dependencies {
     val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.1.1"
   }
 
-  object Enumeratum {
-    val enumeratum: ModuleID = "com.beachape" %% "enumeratum" % "1.6.1"
-  }
-
   object Fs2 {
     val core: ModuleID = "co.fs2" %% "fs2-core" % "3.0.3"
     val io: ModuleID   = "co.fs2" %% "fs2-io"   % "3.0.3"
