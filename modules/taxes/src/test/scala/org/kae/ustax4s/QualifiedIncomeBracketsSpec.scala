@@ -38,7 +38,7 @@ class QualifiedIncomeBracketsSpec
   }
 
   property("never tax gains in the lowest (zero-rate) bracket") {
-    forAll { brackets: QualifiedIncomeBrackets =>
+    forAll { (brackets: QualifiedIncomeBrackets) =>
       val qualifiedIncome = brackets.startOfNonZeroQualifiedRateBracket
       brackets.taxDueFunctionally(zero, qualifiedIncome) == zero
     }

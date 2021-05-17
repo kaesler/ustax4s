@@ -90,13 +90,13 @@ class OrdinaryIncomeBracketsSpec
   }
 
   property("never tax zero") {
-    forAll { brackets: OrdinaryIncomeBrackets =>
+    forAll { (brackets: OrdinaryIncomeBrackets) =>
       brackets.taxDue(TMoney.zero) == zero
     }
   }
 
   property("tax in lowest bracket as expected") {
-    forAll { brackets: OrdinaryIncomeBrackets =>
+    forAll { (brackets: OrdinaryIncomeBrackets) =>
       val (lowBracketTop, lowBracketRate) = brackets.bracketStartsAscending.head
       brackets.taxDue(lowBracketTop) == lowBracketTop * lowBracketRate
     }

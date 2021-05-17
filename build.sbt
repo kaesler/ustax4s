@@ -1,6 +1,6 @@
 import org.kae.Dependencies._
 
-ThisBuild / scalaVersion := "2.13.5"
+// ThisBuild / scalaVersion := "3.0.0"
 
 lazy val retirement = project
   .in(file("."))
@@ -8,36 +8,26 @@ lazy val retirement = project
   .dependsOn(taxes)
   .settings(
     name := "retirement",
-    version := "0.1"
+    version := "0.1",
+    scalaVersion := "3.0.0"
   )
 
 lazy val taxes = (project in file("modules/taxes"))
   .settings(
     name := "taxes",
+    scalaVersion := "3.0.0",
     libraryDependencies ++= Seq(
-      Cats.core,
-      Cats.effect,
-      MUnit.munit      % Test,
-      MUnit.scalacheck % Test,
-      Refined.refined
+      Cats.core withSources (),
+      Cats.effect withSources (),
+      MUnit.munit      % Test withSources (),
+      MUnit.scalacheck % Test withSources (),
+      Refined.refined withSources ()
     ),
     scalacOptions := Seq(
-      "-Xsource:3",
       "-feature",
       "-deprecation",
       "-Xfatal-warnings",
-      "-unchecked",
-      "-Xcheckinit",
-      "-Ywarn-dead-code",
-      "-Ywarn-extra-implicit",
-      "-Ywarn-numeric-widen",
-      "-Ywarn-unused:implicits",
-      "-Ywarn-unused:imports",
-      "-Ywarn-unused:locals",
-      "-Ywarn-unused:params",
-      "-Ywarn-unused:patvars",
-      "-Ywarn-unused:privates",
-      "-Ywarn-value-discard"
+      "-unchecked"
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )

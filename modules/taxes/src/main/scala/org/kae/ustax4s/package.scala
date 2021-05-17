@@ -15,7 +15,7 @@ package object ustax4s {
 
   /** Rate of tax payable in a given bracket.
     */
-  type TaxRateRefinement = Interval.Closed[W.`0.0D`.T, W.`0.37D`.T]
+  type TaxRateRefinement = Interval.Closed[0.0d, 0.37d]
   type TaxRate           = Double Refined TaxRateRefinement
 
   object TaxRate {
@@ -29,7 +29,7 @@ package object ustax4s {
 
   /** Cost-of-living based growth rates.
     */
-  type InflationRate = Double Refined Interval.Closed[W.`0.0D`.T, W.`0.20D`.T]
+  type InflationRate = Double Refined Interval.Closed[0.0d, 0.20d]
 
   /** Type for most tax calculations.
     */
@@ -41,7 +41,7 @@ package object ustax4s {
   implicit val orderingForBigDecimal: Order[BigDecimal] =
     Order.fromOrdering[BigDecimal]
   implicit val orderForTMoney: Order[TMoney] =
-    Order.by { tm: TMoney =>
+    Order.by { (tm: TMoney) =>
       tm.value
     }
 

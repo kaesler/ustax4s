@@ -1,14 +1,16 @@
 package org.kae.ustax4s
 
 import eu.timepit.refined._
-import eu.timepit.refined.numeric.Positive
-import eu.timepit.refined.types.numeric.PosDouble
+import eu.timepit.refined.api.Refined
+import eu.timepit.refined.numeric._
+import eu.timepit.refined.auto._
+import eu.timepit.refined.types.numeric.{PosDouble, PosInt}
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 object TaxableSocialSecurity extends IntMoneySyntax {
 
-  private val two = refineMV[Positive](2)
+  private val two = PosInt.unsafeFrom(2)
 
   private def bases(filingStatus: FilingStatus): (TMoney, TMoney) =
     filingStatus match {
