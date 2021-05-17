@@ -15,8 +15,8 @@ object Dependencies {
   }
 
   object MUnit {
-    val munit: ModuleID     = "org.scalameta" %% "munit"            % "0.7.26"
-    val scalatest: ModuleID = "org.scalameta" %% "munit-scalacheck" % "0.7.26"
+    val munit: ModuleID      = "org.scalameta" %% "munit"            % "0.7.26"
+    val scalacheck: ModuleID = "org.scalameta" %% "munit-scalacheck" % "0.7.26"
   }
 
   object Refined {
