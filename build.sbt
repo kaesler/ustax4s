@@ -19,9 +19,7 @@ lazy val taxes = (project in file("modules/taxes"))
       Cats.effect,
       MUnit.munit     % Test,
       MUnit.scalatest % Test,
-      Refined.refined,
-      Specs2.core       % Test,
-      Specs2.scalacheck % Test
+      Refined.refined
     ),
     scalacOptions := Seq(
       "-Xsource:3",

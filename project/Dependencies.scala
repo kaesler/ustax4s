@@ -32,9 +32,4 @@ object Dependencies {
     val natives: ModuleID = "org.scalanlp" %% "breeze-natives" % "1.0"
     val viz: ModuleID     = "org.scalanlp" %% "breeze-viz"     % "1.0"
   }
-
-  object Specs2 {
-    val core: ModuleID       = "org.specs2" %% "specs2-core"       % "4.11.0"
-    val scalacheck: ModuleID = "org.specs2" %% "specs2-scalacheck" % "4.11.0"
-  }
 }

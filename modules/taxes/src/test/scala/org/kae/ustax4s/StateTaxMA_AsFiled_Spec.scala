@@ -1,10 +1,10 @@
 package org.kae.ustax4s
 
 import java.time.Year
-import munit.ScalaCheckSuite
+import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 
-class StateTaxMA_AsFiled_Spec extends ScalaCheckSuite with IntMoneySyntax {
+class StateTaxMA_AsFiled_Spec extends FunSuite with IntMoneySyntax {
 
   test("MA State tax should match what I filed in 2018") {
 

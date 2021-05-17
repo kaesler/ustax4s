@@ -5,13 +5,11 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
-import org.specs2.matcher.MustMatchers
 
 class OrdinaryIncomeBracketsSpec
     extends ScalaCheckSuite
     with TaxBracketsGeneration
     with TMoneyGeneration
-    with MustMatchers
     with IntMoneySyntax {
 
   implicit val arbTaxBrackets: Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
