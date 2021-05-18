@@ -29,7 +29,8 @@ lazy val taxes = (project in file("modules/taxes"))
       "-Xfatal-warnings",
       "-unchecked"
     ),
-    testFrameworks += new TestFramework("munit.Framework")
+    testFrameworks += new TestFramework("munit.Framework"),
+    Test / parallelExecution := false
   )
 
 lazy val withdrawals = (project in file("modules/withdrawals"))
