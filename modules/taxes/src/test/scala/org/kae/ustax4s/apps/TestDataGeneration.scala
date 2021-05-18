@@ -16,7 +16,7 @@ object TestDataGeneration extends IntMoneySyntax {
   )
 
   private val genTestCase: Gen[TestCase] = for {
-    fs                  <- Gen.oneOf(FilingStatus.values)
+    fs                  <- Gen.oneOf(FilingStatus.values.toSeq)
     qualifiedIncome     <- Gen.chooseNum(0, 50000)
     ordinaryIncomeNonSS <- Gen.chooseNum(0, 50000)
     ss                  <- Gen.chooseNum(0, 50000)
