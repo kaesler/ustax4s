@@ -10,6 +10,7 @@ import scala.math.BigDecimal.RoundingMode
 
 package object ustax4s {
 
+  // TODO use Scala3 opaque types and extension methods here.
   // TODO: use integers for tax rates as in Haskell/Purescript code.
   // Or represent as a finite discrete set
 
