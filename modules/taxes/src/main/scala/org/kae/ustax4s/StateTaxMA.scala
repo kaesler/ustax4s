@@ -26,11 +26,20 @@ object StateTaxMA extends IntMoneySyntax {
       taxableIncome -
         personalExemption(year, filingStatus, birthDate) -
         (TMoney.u(1000) mul dependents)
-    ) * rate
+    ) * rate(year)
   }
 
   // Note: Social Security is not taxed.
-  private val rate = TaxRate.unsafeFrom(0.051)
+  private def rate(year: Year): TaxRate = {
+    val r = year.getValue match {
+      case 2018          => 0.051
+      case 2019          => 0.0505
+      case 2020          => 0.05
+      case x if x > 2020 => 0.05
+      case x if x < 2018 => 0.051
+    }
+    TaxRate.unsafeFrom(r)
+  }
 
   private def personalExemption(
     year: Year,
