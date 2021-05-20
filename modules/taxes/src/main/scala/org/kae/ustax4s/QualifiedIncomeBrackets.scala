@@ -56,7 +56,7 @@ final case class QualifiedIncomeBrackets(
         apply(TMoney.zero, qualifiedIncome, TMoney.zero)
     }
 
-    val totalIncome = taxableOrdinaryIncome + qualifiedIncome
+    val totalTaxableIncome = taxableOrdinaryIncome + qualifiedIncome
     val accum =
       bracketsStartsDescending.foldLeft(Accum.initial) {
         case (
@@ -68,7 +68,7 @@ final case class QualifiedIncomeBrackets(
               (bracketStart, bracketRate)
             ) =>
           val totalIncomeYetToBeTaxed =
-            totalIncome - totalIncomeInHigherBrackets
+            totalTaxableIncome - totalIncomeInHigherBrackets
           val ordinaryIncomeYetToBeTaxed =
             totalIncomeYetToBeTaxed - gainsYetToBeTaxed
 
@@ -88,7 +88,7 @@ final case class QualifiedIncomeBrackets(
             gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
           )
       }
-    assert(accum.totalIncomeInHigherBrackets == totalIncome)
+    assert(accum.totalIncomeInHigherBrackets == totalTaxableIncome)
     assert(accum.gainsYetToBeTaxed.isZero)
     val res = accum.gainsTaxSoFar
 
