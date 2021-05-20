@@ -10,7 +10,17 @@ object TaxInRetirement extends IntMoneySyntax {
 
   // TODO: add:
   //   - state tax
-  
+
+  final case class FederalTaxResults(
+    taxableSocialSecurity: TMoney,
+    standardDeduction: TMoney,
+    taxableOrdinaryIncome: TMoney,
+    taxOnOrdinaryIncome: TMoney,
+    taxOnQualifiedIncome: TMoney
+  ) {
+    def taxDue: TMoney = taxOnOrdinaryIncome + taxOnQualifiedIncome
+  }
+
   def federalTaxDue(
     year: Year,
     birthDate: LocalDate,
@@ -18,23 +28,48 @@ object TaxInRetirement extends IntMoneySyntax {
     socSec: TMoney,
     ordinaryIncomeNonSS: TMoney,
     qualifiedIncome: TMoney
-  ): TMoney = {
-    val rates = TaxRates.of(year, filingStatus, birthDate)
+  ): TMoney =
+    federalTaxResults(
+      year,
+      birthDate,
+      filingStatus,
+      socSec,
+      ordinaryIncomeNonSS,
+      qualifiedIncome
+    ).taxDue.rounded
+
+  def federalTaxResults(
+    year: Year,
+    birthDate: LocalDate,
+    filingStatus: FilingStatus,
+    socSec: TMoney,
+    ordinaryIncomeNonSS: TMoney,
+    qualifiedIncome: TMoney
+  ): FederalTaxResults = {
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = filingStatus,
         socialSecurityBenefits = socSec,
         ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
       )
+
+    val rates = TaxRates.of(year, filingStatus, birthDate)
     val taxableOrdinaryIncome = (taxableSocialSecurity + ordinaryIncomeNonSS) -
       rates.standardDeduction
+
     val taxOnOrdinaryIncome =
       rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
     val taxOnQualifiedIncome = rates.qualifiedIncomeBrackets.taxDueFunctionally(
       taxableOrdinaryIncome,
       qualifiedIncome
     )
-    (taxOnQualifiedIncome + taxOnOrdinaryIncome).rounded
+    FederalTaxResults(
+      taxableSocialSecurity,
+      rates.standardDeduction,
+      taxableOrdinaryIncome,
+      taxOnOrdinaryIncome,
+      taxOnQualifiedIncome
+    )
   }
 
   def federalTaxDueUsingForm1040(
