@@ -9,9 +9,8 @@ import org.kae.ustax4s.forms.Form1040
 object TaxInRetirement extends IntMoneySyntax {
 
   // TODO: add:
-  //   - unqualified dividends
-  //   - earned income
   //   - state tax
+  
   def federalTaxDue(
     year: Year,
     birthDate: LocalDate,
@@ -36,31 +35,6 @@ object TaxInRetirement extends IntMoneySyntax {
       qualifiedIncome
     )
     (taxOnQualifiedIncome + taxOnOrdinaryIncome).rounded
-  }
-
-  // TODO: do I need this?
-  def federalTaxDueNoQualifiedInvestments(
-    year: Year,
-    birthDate: LocalDate,
-    filingStatus: FilingStatus,
-    socSec: TMoney,
-    ordinaryIncomeNonSS: TMoney
-  ): TMoney = {
-    val rates = TaxRates.of(year, filingStatus, birthDate)
-    val taxableSocialSecurity =
-      TaxableSocialSecurity.taxableSocialSecurityBenefits(
-        filingStatus = filingStatus,
-        ssRelevantOtherIncome = ordinaryIncomeNonSS,
-        socialSecurityBenefits = socSec
-      )
-
-    // Note the order here:
-    //  1.sum all income with SS.
-    //  2. subtract standard deduction.
-    val taxableIncome = (ordinaryIncomeNonSS + taxableSocialSecurity) -
-      rates.standardDeduction
-
-    rates.ordinaryIncomeBrackets.taxDue(taxableIncome).rounded
   }
 
   def federalTaxDueUsingForm1040(

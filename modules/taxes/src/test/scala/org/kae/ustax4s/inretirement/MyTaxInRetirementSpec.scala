@@ -8,7 +8,8 @@ class MyTaxInRetirementSpec extends FunSuite {
 
   test(
     "MyTaxInRetirement.taxDue " +
-      "agrees with MyTaxInRetirement.taxDueUsingForm1040"
+      "agrees with MyTaxInRetirement.taxDueUsingForm1040, " +
+      "with no qualified income"
   ) {
     val year = Year.of(2021)
     for {
@@ -20,10 +21,11 @@ class MyTaxInRetirementSpec extends FunSuite {
       val socialSecurity = ss.tm
 
       assertEquals(
-        federalTaxDueNoQualifiedInvestments(
+        federalTaxDue(
           year = year,
+          socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
-          socSec = socialSecurity
+          qualifiedIncome = 0.tm
         ),
         federalTaxDueUsingForm1040(
           year = year,
@@ -38,7 +40,8 @@ class MyTaxInRetirementSpec extends FunSuite {
 
   test(
     "MyTaxInRetirement.taxDueWithInvestments " +
-      "agrees with MyTaxInRetirement.taxDueUsingForm1040"
+      "agrees with MyTaxInRetirement.taxDueUsingForm1040, " +
+      "with qualified income"
   ) {
     val year = Year.of(2021)
     for {

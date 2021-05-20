@@ -7,9 +7,8 @@ import org.kae.ustax4s.forms.Form1040
 object MyTaxInRetirement extends IntMoneySyntax {
 
   // TODO: add:
-  //   - unqualified dividends
-  //   - earned income
   //   - state tax
+
   def federalTaxDue(
     year: Year,
     socSec: TMoney,
@@ -23,20 +22,6 @@ object MyTaxInRetirement extends IntMoneySyntax {
       socSec,
       ordinaryIncomeNonSS,
       qualifiedIncome
-    )
-
-  // TODO: do I need this?
-  def federalTaxDueNoQualifiedInvestments(
-    year: Year,
-    socSec: TMoney,
-    ordinaryIncomeNonSS: TMoney
-  ): TMoney =
-    TaxInRetirement.federalTaxDueNoQualifiedInvestments(
-      year,
-      Kevin.birthDate,
-      Kevin.filingStatus(year),
-      socSec,
-      ordinaryIncomeNonSS
     )
 
   def federalTaxDueUsingForm1040(
