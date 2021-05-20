@@ -1,6 +1,7 @@
 package org.kae.ustax4s
 package inretirement
 
+import cats.Show
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.forms.Form1040
 
@@ -12,6 +13,7 @@ object TaxInRetirement extends IntMoneySyntax {
   //   - state tax
 
   final case class FederalTaxResults(
+    ssRelevantOtherIncome: TMoney,
     taxableSocialSecurity: TMoney,
     standardDeduction: TMoney,
     taxableOrdinaryIncome: TMoney,
@@ -19,6 +21,25 @@ object TaxInRetirement extends IntMoneySyntax {
     taxOnQualifiedIncome: TMoney
   ) {
     def taxDue: TMoney = taxOnOrdinaryIncome + taxOnQualifiedIncome
+  }
+
+  object FederalTaxResults {
+    given Show[FederalTaxResults] = new Show[FederalTaxResults] {
+      override def show(r: FederalTaxResults) = {
+        val b = StringBuilder()
+        b.append("Outputs\n")
+        import r._
+        b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
+        b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
+        b.append(s"  standardDeduction: $standardDeduction\n")
+        b.append(s"  taxableOrdinaryIncome: $taxableOrdinaryIncome\n")
+        b.append(s"  taxOnOrdinaryIncome: $taxOnOrdinaryIncome\n")
+        b.append(s"  taxOnQualifiedIncome: $taxOnQualifiedIncome\n")
+        b.append(s"  taxDue: $taxDue\n")
+
+        b.result
+      }
+    }
   }
 
   def federalTaxDue(
@@ -46,11 +67,12 @@ object TaxInRetirement extends IntMoneySyntax {
     ordinaryIncomeNonSS: TMoney,
     qualifiedIncome: TMoney
   ): FederalTaxResults = {
+    val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = filingStatus,
         socialSecurityBenefits = socSec,
-        ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
+        ssRelevantOtherIncome
       )
 
     val rates = TaxRates.of(year, filingStatus, birthDate)
@@ -64,6 +86,7 @@ object TaxInRetirement extends IntMoneySyntax {
       qualifiedIncome
     )
     FederalTaxResults(
+      ssRelevantOtherIncome,
       taxableSocialSecurity,
       rates.standardDeduction,
       taxableOrdinaryIncome,

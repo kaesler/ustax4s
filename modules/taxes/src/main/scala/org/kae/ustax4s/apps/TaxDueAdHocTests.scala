@@ -1,15 +1,13 @@
 package org.kae.ustax4s.apps
 
+import cats.implicits._
 import java.time.Year
-
-import org.kae.ustax4s.IntMoneySyntax
-import org.kae.ustax4s.Kevin
-import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, Kevin}
 
 object TaxDueAdHocTests extends App with IntMoneySyntax {
 
-  TaxInRetirement.federalTaxDue(
+  val results = TaxInRetirement.federalTaxResults(
     year = Year.of(2021),
     Kevin.birthDate,
     FilingStatus.Single,
@@ -17,4 +15,6 @@ object TaxDueAdHocTests extends App with IntMoneySyntax {
     ordinaryIncomeNonSS = 0.tm,
     qualifiedIncome = 50000.tm
   )
+
+  println(results.show)
 }
