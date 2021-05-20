@@ -1,9 +1,10 @@
-package org.kae.ustax4s.apps
+package org.kae.ustax4s
+package apps
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
+import org.kae.ustax4s.IntMoneySyntax
 import org.kae.ustax4s.inretirement.MyTaxInRetirement
-import org.kae.ustax4s.{IntMoneySyntax, _}
 
 object BumpAnalysis extends App with IntMoneySyntax {
   // for each filing status in HOH, Single

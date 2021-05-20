@@ -1,9 +1,9 @@
-package org.kae.ustax4s.apps
+package org.kae.ustax4s
+package apps
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.inretirement.TaxInRetirement
-import org.kae.ustax4s.{IntMoneySyntax, TMoney, TaxableSocialSecurity, _}
 
 object TaxInRetirementTests extends App with IntMoneySyntax {
   val year = Year.of(2021)
