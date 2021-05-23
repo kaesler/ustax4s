@@ -68,6 +68,12 @@ https://www.investopedia.com/terms/t/taxes.asp
 = ordinaryIncome - standardDeduction
 *** qualifiedIncome
 == qualifiedDividends + longTermCapitalGains
+*** massachusettsGrossIncome
+See
+https://www.mass.gov/service-details/learn-about-massachusetts-gross-adjusted-gross-and-taxable-income
+
+= earnedIncome + interest + ordinaryDividends + shortTermCapitalGains +
+longTermCapitalGains + taxable401k + 
 ** Output
 *** taxOnOrdinaryIncome
 *** taxOnQualifiedIncome
