@@ -2,7 +2,7 @@ package org.kae.ustax4s
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import scala.annotation.{nowarn, tailrec}
+import scala.annotation.tailrec
 
 /** Calculates tax on ordinary (non-investment) income.
   *
@@ -143,7 +143,6 @@ final case class OrdinaryIncomeBrackets(
 
 object OrdinaryIncomeBrackets {
 
-  @nowarn("msg=match may not be exhaustive")
   @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
     (year.getValue, status) match {
 

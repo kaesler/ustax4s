@@ -2,11 +2,8 @@ package org.kae.ustax4s
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import scala.annotation.nowarn
 
 object StateTaxMA extends IntMoneySyntax {
-
-  // TODO tests for this.
 
   def taxDue(
     year: Year,
@@ -46,7 +43,6 @@ object StateTaxMA extends IntMoneySyntax {
     filingStatus: FilingStatus,
     birthDate: LocalDate
   ): TMoney = {
-    @nowarn("msg=match may not be exhaustive")
     val unadjustedForAge = (year.getValue, filingStatus) match {
 
       // Note: for now assume same for future years as 2020.
