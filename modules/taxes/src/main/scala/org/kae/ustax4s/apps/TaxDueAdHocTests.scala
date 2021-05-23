@@ -10,10 +10,10 @@ object TaxDueAdHocTests extends App with IntMoneySyntax {
   val results = TaxInRetirement.federalTaxResults(
     year = Year.of(2021),
     Kevin.birthDate,
-    FilingStatus.Single,
-    socSec = 0.tm,
-    ordinaryIncomeNonSS = 0.tm,
-    qualifiedIncome = 50000.tm
+    FilingStatus.HeadOfHousehold,
+    socSec = 17332.tm,
+    ordinaryIncomeNonSS = 14250.tm,
+    qualifiedIncome = 47963.tm
   )
 
   println(results.show)

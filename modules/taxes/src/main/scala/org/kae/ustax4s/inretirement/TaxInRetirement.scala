@@ -148,6 +148,6 @@ object TaxInRetirement extends IntMoneySyntax {
       year,
       Kevin.filingStatus(year),
       Kevin.birthDate,
-      Kevin.numberOfDependents(year)
+      Kevin.numberOfMassachusettsDependents(year)
     )(taxableIncome)
 }
