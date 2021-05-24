@@ -16,11 +16,11 @@ object StateTaxMA extends IntMoneySyntax {
     //  - interest
     //  - dividends
     //  - capital gains
-    taxableIncome: TMoney
+    massachusettsGrossIncome: TMoney
   ): TMoney =
     TMoney.max(
       TMoney.zero,
-      taxableIncome -
+      massachusettsGrossIncome -
         totalExemptions(year, filingStatus, birthDate, dependents)
     ) * rate(year)
 
