@@ -25,7 +25,7 @@ object TaxInRetirement extends IntMoneySyntax:
       override def show(r: FederalTaxResults) = {
         val b = StringBuilder()
         b.append("Outputs\n")
-        import r._
+        import r.*
         b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
         b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
         b.append(s"  standardDeduction: $standardDeduction\n")

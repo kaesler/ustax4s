@@ -16,7 +16,7 @@ class MyTaxInRetirementSpec extends FunSuite:
       i  <- 0 to 100000 by 500
       ss <- 0 to 49000 by 500
     do
-      import org.kae.ustax4s.inretirement.MyTaxInRetirement._
+      import org.kae.ustax4s.inretirement.MyTaxInRetirement.*
       val income         = i.tm
       val socialSecurity = ss.tm
 
@@ -49,7 +49,7 @@ class MyTaxInRetirementSpec extends FunSuite:
       ss     <- 0 to 49000 by 1000
       inv    <- 0 to 30000 by 1000
     do
-      import org.kae.ustax4s.inretirement.MyTaxInRetirement._
+      import org.kae.ustax4s.inretirement.MyTaxInRetirement.*
       val income             = i.tm
       val socialSecurity     = ss.tm
       val qualifiedDividends = inv.tm

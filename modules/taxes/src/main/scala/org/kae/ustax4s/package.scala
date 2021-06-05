@@ -1,7 +1,7 @@
 package org.kae
 
 import cats.kernel.Order
-import eu.timepit.refined._
+import eu.timepit.refined.*
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.Interval
 import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}

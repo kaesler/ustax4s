@@ -1,6 +1,6 @@
 package org.kae.ustax4s.forms
 
-import cats.implicits._
+import cats.implicits.*
 import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.{IntMoneySyntax, Kevin, NonNegMoneyOps, TMoney, TaxRates}
