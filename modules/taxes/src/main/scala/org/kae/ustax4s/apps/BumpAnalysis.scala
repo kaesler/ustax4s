@@ -17,7 +17,7 @@ object BumpAnalysis extends App with IntMoneySyntax:
   val socialSecurityIncome = 49128.tm
 
   val filingStatus = Single // HeadOfHousehold
-  val pairs = for {
+  val pairs = for
     i <- 0 to 60000 by 100
     ssRelevantOtherIncome = i.tm
 //    taxableSocialSecurity = TaxableSocialSecurity.taxableSocialSecurityBenefits(
@@ -31,7 +31,7 @@ object BumpAnalysis extends App with IntMoneySyntax:
       qualifiedDividends = 0.tm,
       verbose = false
     )
-  } yield (ssRelevantOtherIncome, taxDue)
+  yield (ssRelevantOtherIncome, taxDue)
 
   val res = pairs
     .sliding(2)
