@@ -24,7 +24,9 @@ package object ustax4s:
     def unsafeFrom(d: Double): TaxRate =
       refineV[TaxRateRefinement](d).toOption.get
   }
-  implicit val orderingForTaxRate: Ordering[TaxRate] = Ordering.by(_.value)
+  given orderingForTaxRate: Ordering[TaxRate] = Ordering.by(_.value)
+
+  // TODO: Use Scala3?  Type class?
   implicit def orderedForTaxRate(tr: TaxRate): Ordered[TaxRate] =
     Ordered.orderingToOrdered(tr)
 
@@ -38,14 +40,16 @@ package object ustax4s:
 
   private val nnbd = NonNegBigDecimal
 
-  implicit val orderingForTMoney: Ordering[TMoney] = Ordering.by(_.value)
-  implicit val orderingForBigDecimal: Order[BigDecimal] =
+  given orderingForTMoney: Ordering[TMoney] = Ordering.by(_.value)
+  given orderingForBigDecimal: Order[BigDecimal] =
     Order.fromOrdering[BigDecimal]
-  implicit val orderForTMoney: Order[TMoney] =
+
+  given orderForTMoney: Order[TMoney] =
     Order.by { (tm: TMoney) =>
       tm.value
     }
 
+  // TODO: Use Scala3
   implicit class NonNegMoneyOps(val underlying: TMoney):
 
     def rounded: TMoney =
