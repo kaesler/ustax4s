@@ -24,9 +24,7 @@ trait SetGeneration:
       else
         val newOne =
           gen
-            .retryUntil { t =>
-              !alreadyGenerated.contains(t)
-            }
+            .retryUntil(!alreadyGenerated.contains(_))
             .sample
             .get
         loop(alreadyGenerated + newOne)
