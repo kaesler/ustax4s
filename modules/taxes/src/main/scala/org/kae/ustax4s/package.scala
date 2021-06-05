@@ -96,8 +96,8 @@ package object ustax4s:
 
     def u(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
 
-    def max(left: TMoney, right: TMoney)(using o: Order[TMoney]): TMoney =
-      o.max(left, right)
+    def max(left: TMoney, right: TMoney): TMoney =
+      summon[Order[TMoney]].max(left, right)
 
-    def min(left: TMoney, right: TMoney)(using o: Order[TMoney]): TMoney =
-      o.min(left, right)
+    def min(left: TMoney, right: TMoney): TMoney =
+      summon[Order[TMoney]].min(left, right)
