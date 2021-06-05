@@ -30,7 +30,7 @@ object TaxableSocialSecurity extends IntMoneySyntax:
       socialSecurityBenefits = socialSecurityBenefits,
       ssRelevantOtherIncome = ssRelevantOtherIncome
     )
-    if (year.isBefore(Year.of(2022))) unadjusted
+    if year.isBefore(Year.of(2022)) then unadjusted
     else
       val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
       val adjusted         = unadjusted mul PosDouble.unsafeFrom(adjustmentFactor)
@@ -50,7 +50,7 @@ object TaxableSocialSecurity extends IntMoneySyntax:
     val combinedIncome = ssRelevantOtherIncome + socialSecurityBenefits / two
 
     if (combinedIncome < lowBase) TMoney.zero
-    else if (combinedIncome < highBase)
+    else if combinedIncome < highBase then
       val fractionTaxable  = PosDouble.unsafeFrom(0.5)
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%

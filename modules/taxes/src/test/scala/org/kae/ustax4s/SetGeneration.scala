@@ -20,7 +20,7 @@ trait SetGeneration:
 
     @tailrec
     def loop(alreadyGenerated: Set[T]): Gen[Set[T]] =
-      if (alreadyGenerated.size == n) alreadyGenerated
+      if alreadyGenerated.size == n then alreadyGenerated
       else
         val newOne =
           gen

@@ -51,13 +51,13 @@ class QualifiedIncomeBracketsSpec
     forAll { (brackets: QualifiedIncomeBrackets, gains1: TMoney, gains2: TMoney) =>
       {
         val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
-        if (gains1 < gains2)
+        if gains1 < gains2 then
           brackets.taxDueFunctionally(ordinaryIncome, gains1) < brackets
             .taxDueFunctionally(
               ordinaryIncome,
               gains2
             )
-        else if (gains1 > gains2)
+        else if gains1 > gains2 then
           brackets.taxDueFunctionally(ordinaryIncome, gains1) > brackets
             .taxDueFunctionally(
               ordinaryIncome,
@@ -80,7 +80,7 @@ class QualifiedIncomeBracketsSpec
           brackets
             .taxDueFunctionally(income1, gains) <= brackets
             .taxDueFunctionally(income1, gains)
-        else if (income1 > income2)
+        else if income1 > income2 then
           brackets
             .taxDueFunctionally(income1, gains) >= brackets
             .taxDueFunctionally(income2, gains)

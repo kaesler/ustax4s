@@ -7,7 +7,5 @@ object Kevin:
   val birthDate = LocalDate.of(1955, 10, 2)
 
   def filingStatus(year: Year): FilingStatus =
-    if (year.getValue <= 2027)
-      HeadOfHousehold
-    else
-      Single
+    if year.getValue <= 2027 then HeadOfHousehold
+    else Single

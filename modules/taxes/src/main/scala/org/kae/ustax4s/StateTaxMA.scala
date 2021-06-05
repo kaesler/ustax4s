@@ -65,10 +65,8 @@ object StateTaxMA extends IntMoneySyntax:
       case _ => ???
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): TMoney =
-    if (isAge65OrOlder(birthDate, year))
-      700.tm
-    else
-      TMoney.zero
+    if isAge65OrOlder(birthDate, year) then 700.tm
+    else TMoney.zero
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     taxYear.getValue - birthDate.getYear >= 65

@@ -104,10 +104,8 @@ class OrdinaryIncomeBracketsSpec
 
   property("tax rises monotonically with income") {
     forAll { (brackets: OrdinaryIncomeBrackets, income1: TMoney, income2: TMoney) =>
-      if (income1 < income2)
-        brackets.taxDue(income1) < brackets.taxDue(income2)
-      else if (income1 > income2)
-        brackets.taxDue(income1) > brackets.taxDue(income2)
+      if income1 < income2 then brackets.taxDue(income1) < brackets.taxDue(income2)
+      else if income1 > income2 then brackets.taxDue(income1) > brackets.taxDue(income2)
       else brackets.taxDue(income1) == brackets.taxDue(income2)
     }
   }

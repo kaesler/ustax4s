@@ -7,7 +7,7 @@ object StandardDeduction:
 
   def of(year: Year, filingStatus: FilingStatus, birthDate: LocalDate): TMoney =
     unadjustedForAge(year, filingStatus) +
-      (if (isAge65OrOlder(birthDate, year)) TMoney.u(1350) else TMoney.zero)
+      (if isAge65OrOlder(birthDate, year) then TMoney.u(1350) else TMoney.zero)
 
   private def unadjustedForAge(year: Year, filingStatus: FilingStatus): TMoney =
     (year.getValue, filingStatus) match
