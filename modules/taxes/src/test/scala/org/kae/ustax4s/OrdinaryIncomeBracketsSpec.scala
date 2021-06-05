@@ -12,10 +12,9 @@ class OrdinaryIncomeBracketsSpec
     with TMoneyGeneration
     with IntMoneySyntax:
 
-  given arbTaxBrackets: Arbitrary[OrdinaryIncomeBrackets] =
-    Arbitrary(genTaxBrackets)
+  given Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
 
-  given arbIncome: Arbitrary[TMoney] = Arbitrary(genMoney)
+  given Arbitrary[TMoney] = Arbitrary(genMoney)
 
   private val zero    = TMoney.zero
   private val TheYear = Year.of(2021)

@@ -24,7 +24,7 @@ package object ustax4s:
     def unsafeFrom(d: Double): TaxRate =
       refineV[TaxRateRefinement](d).toOption.get
   }
-  given orderingForTaxRate: Ordering[TaxRate] = Ordering.by(_.value)
+  given Ordering[TaxRate] = Ordering.by(_.value)
 
   // TODO: Use Scala3?  Type class?
   implicit def orderedForTaxRate(tr: TaxRate): Ordered[TaxRate] =
@@ -40,14 +40,10 @@ package object ustax4s:
 
   private val nnbd = NonNegBigDecimal
 
-  given orderingForTMoney: Ordering[TMoney] = Ordering.by(_.value)
-  given orderingForBigDecimal: Order[BigDecimal] =
-    Order.fromOrdering[BigDecimal]
+  given Ordering[TMoney]  = Ordering.by(_.value)
+  given Order[BigDecimal] = Order.fromOrdering[BigDecimal]
 
-  given orderForTMoney: Order[TMoney] =
-    Order.by { (tm: TMoney) =>
-      tm.value
-    }
+  given Order[TMoney] = Order.by(_.value)
 
   // TODO: Use Scala3
   implicit class NonNegMoneyOps(val underlying: TMoney):
@@ -100,8 +96,8 @@ package object ustax4s:
 
     def u(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
 
-    def max(left: TMoney, right: TMoney): TMoney =
-      orderForTMoney.max(left, right)
+    def max(left: TMoney, right: TMoney)(using o: Order[TMoney]): TMoney =
+      o.max(left, right)
 
-    def min(left: TMoney, right: TMoney): TMoney =
-      orderForTMoney.min(left, right)
+    def min(left: TMoney, right: TMoney)(using o: Order[TMoney]): TMoney =
+      o.min(left, right)

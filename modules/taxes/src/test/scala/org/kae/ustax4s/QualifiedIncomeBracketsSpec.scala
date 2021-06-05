@@ -11,10 +11,10 @@ class QualifiedIncomeBracketsSpec
     with QualifiedBracketsGeneration
     with TMoneyGeneration:
 
-  private given arbQualifiedBrackets: Arbitrary[QualifiedIncomeBrackets] = Arbitrary(
+  private given Arbitrary[QualifiedIncomeBrackets] = Arbitrary(
     genQualifiedBrackets
   )
-  private given arbIncome: Arbitrary[TMoney] = Arbitrary(genMoney)
+  private given Arbitrary[TMoney] = Arbitrary(genMoney)
 
   private val zero = TMoney.zero
 
