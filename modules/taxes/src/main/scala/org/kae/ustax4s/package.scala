@@ -8,7 +8,7 @@ import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
 import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 
-package object ustax4s {
+package object ustax4s:
 
   // TODO use Scala3 opaque types and extension methods here.
   // TODO: use integers for tax rates as in Haskell/Purescript code.
@@ -46,7 +46,7 @@ package object ustax4s {
       tm.value
     }
 
-  implicit class NonNegMoneyOps(val underlying: TMoney) {
+  implicit class NonNegMoneyOps(val underlying: TMoney):
 
     def rounded: TMoney =
       nnbd.unsafeFrom(underlying.value.setScale(0, RoundingMode.HALF_UP))
@@ -85,13 +85,11 @@ package object ustax4s {
 
     def div(divisor: TMoney): Double =
       underlying.value.toDouble / divisor.value.toDouble
-  }
 
-  private object NonNegMoneyOps {
+  private object NonNegMoneyOps:
     private val bdZero = BigDecimal(0)
-  }
 
-  object TMoney {
+  object TMoney:
     val zero: TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(0))
 
     def sum(ms: TMoney*): TMoney = nnbd.unsafeFrom(ms.map(_.value).sum)
@@ -103,5 +101,3 @@ package object ustax4s {
 
     def min(left: TMoney, right: TMoney): TMoney =
       orderForTMoney.min(left, right)
-  }
-}

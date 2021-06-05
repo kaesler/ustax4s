@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
-class MyTaxInRetirementSpec extends FunSuite {
+class MyTaxInRetirementSpec extends FunSuite:
 
   test(
     "MyTaxInRetirement.taxDue " +
@@ -12,10 +12,10 @@ class MyTaxInRetirementSpec extends FunSuite {
       "with no qualified income"
   ) {
     val year = Year.of(2021)
-    for {
+    for
       i  <- 0 to 100000 by 500
       ss <- 0 to 49000 by 500
-    } {
+    do
       import org.kae.ustax4s.inretirement.MyTaxInRetirement._
       val income         = i.tm
       val socialSecurity = ss.tm
@@ -35,7 +35,6 @@ class MyTaxInRetirementSpec extends FunSuite {
           verbose = false
         )
       )
-    }
   }
 
   test(
@@ -44,12 +43,12 @@ class MyTaxInRetirementSpec extends FunSuite {
       "with qualified income"
   ) {
     val year = Year.of(2021)
-    for {
+    for
       status <- List(HeadOfHousehold, Single)
       i      <- 0 to 70000 by 1000
       ss     <- 0 to 49000 by 1000
       inv    <- 0 to 30000 by 1000
-    } {
+    do
       import org.kae.ustax4s.inretirement.MyTaxInRetirement._
       val income             = i.tm
       val socialSecurity     = ss.tm
@@ -88,6 +87,4 @@ class MyTaxInRetirementSpec extends FunSuite {
           verbose = false
         )
       )
-    }
   }
-}

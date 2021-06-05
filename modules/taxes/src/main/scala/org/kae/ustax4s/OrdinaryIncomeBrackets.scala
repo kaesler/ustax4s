@@ -11,7 +11,7 @@ import scala.annotation.tailrec
   */
 final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[TMoney, TaxRate]
-) extends IntMoneySyntax {
+) extends IntMoneySyntax:
   require(bracketStarts.contains(TMoney.zero))
 
   val bracketStartsAscending: Vector[(TMoney, TaxRate)] =
@@ -24,22 +24,17 @@ final case class OrdinaryIncomeBrackets(
     * @param taxableOrdinaryIncome
     *   the ordinary income
     */
-  def taxDue(
-    taxableOrdinaryIncome: TMoney
-  ): TMoney =
+  def taxDue(taxableOrdinaryIncome: TMoney): TMoney =
     taxDueFunctionally(taxableOrdinaryIncome)
 
-  private def taxDueFunctionally(
-    taxableOrdinaryIncome: TMoney
-  ): TMoney = {
+  private def taxDueFunctionally(taxableOrdinaryIncome: TMoney): TMoney =
 
     // Note: Qualified investment income sort of occupies the top brackets above
     // ordinary income and so does not affect this.
 
     case class Accum(ordinaryIncomeYetToBeTaxed: TMoney, taxSoFar: TMoney)
-    object Accum {
+    object Accum:
       def initial: Accum = apply(taxableOrdinaryIncome, TMoney.zero)
-    }
 
     val accum = bracketsStartsDescending.foldLeft(Accum.initial) {
 
@@ -62,11 +57,10 @@ final case class OrdinaryIncomeBrackets(
     val res = accum.taxSoFar
     // println(s"taxDueFunctionally($taxableOrdinaryIncome): $res")
     res
-  }
 
   def taxDueImperatively(
     taxableOrdinaryIncome: TMoney
-  ): TMoney = {
+  ): TMoney =
     var ordinaryIncomeYetToBeTaxed = taxableOrdinaryIncome
     var taxSoFar                   = TMoney.zero
     bracketsStartsDescending.foreach { case (bracketStart, bracketRate) =>
@@ -82,7 +76,6 @@ final case class OrdinaryIncomeBrackets(
     }
     assert(ordinaryIncomeYetToBeTaxed.isZero)
     taxSoFar
-  }
 
   def taxableIncomeToEndOfBracket(bracketRate: TaxRate): TMoney =
     bracketStartsAscending
@@ -98,7 +91,7 @@ final case class OrdinaryIncomeBrackets(
         )
       )
 
-  def taxToEndOfBracket(bracketRate: TaxRate): TMoney = {
+  def taxToEndOfBracket(bracketRate: TaxRate): TMoney =
     require(bracketExists(bracketRate))
 
     val taxes = bracketStartsAscending
@@ -115,7 +108,6 @@ final case class OrdinaryIncomeBrackets(
       }
 
     taxes.foldLeft(0.tm)(_ + _)
-  }
 
   def bracketWidth(bracketRate: TaxRate): TMoney =
     bracketStartsAscending
@@ -139,9 +131,8 @@ final case class OrdinaryIncomeBrackets(
 
   def bracketExists(bracketRate: TaxRate): Boolean =
     bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
-}
 
-object OrdinaryIncomeBrackets {
+object OrdinaryIncomeBrackets:
 
   @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
     (year.getValue, status) match {
@@ -227,4 +218,3 @@ object OrdinaryIncomeBrackets {
           TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )
-}

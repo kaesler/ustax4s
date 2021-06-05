@@ -10,8 +10,7 @@ case class TaxRates(
   ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
   qualifiedIncomeBrackets: QualifiedIncomeBrackets,
   filingStatus: FilingStatus
-) {
-
+):
   // Line 11:
   def taxDueBeforeCredits(
     ordinaryIncome: TMoney,
@@ -33,9 +32,8 @@ case class TaxRates(
       (form.childTaxCredit + form.schedule3
         .map(_.nonRefundableCredits)
         .getOrElse(TMoney.zero))
-}
 
-object TaxRates {
+object TaxRates:
 
   def of(
     year: Year,
@@ -48,4 +46,3 @@ object TaxRates {
       QualifiedIncomeBrackets.of(year, filingStatus),
       filingStatus
     )
-}

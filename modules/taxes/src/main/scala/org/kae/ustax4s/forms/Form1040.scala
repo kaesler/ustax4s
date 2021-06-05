@@ -28,26 +28,23 @@ final case class Form1040(
   // Line 5a:
   socialSecurityBenefits: TMoney,
   rates: TaxRates
-) {
-
-  def totalInvestmentIncome: TMoney = {
+):
+  def totalInvestmentIncome: TMoney =
     // Line 3b:
     ordinaryDividends +
       // Line 6:
       scheduleD
         .map(_.netLongTermCapitalGains)
         .getOrElse(TMoney.zero)
-  }
 
   // This is what gets taxed at LTCG rates.
-  def qualifiedIncome: TMoney = {
+  def qualifiedIncome: TMoney =
     // Line 3a:
     qualifiedDividends +
       // Line 6:
       scheduleD
         .map(_.netLongTermCapitalGains)
         .getOrElse(TMoney.zero)
-  }
 
   // Line 5b:
   def taxableSocialSecurityBenefits: TMoney =
@@ -93,7 +90,7 @@ final case class Form1040(
 
   def taxableOrdinaryIncome: TMoney = taxableIncome - qualifiedIncome
 
-  def showValues: String = {
+  def showValues: String =
     s"""
        |status: $filingStatus
        |std deduction: ${rates.standardDeduction}
@@ -105,5 +102,3 @@ final case class Form1040(
        |taxableIncome: $taxableIncome
        |taxableOrdinaryIncome: $taxableOrdinaryIncome
        |""".stripMargin
-  }
-}

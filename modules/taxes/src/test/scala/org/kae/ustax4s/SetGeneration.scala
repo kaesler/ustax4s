@@ -6,7 +6,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import scala.annotation.tailrec
 
 /* ScalaCheck generators for sets. */
-trait SetGeneration {
+trait SetGeneration:
 
   /** Returns a Gen capable of producing a Set of elements of a specified size.
     * @tparam T
@@ -19,10 +19,9 @@ trait SetGeneration {
   def genSet[T](n: Int, gen: Gen[T]): Gen[Set[T]] = {
 
     @tailrec
-    def loop(alreadyGenerated: Set[T]): Gen[Set[T]] = {
-      if (alreadyGenerated.size == n) {
-        alreadyGenerated
-      } else {
+    def loop(alreadyGenerated: Set[T]): Gen[Set[T]] =
+      if (alreadyGenerated.size == n) alreadyGenerated
+      else
         val newOne =
           gen
             .retryUntil { t =>
@@ -31,8 +30,6 @@ trait SetGeneration {
             .sample
             .get
         loop(alreadyGenerated + newOne)
-      }
-    }
 
     loop(Set.empty)
   }
@@ -45,6 +42,5 @@ trait SetGeneration {
     */
   def genSetOfN[T: Arbitrary](n: Int): Gen[Set[T]] =
     genSet[T](n, arbitrary[T])
-}
 
 object SetGeneration extends SetGeneration

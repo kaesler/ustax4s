@@ -4,10 +4,7 @@ package inretirement
 import java.time.Year
 import org.kae.ustax4s.forms.Form1040
 
-object MyTaxInRetirement extends IntMoneySyntax {
-
-  // TODO: add:
-  //   - state tax
+object MyTaxInRetirement extends IntMoneySyntax:
 
   def federalTaxDue(
     year: Year,
@@ -78,5 +75,3 @@ object MyTaxInRetirement extends IntMoneySyntax {
       Kevin.birthDate,
       Kevin.numberOfMassachusettsDependents(year)
     )(taxableIncome)
-
-}

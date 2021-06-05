@@ -3,7 +3,7 @@ package org.kae.ustax4s
 import java.time.{LocalDate, Month, Year}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
-object StandardDeduction {
+object StandardDeduction:
 
   def of(year: Year, filingStatus: FilingStatus, birthDate: LocalDate): TMoney =
     unadjustedForAge(year, filingStatus) +
@@ -34,4 +34,3 @@ object StandardDeduction {
         .of(taxYear.getValue, Month.JANUARY.getValue, 2)
         .minusYears(65)
     )
-}

@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 
-class StateTaxMA_AsFiled_Spec extends FunSuite with IntMoneySyntax {
+class StateTaxMA_AsFiled_Spec extends FunSuite with IntMoneySyntax:
 
   test("MA State tax should match what I filed in 2018") {
 
@@ -45,4 +45,3 @@ class StateTaxMA_AsFiled_Spec extends FunSuite with IntMoneySyntax {
       7868.tm
     )
   }
-}

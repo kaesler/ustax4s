@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 
-class QualifiedIncomeBrackets2018Spec extends FunSuite {
+class QualifiedIncomeBrackets2018Spec extends FunSuite:
 
   test(
     "QualifiedIncomeTaxBrackets for HOH 2018 should match my actual return"
@@ -20,4 +20,3 @@ class QualifiedIncomeBrackets2018Spec extends FunSuite {
       TMoney.u(2217)
     )
   }
-}

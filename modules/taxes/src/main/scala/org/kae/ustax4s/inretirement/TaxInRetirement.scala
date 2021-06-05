@@ -7,10 +7,7 @@ import org.kae.ustax4s.forms.Form1040
 
 /** Simplified interface to 1040 calculations. Assume: No deductions credits or other complications.
   */
-object TaxInRetirement extends IntMoneySyntax {
-
-  // TODO: add:
-  //   - state tax
+object TaxInRetirement extends IntMoneySyntax:
 
   final case class FederalTaxResults(
     ssRelevantOtherIncome: TMoney,
@@ -150,4 +147,3 @@ object TaxInRetirement extends IntMoneySyntax {
       Kevin.birthDate,
       Kevin.numberOfMassachusettsDependents(year)
     )(taxableIncome)
-}

@@ -12,7 +12,7 @@ import scala.annotation.tailrec
   */
 final case class QualifiedIncomeBrackets(
   bracketStarts: Map[TMoney, TaxRate]
-) {
+):
   // Note: We capture "tax free LTCGs with suitably low income" by having a
   // zero-rate lowest bracket.
   require(bracketStarts.contains(TMoney.zero))
@@ -45,16 +45,15 @@ final case class QualifiedIncomeBrackets(
   def taxDueFunctionally(
     taxableOrdinaryIncome: TMoney,
     qualifiedIncome: TMoney
-  ): TMoney = {
+  ): TMoney =
     case class Accum(
       totalIncomeInHigherBrackets: TMoney,
       gainsYetToBeTaxed: TMoney,
       gainsTaxSoFar: TMoney
     )
-    object Accum {
+    object Accum:
       def initial: Accum =
         apply(TMoney.zero, qualifiedIncome, TMoney.zero)
-    }
 
     val totalTaxableIncome = taxableOrdinaryIncome + qualifiedIncome
     val accum =
@@ -96,12 +95,11 @@ final case class QualifiedIncomeBrackets(
 //      s"taxDueOnInvestments(${taxableOrdinaryIncome}, $qualifiedInvestmentIncome): $res"
 //    )
     res
-  }
 
   def taxDueImperatively(
     taxableOrdinaryIncome: TMoney,
     qualifiedIncome: TMoney
-  ): TMoney = {
+  ): TMoney =
     var totalIncomeInHigherBrackets = TMoney.zero
     var gainsYetToBeTaxed           = qualifiedIncome
     var gainsTaxSoFar               = TMoney.zero
@@ -135,13 +133,11 @@ final case class QualifiedIncomeBrackets(
 //      s"taxDueOnInvestments(${taxableOrdinaryIncome}, $qualifiedInvestmentIncome): $res"
 //    )
     res
-  }
 
   def bracketExists(bracketRate: TaxRate): Boolean =
     bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
-}
 
-object QualifiedIncomeBrackets {
+object QualifiedIncomeBrackets:
 
   @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
     (year.getValue, status) match {
@@ -203,4 +199,3 @@ object QualifiedIncomeBrackets {
           TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )
-}

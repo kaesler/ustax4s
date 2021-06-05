@@ -5,9 +5,9 @@ import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.Kevin
 import org.kae.ustax4s.inretirement.TaxInRetirement
 
-object MakeTestDataForTypeScript extends App {
+object MakeTestDataForTypeScript extends App:
 
-  import TestDataGeneration._
+  import TestDataGeneration.*
 
   val year = Year.of(2021)
 
@@ -28,4 +28,3 @@ object MakeTestDataForTypeScript extends App {
       s"  { filingStatus: $status, socSec: $ss, ordinaryIncomeNonSS: $i401k, qualifiedIncome: $qInv, tax: $tax },"
     )
   }
-}

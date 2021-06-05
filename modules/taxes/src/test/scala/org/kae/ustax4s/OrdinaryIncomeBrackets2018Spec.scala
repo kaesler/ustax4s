@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 
-class OrdinaryIncomeBrackets2018Spec extends FunSuite with IntMoneySyntax {
+class OrdinaryIncomeBrackets2018Spec extends FunSuite with IntMoneySyntax:
   private val headOfHouseHoldSamples = List(
     (0, 0),
     (990, 99),
@@ -21,4 +21,3 @@ class OrdinaryIncomeBrackets2018Spec extends FunSuite with IntMoneySyntax {
       )
     }
   }
-}

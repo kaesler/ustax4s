@@ -1,10 +1,10 @@
 package org.kae.ustax4s.apps
 
 import java.time.Year
-import org.kae.ustax4s._
+import org.kae.ustax4s.*
 import org.kae.ustax4s.inretirement.MyTaxInRetirement
 
-object ApparentAnomalyIn2021 extends App with IntMoneySyntax {
+object ApparentAnomalyIn2021 extends App with IntMoneySyntax:
   val year = Year.of(2021)
 
   val ss                   = 0.tm
@@ -23,4 +23,3 @@ object ApparentAnomalyIn2021 extends App with IntMoneySyntax {
       verbose = false
     )
   println(s"tax: $tax")
-}

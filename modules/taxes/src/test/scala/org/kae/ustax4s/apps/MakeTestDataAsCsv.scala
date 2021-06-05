@@ -6,7 +6,7 @@ import org.kae.ustax4s.inretirement.TaxInRetirement
 
 object MakeTestDataAsCsv extends App {
 
-  import TestDataGeneration._
+  import TestDataGeneration.*
 
   private val year = Year.of(2021)
 

@@ -5,8 +5,7 @@ package forms
 final case class QualifiedDividendsAndCapitalGainsWorksheet(
   ordinaryBrackets: OrdinaryIncomeBrackets,
   qualifiedBrackets: QualifiedIncomeBrackets
-) {
-
+):
   // TODO: how to express this in an LP model?
   //  - compute tax on regular and investments separately
   //  - adjust brackets for non-investments by amount receiving preferential treatment?
@@ -28,4 +27,3 @@ final case class QualifiedDividendsAndCapitalGainsWorksheet(
     //   - preferential rates applied
     //   - no preferential rates applied
     ???
-}

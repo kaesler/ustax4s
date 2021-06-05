@@ -9,7 +9,7 @@ import org.scalacheck.Prop.forAll
 class QualifiedIncomeBracketsSpec
     extends ScalaCheckSuite
     with QualifiedBracketsGeneration
-    with TMoneyGeneration {
+    with TMoneyGeneration:
 
   private implicit val arbQualifiedBrackets: Arbitrary[QualifiedIncomeBrackets] = Arbitrary(
     genQualifiedBrackets
@@ -117,4 +117,3 @@ class QualifiedIncomeBracketsSpec
       brackets.taxDueFunctionally(zero, gains) <= maxTax
     }
   }
-}

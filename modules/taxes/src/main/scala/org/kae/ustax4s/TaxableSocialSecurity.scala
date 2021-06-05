@@ -8,7 +8,7 @@ import eu.timepit.refined.types.numeric.{PosDouble, PosInt}
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
-object TaxableSocialSecurity extends IntMoneySyntax {
+object TaxableSocialSecurity extends IntMoneySyntax:
 
   private val two = PosInt.unsafeFrom(2)
 
@@ -25,14 +25,14 @@ object TaxableSocialSecurity extends IntMoneySyntax {
     socialSecurityBenefits: TMoney,
     ssRelevantOtherIncome: TMoney,
     year: Year
-  ): TMoney = {
+  ): TMoney =
     val unadjusted = taxableSocialSecurityBenefits(
       filingStatus = filingStatus,
       socialSecurityBenefits = socialSecurityBenefits,
       ssRelevantOtherIncome = ssRelevantOtherIncome
     )
     if (year.isBefore(Year.of(2022))) unadjusted
-    else {
+    else
       val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
       val adjusted         = unadjusted mul PosDouble.unsafeFrom(adjustmentFactor)
       TMoney.min(
@@ -40,20 +40,18 @@ object TaxableSocialSecurity extends IntMoneySyntax {
         socialSecurityBenefits mul PosDouble.unsafeFrom(0.85)
       )
       unadjusted mul PosDouble.unsafeFrom(adjustmentFactor)
-    }
-  }
 
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
     socialSecurityBenefits: TMoney,
     ssRelevantOtherIncome: TMoney
-  ): TMoney = {
+  ): TMoney =
     val (lowBase, highBase) = bases(filingStatus)
 
     val combinedIncome = ssRelevantOtherIncome + socialSecurityBenefits / two
 
     if (combinedIncome < lowBase) TMoney.zero
-    else if (combinedIncome < highBase) {
+    else if (combinedIncome < highBase)
       val fractionTaxable  = PosDouble.unsafeFrom(0.5)
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%
@@ -61,7 +59,7 @@ object TaxableSocialSecurity extends IntMoneySyntax {
         (combinedIncome - lowBase) mul fractionTaxable,
         maxSocSecTaxable
       )
-    } else {
+    else
       val fractionTaxable  = PosDouble.unsafeFrom(0.85)
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
 
@@ -71,6 +69,3 @@ object TaxableSocialSecurity extends IntMoneySyntax {
         TMoney.u(4500) + ((combinedIncome - highBase) mul fractionTaxable),
         maxSocSecTaxable
       )
-    }
-  }
-}

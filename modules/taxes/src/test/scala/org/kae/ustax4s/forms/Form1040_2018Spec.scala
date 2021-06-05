@@ -5,7 +5,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.{IntMoneySyntax, Kevin, NonNegMoneyOps, TMoney, TaxRates}
 
-class Form1040_2018Spec extends FunSuite with IntMoneySyntax {
+class Form1040_2018Spec extends FunSuite with IntMoneySyntax:
 
   test("Form1040 totalTax should match what I filed") {
     val year = Year.of(2018)
@@ -75,4 +75,3 @@ class Form1040_2018Spec extends FunSuite with IntMoneySyntax {
     )
     assertEquals(rates.totalTax(form).rounded, 20405.tm)
   }
-}

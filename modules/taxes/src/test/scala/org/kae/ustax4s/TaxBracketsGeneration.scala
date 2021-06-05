@@ -2,23 +2,21 @@ package org.kae.ustax4s
 
 import org.scalacheck.Gen
 
-trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration {
+trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:
 
   // Somewhat realistic.
   private val genBracketBorder: Gen[TMoney] =
     Gen.choose(10, 500000).map(TMoney.u)
 
-  val genTaxBrackets: Gen[OrdinaryIncomeBrackets] = {
-    for {
+  val genTaxBrackets: Gen[OrdinaryIncomeBrackets] =
+    for
       bracketCount <- Gen.choose(1, 10)
       rates        <- genSet(bracketCount, genNonZeroTaxRate)
       // rates should always be progressive
       ratesSortedAscending = rates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genBracketBorder)
-    } yield OrdinaryIncomeBrackets(
+    yield OrdinaryIncomeBrackets(
       (TMoney.zero :: bracketBorders.toList).sorted
         .zip(ratesSortedAscending)
         .toMap
     )
-  }
-}

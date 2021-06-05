@@ -7,8 +7,6 @@ final case class ScheduleD(
   longTermCapitalGains: TMoney,
   // Line 13
   capitalGainsDistributions: TMoney
-) {
-
+):
   def netLongTermCapitalGains: TMoney =
     longTermCapitalGains + capitalGainsDistributions
-}

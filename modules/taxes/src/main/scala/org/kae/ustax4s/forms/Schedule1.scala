@@ -11,8 +11,7 @@ final case class Schedule1(
   healthSavingsAccountDeduction: TMoney,
   // Line 27:
   deductiblePartOfSelfEmploymentTax: TMoney
-) {
-
+):
   // TODO: may need negative Money type here
   def capitalGainOrLoss: TMoney =
     scheduleD.map(_.netLongTermCapitalGains).getOrElse(TMoney.zero)
@@ -21,4 +20,3 @@ final case class Schedule1(
 
   def adjustmentsToIncome: TMoney =
     healthSavingsAccountDeduction + deductiblePartOfSelfEmploymentTax
-}

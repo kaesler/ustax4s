@@ -10,7 +10,7 @@ class OrdinaryIncomeBracketsSpec
     extends ScalaCheckSuite
     with TaxBracketsGeneration
     with TMoneyGeneration
-    with IntMoneySyntax {
+    with IntMoneySyntax:
 
   implicit val arbTaxBrackets: Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
   implicit val arbIncome: Arbitrary[TMoney]                      = Arbitrary(genMoney)
@@ -126,15 +126,13 @@ class OrdinaryIncomeBracketsSpec
   }
 
   test("give expected results at bracket boundaries for 2021") {
-    for {
+    for
       filingStatus <- List(Single)
       brackets = OrdinaryIncomeBrackets.of(TheYear, filingStatus)
       rate <- brackets.ratesForBoundedBrackets
-    } {
+    do
       val taxableIncome = brackets.taxableIncomeToEndOfBracket(rate)
       val expectedTax   = brackets.taxToEndOfBracket(rate)
 
       assertEquals(brackets.taxDue(taxableIncome), expectedTax)
-    }
   }
-}

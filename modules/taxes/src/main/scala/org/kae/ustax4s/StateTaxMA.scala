@@ -3,7 +3,7 @@ package org.kae.ustax4s
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
-object StateTaxMA extends IntMoneySyntax {
+object StateTaxMA extends IntMoneySyntax:
 
   def taxDue(
     year: Year,
@@ -78,4 +78,3 @@ object StateTaxMA extends IntMoneySyntax {
     taxYear.getValue - birthDate.getYear >= 65
 
   private def dependentExceptions(dependents: Int): TMoney = TMoney.u(1000) mul dependents
-}
