@@ -135,7 +135,7 @@ final case class OrdinaryIncomeBrackets(
 object OrdinaryIncomeBrackets:
 
   @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
-    (year.getValue, status) match {
+    (year.getValue, status) match
 
       // Note: for now assume 2021 rates in later years.
       case (year, fs) if year > 2021 => of(Year.of(2021), fs)
@@ -206,7 +206,7 @@ object OrdinaryIncomeBrackets:
         )
 
       case _ => ???
-    }
+    end match
 
   private def create(
     pairs: Map[Int, Int]

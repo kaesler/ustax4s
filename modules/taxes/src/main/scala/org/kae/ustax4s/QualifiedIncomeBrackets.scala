@@ -140,7 +140,7 @@ final case class QualifiedIncomeBrackets(
 object QualifiedIncomeBrackets:
 
   @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
-    (year.getValue, status) match {
+    (year.getValue, status) match
 
       // Note: for now assume 2021 rates into the future.
       case (year, fs) if year > 2021 => of(Year.of(2021), fs)
@@ -187,7 +187,7 @@ object QualifiedIncomeBrackets:
         )
 
       case _ => ???
-    }
+    end match
 
   private def create(
     pairs: Map[Int, Int]

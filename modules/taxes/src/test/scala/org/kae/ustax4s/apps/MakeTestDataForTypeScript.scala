@@ -20,10 +20,9 @@ object MakeTestDataForTypeScript extends App:
       ordinaryIncomeNonSS = i401k,
       qualifiedIncome = qInv
     )
-    val status = fs match {
+    val status = fs match
       case HeadOfHousehold => "FilingStatus.HOH"
       case Single          => "FilingStatus.Single"
-    }
     println(
       s"  { filingStatus: $status, socSec: $ss, ordinaryIncomeNonSS: $i401k, qualifiedIncome: $qInv, tax: $tax },"
     )

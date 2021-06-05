@@ -13,9 +13,8 @@ object TaxableSocialSecurity extends IntMoneySyntax:
   private val two = PosInt.unsafeFrom(2)
 
   private def bases(filingStatus: FilingStatus): (TMoney, TMoney) =
-    filingStatus match {
+    filingStatus match
       case Single | HeadOfHousehold => (25000.tm, 34000.tm)
-    }
 
   // Adjusted to model the fact that the bases are not adjusted annually
   // as tax brackets are. So we just estimate: amount rises 3% per year

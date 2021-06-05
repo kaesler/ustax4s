@@ -35,23 +35,20 @@ object StateTaxMA extends IntMoneySyntax:
       dependentExceptions(dependents)
 
   // Note: Social Security is not taxed.
-  private def rate(year: Year): TaxRate = {
-    val r = year.getValue match {
+  private def rate(year: Year): TaxRate =
+    val r = year.getValue match
       case 2018          => 0.051
       case 2019          => 0.0505
       case 2020          => 0.05
       case x if x > 2020 => 0.05
       case x if x < 2018 => 0.051
-    }
     TaxRate.unsafeFrom(r)
-  }
 
   private def personalExemption(
     year: Year,
     filingStatus: FilingStatus
   ): TMoney =
-    (year.getValue, filingStatus) match {
-
+    (year.getValue, filingStatus) match
       // Note: for now assume same for future years as 2020.
       case (year, fs) if year > 2020 =>
         personalExemption(Year.of(2020), fs)
@@ -66,7 +63,6 @@ object StateTaxMA extends IntMoneySyntax:
       case (2018, Single)          => TMoney.u(4400)
 
       case _ => ???
-    }
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): TMoney =
     if (isAge65OrOlder(birthDate, year))

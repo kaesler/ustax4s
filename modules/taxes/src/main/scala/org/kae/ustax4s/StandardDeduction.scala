@@ -10,7 +10,7 @@ object StandardDeduction:
       (if (isAge65OrOlder(birthDate, year)) TMoney.u(1350) else TMoney.zero)
 
   private def unadjustedForAge(year: Year, filingStatus: FilingStatus): TMoney =
-    (year.getValue, filingStatus) match {
+    (year.getValue, filingStatus) match
 
       // Note: for now assume 2021 rates into the future.
       case (year, fs) if year > 2021 => unadjustedForAge(Year.of(2021), fs)
@@ -26,7 +26,6 @@ object StandardDeduction:
       case (2018, Single) => TMoney.u(12000)
 
       case _ => ???
-    }
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     birthDate.isBefore(
