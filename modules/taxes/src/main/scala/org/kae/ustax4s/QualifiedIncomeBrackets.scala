@@ -105,7 +105,7 @@ final case class QualifiedIncomeBrackets(
     var gainsTaxSoFar               = TMoney.zero
 
     val totalIncome = taxableOrdinaryIncome + qualifiedIncome
-    bracketsStartsDescending.foreach { case (bracketStart, bracketRate) =>
+    bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>
       val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets
       val ordinaryIncomeYetToBeTaxed =
         totalIncomeYetToBeTaxed - gainsYetToBeTaxed
@@ -135,7 +135,7 @@ final case class QualifiedIncomeBrackets(
     res
 
   def bracketExists(bracketRate: TaxRate): Boolean =
-    bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
+    bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
 
 object QualifiedIncomeBrackets:
 
@@ -193,7 +193,7 @@ object QualifiedIncomeBrackets:
     pairs: Map[Int, Int]
   ): QualifiedIncomeBrackets =
     QualifiedIncomeBrackets(
-      pairs.map { case (bracketStart, ratePercentage) =>
+      pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
         TMoney.u(bracketStart) ->
           TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)

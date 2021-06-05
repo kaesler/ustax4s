@@ -22,7 +22,7 @@ class QualifiedIncomeBracketsSpec
     def isProgressive(brackets: QualifiedIncomeBrackets): Boolean = {
       val rates = brackets.bracketStartsAscending.map(_._2)
       (rates zip rates.tail)
-        .forall { case (left, right) =>
+        .forall { (left, right) =>
           left < right
         }
     }

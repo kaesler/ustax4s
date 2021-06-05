@@ -63,7 +63,7 @@ final case class OrdinaryIncomeBrackets(
   ): TMoney =
     var ordinaryIncomeYetToBeTaxed = taxableOrdinaryIncome
     var taxSoFar                   = TMoney.zero
-    bracketsStartsDescending.foreach { case (bracketStart, bracketRate) =>
+    bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>
       // Result will be non-negative: so becomes zero if bracket does not apply.
       val ordinaryIncomeInThisBracket =
         ordinaryIncomeYetToBeTaxed - bracketStart
@@ -130,7 +130,7 @@ final case class OrdinaryIncomeBrackets(
       .map(_._2)
 
   def bracketExists(bracketRate: TaxRate): Boolean =
-    bracketStartsAscending.exists { case (_, rate) => rate == bracketRate }
+    bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
 
 object OrdinaryIncomeBrackets:
 
@@ -212,7 +212,7 @@ object OrdinaryIncomeBrackets:
     pairs: Map[Int, Int]
   ): OrdinaryIncomeBrackets =
     OrdinaryIncomeBrackets(
-      pairs.map { case (bracketStart, ratePercentage) =>
+      pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
         TMoney.u(bracketStart) ->
           TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
