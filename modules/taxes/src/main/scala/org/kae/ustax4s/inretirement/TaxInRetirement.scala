@@ -16,28 +16,23 @@ object TaxInRetirement extends IntMoneySyntax:
     taxableOrdinaryIncome: TMoney,
     taxOnOrdinaryIncome: TMoney,
     taxOnQualifiedIncome: TMoney
-  ) {
+  ):
     def taxDue: TMoney = taxOnOrdinaryIncome + taxOnQualifiedIncome
-  }
 
-  object FederalTaxResults {
-    given Show[FederalTaxResults] = new Show[FederalTaxResults] {
-      override def show(r: FederalTaxResults) = {
-        val b = StringBuilder()
-        b.append("Outputs\n")
-        import r.*
-        b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
-        b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
-        b.append(s"  standardDeduction: $standardDeduction\n")
-        b.append(s"  taxableOrdinaryIncome: $taxableOrdinaryIncome\n")
-        b.append(s"  taxOnOrdinaryIncome: $taxOnOrdinaryIncome\n")
-        b.append(s"  taxOnQualifiedIncome: $taxOnQualifiedIncome\n")
-        b.append(s"  taxDue: $taxDue\n")
+  object FederalTaxResults:
+    given Show[FederalTaxResults] = (r: FederalTaxResults) =>
+      val b = StringBuilder()
+      b.append("Outputs\n")
+      import r.*
+      b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
+      b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
+      b.append(s"  standardDeduction: $standardDeduction\n")
+      b.append(s"  taxableOrdinaryIncome: $taxableOrdinaryIncome\n")
+      b.append(s"  taxOnOrdinaryIncome: $taxOnOrdinaryIncome\n")
+      b.append(s"  taxOnQualifiedIncome: $taxOnQualifiedIncome\n")
+      b.append(s"  taxDue: $taxDue\n")
 
-        b.result
-      }
-    }
-  }
+      b.result
 
   def federalTaxDue(
     year: Year,
@@ -63,7 +58,7 @@ object TaxInRetirement extends IntMoneySyntax:
     socSec: TMoney,
     ordinaryIncomeNonSS: TMoney,
     qualifiedIncome: TMoney
-  ): FederalTaxResults = {
+  ): FederalTaxResults =
     val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
@@ -90,7 +85,7 @@ object TaxInRetirement extends IntMoneySyntax:
       taxOnOrdinaryIncome,
       taxOnQualifiedIncome
     )
-  }
+  end federalTaxResults
 
   def federalTaxDueUsingForm1040(
     year: Year,
@@ -100,7 +95,7 @@ object TaxInRetirement extends IntMoneySyntax:
     ordinaryIncomeNonSS: TMoney,
     qualifiedDividends: TMoney,
     verbose: Boolean
-  ): TMoney = {
+  ): TMoney =
     val myRates = TaxRates.of(
       year,
       filingStatus,
@@ -125,12 +120,10 @@ object TaxInRetirement extends IntMoneySyntax:
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
-    if (verbose) {
-      println(form.showValues)
-    }
+    if verbose then println(form.showValues)
 
     myRates.totalTax(form).rounded
-  }
+  end federalTaxDueUsingForm1040
 
   def stateTaxDue(
     year: Year,

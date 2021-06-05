@@ -86,7 +86,7 @@ final case class OrdinaryIncomeBrackets(
       .toList
       .headOption
       .getOrElse(
-        throw new RuntimeException(
+        throw RuntimeException(
           s"rate not found or has no successor: $bracketRate"
         )
       )
@@ -118,7 +118,7 @@ final case class OrdinaryIncomeBrackets(
       .toList
       .headOption
       .getOrElse(
-        throw new RuntimeException(
+        throw RuntimeException(
           s"rate not found or has no successor: $bracketRate"
         )
       )
