@@ -40,8 +40,7 @@ package object ustax4s:
 
   private val nnbd = NonNegBigDecimal
 
-  given Ordering[TMoney]  = Ordering.by(_.value)
-  given Order[BigDecimal] = Order.fromOrdering[BigDecimal]
+  given Ordering[TMoney] = Ordering.by(_.value)
 
   given Order[TMoney] = Order.by(_.value)
 
@@ -68,9 +67,6 @@ package object ustax4s:
       */
     def subtract(other: TMoney): TMoney =
       nnbd.unsafeFrom((underlying.value - other.value).max(TMoney.zero.value))
-
-    def min(other: TMoney): TMoney =
-      nnbd.unsafeFrom(underlying.value min other.value)
 
     def *(rate: TaxRate): TMoney =
       nnbd.unsafeFrom(underlying.value * rate.value)
