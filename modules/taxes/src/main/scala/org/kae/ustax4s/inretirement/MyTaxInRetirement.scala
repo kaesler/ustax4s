@@ -67,12 +67,12 @@ object MyTaxInRetirement extends IntMoneySyntax:
     //  - interest
     //  - dividends
     //  - capital gains
-    taxableIncome: TMoney
+    massachusettsGrossIncome: TMoney
   ): TMoney =
     TaxInRetirement.stateTaxDue(
       year,
       Kevin.birthDate,
       Kevin.filingStatus(year),
       Kevin.numberOfMassachusettsDependents(year),
-      taxableIncome
+      massachusettsGrossIncome
     )

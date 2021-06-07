@@ -135,11 +135,13 @@ object TaxInRetirement extends IntMoneySyntax:
     //  - interest
     //  - dividends
     //  - capital gains
-    taxableIncome: TMoney
+    massachusettsGrossIncome: TMoney
   ): TMoney =
-    StateTaxMA.taxDue(
-      year,
-      birthDate,
-      filingStatus,
-      dependents
-    )(taxableIncome)
+    StateTaxMA
+      .taxDue(
+        year,
+        birthDate,
+        filingStatus,
+        dependents
+      )(massachusettsGrossIncome)
+      .rounded

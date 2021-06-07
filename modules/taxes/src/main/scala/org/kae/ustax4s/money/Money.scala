@@ -62,5 +62,5 @@ object Money:
     // Compute tax at the given rate.
     infix def taxAt(rate: TaxRate): Money =
       underlying mul rate.asFraction
-      
+
 end Money
