@@ -1,8 +1,10 @@
 package org.kae.ustax4s
 package testdata
 
+import cats.Show
+import cats.implicits.*
 import java.time.Year
-import munit.Assertions
+import munit.Assertions.*
 import org.kae.ustax4s.inretirement.TaxInRetirement
 import scala.io.Source
 
@@ -14,8 +16,7 @@ final case class RegressionTestCase(
   qualifiedIncome: TMoney,
   federalTaxDue: TMoney,
   stateTaxDue: TMoney
-) extends Assertions:
-
+):
   def massachusettsGrossIncome = ordinaryIncomeNonSS + qualifiedIncome
 
   def run: Unit =
@@ -28,7 +29,8 @@ final case class RegressionTestCase(
         ordinaryIncomeNonSS,
         qualifiedIncome
       ),
-      federalTaxDue
+      federalTaxDue,
+      this.toString
     )
     assertEquals(
       TaxInRetirement.stateTaxDue(
@@ -38,7 +40,8 @@ final case class RegressionTestCase(
         dependents,
         massachusettsGrossIncome
       ),
-      stateTaxDue
+      stateTaxDue,
+      this.toString
     )
 end RegressionTestCase
 
