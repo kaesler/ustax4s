@@ -10,6 +10,7 @@ object TestDataGeneration extends IntMoneySyntax:
 
   final case class TestCaseInputs(
     filingStatus: FilingStatus,
+    dependents: Int,
     socSec: TMoney,
     ordinaryIncomeNonSS: TMoney,
     qualifiedIncome: TMoney
@@ -18,11 +19,13 @@ object TestDataGeneration extends IntMoneySyntax:
   private val genTestCase: Gen[TestCaseInputs] =
     for
       fs                  <- Gen.oneOf(FilingStatus.values.toSeq)
+      dependents          <- Gen.oneOf(0, 1)
       ss                  <- Gen.chooseNum(0, 50000)
       ordinaryIncomeNonSS <- Gen.chooseNum(0, 50000)
       qualifiedIncome     <- Gen.chooseNum(0, 50000)
     yield TestCaseInputs(
       filingStatus = fs,
+      dependents = dependents,
       socSec = ss.tm,
       ordinaryIncomeNonSS = ordinaryIncomeNonSS.tm,
       qualifiedIncome = qualifiedIncome.tm

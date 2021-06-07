@@ -10,8 +10,10 @@ object MakeTestDataAsCsv extends App:
 
   private val year = Year.of(2021)
 
-  println("filingStatus,socSec,ordinaryIncomeNonSS,qualifiedIncome,federalTaxDue,stateTaxDue")
-  testCases.foreach { case TestCaseInputs(fs, ss, oi, qi) =>
+  println(
+    "filingStatus,dependents,socSec,ordinaryIncomeNonSS,qualifiedIncome,federalTaxDue,stateTaxDue"
+  )
+  testCases.foreach { case TestCaseInputs(fs, ds, ss, oi, qi) =>
     val federalTaxDue = TaxInRetirement.federalTaxDue(
       year = year,
       birthDate = Kevin.birthDate,
@@ -24,11 +26,11 @@ object MakeTestDataAsCsv extends App:
       year = year,
       birthDate = Kevin.birthDate,
       filingStatus = fs,
-      dependents = if fs == FilingStatus.HeadOfHousehold then 1 else 0,
+      dependents = ds,
       oi + qi
     )
     println(
-      s"${fs.entryName},$ss,$oi,$qi,$federalTaxDue,$stateTaxDue"
+      s"${fs.entryName},$ds,$ss,$oi,$qi,$federalTaxDue,$stateTaxDue"
     )
   }
 

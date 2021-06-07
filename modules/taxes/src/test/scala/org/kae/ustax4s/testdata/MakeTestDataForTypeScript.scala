@@ -12,7 +12,7 @@ object MakeTestDataForTypeScript extends App:
 
   val year = Year.of(2021)
 
-  testCases.foreach { case TestCaseInputs(fs, ss, oi, qi) =>
+  testCases.foreach { case TestCaseInputs(fs, deps, ss, oi, qi) =>
     val federalTaxDue = TaxInRetirement.federalTaxDue(
       year = year,
       birthDate = Kevin.birthDate,
@@ -25,7 +25,7 @@ object MakeTestDataForTypeScript extends App:
       year = year,
       birthDate = Kevin.birthDate,
       filingStatus = fs,
-      dependents = if fs == Single then 0 else 1,
+      dependents = deps,
       massachusettsGrossIncome = oi + qi
     )
     val status = fs match
