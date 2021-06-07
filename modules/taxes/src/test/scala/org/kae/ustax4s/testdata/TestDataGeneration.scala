@@ -1,4 +1,4 @@
-package org.kae.ustax4s.apps
+package org.kae.ustax4s.testdata
 
 import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, TMoney}
 import org.scalacheck.Gen
@@ -8,27 +8,27 @@ object TestDataGeneration extends IntMoneySyntax:
 
   private val count = 2000
 
-  final case class TestCase(
+  final case class TestCaseInputs(
     filingStatus: FilingStatus,
-    qualifiedIncome: TMoney,
+    socSec: TMoney,
     ordinaryIncomeNonSS: TMoney,
-    socSec: TMoney
+    qualifiedIncome: TMoney
   )
 
-  private val genTestCase: Gen[TestCase] =
+  private val genTestCase: Gen[TestCaseInputs] =
     for
       fs                  <- Gen.oneOf(FilingStatus.values.toSeq)
-      qualifiedIncome     <- Gen.chooseNum(0, 50000)
-      ordinaryIncomeNonSS <- Gen.chooseNum(0, 50000)
       ss                  <- Gen.chooseNum(0, 50000)
-    yield TestCase(
+      ordinaryIncomeNonSS <- Gen.chooseNum(0, 50000)
+      qualifiedIncome     <- Gen.chooseNum(0, 50000)
+    yield TestCaseInputs(
       filingStatus = fs,
-      qualifiedIncome = qualifiedIncome.tm,
+      socSec = ss.tm,
       ordinaryIncomeNonSS = ordinaryIncomeNonSS.tm,
-      socSec = ss.tm
+      qualifiedIncome = qualifiedIncome.tm
     )
 
-  def testCases: List[TestCase] = Gen
+  def testCases: List[TestCaseInputs] = Gen
     .listOfN(count, genTestCase)
     .sample
     .get

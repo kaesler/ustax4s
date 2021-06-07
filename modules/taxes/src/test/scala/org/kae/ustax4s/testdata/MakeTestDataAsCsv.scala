@@ -1,4 +1,5 @@
-package org.kae.ustax4s.apps
+package org.kae.ustax4s
+package testdata
 
 import java.time.Year
 import org.kae.ustax4s.{FilingStatus, Kevin}
@@ -10,7 +11,7 @@ object MakeTestDataAsCsv extends App:
   private val year = Year.of(2021)
 
   println("filingStatus,socSec,ordinaryIncomeNonSS,qualifiedIncome,federalTaxDue,stateTaxDue")
-  testCases.foreach { case TestCase(fs, qi, oi, ss) =>
+  testCases.foreach { case TestCaseInputs(fs, ss, oi, qi) =>
     val federalTaxDue = TaxInRetirement.federalTaxDue(
       year = year,
       birthDate = Kevin.birthDate,
@@ -24,7 +25,7 @@ object MakeTestDataAsCsv extends App:
       birthDate = Kevin.birthDate,
       filingStatus = fs,
       dependents = if fs == FilingStatus.HeadOfHousehold then 1 else 0,
-      oi
+      oi + qi
     )
     println(
       s"${fs.entryName},$ss,$oi,$qi,$federalTaxDue,$stateTaxDue"
