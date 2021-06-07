@@ -127,6 +127,9 @@ object TaxInRetirement extends IntMoneySyntax:
 
   def stateTaxDue(
     year: Year,
+    birthDate: LocalDate,
+    filingStatus: FilingStatus,
+    dependents: Int,
     // Excludes SocSec. So it is
     //  - earned wages
     //  - interest
@@ -136,7 +139,7 @@ object TaxInRetirement extends IntMoneySyntax:
   ): TMoney =
     StateTaxMA.taxDue(
       year,
-      Kevin.filingStatus(year),
-      Kevin.birthDate,
-      Kevin.numberOfMassachusettsDependents(year)
+      birthDate,
+      filingStatus,
+      dependents
     )(taxableIncome)

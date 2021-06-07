@@ -7,8 +7,8 @@ object StateTaxMA extends IntMoneySyntax:
 
   def taxDue(
     year: Year,
-    filingStatus: FilingStatus,
     birthDate: LocalDate,
+    filingStatus: FilingStatus,
     dependents: Int
   )(
     // Excludes SocSec. So it is

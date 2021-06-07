@@ -69,9 +69,10 @@ object MyTaxInRetirement extends IntMoneySyntax:
     //  - capital gains
     taxableIncome: TMoney
   ): TMoney =
-    StateTaxMA.taxDue(
+    TaxInRetirement.stateTaxDue(
       year,
-      Kevin.filingStatus(year),
       Kevin.birthDate,
-      Kevin.numberOfMassachusettsDependents(year)
-    )(taxableIncome)
+      Kevin.filingStatus(year),
+      Kevin.numberOfMassachusettsDependents(year),
+      taxableIncome
+    )

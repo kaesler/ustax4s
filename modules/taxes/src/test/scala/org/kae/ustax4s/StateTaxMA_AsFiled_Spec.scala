@@ -18,7 +18,7 @@ class StateTaxMA_AsFiled_Spec extends FunSuite with IntMoneySyntax:
 
     assertEquals(
       StateTaxMA
-        .taxDue(Year.of(2018), HeadOfHousehold, Kevin.birthDate, 1)(
+        .taxDue(Year.of(2018), Kevin.birthDate, HeadOfHousehold, 1)(
           incomeBeforeExemptions
         )
         .rounded,
@@ -36,7 +36,7 @@ class StateTaxMA_AsFiled_Spec extends FunSuite with IntMoneySyntax:
         7800.tm
     assertEquals(
       StateTaxMA
-        .taxDue(Year.of(2019), HeadOfHousehold, Kevin.birthDate, 1)(
+        .taxDue(Year.of(2019), Kevin.birthDate, HeadOfHousehold, 1)(
           incomeBeforeExemptions
         )
         .rounded,
