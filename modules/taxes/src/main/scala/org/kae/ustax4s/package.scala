@@ -88,6 +88,9 @@ package object ustax4s:
   object TMoney:
     val zero: TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(0))
 
+    def unsafeParse(s: String): TMoney =
+      NonNegBigDecimal.unsafeFrom(BigDecimal(Integer.parseInt(s)))
+
     def sum(ms: TMoney*): TMoney = nnbd.unsafeFrom(ms.map(_.value).sum)
 
     def u(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
