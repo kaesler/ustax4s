@@ -55,7 +55,12 @@ object Money:
       require(i > 0, s"division by non-positive: $i")
       underlying / i
 
-    infix def div(m: Money): Double =
+    infix def div(m: Money): Money =
       require(m > 0, s"division by non-positive: $m")
       underlying.toDouble / m.toDouble
+
+    // Compute tax at the given rate.
+    infix def taxAt(rate: TaxRate): Money =
+      underlying mul rate.asFraction
+      
 end Money

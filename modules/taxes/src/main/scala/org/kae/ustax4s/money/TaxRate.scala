@@ -4,7 +4,10 @@ opaque type TaxRate = Int
 
 object TaxRate:
 
-  def apply(i: Int): TaxRate = i
+  def apply(percentage: Int): TaxRate =
+    require(percentage >= 0)
+    require(percentage < 50)
+    percentage
 
   extension (underlying: TaxRate) def asFraction: Double = underlying.toDouble / 100.0
 end TaxRate
