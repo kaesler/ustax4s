@@ -11,6 +11,7 @@ object MakeTestDataForTypeScript extends App:
   import TestDataGeneration.*
 
   val year = Year.of(2021)
+  val age  = 66
 
   testCases.foreach { case TestCaseInputs(fs, deps, ss, oi, qi) =>
     val federalTaxDue = TaxInRetirement.federalTaxDue(
@@ -32,7 +33,8 @@ object MakeTestDataForTypeScript extends App:
       case HeadOfHousehold => "FilingStatus.HOH"
       case Single          => "FilingStatus.Single"
     println(
-      s"  { filingStatus: $status, socSec: $ss, ordinaryIncomeNonSS: $oi," +
-        s" qualifiedIncome: $qi, federalTaxDue: $federalTaxDue, stateTaxDue: $stateTaxDue },"
+      s"  { age: $age, dependents: $deps, filingStatus: $status, socSec: $ss, " +
+        s"ordinaryIncomeNonSS: $oi, qualifiedIncome: $qi, " +
+        s"federalTaxDue: $federalTaxDue, stateTaxDue: $stateTaxDue },"
     )
   }
