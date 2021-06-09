@@ -17,21 +17,21 @@ class MyTaxInRetirementSpec extends FunSuite:
       ss <- 0 to 49000 by 500
     do
       import org.kae.ustax4s.inretirement.MyTaxInRetirement.*
-      val income         = i.tm
-      val socialSecurity = ss.tm
+      val income         = i.asMoney
+      val socialSecurity = ss.asMoney
 
       assertEquals(
         federalTaxDue(
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
-          qualifiedIncome = 0.tm
+          qualifiedIncome = 0.asMoney
         ),
         federalTaxDueUsingForm1040(
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
-          qualifiedDividends = 0.tm,
+          qualifiedDividends = 0.asMoney,
           verbose = false
         )
       )
@@ -50,9 +50,9 @@ class MyTaxInRetirementSpec extends FunSuite:
       inv    <- 0 to 30000 by 1000
     do
       import org.kae.ustax4s.inretirement.MyTaxInRetirement.*
-      val income             = i.tm
-      val socialSecurity     = ss.tm
-      val qualifiedDividends = inv.tm
+      val income             = i.asMoney
+      val socialSecurity     = ss.asMoney
+      val qualifiedDividends = inv.asMoney
 
       if (
         federalTaxDue(

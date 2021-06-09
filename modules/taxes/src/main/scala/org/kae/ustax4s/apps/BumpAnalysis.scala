@@ -14,12 +14,12 @@ object BumpAnalysis extends App with IntMoneySyntax:
   //     - bracket
   //     - slope  (delta tax due)/(delta income)
   // Try it in a spreadsheet
-  val socialSecurityIncome = 49128.tm
+  val socialSecurityIncome = 49128.asMoney
 
   val filingStatus = Single // HeadOfHousehold
   val pairs = for
     i <- 0 to 60000 by 100
-    ssRelevantOtherIncome = i.tm
+    ssRelevantOtherIncome = i.asMoney
 //    taxableSocialSecurity = TaxableSocialSecurity.taxableSocialSecurityBenefits(
 //      relevantIncome,
 //      socialSecurityIncome
@@ -28,7 +28,7 @@ object BumpAnalysis extends App with IntMoneySyntax:
       year = Year.of(2021),
       socSec = socialSecurityIncome,
       ordinaryIncomeNonSS = ssRelevantOtherIncome,
-      qualifiedDividends = 0.tm,
+      qualifiedDividends = 0.asMoney,
       verbose = false
     )
   yield (ssRelevantOtherIncome, taxDue)

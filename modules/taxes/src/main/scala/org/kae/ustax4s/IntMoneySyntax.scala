@@ -3,6 +3,6 @@ package org.kae.ustax4s
 trait IntMoneySyntax:
   // TODO: Use Scala3
   implicit class IntOps(i: Int):
-    def tm: TMoney = TMoney.u(i)
+    def asMoney: TMoney = TMoney(i)
 
 object IntMoneySyntax extends IntMoneySyntax

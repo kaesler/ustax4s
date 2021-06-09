@@ -14,7 +14,7 @@ object TaxableSocialSecurity extends IntMoneySyntax:
 
   private def bases(filingStatus: FilingStatus): (TMoney, TMoney) =
     filingStatus match
-      case Single | HeadOfHousehold => (25000.tm, 34000.tm)
+      case Single | HeadOfHousehold => (25000.asMoney, 34000.asMoney)
 
   // Adjusted to model the fact that the bases are not adjusted annually
   // as tax brackets are. So we just estimate: amount rises 3% per year
@@ -65,6 +65,6 @@ object TaxableSocialSecurity extends IntMoneySyntax:
       TMoney.min(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
-        TMoney.u(4500) + ((combinedIncome - highBase) mul fractionTaxable),
+        TMoney(4500) + ((combinedIncome - highBase) mul fractionTaxable),
         maxSocSecTaxable
       )

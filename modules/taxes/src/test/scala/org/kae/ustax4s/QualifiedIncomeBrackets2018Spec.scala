@@ -13,10 +13,10 @@ class QualifiedIncomeBrackets2018Spec extends FunSuite:
     assertEquals(
       brackets
         .taxDueFunctionally(
-          TMoney.u(114547),
-          TMoney.u(14777)
+          TMoney(114547),
+          TMoney(14777)
         )
         .rounded,
-      TMoney.u(2217)
+      TMoney(2217)
     )
   }

@@ -5,8 +5,8 @@ package apps
 import org.kae.ustax4s.FilingStatus.Single
 
 object MyExpectedSSTax extends App with IntMoneySyntax:
-  val ssRelevantOtherIncomeFromRmd = 17000.tm
-  val socialSecurityBenefits       = 49000.tm
+  val ssRelevantOtherIncomeFromRmd = 17000.asMoney
+  val socialSecurityBenefits       = 49000.asMoney
 
   val taxableSS = TaxableSocialSecurity.taxableSocialSecurityBenefits(
     filingStatus = Single,

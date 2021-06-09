@@ -195,7 +195,7 @@ object QualifiedIncomeBrackets:
     QualifiedIncomeBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
-        TMoney.u(bracketStart) ->
+        TMoney(bracketStart) ->
           TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )

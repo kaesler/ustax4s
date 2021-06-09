@@ -93,7 +93,7 @@ package object ustax4s:
 
     def sum(ms: TMoney*): TMoney = nnbd.unsafeFrom(ms.map(_.value).sum)
 
-    def u(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
+    def apply(i: Int): TMoney = NonNegBigDecimal.unsafeFrom(BigDecimal(i))
 
     def max(left: TMoney, right: TMoney): TMoney =
       summon[Order[TMoney]].max(left, right)

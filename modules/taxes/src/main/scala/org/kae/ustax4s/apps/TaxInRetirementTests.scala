@@ -7,13 +7,13 @@ import org.kae.ustax4s.inretirement.TaxInRetirement
 
 object TaxInRetirementTests extends App with IntMoneySyntax:
   val year = Year.of(2021)
-  val ss   = 49128.tm
+  val ss   = 49128.asMoney
 
   doCase(TMoney.zero)
-  doCase(17000.tm)
-  doCase(20000.tm)
-  doCase(30000.tm)
-  doCase(40000.tm)
+  doCase(17000.asMoney)
+  doCase(20000.asMoney)
+  doCase(30000.asMoney)
+  doCase(40000.asMoney)
 
   def doCase(income: TMoney): Unit =
     val ssTaxable =
@@ -30,7 +30,7 @@ object TaxInRetirementTests extends App with IntMoneySyntax:
         filingStatus = Single,
         socSec = ss,
         ordinaryIncomeNonSS = income,
-        qualifiedDividends = 0.tm,
+        qualifiedDividends = 0.asMoney,
         verbose = false
       )
     println(

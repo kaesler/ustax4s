@@ -26,9 +26,9 @@ object TestDataGeneration extends IntMoneySyntax:
     yield TestCaseInputs(
       filingStatus = fs,
       dependents = dependents,
-      socSec = ss.tm,
-      ordinaryIncomeNonSS = ordinaryIncomeNonSS.tm,
-      qualifiedIncome = qualifiedIncome.tm
+      socSec = ss.asMoney,
+      ordinaryIncomeNonSS = ordinaryIncomeNonSS.asMoney,
+      qualifiedIncome = qualifiedIncome.asMoney
     )
 
   def testCases: List[TestCaseInputs] = Gen

@@ -20,49 +20,49 @@ class Form1040_2018Spec extends FunSuite with IntMoneySyntax:
       schedule1 = Schedule1(
         Some(
           ScheduleD(
-            longTermCapitalGains = 5265.tm,
-            capitalGainsDistributions = 2147.tm
+            longTermCapitalGains = 5265.asMoney,
+            capitalGainsDistributions = 2147.asMoney
           )
         ),
-        businessIncomeOrLoss = 2080.tm,
-        healthSavingsAccountDeduction = 3567.tm,
-        deductiblePartOfSelfEmploymentTax = 28.tm
+        businessIncomeOrLoss = 2080.asMoney,
+        healthSavingsAccountDeduction = 3567.asMoney,
+        deductiblePartOfSelfEmploymentTax = 28.asMoney
       ).some,
       schedule3 = Schedule3(
-        foreignTaxCredit = 257.tm
+        foreignTaxCredit = 257.asMoney
       ).some,
       schedule4 = Schedule4(
-        selfEmploymentTax = 56.tm
+        selfEmploymentTax = 56.asMoney
       ).some,
       schedule5 = Schedule5(
-        excessSocialSecurityWithheld = 1709.tm
+        excessSocialSecurityWithheld = 1709.asMoney
       ).some,
-      childTaxCredit = 2000.tm,
-      wages = 133497.tm,
-      taxExemptInterest = 2294.tm,
+      childTaxCredit = 2000.asMoney,
+      wages = 133497.asMoney,
+      taxExemptInterest = 2294.asMoney,
       taxableInterest = TMoney.zero,
-      ordinaryDividends = 7930.tm,
-      qualifiedDividends = 7365.tm,
+      ordinaryDividends = 7930.asMoney,
+      qualifiedDividends = 7365.asMoney,
       taxableIraDistributions = TMoney.zero,
       socialSecurityBenefits = TMoney.zero,
       rates = rates
     )
 
-    assertEquals(form.totalIncome, 150919.tm)
-    assertEquals(form.adjustedGrossIncome, 147324.tm)
-    assertEquals(form.taxableIncome, 129324.tm)
+    assertEquals(form.totalIncome, 150919.asMoney)
+    assertEquals(form.adjustedGrossIncome, 147324.asMoney)
+    assertEquals(form.taxableIncome, 129324.asMoney)
 
-    assertEquals(form.taxableOrdinaryIncome, 114547.tm)
-    assertEquals(form.qualifiedIncome, 14777.tm)
+    assertEquals(form.taxableOrdinaryIncome, 114547.asMoney)
+    assertEquals(form.qualifiedIncome, 14777.asMoney)
 
     val taxOnInv = rates.qualifiedIncomeBrackets
       .taxDueFunctionally(form.taxableOrdinaryIncome, form.qualifiedIncome)
       .rounded
-    assertEquals(taxOnInv, 2217.tm)
+    assertEquals(taxOnInv, 2217.asMoney)
 
     val taxOnOrd =
       rates.ordinaryIncomeBrackets.taxDue(form.taxableOrdinaryIncome).rounded
-    assertEquals(taxOnOrd, 20389.tm)
+    assertEquals(taxOnOrd, 20389.asMoney)
 
     assertEquals(
       rates
@@ -71,7 +71,7 @@ class Form1040_2018Spec extends FunSuite with IntMoneySyntax:
           form.qualifiedIncome
         )
         .rounded,
-      22606.tm
+      22606.asMoney
     )
-    assertEquals(rates.totalTax(form).rounded, 20405.tm)
+    assertEquals(rates.totalTax(form).rounded, 20405.asMoney)
   }

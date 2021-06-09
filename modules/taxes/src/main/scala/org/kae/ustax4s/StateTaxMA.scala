@@ -53,22 +53,22 @@ object StateTaxMA extends IntMoneySyntax:
       case (year, fs) if year > 2020 =>
         personalExemption(Year.of(2020), fs)
 
-      case (2020, HeadOfHousehold) => TMoney.u(6800)
-      case (2020, Single)          => TMoney.u(4400)
+      case (2020, HeadOfHousehold) => TMoney(6800)
+      case (2020, Single)          => TMoney(4400)
 
-      case (2019, HeadOfHousehold) => TMoney.u(6800)
-      case (2019, Single)          => TMoney.u(4400)
+      case (2019, HeadOfHousehold) => TMoney(6800)
+      case (2019, Single)          => TMoney(4400)
 
-      case (2018, HeadOfHousehold) => TMoney.u(6800)
-      case (2018, Single)          => TMoney.u(4400)
+      case (2018, HeadOfHousehold) => TMoney(6800)
+      case (2018, Single)          => TMoney(4400)
 
       case _ => ???
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): TMoney =
-    if isAge65OrOlder(birthDate, year) then 700.tm
+    if isAge65OrOlder(birthDate, year) then 700.asMoney
     else TMoney.zero
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     taxYear.getValue - birthDate.getYear >= 65
 
-  private def dependentExceptions(dependents: Int): TMoney = TMoney.u(1000) mul dependents
+  private def dependentExceptions(dependents: Int): TMoney = TMoney.apply(1000) mul dependents

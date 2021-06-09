@@ -38,27 +38,27 @@ class OrdinaryIncomeBracketsSpec
 
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.10)).rounded,
-      1420.tm
+      1420.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.12)).rounded,
-      6220.tm
+      6220.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.22)).rounded,
-      13293.tm
+      13293.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.24)).rounded,
-      32145.tm
+      32145.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.32)).rounded,
-      46385.tm
+      46385.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.35)).rounded,
-      156355.tm
+      156355.asMoney
     )
   }
 
@@ -66,27 +66,27 @@ class OrdinaryIncomeBracketsSpec
     val brackets = OrdinaryIncomeBrackets.of(TheYear, Single)
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.10)).rounded,
-      995.tm
+      995.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.12)).rounded,
-      4664.tm
+      4664.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.22)).rounded,
-      14751.tm
+      14751.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.24)).rounded,
-      33603.tm
+      33603.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.32)).rounded,
-      47843.tm
+      47843.asMoney
     )
     assertEquals(
       brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.35)).rounded,
-      157804.tm
+      157804.asMoney
     )
   }
 

@@ -6,7 +6,7 @@ trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:
 
   // Somewhat realistic.
   private val genBracketBorder: Gen[TMoney] =
-    Gen.choose(10, 500000).map(TMoney.u)
+    Gen.choose(10, 500000).map(TMoney.apply)
 
   val genTaxBrackets: Gen[OrdinaryIncomeBrackets] =
     for

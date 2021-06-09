@@ -6,7 +6,7 @@ trait QualifiedBracketsGeneration extends SetGeneration with TaxRateGeneration:
 
   // Somewhat realistic.
   private val genNonZeroBracketBorder: Gen[TMoney] =
-    Gen.choose(10, 500000).map(TMoney.u)
+    Gen.choose(10, 500000).map(TMoney.apply)
 
   // Notes:
   //   - lowest rate should always be zero% and start at zero.

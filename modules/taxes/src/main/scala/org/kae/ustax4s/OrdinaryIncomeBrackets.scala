@@ -107,7 +107,7 @@ final case class OrdinaryIncomeBrackets(
         (nextBracketStart - bracketStart) * rate
       }
 
-    taxes.foldLeft(0.tm)(_ + _)
+    taxes.foldLeft(0.asMoney)(_ + _)
 
   def bracketWidth(bracketRate: TaxRate): TMoney =
     bracketStartsAscending
@@ -214,7 +214,7 @@ object OrdinaryIncomeBrackets:
     OrdinaryIncomeBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
-        TMoney.u(bracketStart) ->
+        TMoney(bracketStart) ->
           TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )
