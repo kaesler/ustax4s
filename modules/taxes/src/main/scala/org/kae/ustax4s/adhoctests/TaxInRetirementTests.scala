@@ -1,5 +1,5 @@
 package org.kae.ustax4s
-package apps
+package adhoctests
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single

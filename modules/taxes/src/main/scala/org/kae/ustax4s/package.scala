@@ -8,13 +8,10 @@ import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
 import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 
+import org.kae.ustax4s.federal.FederalTaxRate
 import org.kae.ustax4s.state.StateTaxRate
 
 package object ustax4s:
-
-  /** Cost-of-living based growth rates.
-    */
-  type InflationRate = Double Refined Interval.Closed[0.0d, 0.20d]
 
   /** Type for most tax calculations.
     */
@@ -50,7 +47,7 @@ package object ustax4s:
     def subtract(other: TMoney): TMoney =
       nnbd.unsafeFrom((underlying.value - other.value).max(TMoney.zero.value))
 
-    def taxAt(rate: TaxRate): TMoney =
+    def taxAt(rate: FederalTaxRate): TMoney =
       nnbd.unsafeFrom(underlying.value * rate.value)
 
     def stateTaxAt(rate: StateTaxRate): TMoney =

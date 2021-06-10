@@ -1,4 +1,4 @@
-package org.kae.ustax4s.apps
+package org.kae.ustax4s.adhoctests
 
 import java.time.Year
 import org.kae.ustax4s.*

@@ -1,5 +1,5 @@
 package org.kae.ustax4s
-package apps
+package adhoctests
 
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity

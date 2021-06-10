@@ -1,4 +1,4 @@
-package org.kae.ustax4s
+package org.kae.ustax4s.federal
 
 import cats.kernel.Order
 import eu.timepit.refined.*
@@ -10,17 +10,18 @@ import scala.math.BigDecimal.RoundingMode
 
 /** Rate of tax payable in a given bracket.
   */
-type TaxRateRefinement = Interval.Closed[0.0d, 0.37d]
-type TaxRate           = Double Refined TaxRateRefinement
+type FederalTaxRateRefinement = Interval.Closed[0.0d, 0.37d]
+type FederalTaxRate           = Double Refined FederalTaxRateRefinement
 
-object TaxRate {
+object FederalTaxRate {
 
-  def unsafeFrom(d: Double): TaxRate =
-    refineV[TaxRateRefinement](d).toOption.get
+  def unsafeFrom(d: Double): FederalTaxRate =
+    refineV[FederalTaxRateRefinement](d).toOption.get
 }
+
 // TODO: Use Scala3?  Type class?
-given Ordering[TaxRate] = Ordering.by(_.value)
+given Ordering[FederalTaxRate] = Ordering.by(_.value)
 // TODO: Use Scala3?  Type class?
 
-implicit def orderedForTaxRate(tr: TaxRate): Ordered[TaxRate] =
+implicit def orderedForTaxRate(tr: FederalTaxRate): Ordered[FederalTaxRate] =
   Ordered.orderingToOrdered(tr)

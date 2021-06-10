@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import java.time.Year
 import org.kae.ustax4s.given
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, TMoney, TaxRate}
+import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, TMoney}
 import scala.annotation.tailrec
 
 /** Calculates tax on ordinary (non-investment) income.
@@ -12,11 +12,11 @@ import scala.annotation.tailrec
   *   the tax brackets in effect
   */
 final case class OrdinaryIncomeBrackets(
-  bracketStarts: Map[TMoney, TaxRate]
+  bracketStarts: Map[TMoney, FederalTaxRate]
 ) extends IntMoneySyntax:
   require(bracketStarts.contains(TMoney.zero))
 
-  val bracketStartsAscending: Vector[(TMoney, TaxRate)] =
+  val bracketStartsAscending: Vector[(TMoney, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
@@ -79,7 +79,7 @@ final case class OrdinaryIncomeBrackets(
     assert(ordinaryIncomeYetToBeTaxed.isZero)
     taxSoFar
 
-  def taxableIncomeToEndOfBracket(bracketRate: TaxRate): TMoney =
+  def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): TMoney =
     bracketStartsAscending
       .sliding(2)
       .collect { case Vector((_, `bracketRate`), (nextBracketStart, _)) =>
@@ -93,7 +93,7 @@ final case class OrdinaryIncomeBrackets(
         )
       )
 
-  def taxToEndOfBracket(bracketRate: TaxRate)(using Ordering[TaxRate]): TMoney =
+  def taxToEndOfBracket(bracketRate: FederalTaxRate)(using Ordering[FederalTaxRate]): TMoney =
     require(bracketExists(bracketRate))
 
     val taxes = bracketStartsAscending
@@ -111,7 +111,7 @@ final case class OrdinaryIncomeBrackets(
 
     taxes.foldLeft(0.asMoney)(_ + _)
 
-  def bracketWidth(bracketRate: TaxRate): TMoney =
+  def bracketWidth(bracketRate: FederalTaxRate): TMoney =
     bracketStartsAscending
       .sliding(2)
       .collect { case Vector((rateStart, `bracketRate`), (nextRateStart, _)) =>
@@ -125,13 +125,13 @@ final case class OrdinaryIncomeBrackets(
         )
       )
 
-  def ratesForBoundedBrackets: Vector[TaxRate] =
+  def ratesForBoundedBrackets: Vector[FederalTaxRate] =
     bracketsStartsDescending
       .drop(1)
       .reverse
       .map(_._2)
 
-  def bracketExists(bracketRate: TaxRate): Boolean =
+  def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
 
 object OrdinaryIncomeBrackets:
@@ -217,6 +217,6 @@ object OrdinaryIncomeBrackets:
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
         TMoney(bracketStart) ->
-          TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
+          FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )

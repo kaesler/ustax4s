@@ -5,7 +5,7 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.given
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.{IntMoneySyntax, TMoney, TMoneyGeneration, TaxRate}
+import org.kae.ustax4s.{IntMoneySyntax, TMoney, TMoneyGeneration}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 
@@ -40,27 +40,27 @@ class OrdinaryIncomeBracketsSpec
     val brackets = OrdinaryIncomeBrackets.of(TheYear, HeadOfHousehold)
 
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.10)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
       1420.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.12)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
       6220.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.22)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
       13293.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.24)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
       32145.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.32)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
       46385.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.35)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
       156355.asMoney
     )
   }
@@ -68,27 +68,27 @@ class OrdinaryIncomeBracketsSpec
   test("taxToEndOfBracket should be correct for 2021 Single") {
     val brackets = OrdinaryIncomeBrackets.of(TheYear, Single)
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.10)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
       995.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.12)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
       4664.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.22)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
       14751.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.24)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
       33603.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.32)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
       47843.asMoney
     )
     assertEquals(
-      brackets.taxToEndOfBracket(TaxRate.unsafeFrom(0.35)).rounded,
+      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
       157804.asMoney
     )
   }

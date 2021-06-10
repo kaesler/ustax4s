@@ -3,7 +3,7 @@ package federal
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.{FilingStatus, TMoney, TaxRate}
+import org.kae.ustax4s.{FilingStatus, TMoney}
 import scala.annotation.tailrec
 
 /** Calculates tax on qualified investment income,
@@ -13,17 +13,17 @@ import scala.annotation.tailrec
   *   the tax brackets in effect
   */
 final case class QualifiedIncomeBrackets(
-  bracketStarts: Map[TMoney, TaxRate]
+  bracketStarts: Map[TMoney, FederalTaxRate]
 ):
   // Note: We capture "tax free LTCGs with suitably low income" by having a
   // zero-rate lowest bracket.
   require(bracketStarts.contains(TMoney.zero))
   require(bracketStarts.size >= 2)
 
-  val bracketStartsAscending: Vector[(TMoney, TaxRate)] =
+  val bracketStartsAscending: Vector[(TMoney, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
 
-  require(bracketStartsAscending(0) == (TMoney.zero, TaxRate.unsafeFrom(0.0)))
+  require(bracketStartsAscending(0) == (TMoney.zero, FederalTaxRate.unsafeFrom(0.0)))
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
@@ -136,7 +136,7 @@ final case class QualifiedIncomeBrackets(
 //    )
     res
 
-  def bracketExists(bracketRate: TaxRate): Boolean =
+  def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
 
 object QualifiedIncomeBrackets:
@@ -198,6 +198,6 @@ object QualifiedIncomeBrackets:
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
         TMoney(bracketStart) ->
-          TaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
+          FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )

@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import org.kae.ustax4s.given
-import org.kae.ustax4s.{SetGeneration, TMoney, TaxRate}
+import org.kae.ustax4s.{SetGeneration, TMoney}
 import org.scalacheck.Gen
 
 trait QualifiedBracketsGeneration extends SetGeneration with TaxRateGeneration:
@@ -17,7 +17,7 @@ trait QualifiedBracketsGeneration extends SetGeneration with TaxRateGeneration:
     for
       bracketCount <- Gen.choose(2, 10)
       nonZeroRates <- genSet(bracketCount - 1, genNonZeroTaxRate)
-      ratesSortedAscending = TaxRate.unsafeFrom(0.0) :: nonZeroRates.toList.sorted
+      ratesSortedAscending = FederalTaxRate.unsafeFrom(0.0) :: nonZeroRates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genNonZeroBracketBorder)
       bracketStarts = bracketBorders + TMoney.zero
     yield QualifiedIncomeBrackets(
