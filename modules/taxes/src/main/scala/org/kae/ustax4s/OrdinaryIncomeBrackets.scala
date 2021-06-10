@@ -47,7 +47,7 @@ final case class OrdinaryIncomeBrackets(
           ordinaryIncomeYetToBeTaxed - bracketStart
 
         // Non-negative: so zero if bracket does not apply.
-        val taxInThisBracket = ordinaryIncomeInThisBracket * bracketRate
+        val taxInThisBracket = ordinaryIncomeInThisBracket taxAt bracketRate
         Accum(
           ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket,
           taxSoFar = taxSoFar + taxInThisBracket
@@ -69,7 +69,7 @@ final case class OrdinaryIncomeBrackets(
         ordinaryIncomeYetToBeTaxed - bracketStart
 
       // Non-negative: so zero if bracket does not apply.
-      val taxInThisBracket = ordinaryIncomeInThisBracket * bracketRate
+      val taxInThisBracket = ordinaryIncomeInThisBracket taxAt bracketRate
 
       ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket
       taxSoFar = taxSoFar + taxInThisBracket
@@ -104,7 +104,7 @@ final case class OrdinaryIncomeBrackets(
       }
       .collect { case Vector((bracketStart, rate), (nextBracketStart, _)) =>
         // Tax due on current bracket:
-        (nextBracketStart - bracketStart) * rate
+        (nextBracketStart - bracketStart) taxAt rate
       }
 
     taxes.foldLeft(0.asMoney)(_ + _)

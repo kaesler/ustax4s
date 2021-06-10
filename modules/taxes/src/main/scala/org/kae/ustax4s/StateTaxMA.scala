@@ -22,7 +22,7 @@ object StateTaxMA extends IntMoneySyntax:
       TMoney.zero,
       massachusettsGrossIncome -
         totalExemptions(year, filingStatus, birthDate, dependents)
-    ) * rate(year)
+    ) taxAt rate(year)
 
   private def totalExemptions(
     year: Year,

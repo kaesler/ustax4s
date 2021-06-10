@@ -80,7 +80,7 @@ final case class QualifiedIncomeBrackets(
 
           val gainsInThisBracket: TMoney =
             totalIncomeInThisBracket - ordinaryIncomeInThisBracket
-          val taxInThisBracket = gainsInThisBracket * bracketRate
+          val taxInThisBracket = gainsInThisBracket taxAt bracketRate
           Accum(
             totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket,
             gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket,
@@ -119,7 +119,7 @@ final case class QualifiedIncomeBrackets(
 
       val gainsInThisBracket: TMoney =
         totalIncomeInThisBracket - ordinaryIncomeInThisBracket
-      val taxInThisBracket = gainsInThisBracket * bracketRate
+      val taxInThisBracket = gainsInThisBracket taxAt bracketRate
       totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket
       gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket
       gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket

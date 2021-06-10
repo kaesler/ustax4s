@@ -68,7 +68,7 @@ package object ustax4s:
     def subtract(other: TMoney): TMoney =
       nnbd.unsafeFrom((underlying.value - other.value).max(TMoney.zero.value))
 
-    def *(rate: TaxRate): TMoney =
+    def taxAt(rate: TaxRate): TMoney =
       nnbd.unsafeFrom(underlying.value * rate.value)
 
     def mul(fraction: PosDouble): TMoney =

@@ -113,7 +113,7 @@ class QualifiedIncomeBracketsSpec
 
   property("max tax rate is the max tax rate") {
     forAll { (brackets: QualifiedIncomeBrackets, gains: TMoney) =>
-      val maxTax = gains * brackets.bracketStartsAscending.map(_._2).max
+      val maxTax = gains taxAt brackets.bracketStartsAscending.map(_._2).max
       brackets.taxDueFunctionally(zero, gains) <= maxTax
     }
   }

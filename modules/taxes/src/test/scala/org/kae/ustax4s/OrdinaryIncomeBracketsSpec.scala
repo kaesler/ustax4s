@@ -99,7 +99,7 @@ class OrdinaryIncomeBracketsSpec
   property("tax in lowest bracket as expected") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
       val (lowBracketTop, lowBracketRate) = brackets.bracketStartsAscending.head
-      brackets.taxDue(lowBracketTop) == lowBracketTop * lowBracketRate
+      brackets.taxDue(lowBracketTop) == (lowBracketTop taxAt lowBracketRate)
     }
   }
 
@@ -119,7 +119,7 @@ class OrdinaryIncomeBracketsSpec
 
   property("max tax rate is the max tax rate") {
     forAll { (brackets: OrdinaryIncomeBrackets, income: TMoney) =>
-      val maxTax = income * brackets.bracketStartsAscending.map(_._2).max
+      val maxTax = income taxAt brackets.bracketStartsAscending.map(_._2).max
       brackets.taxDue(income) <= maxTax
     }
   }
