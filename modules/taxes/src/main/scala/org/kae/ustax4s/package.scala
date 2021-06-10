@@ -8,27 +8,9 @@ import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
 import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 
+import org.kae.ustax4s.state.StateTaxRate
+
 package object ustax4s:
-
-  // TODO use Scala3 opaque types and extension methods here.
-  // TODO: use integers for tax rates as in Haskell/Purescript code.
-  // Or represent as a finite discrete set
-
-  /** Rate of tax payable in a given bracket.
-    */
-  type TaxRateRefinement = Interval.Closed[0.0d, 0.37d]
-  type TaxRate           = Double Refined TaxRateRefinement
-
-  object TaxRate {
-
-    def unsafeFrom(d: Double): TaxRate =
-      refineV[TaxRateRefinement](d).toOption.get
-  }
-  given Ordering[TaxRate] = Ordering.by(_.value)
-
-  // TODO: Use Scala3?  Type class?
-  implicit def orderedForTaxRate(tr: TaxRate): Ordered[TaxRate] =
-    Ordered.orderingToOrdered(tr)
 
   /** Cost-of-living based growth rates.
     */
@@ -69,6 +51,9 @@ package object ustax4s:
       nnbd.unsafeFrom((underlying.value - other.value).max(TMoney.zero.value))
 
     def taxAt(rate: TaxRate): TMoney =
+      nnbd.unsafeFrom(underlying.value * rate.value)
+
+    def stateTaxAt(rate: StateTaxRate): TMoney =
       nnbd.unsafeFrom(underlying.value * rate.value)
 
     def mul(fraction: PosDouble): TMoney =

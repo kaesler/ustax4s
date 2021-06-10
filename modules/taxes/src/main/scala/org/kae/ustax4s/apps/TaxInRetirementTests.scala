@@ -3,7 +3,9 @@ package apps
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
+import org.kae.ustax4s.federal.TaxableSocialSecurity
 import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.kevin.Kevin
 
 object TaxInRetirementTests extends App with IntMoneySyntax:
   val year = Year.of(2021)

@@ -2,7 +2,9 @@ package org.kae.ustax4s
 package inretirement
 
 import java.time.Year
-import org.kae.ustax4s.forms.Form1040
+import org.kae.ustax4s.federal.{TaxRates, forms}
+import org.kae.ustax4s.federal.forms.Form1040
+import org.kae.ustax4s.kevin.Kevin
 
 object MyTaxInRetirement extends IntMoneySyntax:
 
@@ -35,7 +37,7 @@ object MyTaxInRetirement extends IntMoneySyntax:
       Kevin.birthDate
     )
 
-    val form = Form1040(
+    val form = forms.Form1040(
       filingStatus,
       rates = myRates,
       taxableIraDistributions = ordinaryIncomeNonSS,
