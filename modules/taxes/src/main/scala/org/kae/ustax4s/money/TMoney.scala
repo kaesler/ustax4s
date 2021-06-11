@@ -35,6 +35,8 @@ object TMoney:
   given Conversion[Int, TMoney]    = apply
   given Conversion[Double, TMoney] = apply
 
+  // Note: careful to avoid recursive instance here.
+  // This seems to do it.
   given Ordering[TMoney] with
     def compare(x: TMoney, y: TMoney) =
       if x < y then -1 else if x > y then +1 else 0
