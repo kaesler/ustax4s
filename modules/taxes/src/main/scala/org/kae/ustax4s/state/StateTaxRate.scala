@@ -5,6 +5,7 @@ import eu.timepit.refined.*
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.Interval
 import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
+import org.kae.ustax4s.TaxRate
 import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 
@@ -17,10 +18,11 @@ object StateTaxRate {
 
   def unsafeFrom(d: Double): StateTaxRate =
     refineV[StateTaxRateRefinement](d).toOption.get
+
+  given tr: TaxRate[StateTaxRate] with
+    extension (r: StateTaxRate) def asFraction = r.value
 }
-// TODO: Use Scala3?  Type class?
-given Ordering[StateTaxRate] = Ordering.by(_.value)
-// TODO: Use Scala3?  Type class?
+given Ordering[StateTaxRate] = StateTaxRate.tr
 
 implicit def orderedForTaxRate(tr: StateTaxRate): Ordered[StateTaxRate] =
   Ordered.orderingToOrdered(tr)
