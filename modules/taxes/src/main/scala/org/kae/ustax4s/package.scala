@@ -23,7 +23,9 @@ package object ustax4s:
 
   given Order[TMoney] = Order.by(_.value)
 
-  // TODO: Use Scala3
+  trait IntMoneySyntax:
+    extension (i: Int) def asMoney: TMoney = TMoney(i)
+
   implicit class NonNegMoneyOps(val underlying: TMoney):
 
     def rounded: TMoney =
