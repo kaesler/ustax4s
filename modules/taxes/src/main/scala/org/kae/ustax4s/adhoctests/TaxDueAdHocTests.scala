@@ -4,9 +4,9 @@ import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.inretirement.TaxInRetirement
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.{FilingStatus, IntMoneySyntax}
+import org.kae.ustax4s.*
 
-object TaxDueAdHocTests extends App with IntMoneySyntax:
+object TaxDueAdHocTests extends App:
 
   val results = TaxInRetirement.federalTaxResults(
     year = Year.of(2021),

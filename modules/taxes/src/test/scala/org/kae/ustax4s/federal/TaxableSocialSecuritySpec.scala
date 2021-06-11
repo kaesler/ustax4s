@@ -1,11 +1,11 @@
 package org.kae.ustax4s.federal
 
 import munit.ScalaCheckSuite
+import org.kae.ustax4s.*
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity
-import org.kae.ustax4s.{IntMoneySyntax, TMoneyGeneration}
 
-class TaxableSocialSecuritySpec extends ScalaCheckSuite with TMoneyGeneration with IntMoneySyntax:
+class TaxableSocialSecuritySpec extends ScalaCheckSuite with TMoneyGeneration:
 
   test("Untaxable 1") {
     assertEquals(

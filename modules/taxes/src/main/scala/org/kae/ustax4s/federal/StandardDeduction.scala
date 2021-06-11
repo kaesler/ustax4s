@@ -1,9 +1,8 @@
 package org.kae.ustax4s.federal
 
 import java.time.{LocalDate, Month, Year}
-import org.kae.ustax4s.given
+import org.kae.ustax4s.*
 import org.kae.ustax4s.FilingStatus.*
-import org.kae.ustax4s.{FilingStatus, TMoney}
 
 object StandardDeduction:
 

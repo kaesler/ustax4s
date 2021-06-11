@@ -1,13 +1,13 @@
-package org.kae.ustax4s
-package adhoctests
+package org.kae.ustax4s.adhoctests
 
 import java.time.Year
+import org.kae.ustax4s.*
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity
 import org.kae.ustax4s.inretirement.TaxInRetirement
 import org.kae.ustax4s.kevin.Kevin
 
-object TaxInRetirementTests extends App with IntMoneySyntax:
+object TaxInRetirementTests extends App:
   val year = Year.of(2021)
   val ss   = 49128.asMoney
 

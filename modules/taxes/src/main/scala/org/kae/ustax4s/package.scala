@@ -23,8 +23,7 @@ package object ustax4s:
 
   given Order[TMoney] = Order.by(_.value)
 
-  trait IntMoneySyntax:
-    extension (i: Int) def asMoney: TMoney = TMoney(i)
+  extension (i: Int) def asMoney: TMoney = TMoney(i)
 
   implicit class NonNegMoneyOps(val underlying: TMoney):
 

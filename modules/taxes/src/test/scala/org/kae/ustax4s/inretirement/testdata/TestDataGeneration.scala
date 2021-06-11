@@ -1,10 +1,10 @@
 package org.kae.ustax4s.inretirement.testdata
 
-import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, TMoney}
+import org.kae.ustax4s.*
 import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
-object TestDataGeneration extends IntMoneySyntax:
+object TestDataGeneration:
 
   private val count = 2000
 

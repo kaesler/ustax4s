@@ -1,12 +1,10 @@
 package org.kae.ustax4s.state
 
+import java.time.{LocalDate, Year}
 import org.kae.ustax4s.*
 import org.kae.ustax4s.FilingStatus.*
 
-import java.time.{LocalDate, Year}
-import org.kae.ustax4s.{IntMoneySyntax, TMoney}
-
-object StateTaxMA extends IntMoneySyntax:
+object StateTaxMA:
 
   def taxDue(
     year: Year,

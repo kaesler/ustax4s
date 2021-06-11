@@ -1,7 +1,6 @@
 package org.kae.ustax4s.federal
 
 import org.kae.ustax4s.given
-
 import org.kae.ustax4s.{SetGeneration, TMoney}
 import org.scalacheck.Gen
 

@@ -1,12 +1,11 @@
-package org.kae.ustax4s
-package adhoctests
+package org.kae.ustax4s.adhoctests
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
-import org.kae.ustax4s.IntMoneySyntax
+import org.kae.ustax4s.*
 import org.kae.ustax4s.inretirement.MyTaxInRetirement
 
-object BumpAnalysis extends App with IntMoneySyntax:
+object BumpAnalysis extends App:
   // for each filing status in HOH, Single
   //   - with SS = 49000
   //   - for each income from 0 to 60k in $100 steps

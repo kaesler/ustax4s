@@ -1,18 +1,15 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.*
-
 import eu.timepit.refined.*
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.auto.*
 import eu.timepit.refined.numeric.*
 import eu.timepit.refined.types.numeric.{PosDouble, PosInt}
-
 import java.time.Year
+import org.kae.ustax4s.*
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.{FilingStatus, IntMoneySyntax, TMoney}
 
-object TaxableSocialSecurity extends IntMoneySyntax:
+object TaxableSocialSecurity:
 
   private val two = PosInt.unsafeFrom(2)
 

@@ -2,6 +2,7 @@ package org.kae.ustax4s.inretirement
 
 import java.time.Year
 import munit.FunSuite
+import org.kae.ustax4s.*
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 class MyTaxInRetirementSpec extends FunSuite:
