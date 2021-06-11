@@ -1,31 +1,24 @@
 package org.kae.ustax4s.state
 
 import cats.kernel.Order
-import eu.timepit.refined.*
-import eu.timepit.refined.api.Refined
-import eu.timepit.refined.numeric.Interval
-import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
 import org.kae.ustax4s.TaxRate
-import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 
 /** Rate of tax payable in a given bracket.
   */
-private[state] type StateTaxRateRefinement = Interval.Closed[0.0d, 0.10d]
-type StateTaxRate                          = Double Refined StateTaxRateRefinement
+opaque type StateTaxRate = Double
 
 object StateTaxRate {
 
   def unsafeFrom(d: Double): StateTaxRate =
-    refineV[StateTaxRateRefinement](d).toOption.get
+    require(d >= 0.0)
+    require(d <= 0.10)
+    d
 
   given tr: TaxRate[StateTaxRate] with
-    extension (r: StateTaxRate) def asFraction = r.value
+    extension (r: StateTaxRate) def asFraction = r
+
+  given Ordering[StateTaxRate] with
+    def compare(x: StateTaxRate, y: StateTaxRate) =
+      x.asFraction.compare(y.asFraction)
 }
-
-given Ordering[StateTaxRate] =
-  import StateTaxRate.given
-  Ordering.by(_.asFraction)
-
-implicit def orderedForTaxRate(tr: StateTaxRate): Ordered[StateTaxRate] =
-  Ordered.orderingToOrdered(tr)

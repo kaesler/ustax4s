@@ -20,8 +20,7 @@ lazy val taxes = (project in file("modules/taxes"))
       Cats.core withSources (),
       Cats.effect withSources (),
       MUnit.munit      % Test withSources (),
-      MUnit.scalacheck % Test withSources (),
-      Refined.refined withSources ()
+      MUnit.scalacheck % Test withSources ()
     ),
     scalacOptions := Seq(
       "-feature",

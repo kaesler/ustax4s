@@ -19,10 +19,6 @@ object Dependencies {
     val scalacheck: ModuleID = "org.scalameta" %% "munit-scalacheck" % "0.7.26"
   }
 
-  object Refined {
-    val refined: ModuleID = "eu.timepit" %% "refined" % "0.9.25"
-  }
-
   object Scalacheck {
     val scalacheck: ModuleID = "org.scalacheck" %% "scalacheck" % "1.15.4"
   }

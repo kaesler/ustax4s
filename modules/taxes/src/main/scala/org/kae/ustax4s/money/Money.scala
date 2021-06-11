@@ -42,9 +42,9 @@ object Money:
       if x < y then -1 else if x > y then +1 else 0
 
   extension (underlying: Money)
-    def isZero: Boolean            = underlying == zero
-    def nonZero: Boolean           = !isZero
-    def rounded: Money            = underlying.setScale(0, RoundingMode.HALF_UP)
+    def isZero: Boolean          = underlying == zero
+    def nonZero: Boolean         = !isZero
+    def rounded: Money           = underlying.setScale(0, RoundingMode.HALF_UP)
     def add(right: Money): Money = underlying + right
     def +(right: Money): Money   = add(right)
 
@@ -77,6 +77,5 @@ object Money:
       underlying.compare(that) > 0
     infix def <=(that: Money): Boolean = !(underlying > that)
     infix def >=(that: Money): Boolean = !(underlying < that)
-//underlying.compare(that) < 0
 
 end Money
