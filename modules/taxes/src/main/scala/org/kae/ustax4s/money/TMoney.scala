@@ -41,8 +41,6 @@ object TMoney:
     def compare(x: TMoney, y: TMoney) =
       if x < y then -1 else if x > y then +1 else 0
 
-  given Order[TMoney] = Order.fromOrdering[TMoney]
-
   extension (underlying: TMoney)
     def isZero: Boolean            = underlying == zero
     def nonZero: Boolean           = !isZero
