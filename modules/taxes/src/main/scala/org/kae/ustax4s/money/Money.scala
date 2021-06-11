@@ -1,7 +1,6 @@
 package org.kae.ustax4s.money
 
 import cats.kernel.Order
-import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 import org.kae.ustax4s.TaxRate
 
