@@ -71,7 +71,7 @@ object TaxInRetirement:
       )
 
     val rates = TaxRates.of(year, filingStatus, birthDate)
-    val taxableOrdinaryIncome = (taxableSocialSecurity + ordinaryIncomeNonSS) -
+    val taxableOrdinaryIncome = (taxableSocialSecurity + ordinaryIncomeNonSS) subp
       rates.standardDeduction
 
     val taxOnOrdinaryIncome =

@@ -52,7 +52,7 @@ object TaxableSocialSecurity:
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%
       Money.min(
-        (combinedIncome - lowBase) mul fractionTaxable,
+        (combinedIncome subp lowBase) mul fractionTaxable,
         maxSocSecTaxable
       )
     else
@@ -62,6 +62,6 @@ object TaxableSocialSecurity:
       Money.min(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
-        Money(4500) + ((combinedIncome - highBase) mul fractionTaxable),
+        Money(4500) + ((combinedIncome subp highBase) mul fractionTaxable),
         maxSocSecTaxable
       )

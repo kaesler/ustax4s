@@ -33,7 +33,7 @@ case class TaxRates(
       form.taxableOrdinaryIncome,
       form.qualifiedIncome
     ) +
-      form.schedule4.map(_.totalOtherTaxes).getOrElse(Money.zero) -
+      form.schedule4.map(_.totalOtherTaxes).getOrElse(Money.zero) subp
       (form.childTaxCredit + form.schedule3
         .map(_.nonRefundableCredits)
         .getOrElse(Money.zero))

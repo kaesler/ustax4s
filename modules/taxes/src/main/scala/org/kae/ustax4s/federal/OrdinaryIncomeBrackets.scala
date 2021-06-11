@@ -47,12 +47,12 @@ final case class OrdinaryIncomeBrackets(
           ) =>
         // Result will be non-negative: so becomes zero if bracket does not apply.
         val ordinaryIncomeInThisBracket =
-          ordinaryIncomeYetToBeTaxed - bracketStart
+          ordinaryIncomeYetToBeTaxed subp bracketStart
 
         // Non-negative: so zero if bracket does not apply.
         val taxInThisBracket = ordinaryIncomeInThisBracket taxAt bracketRate
         Accum(
-          ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket,
+          ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed subp ordinaryIncomeInThisBracket,
           taxSoFar = taxSoFar + taxInThisBracket
         )
     }
@@ -69,12 +69,12 @@ final case class OrdinaryIncomeBrackets(
     bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>
       // Result will be non-negative: so becomes zero if bracket does not apply.
       val ordinaryIncomeInThisBracket =
-        ordinaryIncomeYetToBeTaxed - bracketStart
+        ordinaryIncomeYetToBeTaxed subp bracketStart
 
       // Non-negative: so zero if bracket does not apply.
       val taxInThisBracket = ordinaryIncomeInThisBracket taxAt bracketRate
 
-      ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed - ordinaryIncomeInThisBracket
+      ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed subp ordinaryIncomeInThisBracket
       taxSoFar = taxSoFar + taxInThisBracket
     }
     assert(ordinaryIncomeYetToBeTaxed.isZero)
@@ -107,7 +107,7 @@ final case class OrdinaryIncomeBrackets(
       }
       .collect { case Vector((bracketStart, rate), (nextBracketStart, _)) =>
         // Tax due on current bracket:
-        (nextBracketStart - bracketStart) taxAt rate
+        (nextBracketStart subp bracketStart) taxAt rate
       }
 
     taxes.foldLeft(0.asMoney)(_ + _)
@@ -116,7 +116,7 @@ final case class OrdinaryIncomeBrackets(
     bracketStartsAscending
       .sliding(2)
       .collect { case Vector((rateStart, `bracketRate`), (nextRateStart, _)) =>
-        nextRateStart - rateStart
+        nextRateStart subp rateStart
       }
       .toList
       .headOption

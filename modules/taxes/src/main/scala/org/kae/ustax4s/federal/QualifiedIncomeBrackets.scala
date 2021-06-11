@@ -71,23 +71,23 @@ final case class QualifiedIncomeBrackets(
               (bracketStart, bracketRate)
             ) =>
           val totalIncomeYetToBeTaxed =
-            totalTaxableIncome - totalIncomeInHigherBrackets
+            totalTaxableIncome subp totalIncomeInHigherBrackets
           val ordinaryIncomeYetToBeTaxed =
-            totalIncomeYetToBeTaxed - gainsYetToBeTaxed
+            totalIncomeYetToBeTaxed subp gainsYetToBeTaxed
 
           // Non-negative: so zero if bracket does not apply.
-          val totalIncomeInThisBracket = totalIncomeYetToBeTaxed - bracketStart
+          val totalIncomeInThisBracket = totalIncomeYetToBeTaxed subp bracketStart
 
           // Non-negative: so zero if bracket does not apply.
           val ordinaryIncomeInThisBracket =
-            ordinaryIncomeYetToBeTaxed - bracketStart
+            ordinaryIncomeYetToBeTaxed subp bracketStart
 
           val gainsInThisBracket: Money =
-            totalIncomeInThisBracket - ordinaryIncomeInThisBracket
+            totalIncomeInThisBracket subp ordinaryIncomeInThisBracket
           val taxInThisBracket = gainsInThisBracket taxAt bracketRate
           Accum(
             totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket,
-            gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket,
+            gainsYetToBeTaxed = gainsYetToBeTaxed subp gainsInThisBracket,
             gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
           )
       }
@@ -110,22 +110,22 @@ final case class QualifiedIncomeBrackets(
 
     val totalIncome = taxableOrdinaryIncome + qualifiedIncome
     bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>
-      val totalIncomeYetToBeTaxed = totalIncome - totalIncomeInHigherBrackets
+      val totalIncomeYetToBeTaxed = totalIncome subp totalIncomeInHigherBrackets
       val ordinaryIncomeYetToBeTaxed =
-        totalIncomeYetToBeTaxed - gainsYetToBeTaxed
+        totalIncomeYetToBeTaxed subp gainsYetToBeTaxed
 
       // Non-negative: so zero if bracket does not apply.
-      val totalIncomeInThisBracket = totalIncomeYetToBeTaxed - bracketStart
+      val totalIncomeInThisBracket = totalIncomeYetToBeTaxed subp bracketStart
 
       // Non-negative: so zero if bracket does not apply.
       val ordinaryIncomeInThisBracket =
-        ordinaryIncomeYetToBeTaxed - bracketStart
+        ordinaryIncomeYetToBeTaxed subp bracketStart
 
       val gainsInThisBracket: Money =
-        totalIncomeInThisBracket - ordinaryIncomeInThisBracket
+        totalIncomeInThisBracket subp ordinaryIncomeInThisBracket
       val taxInThisBracket = gainsInThisBracket taxAt bracketRate
       totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket
-      gainsYetToBeTaxed = gainsYetToBeTaxed - gainsInThisBracket
+      gainsYetToBeTaxed = gainsYetToBeTaxed subp gainsInThisBracket
       gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
 
     }

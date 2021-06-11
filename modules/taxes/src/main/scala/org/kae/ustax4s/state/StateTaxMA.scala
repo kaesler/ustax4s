@@ -21,11 +21,8 @@ object StateTaxMA:
     //  - capital gains
     massachusettsGrossIncome: Money
   ): Money =
-    Money.max(
-      Money.zero,
-      massachusettsGrossIncome -
-        totalExemptions(year, filingStatus, birthDate, dependents)
-    ) taxAt rate(year)
+    (massachusettsGrossIncome subp
+      totalExemptions(year, filingStatus, birthDate, dependents)) taxAt rate(year)
 
   private def totalExemptions(
     year: Year,

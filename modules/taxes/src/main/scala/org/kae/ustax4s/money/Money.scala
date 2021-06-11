@@ -48,8 +48,8 @@ object Money:
     def add(right: Money): Money = underlying + right
     def +(right: Money): Money   = add(right)
 
-    infix def sub(right: Money): Money = zero.max(underlying - right)
-    def -(right: Money): Money         = sub(right)
+    // Subtract but don't go negative.
+    infix def subp(right: Money): Money = zero.max(underlying - right)
 
     infix def mul(i: Int): Money =
       require(i >= 0, s"multiplication by negative: $i")

@@ -84,13 +84,13 @@ final case class Form1040(
 
   // Line 7:
   def adjustedGrossIncome: Money =
-    totalIncome - schedule1.map(_.adjustmentsToIncome).getOrElse(Money.zero)
+    totalIncome subp schedule1.map(_.adjustmentsToIncome).getOrElse(Money.zero)
 
   // Line 10:
   def taxableIncome: Money =
-    adjustedGrossIncome - standardDeduction
+    adjustedGrossIncome subp standardDeduction
 
-  def taxableOrdinaryIncome: Money = taxableIncome - qualifiedIncome
+  def taxableOrdinaryIncome: Money = taxableIncome subp qualifiedIncome
 
   def showValues: String =
     s"""
