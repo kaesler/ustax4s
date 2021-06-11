@@ -23,7 +23,9 @@ object FederalTaxRate {
     extension (r: FederalTaxRate) def asFraction = r.value
 }
 
-given Ordering[FederalTaxRate] = FederalTaxRate.tr
+given Ordering[FederalTaxRate] =
+  import FederalTaxRate.given
+  Ordering.by(_.asFraction)
 
 implicit def orderedForTaxRate(tr: FederalTaxRate): Ordered[FederalTaxRate] =
   Ordered.orderingToOrdered(tr)

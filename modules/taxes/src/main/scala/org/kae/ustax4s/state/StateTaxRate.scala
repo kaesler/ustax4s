@@ -22,7 +22,10 @@ object StateTaxRate {
   given tr: TaxRate[StateTaxRate] with
     extension (r: StateTaxRate) def asFraction = r.value
 }
-given Ordering[StateTaxRate] = StateTaxRate.tr
+
+given Ordering[StateTaxRate] =
+  import StateTaxRate.given
+  Ordering.by(_.asFraction)
 
 implicit def orderedForTaxRate(tr: StateTaxRate): Ordered[StateTaxRate] =
   Ordered.orderingToOrdered(tr)
