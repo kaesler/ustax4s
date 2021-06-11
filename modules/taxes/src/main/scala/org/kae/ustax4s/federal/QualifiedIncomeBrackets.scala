@@ -17,8 +17,6 @@ import scala.annotation.tailrec
 final case class QualifiedIncomeBrackets(
   bracketStarts: Map[Money, FederalTaxRate]
 ):
-  import FederalTaxRate.given
-
   // Note: We capture "tax free LTCGs with suitably low income" by having a
   // zero-rate lowest bracket.
   require(bracketStarts.contains(Money.zero))

@@ -8,8 +8,6 @@ import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 object TaxableSocialSecurity:
 
-  import Money.given
-
   private val two = 2
 
   private def bases(filingStatus: FilingStatus): (Money, Money) =

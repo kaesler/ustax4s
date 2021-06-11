@@ -1,8 +1,8 @@
 package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.federal.{TaxRates, TaxableSocialSecurity}
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.money.*
+import org.kae.ustax4s.federal.{TaxRates, TaxableSocialSecurity}
+import org.kae.ustax4s.money.Money
 
 final case class Form1040(
   filingStatus: FilingStatus,

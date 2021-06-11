@@ -1,5 +1,4 @@
-package org.kae.ustax4s
-package kevin
+package org.kae.ustax4s.kevin
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus

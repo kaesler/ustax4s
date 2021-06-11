@@ -8,7 +8,7 @@ import scala.math.BigDecimal.RoundingMode
   */
 opaque type StateTaxRate = Double
 
-object StateTaxRate {
+object StateTaxRate:
 
   def unsafeFrom(d: Double): StateTaxRate =
     require(d >= 0.0)
@@ -21,4 +21,5 @@ object StateTaxRate {
   given Ordering[StateTaxRate] with
     def compare(x: StateTaxRate, y: StateTaxRate) =
       x.asFraction.compare(y.asFraction)
-}
+
+end StateTaxRate

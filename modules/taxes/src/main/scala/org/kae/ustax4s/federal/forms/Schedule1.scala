@@ -1,6 +1,6 @@
 package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.money.*
+import org.kae.ustax4s.money.Money
 
 final case class Schedule1(
   scheduleD: Option[ScheduleD],

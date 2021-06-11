@@ -1,8 +1,8 @@
 package org.kae.ustax4s.money
 
 import cats.kernel.Order
-import scala.math.BigDecimal.RoundingMode
 import org.kae.ustax4s.TaxRate
+import scala.math.BigDecimal.RoundingMode
 
 /** Non negative money type.
   */

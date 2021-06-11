@@ -15,8 +15,6 @@ import org.kae.ustax4s.FilingStatus
 final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[Money, FederalTaxRate]
 ):
-  import FederalTaxRate.given
-
   require(bracketStarts.contains(Money.zero))
 
   val bracketStartsAscending: Vector[(Money, FederalTaxRate)] =

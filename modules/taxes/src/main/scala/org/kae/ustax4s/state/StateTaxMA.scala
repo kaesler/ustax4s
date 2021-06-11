@@ -1,15 +1,12 @@
 package org.kae.ustax4s.state
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
+import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.MoneySyntax.*
 
 object StateTaxMA:
-
-  // TODO: why necessary?
-  import StateTaxRate.given
 
   def taxDue(
     year: Year,
