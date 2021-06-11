@@ -19,6 +19,11 @@ object TMoney:
     require(d >= 0, s"attempt to create negative Money from $d")
     BigDecimal(d)
 
+  def unsafeParse(s: String): TMoney =
+    val i = Integer.parseInt(s)
+    require(i >= 0)
+    BigDecimal(i)
+
   def sum(ms: TMoney*): TMoney = ms.sum
 
   def max(left: TMoney, right: TMoney): TMoney =
@@ -30,8 +35,11 @@ object TMoney:
   given Conversion[Int, TMoney]    = apply
   given Conversion[Double, TMoney] = apply
 
-  given Ordering[TMoney] = summon[Ordering[BigDecimal]]
-  given Order[TMoney]    = Order.fromOrdering[TMoney]
+  given Ordering[TMoney] with
+    def compare(x: TMoney, y: TMoney) =
+      if x < y then -1 else if x > y then +1 else 0
+
+  given Order[TMoney] = Order.fromOrdering[TMoney]
 
   extension (underlying: TMoney)
     def isZero: Boolean            = underlying == zero
@@ -62,5 +70,13 @@ object TMoney:
     // Compute tax at the given rate.
     infix def taxAt[T: TaxRate](rate: T): TMoney =
       underlying mul rate.asFraction
+
+    infix def <(that: TMoney): Boolean =
+      underlying.compare(that) < 0
+    infix def >(that: TMoney): Boolean =
+      underlying.compare(that) > 0
+    infix def <=(that: TMoney): Boolean = !(underlying > that)
+    infix def >=(that: TMoney): Boolean = !(underlying < that)
+//underlying.compare(that) < 0
 
 end TMoney

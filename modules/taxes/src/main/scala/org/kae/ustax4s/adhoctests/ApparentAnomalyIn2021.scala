@@ -1,7 +1,8 @@
 package org.kae.ustax4s.adhoctests
 
 import java.time.Year
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.inretirement.MyTaxInRetirement
 
 object ApparentAnomalyIn2021 extends App:

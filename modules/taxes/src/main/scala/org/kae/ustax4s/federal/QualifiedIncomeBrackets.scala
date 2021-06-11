@@ -4,8 +4,8 @@ package federal
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.moneyold.given
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.MoneySyntax.*
 import scala.annotation.tailrec
 
 /** Calculates tax on qualified investment income,
@@ -17,6 +17,8 @@ import scala.annotation.tailrec
 final case class QualifiedIncomeBrackets(
   bracketStarts: Map[TMoney, FederalTaxRate]
 ):
+  import FederalTaxRate.given
+
   // Note: We capture "tax free LTCGs with suitably low income" by having a
   // zero-rate lowest bracket.
   require(bracketStarts.contains(TMoney.zero))

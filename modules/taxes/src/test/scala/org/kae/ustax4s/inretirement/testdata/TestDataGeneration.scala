@@ -1,7 +1,8 @@
 package org.kae.ustax4s.inretirement.testdata
 
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.MoneySyntax.*
+import org.kae.ustax4s.money.TMoney
 import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)

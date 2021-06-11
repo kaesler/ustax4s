@@ -1,7 +1,8 @@
 package org.kae.ustax4s.federal
 
 import munit.ScalaCheckSuite
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.{TMoney, TMoneyGeneration}
+import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity
 

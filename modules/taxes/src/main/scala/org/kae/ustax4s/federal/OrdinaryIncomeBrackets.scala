@@ -1,8 +1,8 @@
 package org.kae.ustax4s.federal
 
 import java.time.Year
-import org.kae.ustax4s.moneyold.given
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import scala.annotation.tailrec
 import org.kae.ustax4s.FilingStatus
@@ -15,6 +15,8 @@ import org.kae.ustax4s.FilingStatus
 final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[TMoney, FederalTaxRate]
 ):
+  import FederalTaxRate.given
+
   require(bracketStarts.contains(TMoney.zero))
 
   val bracketStartsAscending: Vector[(TMoney, FederalTaxRate)] =

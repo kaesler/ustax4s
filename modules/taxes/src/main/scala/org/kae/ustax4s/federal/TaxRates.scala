@@ -1,12 +1,12 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.*
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets, QualifiedIncomeBrackets}
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.moneyold.TMoney
+import org.kae.ustax4s.money.TMoney
 
 // Note: does not model exemptions that pertained before 2018 and could
 // be re-introduced in 2025.

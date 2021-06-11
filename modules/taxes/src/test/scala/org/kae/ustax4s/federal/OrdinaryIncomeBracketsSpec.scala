@@ -4,8 +4,8 @@ import java.time.Year
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.moneyold.given
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.{TMoney, TMoneyGeneration}
+import org.kae.ustax4s.money.MoneySyntax.*
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 
@@ -13,6 +13,9 @@ class OrdinaryIncomeBracketsSpec
     extends ScalaCheckSuite
     with TaxBracketsGeneration
     with TMoneyGeneration:
+
+  // TODO: why necessary?
+  import FederalTaxRate.given
 
   given Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
 

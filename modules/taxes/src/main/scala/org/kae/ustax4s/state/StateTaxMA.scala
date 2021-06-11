@@ -1,11 +1,15 @@
 package org.kae.ustax4s.state
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 
 object StateTaxMA:
+
+  // TODO: why necessary?
+  import StateTaxRate.given
 
   def taxDue(
     year: Year,
@@ -24,7 +28,7 @@ object StateTaxMA:
       TMoney.zero,
       massachusettsGrossIncome -
         totalExemptions(year, filingStatus, birthDate, dependents)
-    ) stateTaxAt rate(year)
+    ) taxAt rate(year)
 
   private def totalExemptions(
     year: Year,

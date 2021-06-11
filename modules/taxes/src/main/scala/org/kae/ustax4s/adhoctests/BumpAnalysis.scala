@@ -2,7 +2,8 @@ package org.kae.ustax4s.adhoctests
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.inretirement.MyTaxInRetirement
 
 object BumpAnalysis extends App:
@@ -39,6 +40,6 @@ object BumpAnalysis extends App:
       val p0                    = pairs(0)
       val p1                    = pairs(1)
       val ssRelevantOtherIncome = p0._1
-      val slope                 = (p1._2 - p0._2).value / 100
+      val slope                 = (p1._2 - p0._2) div 100
       println(s"Income: $ssRelevantOtherIncome, slope: $slope")
     }

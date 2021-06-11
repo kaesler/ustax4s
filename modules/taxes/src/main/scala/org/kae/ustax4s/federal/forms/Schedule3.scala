@@ -1,6 +1,6 @@
 package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.money.*
 
 final case class Schedule3(
   // Line 48:

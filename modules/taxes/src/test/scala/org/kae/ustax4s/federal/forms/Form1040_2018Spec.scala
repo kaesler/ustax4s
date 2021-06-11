@@ -3,9 +3,10 @@ package org.kae.ustax4s.federal.forms
 import cats.implicits.*
 import java.time.Year
 import munit.FunSuite
-import org.kae.ustax4s.moneyold.*
 import org.kae.ustax4s.federal.TaxRates
 import org.kae.ustax4s.kevin.Kevin
+import org.kae.ustax4s.money.MoneySyntax.*
+import org.kae.ustax4s.money.{TMoney, *}
 
 class Form1040_2018Spec extends FunSuite:
 

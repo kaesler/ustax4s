@@ -1,4 +1,4 @@
-package org.kae.ustax4s.moneyold
+package org.kae.ustax4s.money
 
 import org.scalacheck.Gen
 
