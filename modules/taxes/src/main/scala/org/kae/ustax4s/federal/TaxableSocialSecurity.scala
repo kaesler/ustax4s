@@ -32,12 +32,10 @@ object TaxableSocialSecurity:
     else
       val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
       val adjusted         = unadjusted mul adjustmentFactor
-      // TODO: what is this doing?
       Money.min(
         adjusted,
         socialSecurityBenefits mul 0.85
       )
-      unadjusted mul adjustmentFactor
 
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
