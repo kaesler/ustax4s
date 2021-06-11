@@ -3,6 +3,7 @@ package org.kae.ustax4s.money
 import cats.kernel.Order
 import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
+import org.kae.ustax4s.TaxRate
 
 /** Non negative money type.
   */
@@ -60,7 +61,7 @@ object Money:
       underlying.toDouble / m.toDouble
 
     // Compute tax at the given rate.
-    infix def taxAt(rate: TaxRate): Money =
+    infix def taxAt[T: TaxRate](rate: T): Money =
       underlying mul rate.asFraction
 
 end Money
