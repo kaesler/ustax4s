@@ -4,6 +4,6 @@ import org.kae.ustax4s.money.*
 
 final case class Schedule3(
   // Line 48:
-  foreignTaxCredit: TMoney
+  foreignTaxCredit: Money
 ):
-  def nonRefundableCredits: TMoney = foreignTaxCredit
+  def nonRefundableCredits: Money = foreignTaxCredit

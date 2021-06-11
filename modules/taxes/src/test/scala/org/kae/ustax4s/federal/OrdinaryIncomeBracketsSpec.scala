@@ -4,7 +4,7 @@ import java.time.Year
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.money.{TMoney, TMoneyGeneration}
+import org.kae.ustax4s.money.{Money, MoneyGeneration}
 import org.kae.ustax4s.money.MoneySyntax.*
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
@@ -12,16 +12,16 @@ import org.scalacheck.Prop.forAll
 class OrdinaryIncomeBracketsSpec
     extends ScalaCheckSuite
     with TaxBracketsGeneration
-    with TMoneyGeneration:
+    with MoneyGeneration:
 
   // TODO: why necessary?
   import FederalTaxRate.given
 
   given Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
 
-  given Arbitrary[TMoney] = Arbitrary(genMoney)
+  given Arbitrary[Money] = Arbitrary(genMoney)
 
-  private val zero    = TMoney.zero
+  private val zero    = Money.zero
   private val TheYear = Year.of(2021)
 
   test("OrdinaryIncomeTaxBrackets should be progressive") {
@@ -97,7 +97,7 @@ class OrdinaryIncomeBracketsSpec
 
   property("never tax zero") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
-      brackets.taxDue(TMoney.zero) == zero
+      brackets.taxDue(Money.zero) == zero
     }
   }
 
@@ -109,7 +109,7 @@ class OrdinaryIncomeBracketsSpec
   }
 
   property("tax rises monotonically with income") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income1: TMoney, income2: TMoney) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income1: Money, income2: Money) =>
       if income1 < income2 then brackets.taxDue(income1) < brackets.taxDue(income2)
       else if income1 > income2 then brackets.taxDue(income1) > brackets.taxDue(income2)
       else brackets.taxDue(income1) == brackets.taxDue(income2)
@@ -117,13 +117,13 @@ class OrdinaryIncomeBracketsSpec
   }
 
   property("tax is never zero except on zero") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: TMoney) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: Money) =>
       brackets.taxDue(income).nonZero || income.isZero
     }
   }
 
   property("max tax rate is the max tax rate") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: TMoney) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: Money) =>
       val maxTax = income taxAt brackets.bracketStartsAscending.map(_._2).max
       brackets.taxDue(income) <= maxTax
     }

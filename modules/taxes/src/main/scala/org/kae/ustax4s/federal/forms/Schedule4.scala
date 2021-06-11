@@ -3,6 +3,6 @@ package org.kae.ustax4s.federal.forms
 import org.kae.ustax4s.money.*
 
 case class Schedule4(
-  selfEmploymentTax: TMoney
+  selfEmploymentTax: Money
 ):
-  def totalOtherTaxes: TMoney = selfEmploymentTax
+  def totalOtherTaxes: Money = selfEmploymentTax

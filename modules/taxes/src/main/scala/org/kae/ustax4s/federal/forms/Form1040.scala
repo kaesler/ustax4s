@@ -6,7 +6,7 @@ import org.kae.ustax4s.money.*
 
 final case class Form1040(
   filingStatus: FilingStatus,
-  standardDeduction: TMoney,
+  standardDeduction: Money,
   schedule1: Option[Schedule1],
   schedule3: Option[Schedule3],
   schedule4: Option[Schedule4],
@@ -14,61 +14,61 @@ final case class Form1040(
   // Line 12:
   // This this year-dependent. Julia must be under 17.
   // So it only applies in 2021.
-  childTaxCredit: TMoney = TMoney.zero,
+  childTaxCredit: Money = Money.zero,
   // Line 1:
-  wages: TMoney,
+  wages: Money,
   // Line 2a:
-  taxExemptInterest: TMoney,
+  taxExemptInterest: Money,
   // Line 2b:
-  taxableInterest: TMoney,
+  taxableInterest: Money,
   // Line 3a: Note that this is a subset of ordinary dividends.
-  qualifiedDividends: TMoney,
+  qualifiedDividends: Money,
   // Line 3b: Note this includes qualifiedDividends
-  ordinaryDividends: TMoney,
+  ordinaryDividends: Money,
   // Line 4b:
-  taxableIraDistributions: TMoney,
+  taxableIraDistributions: Money,
   // Line 5a:
-  socialSecurityBenefits: TMoney,
+  socialSecurityBenefits: Money,
   rates: TaxRates
 ):
-  def totalInvestmentIncome: TMoney =
+  def totalInvestmentIncome: Money =
     // Line 3b:
     ordinaryDividends +
       // Line 6:
       scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(TMoney.zero)
+        .getOrElse(Money.zero)
 
   // This is what gets taxed at LTCG rates.
-  def qualifiedIncome: TMoney =
+  def qualifiedIncome: Money =
     // Line 3a:
     qualifiedDividends +
       // Line 6:
       scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(TMoney.zero)
+        .getOrElse(Money.zero)
 
   // Line 5b:
-  def taxableSocialSecurityBenefits: TMoney =
+  def taxableSocialSecurityBenefits: Money =
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = filingStatus,
       socialSecurityBenefits = socialSecurityBenefits,
-      ssRelevantOtherIncome = TMoney.sum(
+      ssRelevantOtherIncome = Money.sum(
         wages,
         taxableInterest,
         taxExemptInterest,
         taxableIraDistributions,
         ordinaryDividends,
         // This pulls in capital gains.
-        schedule1.map(_.additionalIncome).getOrElse(TMoney.zero)
+        schedule1.map(_.additionalIncome).getOrElse(Money.zero)
       )
     )
 
   def scheduleD: Option[ScheduleD] = schedule1.flatMap(_.scheduleD)
 
   // Line 7b:
-  def totalIncome: TMoney =
-    TMoney.sum(
+  def totalIncome: Money =
+    Money.sum(
       // Line 1
       wages,
       // Line 2b
@@ -77,20 +77,20 @@ final case class Form1040(
       taxableIraDistributions,
       ordinaryDividends,
       // This pulls in capital gains.
-      schedule1.map(_.additionalIncome).getOrElse(TMoney.zero),
+      schedule1.map(_.additionalIncome).getOrElse(Money.zero),
       // Line 5b:
       taxableSocialSecurityBenefits
     )
 
   // Line 7:
-  def adjustedGrossIncome: TMoney =
-    totalIncome - schedule1.map(_.adjustmentsToIncome).getOrElse(TMoney.zero)
+  def adjustedGrossIncome: Money =
+    totalIncome - schedule1.map(_.adjustmentsToIncome).getOrElse(Money.zero)
 
   // Line 10:
-  def taxableIncome: TMoney =
+  def taxableIncome: Money =
     adjustedGrossIncome - standardDeduction
 
-  def taxableOrdinaryIncome: TMoney = taxableIncome - qualifiedIncome
+  def taxableOrdinaryIncome: Money = taxableIncome - qualifiedIncome
 
   def showValues: String =
     s"""

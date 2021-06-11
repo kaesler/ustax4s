@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.money.given
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
-import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.federal.QualifiedIncomeBrackets
 
 class QualifiedIncomeBrackets2018Spec extends FunSuite:
@@ -16,10 +16,10 @@ class QualifiedIncomeBrackets2018Spec extends FunSuite:
     assertEquals(
       brackets
         .taxDueFunctionally(
-          TMoney(114547),
-          TMoney(14777)
+          Money(114547),
+          Money(14777)
         )
         .rounded,
-      TMoney(2217)
+      Money(2217)
     )
   }

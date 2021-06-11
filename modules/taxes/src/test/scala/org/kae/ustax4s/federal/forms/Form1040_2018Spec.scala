@@ -6,7 +6,7 @@ import munit.FunSuite
 import org.kae.ustax4s.federal.TaxRates
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.MoneySyntax.*
-import org.kae.ustax4s.money.{TMoney, *}
+import org.kae.ustax4s.money.{Money, *}
 
 class Form1040_2018Spec extends FunSuite:
 
@@ -43,11 +43,11 @@ class Form1040_2018Spec extends FunSuite:
       childTaxCredit = 2000.asMoney,
       wages = 133497.asMoney,
       taxExemptInterest = 2294.asMoney,
-      taxableInterest = TMoney.zero,
+      taxableInterest = Money.zero,
       ordinaryDividends = 7930.asMoney,
       qualifiedDividends = 7365.asMoney,
-      taxableIraDistributions = TMoney.zero,
-      socialSecurityBenefits = TMoney.zero,
+      taxableIraDistributions = Money.zero,
+      socialSecurityBenefits = Money.zero,
       rates = rates
     )
 

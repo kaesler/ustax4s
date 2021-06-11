@@ -14,11 +14,11 @@ import scala.io.Source
 final case class RegressionTestCase(
   filingStatus: FilingStatus,
   dependents: Int,
-  socSec: TMoney,
-  ordinaryIncomeNonSS: TMoney,
-  qualifiedIncome: TMoney,
-  federalTaxDue: TMoney,
-  stateTaxDue: TMoney
+  socSec: Money,
+  ordinaryIncomeNonSS: Money,
+  qualifiedIncome: Money,
+  federalTaxDue: Money,
+  stateTaxDue: Money
 ):
   def massachusettsGrossIncome = ordinaryIncomeNonSS + qualifiedIncome
 
@@ -54,11 +54,11 @@ object RegressionTestCase:
     val fields              = s.split(',')
     val filingStatus        = FilingStatus.valueOf(fields(0))
     val dependents          = Integer.parseInt(fields(1))
-    val socSec              = TMoney.unsafeParse(fields(2))
-    val ordinaryIncomeNonSS = TMoney.unsafeParse(fields(3))
-    val qualifiedIncome     = TMoney.unsafeParse(fields(4))
-    val federalTaxDue       = TMoney.unsafeParse(fields(5))
-    val stateTaxDue         = TMoney.unsafeParse(fields(6))
+    val socSec              = Money.unsafeParse(fields(2))
+    val ordinaryIncomeNonSS = Money.unsafeParse(fields(3))
+    val qualifiedIncome     = Money.unsafeParse(fields(4))
+    val federalTaxDue       = Money.unsafeParse(fields(5))
+    val stateTaxDue         = Money.unsafeParse(fields(6))
     RegressionTestCase(
       filingStatus,
       dependents,

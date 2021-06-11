@@ -1,7 +1,7 @@
 package org.kae.ustax4s.state
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
@@ -22,10 +22,10 @@ object StateTaxMA:
     //  - interest
     //  - dividends
     //  - capital gains
-    massachusettsGrossIncome: TMoney
-  ): TMoney =
-    TMoney.max(
-      TMoney.zero,
+    massachusettsGrossIncome: Money
+  ): Money =
+    Money.max(
+      Money.zero,
       massachusettsGrossIncome -
         totalExemptions(year, filingStatus, birthDate, dependents)
     ) taxAt rate(year)
@@ -35,7 +35,7 @@ object StateTaxMA:
     filingStatus: FilingStatus,
     birthDate: LocalDate,
     dependents: Int
-  ): TMoney =
+  ): Money =
     personalExemption(year, filingStatus) +
       age65OrOlderExemption(year, birthDate) +
       dependentExceptions(dependents)
@@ -53,29 +53,29 @@ object StateTaxMA:
   private def personalExemption(
     year: Year,
     filingStatus: FilingStatus
-  ): TMoney =
+  ): Money =
     (year.getValue, filingStatus) match
       // Note: for now assume same for future years as 2020.
       case (year, fs) if year > 2020 =>
         personalExemption(Year.of(2020), fs)
 
-      case (2020, HeadOfHousehold) => TMoney(6800)
-      case (2020, Single)          => TMoney(4400)
+      case (2020, HeadOfHousehold) => Money(6800)
+      case (2020, Single)          => Money(4400)
 
-      case (2019, HeadOfHousehold) => TMoney(6800)
-      case (2019, Single)          => TMoney(4400)
+      case (2019, HeadOfHousehold) => Money(6800)
+      case (2019, Single)          => Money(4400)
 
-      case (2018, HeadOfHousehold) => TMoney(6800)
-      case (2018, Single)          => TMoney(4400)
+      case (2018, HeadOfHousehold) => Money(6800)
+      case (2018, Single)          => Money(4400)
 
       case _ => ???
 
-  private def age65OrOlderExemption(year: Year, birthDate: LocalDate): TMoney =
+  private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Money =
     if isAge65OrOlder(birthDate, year) then 700.asMoney
-    else TMoney.zero
+    else Money.zero
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     taxYear.getValue - birthDate.getYear >= 65
 
-  private def dependentExceptions(dependents: Int): TMoney =
-    TMoney(1000) mul dependents
+  private def dependentExceptions(dependents: Int): Money =
+    Money(1000) mul dependents

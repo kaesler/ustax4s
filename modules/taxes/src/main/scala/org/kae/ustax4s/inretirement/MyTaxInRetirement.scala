@@ -10,10 +10,10 @@ object MyTaxInRetirement:
 
   def federalTaxDue(
     year: Year,
-    socSec: TMoney,
-    ordinaryIncomeNonSS: TMoney,
-    qualifiedIncome: TMoney
-  ): TMoney =
+    socSec: Money,
+    ordinaryIncomeNonSS: Money,
+    qualifiedIncome: Money
+  ): Money =
     TaxInRetirement.federalTaxDue(
       year,
       Kevin.birthDate,
@@ -25,11 +25,11 @@ object MyTaxInRetirement:
 
   def federalTaxDueUsingForm1040(
     year: Year,
-    socSec: TMoney,
-    ordinaryIncomeNonSS: TMoney,
-    qualifiedDividends: TMoney,
+    socSec: Money,
+    ordinaryIncomeNonSS: Money,
+    qualifiedDividends: Money,
     verbose: Boolean
-  ): TMoney = {
+  ): Money = {
     val filingStatus = Kevin.filingStatus(year)
     val myRates = TaxRates.of(
       year,
@@ -48,10 +48,10 @@ object MyTaxInRetirement:
       schedule3 = None,
       schedule4 = None,
       schedule5 = None,
-      childTaxCredit = TMoney.zero,
-      wages = TMoney.zero,
-      taxExemptInterest = TMoney.zero,
-      taxableInterest = TMoney.zero,
+      childTaxCredit = Money.zero,
+      wages = Money.zero,
+      taxExemptInterest = Money.zero,
+      taxableInterest = Money.zero,
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
@@ -69,8 +69,8 @@ object MyTaxInRetirement:
     //  - interest
     //  - dividends
     //  - capital gains
-    massachusettsGrossIncome: TMoney
-  ): TMoney =
+    massachusettsGrossIncome: Money
+  ): Money =
     TaxInRetirement.stateTaxDue(
       year,
       Kevin.birthDate,

@@ -2,7 +2,7 @@ package org.kae.ustax4s.inretirement
 
 import cats.Show
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.federal.{TaxRates, TaxableSocialSecurity, forms}
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.state.StateTaxMA
@@ -13,14 +13,14 @@ import org.kae.ustax4s.FilingStatus
 object TaxInRetirement:
 
   final case class FederalTaxResults(
-    ssRelevantOtherIncome: TMoney,
-    taxableSocialSecurity: TMoney,
-    standardDeduction: TMoney,
-    taxableOrdinaryIncome: TMoney,
-    taxOnOrdinaryIncome: TMoney,
-    taxOnQualifiedIncome: TMoney
+    ssRelevantOtherIncome: Money,
+    taxableSocialSecurity: Money,
+    standardDeduction: Money,
+    taxableOrdinaryIncome: Money,
+    taxOnOrdinaryIncome: Money,
+    taxOnQualifiedIncome: Money
   ):
-    def taxDue: TMoney = taxOnOrdinaryIncome + taxOnQualifiedIncome
+    def taxDue: Money = taxOnOrdinaryIncome + taxOnQualifiedIncome
 
   object FederalTaxResults:
     given Show[FederalTaxResults] = (r: FederalTaxResults) =>
@@ -41,10 +41,10 @@ object TaxInRetirement:
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
-    socSec: TMoney,
-    ordinaryIncomeNonSS: TMoney,
-    qualifiedIncome: TMoney
-  ): TMoney =
+    socSec: Money,
+    ordinaryIncomeNonSS: Money,
+    qualifiedIncome: Money
+  ): Money =
     federalTaxResults(
       year,
       birthDate,
@@ -58,9 +58,9 @@ object TaxInRetirement:
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
-    socSec: TMoney,
-    ordinaryIncomeNonSS: TMoney,
-    qualifiedIncome: TMoney
+    socSec: Money,
+    ordinaryIncomeNonSS: Money,
+    qualifiedIncome: Money
   ): FederalTaxResults =
     val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
     val taxableSocialSecurity =
@@ -94,11 +94,11 @@ object TaxInRetirement:
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
-    socSec: TMoney,
-    ordinaryIncomeNonSS: TMoney,
-    qualifiedDividends: TMoney,
+    socSec: Money,
+    ordinaryIncomeNonSS: Money,
+    qualifiedDividends: Money,
     verbose: Boolean
-  ): TMoney =
+  ): Money =
     val myRates = TaxRates.of(
       year,
       filingStatus,
@@ -116,10 +116,10 @@ object TaxInRetirement:
       schedule3 = None,
       schedule4 = None,
       schedule5 = None,
-      childTaxCredit = TMoney.zero,
-      wages = TMoney.zero,
-      taxExemptInterest = TMoney.zero,
-      taxableInterest = TMoney.zero,
+      childTaxCredit = Money.zero,
+      wages = Money.zero,
+      taxExemptInterest = Money.zero,
+      taxableInterest = Money.zero,
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
@@ -138,8 +138,8 @@ object TaxInRetirement:
     //  - interest
     //  - dividends
     //  - capital gains
-    massachusettsGrossIncome: TMoney
-  ): TMoney =
+    massachusettsGrossIncome: Money
+  ): Money =
     StateTaxMA
       .taxDue(
         year,

@@ -5,24 +5,24 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.money.given
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.QualifiedIncomeBrackets
-import org.kae.ustax4s.money.TMoney
-import org.kae.ustax4s.money.TMoneyGeneration
+import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.MoneyGeneration
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 
 class QualifiedIncomeBracketsSpec
     extends ScalaCheckSuite
     with QualifiedBracketsGeneration
-    with TMoneyGeneration:
+    with MoneyGeneration:
 
   import FederalTaxRate.given
 
   private given Arbitrary[QualifiedIncomeBrackets] = Arbitrary(
     genQualifiedBrackets
   )
-  private given Arbitrary[TMoney] = Arbitrary(genMoney)
+  private given Arbitrary[Money] = Arbitrary(genMoney)
 
-  private val zero = TMoney.zero
+  private val zero = Money.zero
 
   test("InvestmentIncomeTaxBrackets should be progressive") {
     def isProgressive(brackets: QualifiedIncomeBrackets): Boolean = {
@@ -38,7 +38,7 @@ class QualifiedIncomeBracketsSpec
   }
 
   property("never tax zero gains") {
-    forAll { (ordIncome: TMoney, brackets: QualifiedIncomeBrackets) =>
+    forAll { (ordIncome: Money, brackets: QualifiedIncomeBrackets) =>
       brackets.taxDueFunctionally(ordIncome, zero) == zero
     }
   }
@@ -54,7 +54,7 @@ class QualifiedIncomeBracketsSpec
     "tax rises monotonically with qualified income outside the zero " +
       "bracket"
   ) {
-    forAll { (brackets: QualifiedIncomeBrackets, gains1: TMoney, gains2: TMoney) =>
+    forAll { (brackets: QualifiedIncomeBrackets, gains1: Money, gains2: Money) =>
       {
         val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
         if gains1 < gains2 then
@@ -80,7 +80,7 @@ class QualifiedIncomeBracketsSpec
   }
 
   property("tax rises monotonically with ordinary income") {
-    forAll { (brackets: QualifiedIncomeBrackets, gains: TMoney, income1: TMoney, income2: TMoney) =>
+    forAll { (brackets: QualifiedIncomeBrackets, gains: Money, income1: Money, income2: Money) =>
       val res = {
         if (income1 < income2)
           brackets
@@ -111,14 +111,14 @@ class QualifiedIncomeBracketsSpec
     "tax is never zero except on zero gains, outside the bottom " +
       "rate"
   ) {
-    forAll { (brackets: QualifiedIncomeBrackets, gains: TMoney) =>
+    forAll { (brackets: QualifiedIncomeBrackets, gains: Money) =>
       val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
       brackets.taxDueFunctionally(ordinaryIncome, gains).nonZero || gains.isZero
     }
   }
 
   property("max tax rate is the max tax rate") {
-    forAll { (brackets: QualifiedIncomeBrackets, gains: TMoney) =>
+    forAll { (brackets: QualifiedIncomeBrackets, gains: Money) =>
       val maxTax = gains taxAt brackets.bracketStartsAscending.map(_._2).max
       brackets.taxDueFunctionally(zero, gains) <= maxTax
     }

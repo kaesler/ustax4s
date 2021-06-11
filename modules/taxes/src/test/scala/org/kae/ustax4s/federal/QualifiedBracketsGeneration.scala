@@ -8,8 +8,8 @@ import org.scalacheck.Gen
 trait QualifiedBracketsGeneration extends SetGeneration with TaxRateGeneration:
 
   // Somewhat realistic.
-  private val genNonZeroBracketBorder: Gen[TMoney] =
-    Gen.choose(10, 500000).map(TMoney.apply)
+  private val genNonZeroBracketBorder: Gen[Money] =
+    Gen.choose(10, 500000).map(Money.apply)
 
   // Notes:
   //   - lowest rate should always be zero% and start at zero.
@@ -20,7 +20,7 @@ trait QualifiedBracketsGeneration extends SetGeneration with TaxRateGeneration:
       nonZeroRates <- genSet(bracketCount - 1, genNonZeroTaxRate)
       ratesSortedAscending = FederalTaxRate.unsafeFrom(0.0) :: nonZeroRates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genNonZeroBracketBorder)
-      bracketStarts = bracketBorders + TMoney.zero
+      bracketStarts = bracketBorders + Money.zero
     yield QualifiedIncomeBrackets(
       bracketStarts.toList.sorted
         .zip(ratesSortedAscending)

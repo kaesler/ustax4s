@@ -6,18 +6,18 @@ import eu.timepit.refined.auto.*
 import eu.timepit.refined.numeric.*
 import eu.timepit.refined.types.numeric.{PosDouble, PosInt}
 import java.time.Year
-import org.kae.ustax4s.money.TMoney
+import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 object TaxableSocialSecurity:
 
-  import TMoney.given
+  import Money.given
 
   private val two = 2
 
-  private def bases(filingStatus: FilingStatus): (TMoney, TMoney) =
+  private def bases(filingStatus: FilingStatus): (Money, Money) =
     filingStatus match
       case Single | HeadOfHousehold => (25000.asMoney, 34000.asMoney)
 
@@ -26,10 +26,10 @@ object TaxableSocialSecurity:
   // but does not exceed 85%.
   def taxableSocialSecurityBenefitsAdjusted(
     filingStatus: FilingStatus,
-    socialSecurityBenefits: TMoney,
-    ssRelevantOtherIncome: TMoney,
+    socialSecurityBenefits: Money,
+    ssRelevantOtherIncome: Money,
     year: Year
-  ): TMoney =
+  ): Money =
     val unadjusted = taxableSocialSecurityBenefits(
       filingStatus = filingStatus,
       socialSecurityBenefits = socialSecurityBenefits,
@@ -40,7 +40,7 @@ object TaxableSocialSecurity:
       val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
       val adjusted         = unadjusted mul adjustmentFactor
       // TODO: what is this doing?
-      TMoney.min(
+      Money.min(
         adjusted,
         socialSecurityBenefits mul 0.85
       )
@@ -48,19 +48,19 @@ object TaxableSocialSecurity:
 
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
-    socialSecurityBenefits: TMoney,
-    ssRelevantOtherIncome: TMoney
-  ): TMoney =
+    socialSecurityBenefits: Money,
+    ssRelevantOtherIncome: Money
+  ): Money =
     val (lowBase, highBase) = bases(filingStatus)
 
-    val combinedIncome: TMoney = ssRelevantOtherIncome + (socialSecurityBenefits div two)
+    val combinedIncome: Money = ssRelevantOtherIncome + (socialSecurityBenefits div two)
 
-    if (combinedIncome < lowBase) TMoney.zero
+    if (combinedIncome < lowBase) Money.zero
     else if combinedIncome < highBase then
       val fractionTaxable  = 0.5
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%
-      TMoney.min(
+      Money.min(
         (combinedIncome - lowBase) mul fractionTaxable,
         maxSocSecTaxable
       )
@@ -68,9 +68,9 @@ object TaxableSocialSecurity:
       val fractionTaxable  = 0.85
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
 
-      TMoney.min(
+      Money.min(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
-        TMoney(4500) + ((combinedIncome - highBase) mul fractionTaxable),
+        Money(4500) + ((combinedIncome - highBase) mul fractionTaxable),
         maxSocSecTaxable
       )

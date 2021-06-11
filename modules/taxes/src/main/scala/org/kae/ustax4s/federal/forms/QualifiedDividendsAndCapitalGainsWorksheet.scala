@@ -13,18 +13,18 @@ final case class QualifiedDividendsAndCapitalGainsWorksheet(
   //  - adjust brackets for non-investments by amount receiving preferential treatment?
 
   // Line 4
-  def preferentiallyTaxedGains(form1040: Form1040): TMoney =
+  def preferentiallyTaxedGains(form1040: Form1040): Money =
     form1040.qualifiedDividends +
       form1040.scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(TMoney.zero)
+        .getOrElse(Money.zero)
 
-  def taxOnPTGains: TMoney = ???
+  def taxOnPTGains: Money = ???
 
-  def taxOnNonGains: TMoney = ???
+  def taxOnNonGains: Money = ???
 
   // Line 27
-  def taxOnAllTaxableIncome: TMoney =
+  def taxOnAllTaxableIncome: Money =
     // Lesser of:
     //   - preferential rates applied
     //   - no preferential rates applied

@@ -6,17 +6,17 @@ final case class Schedule1(
   scheduleD: Option[ScheduleD],
   // TODO: may need negative Money type here
   // Line 12:
-  businessIncomeOrLoss: TMoney,
+  businessIncomeOrLoss: Money,
   // Line 25:
-  healthSavingsAccountDeduction: TMoney,
+  healthSavingsAccountDeduction: Money,
   // Line 27:
-  deductiblePartOfSelfEmploymentTax: TMoney
+  deductiblePartOfSelfEmploymentTax: Money
 ):
   // TODO: may need negative Money type here
-  def capitalGainOrLoss: TMoney =
-    scheduleD.map(_.netLongTermCapitalGains).getOrElse(TMoney.zero)
+  def capitalGainOrLoss: Money =
+    scheduleD.map(_.netLongTermCapitalGains).getOrElse(Money.zero)
 
-  def additionalIncome: TMoney = businessIncomeOrLoss + capitalGainOrLoss
+  def additionalIncome: Money = businessIncomeOrLoss + capitalGainOrLoss
 
-  def adjustmentsToIncome: TMoney =
+  def adjustmentsToIncome: Money =
     healthSavingsAccountDeduction + deductiblePartOfSelfEmploymentTax
