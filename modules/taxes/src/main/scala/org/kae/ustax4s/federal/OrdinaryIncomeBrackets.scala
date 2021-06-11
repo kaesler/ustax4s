@@ -1,10 +1,11 @@
 package org.kae.ustax4s.federal
 
 import java.time.Year
-import org.kae.ustax4s.given
-import org.kae.ustax4s.*
+import org.kae.ustax4s.moneyold.given
+import org.kae.ustax4s.moneyold.*
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import scala.annotation.tailrec
+import org.kae.ustax4s.FilingStatus
 
 /** Calculates tax on ordinary (non-investment) income.
   *

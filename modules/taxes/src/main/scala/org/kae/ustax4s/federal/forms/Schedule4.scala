@@ -1,5 +1,6 @@
-package org.kae.ustax4s
-package federal.forms
+package org.kae.ustax4s.federal.forms
+
+import org.kae.ustax4s.moneyold.*
 
 case class Schedule4(
   selfEmploymentTax: TMoney

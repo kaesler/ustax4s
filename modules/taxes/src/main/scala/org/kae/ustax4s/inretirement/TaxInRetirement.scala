@@ -2,10 +2,11 @@ package org.kae.ustax4s.inretirement
 
 import cats.Show
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.*
+import org.kae.ustax4s.moneyold.*
 import org.kae.ustax4s.federal.{TaxRates, TaxableSocialSecurity, forms}
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.state.StateTaxMA
+import org.kae.ustax4s.FilingStatus
 
 /** Simplified interface to 1040 calculations. Assume: No deductions credits or other complications.
   */

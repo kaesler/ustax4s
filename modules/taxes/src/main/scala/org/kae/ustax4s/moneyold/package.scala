@@ -1,17 +1,16 @@
-package org.kae
+package org.kae.ustax4s
 
 import cats.kernel.Order
 import eu.timepit.refined.*
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.Interval
 import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble, PosInt}
+import org.kae.ustax4s.federal.FederalTaxRate
+import org.kae.ustax4s.state.StateTaxRate
 import scala.language.implicitConversions
 import scala.math.BigDecimal.RoundingMode
 
-import org.kae.ustax4s.federal.FederalTaxRate
-import org.kae.ustax4s.state.StateTaxRate
-
-package object ustax4s:
+package object moneyold:
 
   /** Type for most tax calculations.
     */
@@ -83,3 +82,5 @@ package object ustax4s:
 
     def min(left: TMoney, right: TMoney): TMoney =
       summon[Order[TMoney]].min(left, right)
+
+end moneyold

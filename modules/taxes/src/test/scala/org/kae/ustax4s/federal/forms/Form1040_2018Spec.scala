@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal.forms
 import cats.implicits.*
 import java.time.Year
 import munit.FunSuite
-import org.kae.ustax4s.*
+import org.kae.ustax4s.moneyold.*
 import org.kae.ustax4s.federal.TaxRates
 import org.kae.ustax4s.kevin.Kevin
 

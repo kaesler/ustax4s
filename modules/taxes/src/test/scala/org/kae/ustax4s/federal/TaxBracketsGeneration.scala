@@ -1,7 +1,8 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.given
-import org.kae.ustax4s.{SetGeneration, TMoney}
+import org.kae.ustax4s.moneyold.given
+import org.kae.ustax4s.{SetGeneration}
+import org.kae.ustax4s.moneyold.TMoney
 import org.scalacheck.Gen
 
 trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:

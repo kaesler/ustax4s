@@ -1,5 +1,6 @@
-package org.kae.ustax4s
-package federal.forms
+package org.kae.ustax4s.federal.forms
+
+import org.kae.ustax4s.moneyold.*
 
 final case class ScheduleD(
   // Line 8b

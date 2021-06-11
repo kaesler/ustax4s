@@ -4,8 +4,9 @@ import cats.Show
 import cats.implicits.*
 import java.time.Year
 import munit.Assertions.*
-import org.kae.ustax4s.{FilingStatus, TMoney}
-import org.kae.ustax4s.given
+import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.moneyold.given
 import org.kae.ustax4s.inretirement.TaxInRetirement
 import org.kae.ustax4s.kevin.Kevin
 import scala.io.Source

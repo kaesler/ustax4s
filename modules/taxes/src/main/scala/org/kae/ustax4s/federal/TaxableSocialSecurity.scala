@@ -6,7 +6,8 @@ import eu.timepit.refined.auto.*
 import eu.timepit.refined.numeric.*
 import eu.timepit.refined.types.numeric.{PosDouble, PosInt}
 import java.time.Year
-import org.kae.ustax4s.*
+import org.kae.ustax4s.moneyold.*
+import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 
 object TaxableSocialSecurity:

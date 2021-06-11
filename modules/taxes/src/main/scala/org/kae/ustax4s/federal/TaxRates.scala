@@ -1,11 +1,12 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.*
+import org.kae.ustax4s.moneyold.*
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets, QualifiedIncomeBrackets}
-import org.kae.ustax4s.{FilingStatus, TMoney, federal}
+import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.moneyold.TMoney
 
 // Note: does not model exemptions that pertained before 2018 and could
 // be re-introduced in 2025.
@@ -44,7 +45,7 @@ object TaxRates:
     filingStatus: FilingStatus,
     birthDate: LocalDate
   ): TaxRates =
-    federal.TaxRates(
+    TaxRates(
       StandardDeduction.of(year, filingStatus, birthDate),
       OrdinaryIncomeBrackets.of(year, filingStatus),
       QualifiedIncomeBrackets.of(year, filingStatus),

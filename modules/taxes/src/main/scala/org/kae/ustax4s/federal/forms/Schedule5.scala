@@ -1,7 +1,6 @@
-package org.kae.ustax4s
-package federal.forms
+package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.TMoney
+import org.kae.ustax4s.moneyold.TMoney
 
 case class Schedule5(
   // Line 72:

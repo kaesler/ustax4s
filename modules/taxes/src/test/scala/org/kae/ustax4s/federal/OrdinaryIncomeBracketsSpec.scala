@@ -4,8 +4,8 @@ import java.time.Year
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.given
-import org.kae.ustax4s.*
+import org.kae.ustax4s.moneyold.given
+import org.kae.ustax4s.moneyold.*
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 

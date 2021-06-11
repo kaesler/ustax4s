@@ -1,7 +1,7 @@
 package org.kae.ustax4s.inretirement
 
 import java.time.Year
-import org.kae.ustax4s.*
+import org.kae.ustax4s.moneyold.*
 import org.kae.ustax4s.federal.{TaxRates, forms}
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.kevin.Kevin

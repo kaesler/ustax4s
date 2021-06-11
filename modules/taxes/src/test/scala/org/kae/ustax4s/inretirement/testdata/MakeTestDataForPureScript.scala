@@ -1,7 +1,7 @@
 package org.kae.ustax4s.inretirement.testdata
 
 import java.time.Year
-import org.kae.ustax4s.given
+import org.kae.ustax4s.moneyold.given
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.inretirement.TaxInRetirement
 import org.kae.ustax4s.kevin.Kevin

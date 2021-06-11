@@ -2,8 +2,10 @@ package org.kae.ustax4s
 package federal
 
 import java.time.Year
+import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.{FilingStatus, TMoney}
+import org.kae.ustax4s.moneyold.given
+import org.kae.ustax4s.moneyold.*
 import scala.annotation.tailrec
 
 /** Calculates tax on qualified investment income,
