@@ -2,7 +2,6 @@ package org.kae.ustax4s.federal
 
 import java.time.Year
 import munit.FunSuite
-import org.kae.ustax4s.money.given
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.federal.QualifiedIncomeBrackets

@@ -14,9 +14,6 @@ class OrdinaryIncomeBracketsSpec
     with TaxBracketsGeneration
     with MoneyGeneration:
 
-  // TODO: why necessary?
-  import FederalTaxRate.given
-
   given Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
 
   given Arbitrary[Money] = Arbitrary(genMoney)

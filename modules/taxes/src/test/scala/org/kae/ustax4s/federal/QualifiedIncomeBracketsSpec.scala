@@ -2,7 +2,6 @@ package org.kae.ustax4s.federal
 
 import java.time.Year
 import munit.ScalaCheckSuite
-import org.kae.ustax4s.money.given
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.QualifiedIncomeBrackets
 import org.kae.ustax4s.money.Money
@@ -14,8 +13,6 @@ class QualifiedIncomeBracketsSpec
     extends ScalaCheckSuite
     with QualifiedBracketsGeneration
     with MoneyGeneration:
-
-  import FederalTaxRate.given
 
   private given Arbitrary[QualifiedIncomeBrackets] = Arbitrary(
     genQualifiedBrackets
