@@ -144,7 +144,7 @@ object TaxInRetirement:
       .taxDue(
         year,
         birthDate,
-        filingStatus,
-        dependents
+        dependents,
+        filingStatus
       )(massachusettsGrossIncome)
       .rounded
