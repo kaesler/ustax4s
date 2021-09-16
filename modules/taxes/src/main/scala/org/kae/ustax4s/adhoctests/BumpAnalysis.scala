@@ -14,7 +14,7 @@ object BumpAnalysis extends App:
   //     - bracket
   //     - slope  (delta tax due)/(delta income)
   // Try it in a spreadsheet
-  val socialSecurityIncome = 49128.asMoney
+  val socialSecurityIncome = 49908.asMoney
 
   val filingStatus = Single // HeadOfHousehold
   val pairs = for

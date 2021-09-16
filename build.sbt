@@ -7,14 +7,14 @@ lazy val retirement = project
   .aggregate(taxes)
   .dependsOn(taxes)
   .settings(
-    name := "retirement",
-    version := "0.1",
-    scalaVersion := "3.0.0"
+    name         := "retirement",
+    version      := "1.0",
+    scalaVersion := "3.0.2"
   )
 
 lazy val taxes = (project in file("modules/taxes"))
   .settings(
-    name := "taxes",
+    name         := "taxes",
     scalaVersion := "3.0.0",
     libraryDependencies ++= Seq(
       Cats.core withSources (),
