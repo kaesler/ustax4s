@@ -56,8 +56,7 @@ class MyTaxInRetirementSpec extends FunSuite:
       val socialSecurity     = ss.asMoney
       val qualifiedDividends = inv.asMoney
 
-      if (
-        federalTaxDue(
+      if federalTaxDue(
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
@@ -70,9 +69,7 @@ class MyTaxInRetirementSpec extends FunSuite:
             qualifiedDividends = qualifiedDividends,
             verbose = false
           )
-      ) {
-        println(s"status: $status; i: $i; ss: $ss; inv: $inv")
-      }
+      then println(s"status: $status; i: $i; ss: $ss; inv: $inv")
 
       assertEquals(
         federalTaxDue(

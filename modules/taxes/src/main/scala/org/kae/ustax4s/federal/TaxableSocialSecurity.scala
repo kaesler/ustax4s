@@ -46,7 +46,7 @@ object TaxableSocialSecurity:
 
     val combinedIncome: Money = ssRelevantOtherIncome + (socialSecurityBenefits div two)
 
-    if (combinedIncome < lowBase) Money.zero
+    if combinedIncome < lowBase then Money.zero
     else if combinedIncome < highBase then
       val fractionTaxable  = 0.5
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable

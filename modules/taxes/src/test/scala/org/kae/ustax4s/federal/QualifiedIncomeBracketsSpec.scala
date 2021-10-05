@@ -79,7 +79,7 @@ class QualifiedIncomeBracketsSpec
   property("tax rises monotonically with ordinary income") {
     forAll { (brackets: QualifiedIncomeBrackets, gains: Money, income1: Money, income2: Money) =>
       val res = {
-        if (income1 < income2)
+        if income1 < income2 then
           brackets
             .taxDueFunctionally(income1, gains) <= brackets
             .taxDueFunctionally(income1, gains)
@@ -94,12 +94,11 @@ class QualifiedIncomeBracketsSpec
               gains
             )
       }
-      if (!res) {
+      if !res then
         println(brackets.show)
         println(s"gains: $gains")
         println(s"income1: $income1; tax: ${brackets.taxDueFunctionally(income1, gains)}")
         println(s"income2: $income2; tax: ${brackets.taxDueFunctionally(income2, gains)}")
-      }
       res
     }
   }

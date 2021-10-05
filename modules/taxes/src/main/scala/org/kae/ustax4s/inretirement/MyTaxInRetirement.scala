@@ -55,9 +55,7 @@ object MyTaxInRetirement:
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
-    if (verbose) {
-      println(form.showValues)
-    }
+    if verbose then println(form.showValues)
 
     myRates.totalTax(form).rounded
   }
