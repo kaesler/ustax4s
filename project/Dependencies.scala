@@ -9,11 +9,6 @@ object Dependencies {
     val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.2.9"
   }
 
-  object Fs2 {
-    val core: ModuleID = "co.fs2" %% "fs2-core" % "3.0.3"
-    val io: ModuleID   = "co.fs2" %% "fs2-io"   % "3.0.3"
-  }
-
   object MUnit {
     val munit: ModuleID      = "org.scalameta" %% "munit"            % "0.7.29"
     val scalacheck: ModuleID = "org.scalameta" %% "munit-scalacheck" % "0.7.29"
