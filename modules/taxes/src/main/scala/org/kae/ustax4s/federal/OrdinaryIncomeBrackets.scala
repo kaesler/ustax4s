@@ -94,7 +94,7 @@ final case class OrdinaryIncomeBrackets(
         )
       )
 
-  def taxToEndOfBracket(bracketRate: FederalTaxRate)(using Ordering[FederalTaxRate]): Money =
+  def taxToEndOfBracket(bracketRate: FederalTaxRate): Money =
     require(bracketExists(bracketRate))
 
     val taxes = bracketStartsAscending
