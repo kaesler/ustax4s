@@ -150,6 +150,7 @@ object OrdinaryIncomeBrackets:
   def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
     (year.getValue, status) match
 
+      // An estimate for 2021 as if the Trump tax cuts had not occurred.
       // We assume the Trump tax cuts will lapse effective 2026,
       // so we calculate the rates as of 2021 as if they had not happened,
       // assuming the brackets inflated 2% per year from 2017 to 2021.
