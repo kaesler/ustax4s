@@ -17,6 +17,14 @@ final case class OrdinaryIncomeBrackets(
 ):
   require(bracketStarts.contains(Money.zero))
 
+  // Adjust the bracket starts for inflation.
+  // E.g. for 2% inflation: inflated(1.02)
+  def inflatedBy(factor: Double): OrdinaryIncomeBrackets = OrdinaryIncomeBrackets(
+    bracketStarts.map { case (start, rate) =>
+      (start mul factor, rate)
+    }
+  )
+
   val bracketStartsAscending: Vector[(Money, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
 
@@ -137,11 +145,21 @@ final case class OrdinaryIncomeBrackets(
 
 object OrdinaryIncomeBrackets:
 
-  @tailrec def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
+  def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
     (year.getValue, status) match
 
-      // Note: for now assume 2021 rates in later years.
-      case (year, fs) if year > 2021 => of(Year.of(2021), fs)
+      // We assume the Trump tax cuts will lapse effective 2026,
+      // so we calculate the rates as of 2021 as if they had not happened,
+      // assuming the brackets inflated 2% per year from 2017 to 2021.
+      // An estimate of course.
+      // https://en.wikipedia.org/wiki/Tax_Cuts_and_Jobs_Act_of_2017
+      case (year, fs) if year > 2025 =>
+        of(Year.of(2017), fs).inflatedBy(math.pow(1.02, 4.0))
+
+      // Note: for now assume 2021 rates in later years, and prior to
+      // reversion of Trump tax cuts.
+      case (year, fs) if year > 2021 && year <= 2025 =>
+        of(Year.of(2021), fs)
 
       case (2021, HeadOfHousehold) =>
         create(
@@ -208,6 +226,7 @@ object OrdinaryIncomeBrackets:
           ).view.mapValues(_.toDouble).toMap
         )
 
+      // Note: Pre-Trump-tax-cut rates.
       case (2017, Single) =>
         create(
           Map(
@@ -221,6 +240,7 @@ object OrdinaryIncomeBrackets:
           )
         )
 
+      // Note: Pre-Trump-tax-cut rates.
       case (2017, HeadOfHousehold) =>
         create(
           Map(
