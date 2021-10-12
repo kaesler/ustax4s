@@ -10,7 +10,7 @@ object StandardDeduction:
 
   def of(year: Year, filingStatus: FilingStatus, birthDate: LocalDate): Money =
     unadjustedForAge(year, filingStatus) +
-      (if isAge65OrOlder(birthDate, year) then Money(1350) else Money.zero)
+      (if isAge65OrOlder(birthDate, year) then 1350 else 0)
 
   private def unadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
     (year.getValue, filingStatus) match
@@ -30,17 +30,17 @@ object StandardDeduction:
       case (year, fs) if year > 2021 && year < 2026 =>
         unadjustedForAge(Year.of(2021), fs)
 
-      case (2021, HeadOfHousehold) => Money(18800)
-      case (2020, HeadOfHousehold) => Money(18650)
-      case (2019, HeadOfHousehold) => Money(18350)
-      case (2018, HeadOfHousehold) => Money(18000)
-      case (2017, HeadOfHousehold) => Money(9350)
+      case (2021, HeadOfHousehold) => 18800
+      case (2020, HeadOfHousehold) => 18650
+      case (2019, HeadOfHousehold) => 18350
+      case (2018, HeadOfHousehold) => 18000
+      case (2017, HeadOfHousehold) => 9350
 
-      case (2021, Single) => Money(12550)
-      case (2020, Single) => Money(12400)
-      case (2019, Single) => Money(12200)
-      case (2018, Single) => Money(12000)
-      case (2017, Single) => Money(6350)
+      case (2021, Single) => 12550
+      case (2020, Single) => 12400
+      case (2019, Single) => 12200
+      case (2018, Single) => 12000
+      case (2017, Single) => 6350
 
       // TODO: account for Trump tax cut expiry in 2026 and later
       case _ => ???

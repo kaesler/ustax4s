@@ -15,8 +15,8 @@ class QualifiedIncomeBrackets2018Spec extends FunSuite:
     assertEquals(
       brackets
         .taxDueFunctionally(
-          Money(114547),
-          Money(14777)
+          114547,
+          14777
         )
         .rounded,
       Money(2217)

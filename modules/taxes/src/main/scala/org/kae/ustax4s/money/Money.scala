@@ -38,7 +38,7 @@ object Money:
   // Note: careful to avoid recursive instance here.
   // This seems to do it.
   given Ordering[Money] with
-    def compare(x: Money, y: Money) =
+    def compare(x: Money, y: Money): Int =
       if x < y then -1 else if x > y then +1 else 0
 
   extension (underlying: Money)

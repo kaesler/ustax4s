@@ -53,14 +53,14 @@ object StateTaxMA:
       case (year, fs) if year > 2020 =>
         personalExemption(Year.of(2020), fs)
 
-      case (2020, HeadOfHousehold) => Money(6800)
-      case (2020, Single)          => Money(4400)
+      case (2020, HeadOfHousehold) => 6800
+      case (2020, Single)          => 4400
 
-      case (2019, HeadOfHousehold) => Money(6800)
-      case (2019, Single)          => Money(4400)
+      case (2019, HeadOfHousehold) => 6800
+      case (2019, Single)          => 4400
 
-      case (2018, HeadOfHousehold) => Money(6800)
-      case (2018, Single)          => Money(4400)
+      case (2018, HeadOfHousehold) => 6800
+      case (2018, Single)          => 4400
 
       case _ => ???
 

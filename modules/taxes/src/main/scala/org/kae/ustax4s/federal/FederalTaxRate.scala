@@ -18,7 +18,7 @@ object FederalTaxRate:
     extension (r: FederalTaxRate) def asFraction = r
 
   given Ordering[FederalTaxRate] with
-    def compare(x: FederalTaxRate, y: FederalTaxRate) =
+    def compare(x: FederalTaxRate, y: FederalTaxRate): Int =
       x.asFraction.compare(y.asFraction)
 
 end FederalTaxRate
