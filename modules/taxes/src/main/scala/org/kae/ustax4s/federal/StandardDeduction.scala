@@ -17,9 +17,11 @@ object StandardDeduction:
 
       case (year, fs) if year > 2025 =>
         val inflationAssumed = 0.02
-        unadjustedForAge(Year.of(2017), fs).mul(
-          math.pow(1.0 + inflationAssumed, (2021 - 2017).toDouble)
-        )
+        unadjustedForAge(Year.of(2017), fs)
+          .mul(
+            math.pow(1.0 + inflationAssumed, (2021 - 2017).toDouble)
+          )
+          .rounded
 
       // An estimate for 2021 as if the Trump tax cuts had not occurred.
       case (year, fs) if year > 2021 && year < 2026 =>

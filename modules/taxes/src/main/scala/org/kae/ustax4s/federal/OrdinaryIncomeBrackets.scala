@@ -23,7 +23,7 @@ final case class OrdinaryIncomeBrackets(
     require(factor >= 1.0)
     OrdinaryIncomeBrackets(
       bracketStarts.map { case (start, rate) =>
-        (start mul factor, rate)
+        ((start mul factor).rounded, rate)
       }
     )
 
