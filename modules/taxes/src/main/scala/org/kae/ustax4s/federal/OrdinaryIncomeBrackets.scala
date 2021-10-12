@@ -19,11 +19,13 @@ final case class OrdinaryIncomeBrackets(
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
-  def inflatedBy(factor: Double): OrdinaryIncomeBrackets = OrdinaryIncomeBrackets(
-    bracketStarts.map { case (start, rate) =>
-      (start mul factor, rate)
-    }
-  )
+  def inflatedBy(factor: Double): OrdinaryIncomeBrackets =
+    require(factor >= 1.0)
+    OrdinaryIncomeBrackets(
+      bracketStarts.map { case (start, rate) =>
+        (start mul factor, rate)
+      }
+    )
 
   val bracketStartsAscending: Vector[(Money, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
@@ -154,7 +156,10 @@ object OrdinaryIncomeBrackets:
       // An estimate of course.
       // https://en.wikipedia.org/wiki/Tax_Cuts_and_Jobs_Act_of_2017
       case (year, fs) if year > 2025 =>
-        of(Year.of(2017), fs).inflatedBy(math.pow(1.02, 4.0))
+        val inflationAssumed = 0.02
+        of(Year.of(2017), fs).inflatedBy(
+          math.pow(1.0 + inflationAssumed, (2021 - 2017).toDouble)
+        )
 
       // Note: for now assume 2021 rates in later years, and prior to
       // reversion of Trump tax cuts.
