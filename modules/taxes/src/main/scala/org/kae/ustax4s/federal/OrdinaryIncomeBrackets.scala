@@ -153,7 +153,7 @@ object OrdinaryIncomeBrackets:
             164900 -> 32,
             209400 -> 35,
             523600 -> 37
-          )
+          ).view.mapValues(_.toDouble).toMap
         )
 
       case (2021, Single) =>
@@ -166,7 +166,7 @@ object OrdinaryIncomeBrackets:
             164925 -> 32,
             209425 -> 35,
             523600 -> 37
-          )
+          ).view.mapValues(_.toDouble).toMap
         )
 
       case (2020, HeadOfHousehold) =>
@@ -179,7 +179,7 @@ object OrdinaryIncomeBrackets:
             163300 -> 32,
             207350 -> 35,
             518400 -> 37
-          )
+          ).view.mapValues(_.toDouble).toMap
         )
 
       case (2019, HeadOfHousehold) =>
@@ -192,7 +192,7 @@ object OrdinaryIncomeBrackets:
             160700 -> 32,
             204100 -> 35,
             510300 -> 37
-          )
+          ).view.mapValues(_.toDouble).toMap
         )
 
       case (2018, HeadOfHousehold) =>
@@ -205,19 +205,43 @@ object OrdinaryIncomeBrackets:
             157500 -> 32,
             200000 -> 35,
             500000 -> 37
+          ).view.mapValues(_.toDouble).toMap
+        )
+
+      case (2017, Single) =>
+        create(
+          Map(
+            0      -> 10d,
+            9235   -> 15d,
+            37950  -> 25d,
+            91900  -> 28d,
+            191650 -> 33d,
+            416700 -> 35d,
+            418400 -> 39.6d
+          )
+        )
+
+      case (2017, HeadOfHousehold) =>
+        create(
+          Map(
+            0      -> 10d,
+            13350  -> 15d,
+            50800  -> 25d,
+            131200 -> 28d,
+            212500 -> 33d,
+            416700 -> 35d,
+            444550 -> 39.6d
           )
         )
 
       case _ => ???
     end match
 
-  private def create(
-    pairs: Map[Int, Int]
-  ): OrdinaryIncomeBrackets =
+  private def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
     OrdinaryIncomeBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
-        require(ratePercentage < 100)
+        require(ratePercentage < 100.0d)
         Money(bracketStart) ->
-          FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
+          FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
       }
     )
