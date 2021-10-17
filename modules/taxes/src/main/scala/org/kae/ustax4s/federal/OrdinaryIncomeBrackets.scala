@@ -147,6 +147,15 @@ final case class OrdinaryIncomeBrackets(
 
 object OrdinaryIncomeBrackets:
 
+  def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
+    OrdinaryIncomeBrackets(
+      pairs.map { (bracketStart, ratePercentage) =>
+        require(ratePercentage < 100.0d)
+        Money(bracketStart) ->
+          FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
+      }
+    )
+
   def of(year: Year, status: FilingStatus): OrdinaryIncomeBrackets =
     (year.getValue, status) match
 
@@ -262,12 +271,3 @@ object OrdinaryIncomeBrackets:
 
       case _ => ???
     end match
-
-  private def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
-    OrdinaryIncomeBrackets(
-      pairs.map { (bracketStart, ratePercentage) =>
-        require(ratePercentage < 100.0d)
-        Money(bracketStart) ->
-          FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
-      }
-    )
