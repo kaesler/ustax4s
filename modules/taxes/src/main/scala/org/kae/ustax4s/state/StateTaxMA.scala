@@ -67,8 +67,8 @@ object StateTaxMA:
       case _ => throw NotYetImplemented(year)
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Money =
-    if isAge65OrOlder(birthDate, year) then 700.asMoney
-    else Money.zero
+    if isAge65OrOlder(birthDate, year) then 700
+    else 0
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     taxYear.getValue - birthDate.getYear >= 65

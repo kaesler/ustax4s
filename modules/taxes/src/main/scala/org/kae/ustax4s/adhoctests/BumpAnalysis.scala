@@ -28,7 +28,7 @@ object BumpAnalysis extends App:
       year = Year.of(2021),
       socSec = socialSecurityIncome,
       ordinaryIncomeNonSS = ssRelevantOtherIncome,
-      qualifiedDividends = 0.asMoney,
+      qualifiedDividends = 0,
       verbose = false
     )
   yield (ssRelevantOtherIncome, taxDue)

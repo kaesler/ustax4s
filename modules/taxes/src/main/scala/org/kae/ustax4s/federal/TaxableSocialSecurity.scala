@@ -12,7 +12,7 @@ object TaxableSocialSecurity:
 
   private def bases(filingStatus: FilingStatus): (Money, Money) =
     filingStatus match
-      case Single | HeadOfHousehold => (25000.asMoney, 34000.asMoney)
+      case Single | HeadOfHousehold => (25000, 34000)
 
   // Adjusted to model the fact that the bases are not adjusted annually
   // as tax brackets are. So we just estimate: amount rises 3% per year

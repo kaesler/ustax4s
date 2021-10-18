@@ -16,9 +16,9 @@ object TaxDueAdHocTests extends App:
     year = Year.of(2021),
     Kevin.birthDate,
     FilingStatus.HeadOfHousehold,
-    socSec = 17332.asMoney,
-    ordinaryIncomeNonSS = 14250.asMoney,
-    qualifiedIncome = 47963.asMoney
+    socSec = 17332,
+    ordinaryIncomeNonSS = 14250,
+    qualifiedIncome = 47963
   )
 
   println(results.show)

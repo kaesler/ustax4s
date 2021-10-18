@@ -12,11 +12,11 @@ object TaxInRetirementTests extends App:
   val year = Year.of(2021)
   val ss   = 49128.asMoney
 
-  doCase(Money.zero)
-  doCase(17000.asMoney)
-  doCase(20000.asMoney)
-  doCase(30000.asMoney)
-  doCase(40000.asMoney)
+  doCase(0)
+  doCase(17000)
+  doCase(20000)
+  doCase(30000)
+  doCase(40000)
 
   def doCase(income: Money): Unit =
     val ssTaxable =
@@ -33,7 +33,7 @@ object TaxInRetirementTests extends App:
         filingStatus = Single,
         socSec = ss,
         ordinaryIncomeNonSS = income,
-        qualifiedDividends = 0.asMoney,
+        qualifiedDividends = 0,
         verbose = false
       )
     println(
