@@ -25,12 +25,15 @@ sealed trait Regime extends Product:
     itemisedDeductions: Money
   ): Money
 
-  // TODO: consider adding qualified investment brackets?
-
   def ordinaryIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
   ): OrdinaryIncomeBrackets
+
+  def qualifiedIncomeBrackets(
+    year: Year,
+    filingStatus: FilingStatus
+  ): QualifiedIncomeBrackets
 end Regime
 
 object Regime:
@@ -61,11 +64,6 @@ end Regime
 case object Trump extends Regime:
   import Regime.*
 
-  private def failIfInvalid(year: Year): Unit =
-    // Note: Trump regime may be extended beyond 2025 by legislation.
-    if year.getValue < FirstYearTrumpRegimeRequired then throw RegimeInvalidForYear(this, year)
-    else ()
-
   override def standardDeduction(
     year: Year,
     filingStatus: FilingStatus,
@@ -75,27 +73,6 @@ case object Trump extends Regime:
     stdDeductionUnadjustedForAge(year, filingStatus) +
       // TODO: should the 1350 be inflated, if we go that way?
       (if isAge65OrOlder(birthDate, year) then 1350 else 0)
-
-  @tailrec
-  private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
-    (year.getValue, filingStatus) match
-
-      // Note: for now assume 2021 rates in later years
-      // TODO: Should I just inflate by 2% per year?
-      case (year, fs) if year > 2021 =>
-        stdDeductionUnadjustedForAge(Year.of(2021), fs)
-
-      case (2021, HeadOfHousehold) => 18800
-      case (2020, HeadOfHousehold) => 18650
-      case (2019, HeadOfHousehold) => 18350
-      case (2018, HeadOfHousehold) => 18000
-
-      case (2021, Single) => 12550
-      case (2020, Single) => 12400
-      case (2019, Single) => 12200
-      case (2018, Single) => 12000
-
-      case _ => ???
 
   override def netDeduction(
     year: Year,
@@ -189,11 +166,39 @@ case object Trump extends Regime:
 
     end match
 
-case object NonTrump extends Regime {
-  import Regime.*
+  override def qualifiedIncomeBrackets(
+    year: Year,
+    filingStatus: FilingStatus
+  ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
 
   private def failIfInvalid(year: Year): Unit =
-    if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
+    // Note: Trump regime may be extended beyond 2025 by legislation.
+    if year.getValue < FirstYearTrumpRegimeRequired then throw RegimeInvalidForYear(this, year)
+    else ()
+
+  @tailrec
+  private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
+    (year.getValue, filingStatus) match
+
+      // Note: for now assume 2021 rates in later years
+      // TODO: Should I just inflate by 2% per year?
+      case (year, fs) if year > 2021 =>
+        stdDeductionUnadjustedForAge(Year.of(2021), fs)
+
+      case (2021, HeadOfHousehold) => 18800
+      case (2020, HeadOfHousehold) => 18650
+      case (2019, HeadOfHousehold) => 18350
+      case (2018, HeadOfHousehold) => 18000
+
+      case (2021, Single) => 12550
+      case (2020, Single) => 12400
+      case (2019, Single) => 12200
+      case (2018, Single) => 12000
+
+      case _ => ???
+
+case object NonTrump extends Regime {
+  import Regime.*
 
   override def standardDeduction(
     year: Year,
@@ -205,21 +210,6 @@ case object NonTrump extends Regime {
     stdDeductionUnadjustedForAge(year, filingStatus) +
       (if isAge65OrOlder(birthDate, year) then 1350 else 0)
   }
-
-  private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
-    (year.getValue, filingStatus) match
-
-      case (year, fs) if year > LastYearTrumpRegimeRequired =>
-        stdDeductionUnadjustedForAge(Year.of(2017), fs)
-          .mul(
-            math.pow(1.0 + InflationAssumed, (2021 - 2017).toDouble)
-          )
-          .rounded
-
-      case (2017, HeadOfHousehold) => 9350
-      case (2017, Single)          => 6350
-
-      case _ => ???
 
   override def netDeduction(
     year: Year,
@@ -280,5 +270,29 @@ case object NonTrump extends Regime {
 
       case _ => ???
     end match
-    ???
+
+  override def qualifiedIncomeBrackets(
+    year: Year,
+    filingStatus: FilingStatus
+  ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
+
+  private def failIfInvalid(year: Year): Unit =
+    if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
+
+  private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
+    (year.getValue, filingStatus) match
+
+      case (year, fs) if year > LastYearTrumpRegimeRequired =>
+        stdDeductionUnadjustedForAge(Year.of(2017), fs)
+          .mul(
+            math.pow(1.0 + InflationAssumed, (2021 - 2017).toDouble)
+          )
+          .rounded
+
+      case (2017, HeadOfHousehold) => 9350
+      case (2017, Single)          => 6350
+
+      case _ => ???
+
+    end match
 }
