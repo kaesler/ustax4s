@@ -2,10 +2,11 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import java.time.{LocalDate, Month, Year}
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
 import math.Ordered
+import org.kae.ustax4s
 import scala.annotation.tailrec
 
 // Note: In Haskell model as a 2 field record, each field a function.
@@ -199,7 +200,7 @@ case object Trump extends Regime:
       case (2019, Single) => 12200
       case (2018, Single) => 12000
 
-      case _ => throw NotYetImplemented(year)
+      case _ => throw ustax4s.NotYetImplemented(year)
 
 case object NonTrump extends Regime {
   import Regime.*
@@ -276,7 +277,7 @@ case object NonTrump extends Regime {
 
       // TODO: extend to 2016, 2015 and test with my actual returns.
 
-      case _ => throw NotYetImplemented(year)
+      case _ => throw ustax4s.NotYetImplemented(year)
     end match
 
   override def qualifiedIncomeBrackets(
@@ -304,7 +305,7 @@ case object NonTrump extends Regime {
       case (2017, HeadOfHousehold) => 9350
       case (2017, Single)          => 6350
 
-      case _ => throw NotYetImplemented(year)
+      case _ => throw ustax4s.NotYetImplemented(year)
 
     end match
 }

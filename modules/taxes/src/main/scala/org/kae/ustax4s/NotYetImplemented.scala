@@ -1,5 +1,4 @@
-package org.kae.ustax4s.federal
-
+package org.kae.ustax4s
 import java.time.Year
 
 final case class NotYetImplemented(year: Year)

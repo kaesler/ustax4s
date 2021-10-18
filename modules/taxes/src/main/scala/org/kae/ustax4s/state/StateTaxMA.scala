@@ -1,10 +1,11 @@
 package org.kae.ustax4s.state
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
+import scala.annotation.tailrec
 
 object StateTaxMA:
 
@@ -44,6 +45,7 @@ object StateTaxMA:
       case x if x < 2018 => 0.051
     StateTaxRate.unsafeFrom(r)
 
+  @tailrec
   private def personalExemption(
     year: Year,
     filingStatus: FilingStatus
@@ -62,7 +64,7 @@ object StateTaxMA:
       case (2018, HeadOfHousehold) => 6800
       case (2018, Single)          => 4400
 
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Money =
     if isAge65OrOlder(birthDate, year) then 700.asMoney

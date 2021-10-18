@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import java.time.{LocalDate, Month, Year}
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.*
 import scala.annotation.tailrec

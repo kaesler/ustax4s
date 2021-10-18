@@ -5,7 +5,7 @@ import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import scala.annotation.tailrec
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 
 /** Calculates tax on ordinary (non-investment) income.
   *
