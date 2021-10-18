@@ -45,7 +45,7 @@ object StandardDeduction:
       case (2017, Single) => 6350
 
       // TODO: account for Trump tax cut expiry in 2026 and later
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
 
   private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     birthDate.isBefore(

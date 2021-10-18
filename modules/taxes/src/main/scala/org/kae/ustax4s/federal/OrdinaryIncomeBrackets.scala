@@ -269,5 +269,5 @@ object OrdinaryIncomeBrackets:
           )
         )
 
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
     end match

@@ -82,8 +82,12 @@ case object Trump extends Regime:
     itemisedDeductions: Money
   ): Money =
     failIfInvalid(year)
-    ???
+    Money.max(
+      standardDeduction(year, filingStatus, birthDate),
+      itemisedDeductions
+    )
 
+  @tailrec
   override def ordinaryIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
@@ -162,7 +166,7 @@ case object Trump extends Regime:
           ).view.mapValues(_.toDouble).toMap
         )
 
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
 
     end match
 
@@ -195,7 +199,7 @@ case object Trump extends Regime:
       case (2019, Single) => 12200
       case (2018, Single) => 12000
 
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
 
 case object NonTrump extends Regime {
   import Regime.*
@@ -219,7 +223,11 @@ case object NonTrump extends Regime {
     itemisedDeductions: Money
   ): Money =
     failIfInvalid(year)
-    ???
+    Money.max(
+      standardDeduction(year, filingStatus, birthDate),
+      (personalExemption(year) mul (dependents + 1)) +
+        itemisedDeductions
+    )
 
   override def ordinaryIncomeBrackets(
     year: Year,
@@ -268,7 +276,7 @@ case object NonTrump extends Regime {
 
       // TODO: extend to 2016, 2015 and test with my actual returns.
 
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
     end match
 
   override def qualifiedIncomeBrackets(
@@ -278,6 +286,10 @@ case object NonTrump extends Regime {
 
   private def failIfInvalid(year: Year): Unit =
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
+
+  private def personalExemption(year: Year): Money = year match
+    // TODO: Index for inflation?
+    case _ => 4050
 
   private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
     (year.getValue, filingStatus) match
@@ -292,7 +304,7 @@ case object NonTrump extends Regime {
       case (2017, HeadOfHousehold) => 9350
       case (2017, Single)          => 6350
 
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
 
     end match
 }

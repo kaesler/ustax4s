@@ -190,7 +190,7 @@ object QualifiedIncomeBrackets:
           )
         )
 
-      case _ => ???
+      case _ => throw NotYetImplemented(year)
     end match
 
   private def create(
