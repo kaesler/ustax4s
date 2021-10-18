@@ -9,6 +9,8 @@ import org.kae.ustax4s.money.MoneySyntax.*
 
 class MyTaxInRetirementSpec extends FunSuite:
 
+  private val regime = Trump
+
   test(
     "MyTaxInRetirement.taxDue " +
       "agrees with MyTaxInRetirement.taxDueUsingForm1040, " +
@@ -25,7 +27,7 @@ class MyTaxInRetirementSpec extends FunSuite:
 
       assertEquals(
         federalTaxDue(
-          regime = Trump,
+          regime,
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
@@ -59,7 +61,7 @@ class MyTaxInRetirementSpec extends FunSuite:
       val qualifiedDividends = inv.asMoney
 
       if federalTaxDue(
-          regime = Trump,
+          regime,
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
@@ -76,7 +78,7 @@ class MyTaxInRetirementSpec extends FunSuite:
 
       assertEquals(
         federalTaxDue(
-          regime = Trump,
+          regime,
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
