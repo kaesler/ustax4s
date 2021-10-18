@@ -3,23 +3,24 @@ package org.kae.ustax4s.federal.forms
 import cats.implicits.*
 import java.time.Year
 import munit.FunSuite
-import org.kae.ustax4s.federal.TaxRates
+import org.kae.ustax4s.federal.Trump
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.MoneySyntax.*
-import org.kae.ustax4s.money.{Money, *}
+import org.kae.ustax4s.money.*
 
 class Form1040_2018Spec extends FunSuite:
+  private val regime = Trump
 
   test("Form1040 totalTax should match what I filed") {
-    val year = Year.of(2018)
-    val rates = TaxRates.of(
-      year,
-      Kevin.filingStatus(year),
-      Kevin.birthDate
-    )
+    val year                    = Year.of(2018)
+    val filingStatus            = Kevin.filingStatus(year)
+    val standardDeduction       = regime.standardDeduction(year, filingStatus, Kevin.birthDate)
+    val ordinaryIncomeBrackets  = regime.ordinaryIncomeBrackets(year, filingStatus)
+    val qualifiedIncomeBrackets = regime.qualifiedIncomeBrackets(year, filingStatus)
+
     val form = Form1040(
-      Kevin.filingStatus(year),
-      standardDeduction = rates.standardDeduction,
+      filingStatus,
+      standardDeduction,
       schedule1 = Schedule1(
         Some(
           ScheduleD(
@@ -47,8 +48,7 @@ class Form1040_2018Spec extends FunSuite:
       ordinaryDividends = 7930.asMoney,
       qualifiedDividends = 7365.asMoney,
       taxableIraDistributions = Money.zero,
-      socialSecurityBenefits = Money.zero,
-      rates = rates
+      socialSecurityBenefits = Money.zero
     )
 
     assertEquals(form.totalIncome, 150919.asMoney)
@@ -58,23 +58,38 @@ class Form1040_2018Spec extends FunSuite:
     assertEquals(form.taxableOrdinaryIncome, 114547.asMoney)
     assertEquals(form.qualifiedIncome, 14777.asMoney)
 
-    val taxOnInv = rates.qualifiedIncomeBrackets
+    val taxOnInv = regime
+      .qualifiedIncomeBrackets(year, filingStatus)
       .taxDueFunctionally(form.taxableOrdinaryIncome, form.qualifiedIncome)
       .rounded
     assertEquals(taxOnInv, 2217.asMoney)
 
     val taxOnOrd =
-      rates.ordinaryIncomeBrackets.taxDue(form.taxableOrdinaryIncome).rounded
+      regime
+        .ordinaryIncomeBrackets(year, filingStatus)
+        .taxDue(form.taxableOrdinaryIncome)
+        .rounded
     assertEquals(taxOnOrd, 20389.asMoney)
 
     assertEquals(
-      rates
+      Form1040
         .taxDueBeforeCredits(
           form.taxableOrdinaryIncome,
-          form.qualifiedIncome
+          form.qualifiedIncome,
+          ordinaryIncomeBrackets,
+          qualifiedIncomeBrackets
         )
         .rounded,
       22606.asMoney
     )
-    assertEquals(rates.totalTax(form).rounded, 20405.asMoney)
+    assertEquals(
+      Form1040
+        .totalFederalTax(
+          form,
+          ordinaryIncomeBrackets,
+          qualifiedIncomeBrackets
+        )
+        .rounded,
+      20405.asMoney
+    )
   }

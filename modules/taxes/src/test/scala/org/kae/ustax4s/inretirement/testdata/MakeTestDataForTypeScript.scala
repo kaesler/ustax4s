@@ -2,6 +2,7 @@ package org.kae.ustax4s.inretirement.testdata
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import org.kae.ustax4s.federal.Trump
 import org.kae.ustax4s.inretirement.TaxInRetirement
 import org.kae.ustax4s.kevin.Kevin
 
@@ -14,6 +15,7 @@ object MakeTestDataForTypeScript extends App:
 
   testCases.foreach { case TestCaseInputs(fs, deps, ss, oi, qi) =>
     val federalTaxDue = TaxInRetirement.federalTaxDue(
+      regime = Trump,
       year = year,
       birthDate = Kevin.birthDate,
       filingStatus = fs,

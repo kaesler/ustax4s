@@ -1,20 +1,22 @@
 package org.kae.ustax4s.inretirement
 
 import java.time.Year
-import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.federal.{TaxRates, forms}
 import org.kae.ustax4s.federal.forms.Form1040
+import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets, QualifiedIncomeBrackets, Regime, Trump}
 import org.kae.ustax4s.kevin.Kevin
+import org.kae.ustax4s.money.Money
 
 object MyTaxInRetirement:
 
   def federalTaxDue(
+    regime: Regime,
     year: Year,
     socSec: Money,
     ordinaryIncomeNonSS: Money,
     qualifiedIncome: Money
   ): Money =
     TaxInRetirement.federalTaxDue(
+      regime,
       year,
       Kevin.birthDate,
       Kevin.filingStatus(year),
@@ -29,21 +31,16 @@ object MyTaxInRetirement:
     ordinaryIncomeNonSS: Money,
     qualifiedDividends: Money,
     verbose: Boolean
-  ): Money = {
+  ): Money =
     val filingStatus = Kevin.filingStatus(year)
-    val myRates = TaxRates.of(
-      year,
-      filingStatus,
-      Kevin.birthDate
-    )
+    val regime       = Trump
 
-    val form = forms.Form1040(
+    val form = Form1040(
       filingStatus,
-      rates = myRates,
       taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
-      standardDeduction = myRates.standardDeduction,
+      standardDeduction = regime.standardDeduction(year, filingStatus, Kevin.birthDate),
       schedule1 = None,
       schedule3 = None,
       schedule4 = None,
@@ -57,8 +54,14 @@ object MyTaxInRetirement:
     )
     if verbose then println(form.showValues)
 
-    myRates.totalTax(form).rounded
-  }
+    Form1040
+      .totalFederalTax(
+        form,
+        regime.ordinaryIncomeBrackets(year, filingStatus),
+        regime.qualifiedIncomeBrackets(year, filingStatus)
+      )
+      .rounded
+  end federalTaxDueUsingForm1040
 
   def stateTaxDue(
     year: Year,

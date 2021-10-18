@@ -1,6 +1,7 @@
 package org.kae.ustax4s.inretirement.testdata
 
 import java.time.Year
+import org.kae.ustax4s.federal.Trump
 import org.kae.ustax4s.inretirement.TaxInRetirement
 import org.kae.ustax4s.{FilingStatus, kevin}
 
@@ -14,6 +15,7 @@ object MakeTestDataAsCsv extends App:
   )
   testCases.foreach { case TestCaseInputs(fs, ds, ss, oi, qi) =>
     val federalTaxDue = TaxInRetirement.federalTaxDue(
+      regime = Trump,
       year = year,
       birthDate = kevin.Kevin.birthDate,
       filingStatus = fs,

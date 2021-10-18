@@ -1,7 +1,11 @@
 package org.kae.ustax4s.federal.forms
 
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.federal.{TaxRates, TaxableSocialSecurity}
+import org.kae.ustax4s.federal.{
+  OrdinaryIncomeBrackets,
+  QualifiedIncomeBrackets,
+  TaxableSocialSecurity
+}
 import org.kae.ustax4s.money.Money
 
 final case class Form1040(
@@ -28,8 +32,7 @@ final case class Form1040(
   // Line 4b:
   taxableIraDistributions: Money,
   // Line 5a:
-  socialSecurityBenefits: Money,
-  rates: TaxRates
+  socialSecurityBenefits: Money
 ):
   def totalInvestmentIncome: Money =
     // Line 3b:
@@ -95,7 +98,7 @@ final case class Form1040(
   def showValues: String =
     s"""
        |status: $filingStatus
-       |std deduction: ${rates.standardDeduction}
+       |std deduction: $standardDeduction
        |taxableSocialSecurityBenefits: $taxableSocialSecurityBenefits
        |qualifiedInvestmentIncome: $qualifiedIncome
        |taxableIraDistributions: $taxableIraDistributions
@@ -104,3 +107,38 @@ final case class Form1040(
        |taxableIncome: $taxableIncome
        |taxableOrdinaryIncome: $taxableOrdinaryIncome
        |""".stripMargin
+
+end Form1040
+
+object Form1040:
+
+  def totalFederalTax(
+    form: Form1040,
+    ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
+    qualifiedIncomeBrackets: QualifiedIncomeBrackets
+  ): Money =
+    taxDueBeforeCredits(
+      form.taxableOrdinaryIncome,
+      form.qualifiedIncome,
+      ordinaryIncomeBrackets,
+      qualifiedIncomeBrackets
+    ) +
+      form.schedule4.map(_.totalOtherTaxes).getOrElse(Money.zero) subp
+      (form.childTaxCredit + form.schedule3
+        .map(_.nonRefundableCredits)
+        .getOrElse(Money.zero))
+
+  // Line 11:
+  def taxDueBeforeCredits(
+    ordinaryIncome: Money,
+    qualifiedIncome: Money,
+    ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
+    qualifiedIncomeBrackets: QualifiedIncomeBrackets
+  ): Money =
+    ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
+      qualifiedIncomeBrackets.taxDueFunctionally(
+        ordinaryIncome,
+        qualifiedIncome
+      )
+
+end Form1040

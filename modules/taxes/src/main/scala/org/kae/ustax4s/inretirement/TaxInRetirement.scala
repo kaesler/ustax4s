@@ -4,7 +4,13 @@ import cats.Show
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.forms.Form1040
-import org.kae.ustax4s.federal.{TaxRates, TaxableSocialSecurity}
+import org.kae.ustax4s.federal.{
+  OrdinaryIncomeBrackets,
+  QualifiedIncomeBrackets,
+  Regime,
+  TaxableSocialSecurity,
+  Trump
+}
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.state.StateTaxMA
 
@@ -38,6 +44,7 @@ object TaxInRetirement:
       b.result
 
   def federalTaxDue(
+    regime: Regime,
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
@@ -46,6 +53,7 @@ object TaxInRetirement:
     qualifiedIncome: Money
   ): Money =
     federalTaxResults(
+      regime,
       year,
       birthDate,
       filingStatus,
@@ -55,6 +63,7 @@ object TaxInRetirement:
     ).taxDue.rounded
 
   def federalTaxResults(
+    regime: Regime,
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
@@ -70,26 +79,28 @@ object TaxInRetirement:
         ssRelevantOtherIncome
       )
 
-    val rates = TaxRates.of(year, filingStatus, birthDate)
     val taxableOrdinaryIncome = (taxableSocialSecurity + ordinaryIncomeNonSS) subp
-      rates.standardDeduction
+      regime.standardDeduction(year, filingStatus, birthDate)
 
     val taxOnOrdinaryIncome =
-      rates.ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
-    val taxOnQualifiedIncome = rates.qualifiedIncomeBrackets.taxDueFunctionally(
-      taxableOrdinaryIncome,
-      qualifiedIncome
-    )
+      regime.ordinaryIncomeBrackets(year, filingStatus).taxDue(taxableOrdinaryIncome)
+    val taxOnQualifiedIncome = regime
+      .qualifiedIncomeBrackets(year, filingStatus)
+      .taxDueFunctionally(
+        taxableOrdinaryIncome,
+        qualifiedIncome
+      )
     FederalTaxResults(
       ssRelevantOtherIncome,
       taxableSocialSecurity,
-      rates.standardDeduction,
+      regime.standardDeduction(year, filingStatus, birthDate),
       taxableOrdinaryIncome,
       taxOnOrdinaryIncome,
       taxOnQualifiedIncome
     )
   end federalTaxResults
 
+  // Note: for tests only
   def federalTaxDueUsingForm1040(
     year: Year,
     birthDate: LocalDate,
@@ -99,19 +110,14 @@ object TaxInRetirement:
     qualifiedDividends: Money,
     verbose: Boolean
   ): Money =
-    val myRates = TaxRates.of(
-      year,
-      filingStatus,
-      birthDate
-    )
+    val regime = Trump
 
     val form = Form1040(
       filingStatus,
-      rates = myRates,
       taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
-      standardDeduction = myRates.standardDeduction,
+      standardDeduction = regime.standardDeduction(year, filingStatus, birthDate),
       schedule1 = None,
       schedule3 = None,
       schedule4 = None,
@@ -125,7 +131,13 @@ object TaxInRetirement:
     )
     if verbose then println(form.showValues)
 
-    myRates.totalTax(form).rounded
+    Form1040
+      .totalFederalTax(
+        form,
+        regime.ordinaryIncomeBrackets(year, filingStatus),
+        regime.qualifiedIncomeBrackets(year, filingStatus)
+      )
+      .rounded
   end federalTaxDueUsingForm1040
 
   def stateTaxDue(
