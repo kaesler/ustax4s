@@ -22,7 +22,7 @@ final case class OrdinaryIncomeBrackets(
   def inflatedBy(factor: Double): OrdinaryIncomeBrackets =
     require(factor >= 1.0)
     OrdinaryIncomeBrackets(
-      bracketStarts.map { case (start, rate) =>
+      bracketStarts.map { (start, rate) =>
         ((start mul factor).rounded, rate)
       }
     )
