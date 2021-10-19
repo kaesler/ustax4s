@@ -22,6 +22,7 @@ object TaxInRetirement:
     ssRelevantOtherIncome: Money,
     taxableSocialSecurity: Money,
     standardDeduction: Money,
+    netDeduction: Money,
     taxableOrdinaryIncome: Money,
     taxOnOrdinaryIncome: Money,
     taxOnQualifiedIncome: Money
@@ -36,6 +37,7 @@ object TaxInRetirement:
       b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
       b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
       b.append(s"  standardDeduction: $standardDeduction\n")
+      b.append(s"  netDeduction: $netDeduction\n")
       b.append(s"  taxableOrdinaryIncome: $taxableOrdinaryIncome\n")
       b.append(s"  taxOnOrdinaryIncome: $taxOnOrdinaryIncome\n")
       b.append(s"  taxOnQualifiedIncome: $taxOnQualifiedIncome\n")
@@ -100,6 +102,7 @@ object TaxInRetirement:
       ssRelevantOtherIncome,
       taxableSocialSecurity,
       regime.standardDeduction(year, filingStatus, birthDate),
+      regime.netDeduction(year, filingStatus, birthDate, personalExemptions, itemizedDeductions),
       taxableOrdinaryIncome,
       taxOnOrdinaryIncome,
       taxOnQualifiedIncome
