@@ -18,7 +18,9 @@ object TaxDueAdHocTests extends App:
     FilingStatus.HeadOfHousehold,
     socSec = 17332,
     ordinaryIncomeNonSS = 14250,
-    qualifiedIncome = 47963
+    qualifiedIncome = 47963,
+    personalExemptions = 0,
+    itemizedDeductions = 0
   )
 
   println(results.show)

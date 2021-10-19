@@ -2,12 +2,12 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import java.time.{LocalDate, Month, Year}
-import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
+import org.kae.ustax4s
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
-import math.Ordered
-import org.kae.ustax4s
+import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
+import scala.math.Ordered
 
 // Note: In Haskell model as a 2 field record, each field a function.
 sealed trait Regime extends Product:
@@ -22,8 +22,8 @@ sealed trait Regime extends Product:
     year: Year,
     filingStatus: FilingStatus,
     birthDate: LocalDate,
-    dependents: Int,
-    itemisedDeductions: Money
+    personalExemptions: Int,
+    itemizedDeductions: Money
   ): Money
 
   def ordinaryIncomeBrackets(
@@ -79,13 +79,13 @@ case object Trump extends Regime:
     year: Year,
     filingStatus: FilingStatus,
     birthDate: LocalDate,
-    dependents: Int,
-    itemisedDeductions: Money
+    personalExemptions: Int,
+    itemizedDeductions: Money
   ): Money =
     failIfInvalid(year)
     Money.max(
       standardDeduction(year, filingStatus, birthDate),
-      itemisedDeductions
+      itemizedDeductions
     )
 
   @tailrec
@@ -220,14 +220,14 @@ case object NonTrump extends Regime {
     year: Year,
     filingStatus: FilingStatus,
     birthDate: LocalDate,
-    dependents: Int,
-    itemisedDeductions: Money
+    personalExemptions: Int,
+    itemizedDeductions: Money
   ): Money =
     failIfInvalid(year)
     Money.max(
       standardDeduction(year, filingStatus, birthDate),
-      (personalExemption(year) mul (dependents + 1)) +
-        itemisedDeductions
+      (personalExemption(year) mul (personalExemptions + 1)) +
+        itemizedDeductions
     )
 
   override def ordinaryIncomeBrackets(

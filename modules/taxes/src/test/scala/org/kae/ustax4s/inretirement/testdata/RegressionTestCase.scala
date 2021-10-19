@@ -18,7 +18,9 @@ final case class RegressionTestCase(
   ordinaryIncomeNonSS: Money,
   qualifiedIncome: Money,
   federalTaxDue: Money,
-  stateTaxDue: Money
+  stateTaxDue: Money,
+  personalExemptions: Int = 0,
+  itemizedDeductions: Money = 0
 ):
   def massachusettsGrossIncome = ordinaryIncomeNonSS + qualifiedIncome
 
@@ -31,7 +33,9 @@ final case class RegressionTestCase(
         filingStatus,
         socSec,
         ordinaryIncomeNonSS,
-        qualifiedIncome
+        qualifiedIncome,
+        personalExemptions,
+        itemizedDeductions
       ),
       federalTaxDue,
       this.toString

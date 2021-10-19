@@ -9,7 +9,9 @@ import org.kae.ustax4s.money.MoneySyntax.*
 
 class MyTaxInRetirementSpec extends FunSuite:
 
-  private val regime = Trump
+  private val regime             = Trump
+  private val personalExemptions = 0
+  private val itemizedDeductions = 0
 
   test(
     "MyTaxInRetirement.taxDue " +
@@ -31,7 +33,9 @@ class MyTaxInRetirementSpec extends FunSuite:
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
-          qualifiedIncome = 0.asMoney
+          qualifiedIncome = 0,
+          personalExemptions,
+          itemizedDeductions
         ),
         federalTaxDueUsingForm1040(
           year = year,
@@ -65,7 +69,9 @@ class MyTaxInRetirementSpec extends FunSuite:
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
-          qualifiedIncome = qualifiedDividends
+          qualifiedIncome = qualifiedDividends,
+          personalExemptions,
+          itemizedDeductions
         ) !=
           federalTaxDueUsingForm1040(
             year = year,
@@ -82,7 +88,9 @@ class MyTaxInRetirementSpec extends FunSuite:
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
-          qualifiedIncome = qualifiedDividends
+          qualifiedIncome = qualifiedDividends,
+          personalExemptions,
+          itemizedDeductions
         ),
         federalTaxDueUsingForm1040(
           year = year,

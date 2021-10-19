@@ -50,7 +50,9 @@ object TaxInRetirement:
     filingStatus: FilingStatus,
     socSec: Money,
     ordinaryIncomeNonSS: Money,
-    qualifiedIncome: Money
+    qualifiedIncome: Money,
+    personalExemptions: Int,
+    itemizedDeductions: Money
   ): Money =
     federalTaxResults(
       regime,
@@ -59,7 +61,9 @@ object TaxInRetirement:
       filingStatus,
       socSec,
       ordinaryIncomeNonSS,
-      qualifiedIncome
+      qualifiedIncome,
+      personalExemptions: Int,
+      itemizedDeductions: Money
     ).taxDue.rounded
 
   def federalTaxResults(
@@ -69,7 +73,9 @@ object TaxInRetirement:
     filingStatus: FilingStatus,
     socSec: Money,
     ordinaryIncomeNonSS: Money,
-    qualifiedIncome: Money
+    qualifiedIncome: Money,
+    personalExemptions: Int,
+    itemizedDeductions: Money
   ): FederalTaxResults =
     val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
     val taxableSocialSecurity =
@@ -80,7 +86,7 @@ object TaxInRetirement:
       )
 
     val taxableOrdinaryIncome = (taxableSocialSecurity + ordinaryIncomeNonSS) subp
-      regime.standardDeduction(year, filingStatus, birthDate)
+      regime.netDeduction(year, filingStatus, birthDate, personalExemptions, itemizedDeductions)
 
     val taxOnOrdinaryIncome =
       regime.ordinaryIncomeBrackets(year, filingStatus).taxDue(taxableOrdinaryIncome)

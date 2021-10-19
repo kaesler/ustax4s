@@ -13,7 +13,9 @@ object MyTaxInRetirement:
     year: Year,
     socSec: Money,
     ordinaryIncomeNonSS: Money,
-    qualifiedIncome: Money
+    qualifiedIncome: Money,
+    personalExemptions: Int,
+    itemizedDeductions: Money
   ): Money =
     TaxInRetirement.federalTaxDue(
       regime,
@@ -22,7 +24,9 @@ object MyTaxInRetirement:
       Kevin.filingStatus(year),
       socSec,
       ordinaryIncomeNonSS,
-      qualifiedIncome
+      qualifiedIncome,
+      personalExemptions,
+      itemizedDeductions
     )
 
   def federalTaxDueUsingForm1040(

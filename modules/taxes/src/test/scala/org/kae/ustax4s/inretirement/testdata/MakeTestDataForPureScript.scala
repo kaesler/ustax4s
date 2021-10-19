@@ -9,18 +9,23 @@ import org.kae.ustax4s.kevin.Kevin
 object MakeTestDataForPureScript extends App:
   import TestDataGeneration.*
 
-  val year = Year.of(2021)
-  val age  = 66
+  private val regime             = Trump
+  private val year               = Year.of(2021)
+  private val age                = 66
+  private val personalExemptions = 0
+  private val itemizedDeductions = 0
 
   testCases.foreach { case TestCaseInputs(fs, deps, ss, oi, qi) =>
     val federalTaxDue = TaxInRetirement.federalTaxDue(
-      regime = Trump,
+      regime,
       year = year,
       birthDate = Kevin.birthDate,
       filingStatus = fs,
       socSec = ss,
       ordinaryIncomeNonSS = oi,
-      qualifiedIncome = qi
+      qualifiedIncome = qi,
+      personalExemptions,
+      itemizedDeductions
     )
     val stateTaxDue = TaxInRetirement.stateTaxDue(
       year = year,
