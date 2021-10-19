@@ -190,12 +190,29 @@ object QualifiedIncomeBrackets:
           )
         )
 
+      case (2017, HeadOfHousehold) =>
+        create(
+          Map(
+            0      -> 0,
+            50800  -> 15,
+            444550 -> 20
+          )
+        )
+
+      case (2017, Single) =>
+        create(
+          Map(
+            0      -> 0,
+            37950  -> 15,
+            418400 -> 20
+          )
+        )
+
       case _ => throw NotYetImplemented(year)
+
     end match
 
-  private def create(
-    pairs: Map[Int, Int]
-  ): QualifiedIncomeBrackets =
+  private def create(pairs: Map[Int, Int]): QualifiedIncomeBrackets =
     QualifiedIncomeBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
