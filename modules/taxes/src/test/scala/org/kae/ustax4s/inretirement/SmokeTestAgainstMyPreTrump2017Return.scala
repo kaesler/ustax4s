@@ -1,12 +1,13 @@
 package org.kae.ustax4s.inretirement
 
 import cats.implicits.*
+import java.math.MathContext
 import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.federal.NonTrump
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.money.*
+import org.kae.ustax4s.money.MoneySyntax.*
 
 class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
   private val regime             = NonTrump
@@ -49,5 +50,24 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
     )
     println("")
     println(results.show)
-    assert(true)
+
+    assert(
+      results.personalExceptionDeduction == 8100.asMoney
+    )
+    assert(
+      results.netDeduction == 30629.asMoney
+    )
+    assert(
+      results.taxOnQualifiedIncome.rounded == 1153.asMoney
+    )
+
+    // Note: My tax return used the tax tables, because the taxable amount was
+    // < $100k.This introduces some imprecision. So allow for a few dollars
+    // difference here.
+    assert {
+      results.taxOnOrdinaryIncome.isCloseTo(18246.asMoney, 2)
+    }
+    assert {
+      results.taxDue.isCloseTo(19399.asMoney, 2)
+    }
   }

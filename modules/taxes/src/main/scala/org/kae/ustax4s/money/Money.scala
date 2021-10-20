@@ -78,4 +78,7 @@ object Money:
     infix def <=(that: Money): Boolean = !(underlying > that)
     infix def >=(that: Money): Boolean = !(underlying < that)
 
+    def isCloseTo(that: Money, tolerance: Int): Boolean =
+      (underlying - that).abs <= tolerance
+
 end Money
