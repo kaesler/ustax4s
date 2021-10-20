@@ -84,7 +84,6 @@ object TaxInRetirement:
     itemizedDeductions: Money
   ): FederalTaxResults =
     val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
-
     val taxableSocialSecurity =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = filingStatus,
@@ -97,15 +96,13 @@ object TaxInRetirement:
 
     val taxOnOrdinaryIncome = regime
       .ordinaryIncomeBrackets(year, filingStatus)
-      .taxDueWholeDollar(taxableOrdinaryIncome)
-
+      .taxDue(taxableOrdinaryIncome)
     val taxOnQualifiedIncome = regime
       .qualifiedIncomeBrackets(year, filingStatus)
-      .taxDueWholeDollar(
+      .taxDueFunctionally(
         taxableOrdinaryIncome,
         qualifiedIncome
       )
-
     FederalTaxResults(
       ssRelevantOtherIncome,
       taxableSocialSecurity,
