@@ -226,7 +226,7 @@ case object NonTrump extends Regime {
     failIfInvalid(year)
     Money.max(
       standardDeduction(year, filingStatus, birthDate),
-      (personalExemption(year) mul (personalExemptions + 1)) +
+      (personalExemption(year) mul (personalExemptions)) +
         itemizedDeductions
     )
 
