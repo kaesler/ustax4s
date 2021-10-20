@@ -18,6 +18,11 @@ sealed trait Regime extends Product:
     birthDate: LocalDate
   ): Money
 
+  def personalExemptionDeduction(
+    year: Year,
+    personalExemptions: Int
+  ): Money
+
   def netDeduction(
     year: Year,
     filingStatus: FilingStatus,
@@ -64,6 +69,11 @@ end Regime
 
 case object Trump extends Regime:
   import Regime.*
+
+  override def personalExemptionDeduction(
+    year: Year,
+    personalExemptions: Int
+  ): Money = 0
 
   override def standardDeduction(
     year: Year,
@@ -216,6 +226,11 @@ case object NonTrump extends Regime {
       (if isAge65OrOlder(birthDate, year) then 1350 else 0)
   }
 
+  override def personalExemptionDeduction(
+    year: Year,
+    personalExemptions: Int
+  ): Money = personalExemption(year) mul personalExemptions
+
   override def netDeduction(
     year: Year,
     filingStatus: FilingStatus,
@@ -226,8 +241,7 @@ case object NonTrump extends Regime {
     failIfInvalid(year)
     Money.max(
       standardDeduction(year, filingStatus, birthDate),
-      (personalExemption(year) mul (personalExemptions)) +
-        itemizedDeductions
+      personalExemptionDeduction(year, personalExemptions) + itemizedDeductions
     )
 
   override def ordinaryIncomeBrackets(

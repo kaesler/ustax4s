@@ -21,6 +21,7 @@ object TaxInRetirement:
   final case class FederalTaxResults(
     ssRelevantOtherIncome: Money,
     taxableSocialSecurity: Money,
+    personalExceptionDeduction: Money,
     standardDeduction: Money,
     netDeduction: Money,
     taxableOrdinaryIncome: Money,
@@ -36,6 +37,7 @@ object TaxInRetirement:
       import r.*
       b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
       b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
+      b.append(s"  personalExceptionDeduction: $personalExceptionDeduction\n")
       b.append(s"  standardDeduction: $standardDeduction\n")
       b.append(s"  netDeduction: $netDeduction\n")
       b.append(s"  taxableOrdinaryIncome: $taxableOrdinaryIncome\n")
@@ -104,6 +106,7 @@ object TaxInRetirement:
     FederalTaxResults(
       ssRelevantOtherIncome,
       taxableSocialSecurity,
+      regime.personalExemptionDeduction(year, personalExemptions),
       regime.standardDeduction(year, filingStatus, birthDate),
       regime.netDeduction(year, filingStatus, birthDate, personalExemptions, itemizedDeductions),
       taxableOrdinaryIncome,
