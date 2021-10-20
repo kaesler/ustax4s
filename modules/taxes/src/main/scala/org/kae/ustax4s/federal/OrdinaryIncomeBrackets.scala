@@ -32,11 +32,9 @@ final case class OrdinaryIncomeBrackets(
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
-  /** @return
-    *   the tax due on the taxable ordinary income (not LTCGs...)
-    * @param taxableOrdinaryIncome
-    *   the ordinary income
-    */
+  def taxDueWholeDollar(taxableOrdinaryIncome: Money): Money =
+    taxDue(taxableOrdinaryIncome).rounded
+
   def taxDue(taxableOrdinaryIncome: Money): Money =
     taxDueFunctionally(taxableOrdinaryIncome)
 
@@ -71,6 +69,7 @@ final case class OrdinaryIncomeBrackets(
     // println(s"taxDueFunctionally($taxableOrdinaryIncome): $res")
     res
 
+  // Note: kept here for translation to TypeScript.
   def taxDueImperatively(
     taxableOrdinaryIncome: Money
   ): Money =

@@ -35,16 +35,16 @@ final case class QualifiedIncomeBrackets(
 
   def startOfNonZeroQualifiedRateBracket: Money = bracketStartsAscending(1)._1
 
-  /** @return
-    *   the tax due rounded to whole dollars
-    * @param qualifiedIncome
-    *   the qualified income
-    */
   def taxDueWholeDollar(
     taxableOrdinaryIncome: Money,
     qualifiedIncome: Money
   ): Money =
-    taxDueFunctionally(taxableOrdinaryIncome, qualifiedIncome).rounded
+    taxDue(taxableOrdinaryIncome, qualifiedIncome).rounded
+
+  def taxDue(
+    taxableOrdinaryIncome: Money,
+    qualifiedIncome: Money
+  ): Money = taxDueFunctionally(taxableOrdinaryIncome, qualifiedIncome)
 
   def taxDueFunctionally(
     taxableOrdinaryIncome: Money,
@@ -93,13 +93,9 @@ final case class QualifiedIncomeBrackets(
       }
     assert(accum.totalIncomeInHigherBrackets == totalTaxableIncome)
     assert(accum.gainsYetToBeTaxed.isZero)
-    val res = accum.gainsTaxSoFar
+    accum.gainsTaxSoFar
 
-//    println(
-//      s"taxDueOnInvestments(${taxableOrdinaryIncome}, $qualifiedInvestmentIncome): $res"
-//    )
-    res
-
+  // Note: kept here for translation to TypeScript.
   def taxDueImperatively(
     taxableOrdinaryIncome: Money,
     qualifiedIncome: Money
