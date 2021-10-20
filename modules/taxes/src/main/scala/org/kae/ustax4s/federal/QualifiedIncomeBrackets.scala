@@ -204,6 +204,24 @@ object QualifiedIncomeBrackets:
           )
         )
 
+      case (2016, HeadOfHousehold) =>
+        create(
+          Map(
+            0      -> 0,
+            50400  -> 15,
+            441000 -> 20
+          )
+        )
+
+      case (2016, Single) =>
+        create(
+          Map(
+            0      -> 0,
+            37650  -> 15,
+            415050 -> 20
+          )
+        )
+
       case _ => throw NotYetImplemented(year)
 
     end match

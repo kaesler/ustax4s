@@ -326,9 +326,11 @@ case object NonTrump extends Regime {
   private def failIfInvalid(year: Year): Unit =
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
 
-  private def personalExemption(year: Year): Money = year match
+  private def personalExemption(year: Year): Money = year.getValue match
     // TODO: Index for inflation?
-    case _ => 4050
+    case 2017 => 4050
+    case 2016 => 4050
+    case _    => 4050
 
   private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
     (year.getValue, filingStatus) match
@@ -342,6 +344,9 @@ case object NonTrump extends Regime {
 
       case (2017, HeadOfHousehold) => 9350
       case (2017, Single)          => 6350
+
+      case (2016, HeadOfHousehold) => 9300
+      case (2016, Single)          => 6300
 
       case _ => throw ustax4s.NotYetImplemented(year)
 

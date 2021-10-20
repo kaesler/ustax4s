@@ -9,19 +9,19 @@ import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.money.MoneySyntax.*
 
-class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
+class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
   private val regime             = NonTrump
-  private val year               = Year.of(2017)
+  private val year               = Year.of(2016)
   private val filingStatus       = Kevin.filingStatus(year)
   private val personalExemptions = 2
 
-  private val wages              = 128270.asMoney
-  private val ordinaryDividends  = 9196.asMoney
-  private val qualifiedDividends = 7686.asMoney
+  private val wages              = 153455.asMoney
+  private val ordinaryDividends  = 6932.asMoney
+  private val qualifiedDividends = 5592.asMoney
 
-  private val shortTermCapitalLoss = 2419.asMoney
-  private val hsaDeduction         = 750.asMoney
-  private val itemizedDeductions   = 22529.asMoney
+  private val shortTermCapitalLoss = 3000.asMoney
+  private val hsaDeduction         = 0.asMoney
+  private val itemizedDeductions   = 31040.asMoney
 
   test("Form1040 totalTax should match what I filed") {
     val totalIncome         = wages + ordinaryDividends subp shortTermCapitalLoss
@@ -55,19 +55,19 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
       results.personalExceptionDeduction == 8100.asMoney
     )
     assert(
-      results.netDeduction == 30629.asMoney
+      results.netDeduction == 39140.asMoney
     )
     assert(
-      results.taxOnQualifiedIncome.rounded == 1153.asMoney
+      results.taxOnQualifiedIncome.rounded == 839.asMoney
     )
 
     // Note: My tax return used the tax tables, because the taxable amount was
     // < $100k.This introduces some imprecision. So allow for a few dollars
     // difference here.
     assert {
-      results.taxOnOrdinaryIncome.isCloseTo(18246.asMoney, 2)
+      results.taxOnOrdinaryIncome.isCloseTo(22464.asMoney, 3)
     }
     assert {
-      results.taxDue.isCloseTo(19399.asMoney, 2)
+      results.taxDue.isCloseTo(23303.asMoney, 3)
     }
   }
