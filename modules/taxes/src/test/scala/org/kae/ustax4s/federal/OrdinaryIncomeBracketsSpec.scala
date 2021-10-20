@@ -2,6 +2,7 @@ package org.kae.ustax4s.federal
 
 import java.time.Year
 import munit.ScalaCheckSuite
+import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
 import org.kae.ustax4s.money.{Money, MoneyGeneration}
@@ -21,6 +22,9 @@ class OrdinaryIncomeBracketsSpec
   private val zero    = Money.zero
   private val TheYear = Year.of(2021)
 
+  private def bracketsFor(year: Year, filingStatus: FilingStatus) =
+    Trump.ordinaryIncomeBrackets(year, filingStatus)
+
   test("OrdinaryIncomeTaxBrackets should be progressive") {
 
     def isProgressive(brackets: OrdinaryIncomeBrackets): Boolean = {
@@ -31,12 +35,12 @@ class OrdinaryIncomeBracketsSpec
         }
     }
 
-    assert(isProgressive(OrdinaryIncomeBrackets.of(TheYear, Single)))
-    assert(isProgressive(OrdinaryIncomeBrackets.of(TheYear, HeadOfHousehold)))
+    assert(isProgressive(bracketsFor(TheYear, Single)))
+    assert(isProgressive(bracketsFor(TheYear, HeadOfHousehold)))
   }
 
   test("taxToEndOfBracket should be correct for 2021 HeadOfHousehold") {
-    val brackets = OrdinaryIncomeBrackets.of(TheYear, HeadOfHousehold)
+    val brackets = bracketsFor(TheYear, HeadOfHousehold)
 
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
@@ -65,7 +69,7 @@ class OrdinaryIncomeBracketsSpec
   }
 
   test("taxToEndOfBracket should be correct for 2021 Single") {
-    val brackets = OrdinaryIncomeBrackets.of(TheYear, Single)
+    val brackets = bracketsFor(TheYear, Single)
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
       995.asMoney
@@ -129,7 +133,7 @@ class OrdinaryIncomeBracketsSpec
   test("give expected results at bracket boundaries for 2021") {
     for
       filingStatus <- List(Single)
-      brackets = OrdinaryIncomeBrackets.of(TheYear, filingStatus)
+      brackets = bracketsFor(TheYear, filingStatus)
       rate <- brackets.ratesForBoundedBrackets
     do
       val taxableIncome = brackets.taxableIncomeToEndOfBracket(rate)
