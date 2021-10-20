@@ -289,7 +289,31 @@ case object NonTrump extends Regime {
           )
         )
 
-      // TODO: extend to 2016, 2015 and test with my actual returns.
+      case (2016, Single) =>
+        OrdinaryIncomeBrackets.create(
+          Map(
+            0      -> 10d,
+            9275   -> 15d,
+            37650  -> 25d,
+            91150  -> 28d,
+            190150 -> 33d,
+            413350 -> 35d,
+            415050 -> 39.6d
+          )
+        )
+
+      case (2016, HeadOfHousehold) =>
+        OrdinaryIncomeBrackets.create(
+          Map(
+            0      -> 10d,
+            13250  -> 15d,
+            50400  -> 25d,
+            130150 -> 28d,
+            210800 -> 33d,
+            413350 -> 35d,
+            441000 -> 39.6d
+          )
+        )
 
       case _ => throw ustax4s.NotYetImplemented(year)
     end match
