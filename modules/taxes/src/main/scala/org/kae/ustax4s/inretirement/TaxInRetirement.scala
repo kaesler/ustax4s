@@ -53,6 +53,7 @@ object TaxInRetirement:
     socSec: Money,
     ordinaryIncomeNonSS: Money,
     qualifiedIncome: Money,
+    // Self plus dependents
     personalExemptions: Int,
     itemizedDeductions: Money
   ): Money =
@@ -77,6 +78,7 @@ object TaxInRetirement:
     ordinaryIncomeNonSS: Money,
     qualifiedIncome: Money,
     personalExemptions: Int,
+    // Self plus dependents
     itemizedDeductions: Money
   ): FederalTaxResults =
     val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
@@ -90,8 +92,9 @@ object TaxInRetirement:
     val taxableOrdinaryIncome = (taxableSocialSecurity + ordinaryIncomeNonSS) subp
       regime.netDeduction(year, filingStatus, birthDate, personalExemptions, itemizedDeductions)
 
-    val taxOnOrdinaryIncome =
-      regime.ordinaryIncomeBrackets(year, filingStatus).taxDue(taxableOrdinaryIncome)
+    val taxOnOrdinaryIncome = regime
+      .ordinaryIncomeBrackets(year, filingStatus)
+      .taxDue(taxableOrdinaryIncome)
     val taxOnQualifiedIncome = regime
       .qualifiedIncomeBrackets(year, filingStatus)
       .taxDueFunctionally(
