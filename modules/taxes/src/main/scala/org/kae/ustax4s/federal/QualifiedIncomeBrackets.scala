@@ -22,6 +22,16 @@ final case class QualifiedIncomeBrackets(
   require(bracketStarts.contains(Money.zero))
   require(bracketStarts.size >= 2)
 
+  // Adjust the bracket starts for inflation.
+  // E.g. for 2% inflation: inflated(1.02)
+  def inflatedBy(factor: Double): QualifiedIncomeBrackets =
+    require(factor >= 1.0)
+    QualifiedIncomeBrackets(
+      bracketStarts.map { (start, rate) =>
+        ((start mul factor).rounded, rate)
+      }
+    )
+
   val bracketStartsAscending: Vector[(Money, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
 
