@@ -9,7 +9,6 @@ import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.math.Ordered
 
-// Note: In Haskell model as a 2 field record, each field a function.
 sealed trait Regime extends Product:
 
   def standardDeduction(
@@ -29,7 +28,11 @@ sealed trait Regime extends Product:
     birthDate: LocalDate,
     personalExemptions: Int,
     itemizedDeductions: Money
-  ): Money
+  ): Money =
+    Money.max(
+      standardDeduction(year, filingStatus, birthDate),
+      personalExemptionDeduction(year, personalExemptions) + itemizedDeductions
+    )
 
   def ordinaryIncomeBrackets(
     year: Year,
@@ -68,7 +71,6 @@ object Regime:
 end Regime
 
 case object Trump extends Regime:
-  import Regime.*
 
   override def personalExemptionDeduction(
     year: Year,
@@ -84,19 +86,6 @@ case object Trump extends Regime:
     stdDeductionUnadjustedForAge(year, filingStatus) +
       // TODO: should the 1350 be inflated, if we go that way?
       (if isAge65OrOlder(birthDate, year) then 1350 else 0)
-
-  override def netDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate,
-    personalExemptions: Int,
-    itemizedDeductions: Money
-  ): Money =
-    failIfInvalid(year)
-    Money.max(
-      standardDeduction(year, filingStatus, birthDate),
-      itemizedDeductions
-    )
 
   @tailrec
   override def ordinaryIncomeBrackets(
@@ -213,7 +202,6 @@ case object Trump extends Regime:
       case _ => throw ustax4s.NotYetImplemented(year)
 
 case object NonTrump extends Regime {
-  import Regime.*
 
   override def standardDeduction(
     year: Year,
@@ -230,19 +218,6 @@ case object NonTrump extends Regime {
     year: Year,
     personalExemptions: Int
   ): Money = personalExemption(year) mul personalExemptions
-
-  override def netDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate,
-    personalExemptions: Int,
-    itemizedDeductions: Money
-  ): Money =
-    failIfInvalid(year)
-    Money.max(
-      standardDeduction(year, filingStatus, birthDate),
-      personalExemptionDeduction(year, personalExemptions) + itemizedDeductions
-    )
 
   override def ordinaryIncomeBrackets(
     year: Year,
