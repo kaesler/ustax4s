@@ -46,6 +46,8 @@ sealed trait Regime:
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets
 
+  // Create a new Regime that behaves like the original but with appropriate
+  // adjustments for inflation.
   def inflatedBy(inflation: Inflation): Regime =
     val base = this
     new {
