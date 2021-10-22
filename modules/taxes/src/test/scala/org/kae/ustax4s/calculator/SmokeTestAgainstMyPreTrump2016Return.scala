@@ -1,4 +1,4 @@
-package org.kae.ustax4s.inretirement
+package org.kae.ustax4s.calculator
 
 import cats.implicits.*
 import java.math.MathContext

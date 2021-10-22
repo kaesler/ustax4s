@@ -1,12 +1,12 @@
-package org.kae.ustax4s.inretirement.testdata
+package org.kae.ustax4s.calculator.testdata
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.Trump
-import org.kae.ustax4s.inretirement.TaxCalculator
+import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.kevin.Kevin
 
-object MakeTestDataForHaskell extends App:
+object MakeTestDataForTypeScript extends App:
 
   import TestDataGeneration.*
 
@@ -35,11 +35,12 @@ object MakeTestDataForHaskell extends App:
       dependents = deps,
       massachusettsGrossIncome = oi + qi
     )
+    val status = fs match
+      case HeadOfHousehold => "FilingStatus.HOH"
+      case Single          => "FilingStatus.Single"
     println(
-      s"  TestCase { age = $age, dependents = $deps, filingStatus = $fs, socSec = $ss, " +
-        s"ordinaryIncomeNonSS = $oi, qualifiedIncome = $qi, " +
-        s"expectedFederalTax: $federalTaxDue, expectedStateTax = $stateTaxDue },"
+      s"  { age: $age, dependents: $deps, filingStatus: $status, socSec: $ss, " +
+        s"ordinaryIncomeNonSS: $oi, qualifiedIncome: $qi, " +
+        s"federalTaxDue: $federalTaxDue, stateTaxDue: $stateTaxDue },"
     )
   }
-
-end MakeTestDataForHaskell

@@ -1,4 +1,4 @@
-package org.kae.ustax4s.inretirement
+package org.kae.ustax4s.calculator
 
 import java.time.Year
 import munit.FunSuite
@@ -23,7 +23,7 @@ class MyTaxCalculatorSpec extends FunSuite:
       i  <- 0 to 100000 by 500
       ss <- 0 to 49000 by 500
     do
-      import org.kae.ustax4s.inretirement.MyTaxCalculator.*
+      import org.kae.ustax4s.calculator.MyTaxCalculator.*
       val income         = i.asMoney
       val socialSecurity = ss.asMoney
 
@@ -58,7 +58,7 @@ class MyTaxCalculatorSpec extends FunSuite:
       ss     <- 0 to 49000 by 1000
       inv    <- 0 to 30000 by 1000
     do
-      import org.kae.ustax4s.inretirement.MyTaxCalculator.*
+      import org.kae.ustax4s.calculator.MyTaxCalculator.*
       val income             = i.asMoney
       val socialSecurity     = ss.asMoney
       val qualifiedDividends = inv.asMoney

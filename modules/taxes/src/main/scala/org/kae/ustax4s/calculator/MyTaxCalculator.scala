@@ -1,4 +1,4 @@
-package org.kae.ustax4s.inretirement
+package org.kae.ustax4s.calculator
 
 import java.time.Year
 import org.kae.ustax4s.federal.forms.Form1040

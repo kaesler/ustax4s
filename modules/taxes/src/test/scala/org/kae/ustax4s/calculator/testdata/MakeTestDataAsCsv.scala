@@ -1,8 +1,8 @@
-package org.kae.ustax4s.inretirement.testdata
+package org.kae.ustax4s.calculator.testdata
 
 import java.time.Year
 import org.kae.ustax4s.federal.Trump
-import org.kae.ustax4s.inretirement.TaxCalculator
+import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.{FilingStatus, kevin}
 
 object MakeTestDataAsCsv extends App:

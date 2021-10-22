@@ -10,6 +10,9 @@ trait FederalTaxCalculator:
   // Note: We could have just used cyrrying, i.e.
   //   trait FederalTaxCalculator extends ((Money .. Money) => FederalTaxResults
   // but it is more ergonomic to allow named arguments.
+
+  // Compute tax results for the given inputs.
+  // By default, un-inflated tax brackets, deductions and so ond are used.
   def federalTaxResults(
     socSec: Money,
     ordinaryIncomeNonSS: Money,
@@ -23,10 +26,6 @@ end FederalTaxCalculator
 
 object FederalTaxCalculator:
 
-  // TODO: How could I apply an inflation factor to an already created instance of
-  // this?
-  //   1. Re-cast FederalTaxCalculator: InflationFactor -> args -> results
-  //   2. Wrap in a case class allowing the infation factor to be overridden late.
   def create(
     regime: Regime,
     year: Year,

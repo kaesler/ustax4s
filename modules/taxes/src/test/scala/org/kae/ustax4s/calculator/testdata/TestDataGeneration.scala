@@ -1,4 +1,4 @@
-package org.kae.ustax4s.inretirement.testdata
+package org.kae.ustax4s.calculator.testdata
 
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.money.MoneySyntax.*

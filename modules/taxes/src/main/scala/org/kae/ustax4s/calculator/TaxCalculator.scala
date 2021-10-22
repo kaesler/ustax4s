@@ -1,4 +1,4 @@
-package org.kae.ustax4s.inretirement
+package org.kae.ustax4s.calculator
 
 import cats.Show
 import java.time.{LocalDate, Year}

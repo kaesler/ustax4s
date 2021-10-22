@@ -1,7 +1,7 @@
-package org.kae.ustax4s.inretirement
+package org.kae.ustax4s.calculator
 
 import munit.FunSuite
-import org.kae.ustax4s.inretirement.testdata.RegressionTestCase
+import org.kae.ustax4s.calculator.testdata.RegressionTestCase
 
 class TaxCalculatorRegressionSpec extends FunSuite {
   test("Regression tests pass") {
