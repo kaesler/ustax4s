@@ -2,7 +2,7 @@ package org.kae.ustax4s.inretirement.testdata
 
 import java.time.Year
 import org.kae.ustax4s.federal.Trump
-import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.inretirement.TaxCalculator
 import org.kae.ustax4s.{FilingStatus, kevin}
 
 object MakeTestDataAsCsv extends App:
@@ -17,7 +17,7 @@ object MakeTestDataAsCsv extends App:
     "filingStatus,dependents,socSec,ordinaryIncomeNonSS,qualifiedIncome,federalTaxDue,stateTaxDue"
   )
   testCases.foreach { case TestCaseInputs(fs, ds, ss, oi, qi) =>
-    val federalTaxDue = TaxInRetirement.federalTaxDue(
+    val federalTaxDue = TaxCalculator.federalTaxDue(
       regime,
       year = year,
       birthDate = kevin.Kevin.birthDate,
@@ -28,7 +28,7 @@ object MakeTestDataAsCsv extends App:
       personalExemptions,
       itemizedDeductions
     )
-    val stateTaxDue = TaxInRetirement.stateTaxDue(
+    val stateTaxDue = TaxCalculator.stateTaxDue(
       year = year,
       birthDate = kevin.Kevin.birthDate,
       filingStatus = fs,

@@ -4,14 +4,14 @@ import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.Trump
-import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.inretirement.TaxCalculator
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 
 object TaxDueAdHocTests extends App:
 
-  val results = TaxInRetirement.federalTaxResults(
+  val results = TaxCalculator.federalTaxResults(
     regime = Trump,
     year = Year.of(2021),
     Kevin.birthDate,

@@ -7,15 +7,15 @@ import org.kae.ustax4s.federal.Trump
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 
-class MyTaxInRetirementSpec extends FunSuite:
+class MyTaxCalculatorSpec extends FunSuite:
 
   private val regime             = Trump
   private val personalExemptions = 0
   private val itemizedDeductions = 0
 
   test(
-    "MyTaxInRetirement.taxDue " +
-      "agrees with MyTaxInRetirement.taxDueUsingForm1040, " +
+    "MyTaxCalculator.taxDue " +
+      "agrees with MyTaxCalculator.taxDueUsingForm1040, " +
       "with no qualified income"
   ) {
     val year = Year.of(2021)
@@ -23,7 +23,7 @@ class MyTaxInRetirementSpec extends FunSuite:
       i  <- 0 to 100000 by 500
       ss <- 0 to 49000 by 500
     do
-      import org.kae.ustax4s.inretirement.MyTaxInRetirement.*
+      import org.kae.ustax4s.inretirement.MyTaxCalculator.*
       val income         = i.asMoney
       val socialSecurity = ss.asMoney
 
@@ -59,7 +59,7 @@ class MyTaxInRetirementSpec extends FunSuite:
       ss     <- 0 to 49000 by 1000
       inv    <- 0 to 30000 by 1000
     do
-      import org.kae.ustax4s.inretirement.MyTaxInRetirement.*
+      import org.kae.ustax4s.inretirement.MyTaxCalculator.*
       val income             = i.asMoney
       val socialSecurity     = ss.asMoney
       val qualifiedDividends = inv.asMoney

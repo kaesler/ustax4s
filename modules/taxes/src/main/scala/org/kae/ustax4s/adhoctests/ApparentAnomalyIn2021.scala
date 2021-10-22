@@ -3,7 +3,7 @@ package org.kae.ustax4s.adhoctests
 import java.time.Year
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
-import org.kae.ustax4s.inretirement.MyTaxInRetirement
+import org.kae.ustax4s.inretirement.MyTaxCalculator
 
 object ApparentAnomalyIn2021 extends App:
   val year = Year.of(2021)
@@ -16,7 +16,7 @@ object ApparentAnomalyIn2021 extends App:
   val from401k = 34689.asMoney.+(32150.asMoney)
 
   val tax =
-    MyTaxInRetirement.federalTaxDueUsingForm1040(
+    MyTaxCalculator.federalTaxDueUsingForm1040(
       year = year,
       socSec = ss,
       ordinaryIncomeNonSS = from401k + unqualifiedDividends,

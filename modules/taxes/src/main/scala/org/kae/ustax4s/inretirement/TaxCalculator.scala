@@ -16,7 +16,7 @@ import org.kae.ustax4s.state.StateTaxMA
 
 /** Simplified interface to 1040 calculations. Assume: No deductions credits or other complications.
   */
-object TaxInRetirement:
+object TaxCalculator:
 
   final case class FederalTaxResults(
     ssRelevantOtherIncome: Money,

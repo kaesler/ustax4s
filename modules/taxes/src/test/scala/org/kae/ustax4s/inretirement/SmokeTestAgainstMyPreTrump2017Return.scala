@@ -37,7 +37,7 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
     println(s"taxableOrdinaryIncome: $taxableOrdinaryIncome")
     println(s"qualifiedIncome:       $qualifiedIncome")
 
-    val results = TaxInRetirement.federalTaxResults(
+    val results = TaxCalculator.federalTaxResults(
       regime,
       year,
       Kevin.birthDate,

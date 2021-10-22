@@ -3,7 +3,7 @@ package org.kae.ustax4s.inretirement.testdata
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.Trump
-import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.inretirement.TaxCalculator
 import org.kae.ustax4s.kevin.Kevin
 
 object MakeTestDataForHaskell extends App:
@@ -17,7 +17,7 @@ object MakeTestDataForHaskell extends App:
   private val itemizedDeductions = 0
 
   testCases.foreach { case TestCaseInputs(fs, deps, ss, oi, qi) =>
-    val federalTaxDue = TaxInRetirement.federalTaxDue(
+    val federalTaxDue = TaxCalculator.federalTaxDue(
       regime,
       year = year,
       birthDate = Kevin.birthDate,
@@ -28,7 +28,7 @@ object MakeTestDataForHaskell extends App:
       personalExemptions,
       itemizedDeductions
     )
-    val stateTaxDue = TaxInRetirement.stateTaxDue(
+    val stateTaxDue = TaxCalculator.stateTaxDue(
       year = year,
       birthDate = Kevin.birthDate,
       filingStatus = fs,

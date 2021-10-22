@@ -6,7 +6,7 @@ import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets, QualifiedIncomeBrackets,
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 
-object MyTaxInRetirement:
+object MyTaxCalculator:
 
   def federalTaxDue(
     regime: Regime,
@@ -17,7 +17,7 @@ object MyTaxInRetirement:
     personalExemptions: Int,
     itemizedDeductions: Money
   ): Money =
-    TaxInRetirement.federalTaxDue(
+    TaxCalculator.federalTaxDue(
       regime,
       year,
       Kevin.birthDate,
@@ -76,7 +76,7 @@ object MyTaxInRetirement:
     //  - capital gains
     massachusettsGrossIncome: Money
   ): Money =
-    TaxInRetirement.stateTaxDue(
+    TaxCalculator.stateTaxDue(
       year,
       Kevin.birthDate,
       Kevin.filingStatus(year),

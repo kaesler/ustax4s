@@ -6,7 +6,7 @@ import java.time.Year
 import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.Trump
-import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.inretirement.TaxCalculator
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 import scala.io.Source
@@ -26,7 +26,7 @@ final case class RegressionTestCase(
 
   def run: Unit =
     assertEquals(
-      TaxInRetirement.federalTaxDue(
+      TaxCalculator.federalTaxDue(
         regime = Trump,
         Year.of(2021),
         Kevin.birthDate,
@@ -41,7 +41,7 @@ final case class RegressionTestCase(
       this.toString
     )
     assertEquals(
-      TaxInRetirement.stateTaxDue(
+      TaxCalculator.stateTaxDue(
         Year.of(2021),
         Kevin.birthDate,
         filingStatus,

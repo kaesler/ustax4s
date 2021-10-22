@@ -5,7 +5,7 @@ import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity
-import org.kae.ustax4s.inretirement.TaxInRetirement
+import org.kae.ustax4s.inretirement.TaxCalculator
 import org.kae.ustax4s.kevin.Kevin
 
 object TaxInRetirementTests extends App:
@@ -27,7 +27,7 @@ object TaxInRetirementTests extends App:
       )
     val totalTaxable = income + ssTaxable
     val tax =
-      TaxInRetirement.federalTaxDueUsingForm1040(
+      TaxCalculator.federalTaxDueUsingForm1040(
         year = year,
         birthDate = Kevin.birthDate,
         filingStatus = Single,
