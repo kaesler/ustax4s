@@ -1,38 +1,17 @@
-package org.kae.ustax4s.federal
+package org.kae.ustax4s.federal.regimes
 
 import cats.implicits.*
 import java.time.{LocalDate, Month, Year}
 import org.kae.ustax4s
+import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
+import org.kae.ustax4s.federal.QualifiedIncomeBrackets
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.math.Ordered
 
-sealed trait Regime extends Product:
-
-  def standardDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate
-  ): Money
-
-  def personalExemptionDeduction(
-    year: Year,
-    personalExemptions: Int
-  ): Money
-
-  def netDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate,
-    personalExemptions: Int,
-    itemizedDeductions: Money
-  ): Money =
-    Money.max(
-      standardDeduction(year, filingStatus, birthDate),
-      personalExemptionDeduction(year, personalExemptions) + itemizedDeductions
-    )
+sealed trait Regime extends (Year => RegimeYear) with Product:
 
   def ordinaryIncomeBrackets(
     year: Year,
@@ -43,6 +22,15 @@ sealed trait Regime extends Product:
     year: Year,
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets
+
+  def standardDeduction(
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate
+  ): Money
+
+  def personalExemptionDeduction(year: Year, personalExemptions: Int): Money
+
 end Regime
 
 object Regime:
@@ -73,20 +61,9 @@ end Regime
 case object Trump extends Regime:
   import Regime.*
 
-  override def personalExemptionDeduction(
-    year: Year,
-    personalExemptions: Int
-  ): Money = 0
-
-  override def standardDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate
-  ): Money =
+  override def apply(year: Year): RegimeYear =
     failIfInvalid(year)
-    stdDeductionUnadjustedForAge(year, filingStatus) +
-      // TODO: should the 1350 be inflated, if we go that way?
-      (if isAge65OrOlder(birthDate, year) then 1350 else 0)
+    RegimeYear(this, year)
 
   @tailrec
   override def ordinaryIncomeBrackets(
@@ -176,10 +153,20 @@ case object Trump extends Regime:
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
 
-  private def failIfInvalid(year: Year): Unit =
-    // Note: Trump regime may be extended beyond 2025 by legislation.
-    if year.getValue < FirstYearTrumpRegimeRequired then throw RegimeInvalidForYear(this, year)
-    else ()
+  override def personalExemptionDeduction(
+    year: Year,
+    personalExemptions: Int
+  ): Money = 0
+
+  override def standardDeduction(
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate
+  ): Money =
+    failIfInvalid(year)
+    stdDeductionUnadjustedForAge(year, filingStatus) +
+      // TODO: should the 1350 be inflated, if we go that way?
+      (if isAge65OrOlder(birthDate, year) then 1350 else 0)
 
   @tailrec
   private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
@@ -202,24 +189,17 @@ case object Trump extends Regime:
 
       case _ => throw ustax4s.NotYetImplemented(year)
 
-case object NonTrump extends Regime {
+  private def failIfInvalid(year: Year): Unit =
+    // Note: Trump regime may be extended beyond 2025 by legislation.
+    if year.getValue < FirstYearTrumpRegimeRequired then throw RegimeInvalidForYear(this, year)
+    else ()
+
+case object NonTrump extends Regime:
   import Regime.*
 
-  override def standardDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate
-  ): Money = {
+  override def apply(year: Year): RegimeYear =
     failIfInvalid(year)
-    // TODO: Did this adjustment apply pre-Trump?
-    stdDeductionUnadjustedForAge(year, filingStatus) +
-      (if isAge65OrOlder(birthDate, year) then 1350 else 0)
-  }
-
-  override def personalExemptionDeduction(
-    year: Year,
-    personalExemptions: Int
-  ): Money = personalExemption(year) mul personalExemptions
+    RegimeYear(this, year)
 
   override def ordinaryIncomeBrackets(
     year: Year,
@@ -300,8 +280,21 @@ case object NonTrump extends Regime {
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
 
-  private def failIfInvalid(year: Year): Unit =
-    if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
+  override def standardDeduction(
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate
+  ): Money = {
+    failIfInvalid(year)
+    // TODO: Did this adjustment apply pre-Trump?
+    stdDeductionUnadjustedForAge(year, filingStatus) +
+      (if isAge65OrOlder(birthDate, year) then 1350 else 0)
+  }
+
+  override def personalExemptionDeduction(
+    year: Year,
+    personalExemptions: Int
+  ): Money = personalExemption(year) mul personalExemptions
 
   private def personalExemption(year: Year): Money = year.getValue match
     // TODO: Index for inflation?
@@ -328,4 +321,6 @@ case object NonTrump extends Regime {
       case _ => throw ustax4s.NotYetImplemented(year)
 
     end match
-}
+
+  private def failIfInvalid(year: Year): Unit =
+    if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)

@@ -79,8 +79,8 @@ object TaxInRetirement:
     socSec: Money,
     ordinaryIncomeNonSS: Money,
     qualifiedIncome: Money,
-    personalExemptions: Int,
     // Self plus dependents
+    personalExemptions: Int,
     itemizedDeductions: Money
   ): FederalTaxResults =
     val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
