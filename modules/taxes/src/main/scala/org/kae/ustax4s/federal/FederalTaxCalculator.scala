@@ -27,7 +27,7 @@ end FederalTaxCalculator
 object FederalTaxCalculator:
 
   def create(
-    regime: Regime,
+    baseRegime: Regime,
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
@@ -42,9 +42,11 @@ object FederalTaxCalculator:
     )(
       inflation: Option[Inflation]
     ): FederalTaxResults =
-      val inflationFactor = inflation.map(_.factor).getOrElse(1.0)
 
+      val effectiveRegime       = inflation.fold(baseRegime)(baseRegime.inflatedBy)
       val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
+
+      // Note: this does not currently get adjusted for inflation.
       val taxableSocialSecurity =
         TaxableSocialSecurity.taxableSocialSecurityBenefits(
           filingStatus = filingStatus,
@@ -54,16 +56,19 @@ object FederalTaxCalculator:
 
       val taxableOrdinaryIncome =
         (taxableSocialSecurity + ordinaryIncomeNonSS) subp
-          // TODO: would need inject inflation factor here.
-          regime.netDeduction(year, filingStatus, birthDate, personalExemptions, itemizedDeductions)
+          effectiveRegime.netDeduction(
+            year,
+            filingStatus,
+            birthDate,
+            personalExemptions,
+            itemizedDeductions
+          )
 
-      val taxOnOrdinaryIncome = regime
-        // TODO: would need inject inflation factor here.
+      val taxOnOrdinaryIncome = effectiveRegime
         .ordinaryIncomeBrackets(year, filingStatus)
         .taxDue(taxableOrdinaryIncome)
 
-      val taxOnQualifiedIncome = regime
-        // TODO: would need inject inflation factor here.
+      val taxOnQualifiedIncome = effectiveRegime
         .qualifiedIncomeBrackets(year, filingStatus)
         .taxDueFunctionally(
           taxableOrdinaryIncome,
@@ -72,9 +77,10 @@ object FederalTaxCalculator:
       FederalTaxResults(
         ssRelevantOtherIncome,
         taxableSocialSecurity,
-        regime.personalExemptionDeduction(year, personalExemptions),
-        regime.standardDeduction(year, filingStatus, birthDate),
-        regime.netDeduction(year, filingStatus, birthDate, personalExemptions, itemizedDeductions),
+        effectiveRegime.personalExemptionDeduction(year, personalExemptions),
+        effectiveRegime.standardDeduction(year, filingStatus, birthDate),
+        effectiveRegime
+          .netDeduction(year, filingStatus, birthDate, personalExemptions, itemizedDeductions),
         taxableOrdinaryIncome,
         taxOnOrdinaryIncome,
         taxOnQualifiedIncome

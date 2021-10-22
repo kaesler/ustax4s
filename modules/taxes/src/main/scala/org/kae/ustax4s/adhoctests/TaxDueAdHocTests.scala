@@ -15,7 +15,7 @@ object TaxDueAdHocTests extends App:
   val results =
     FederalTaxCalculator
       .create(
-        regime = Trump,
+        baseRegime = Trump,
         year = year,
         Kevin.birthDate,
         FilingStatus.HeadOfHousehold,
