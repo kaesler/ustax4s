@@ -1,4 +1,4 @@
-package org.kae.ustax4s.state
+package org.kae.ustax4s.state_ma
 
 import java.time.Year
 import munit.FunSuite
@@ -6,9 +6,8 @@ import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
-import org.kae.ustax4s.state.StateTaxMA
 
-class StateTaxMA_AsFiled_Spec extends FunSuite:
+class SmokeTestAgainstMyMA2018Return extends FunSuite:
 
   test("MA State tax should match what I filed in 2018") {
 
@@ -21,7 +20,7 @@ class StateTaxMA_AsFiled_Spec extends FunSuite:
         7800.asMoney
 
     assertEquals(
-      StateTaxMA
+      StateMATaxCalculator
         .taxDue(Year.of(2018), Kevin.birthDate, 1, HeadOfHousehold)(
           incomeBeforeExemptions
         )
@@ -39,7 +38,7 @@ class StateTaxMA_AsFiled_Spec extends FunSuite:
         // Line 2g
         7800.asMoney
     assertEquals(
-      StateTaxMA
+      StateMATaxCalculator
         .taxDue(Year.of(2019), Kevin.birthDate, 1, HeadOfHousehold)(
           incomeBeforeExemptions
         )

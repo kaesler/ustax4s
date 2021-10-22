@@ -34,8 +34,7 @@ class MyTaxCalculatorSpec extends FunSuite:
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
           qualifiedIncome = 0,
-          personalExemptions,
-          itemizedDeductions
+          personalExemptions
         ),
         federalTaxDueUsingForm1040(
           year = year,
@@ -70,8 +69,7 @@ class MyTaxCalculatorSpec extends FunSuite:
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
           qualifiedIncome = qualifiedDividends,
-          personalExemptions,
-          itemizedDeductions
+          personalExemptions
         ) !=
           federalTaxDueUsingForm1040(
             year = year,
@@ -89,8 +87,7 @@ class MyTaxCalculatorSpec extends FunSuite:
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
           qualifiedIncome = qualifiedDividends,
-          personalExemptions,
-          itemizedDeductions
+          personalExemptions
         ),
         federalTaxDueUsingForm1040(
           year = year,

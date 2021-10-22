@@ -22,10 +22,10 @@ object MakeTestDataForHaskell extends App:
       year = year,
       birthDate = Kevin.birthDate,
       filingStatus = fs,
+      personalExemptions,
       socSec = ss,
       ordinaryIncomeNonSS = oi,
       qualifiedIncome = qi,
-      personalExemptions,
       itemizedDeductions
     )
     val stateTaxDue = TaxCalculator.stateTaxDue(

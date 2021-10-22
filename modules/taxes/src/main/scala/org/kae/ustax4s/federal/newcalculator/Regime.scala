@@ -1,4 +1,4 @@
-package org.kae.ustax4s.federal.regimes
+package org.kae.ustax4s.federal.newcalculator
 
 import cats.implicits.*
 import java.time.{LocalDate, Month, Year}

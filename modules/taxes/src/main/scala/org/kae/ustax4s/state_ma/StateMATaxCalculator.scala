@@ -1,4 +1,4 @@
-package org.kae.ustax4s.state
+package org.kae.ustax4s.state_ma
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
@@ -7,7 +7,7 @@ import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 import scala.annotation.tailrec
 
-object StateTaxMA:
+object StateMATaxCalculator:
 
   def taxDue(
     year: Year,

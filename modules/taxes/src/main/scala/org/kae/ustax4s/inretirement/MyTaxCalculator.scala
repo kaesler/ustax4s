@@ -14,7 +14,6 @@ object MyTaxCalculator:
     socSec: Money,
     ordinaryIncomeNonSS: Money,
     qualifiedIncome: Money,
-    personalExemptions: Int,
     itemizedDeductions: Money
   ): Money =
     TaxCalculator.federalTaxDue(
@@ -22,10 +21,10 @@ object MyTaxCalculator:
       year,
       Kevin.birthDate,
       Kevin.filingStatus(year),
+      Kevin.personalExemptions(year),
       socSec,
       ordinaryIncomeNonSS,
       qualifiedIncome,
-      personalExemptions,
       itemizedDeductions
     )
 

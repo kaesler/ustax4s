@@ -1,4 +1,4 @@
-package org.kae.ustax4s.federal.regimes
+package org.kae.ustax4s.federal.newcalculator
 
 import org.kae.ustax4s.FilingStatus
 import java.time.LocalDate

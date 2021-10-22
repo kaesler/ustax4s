@@ -31,10 +31,10 @@ final case class RegressionTestCase(
         Year.of(2021),
         Kevin.birthDate,
         filingStatus,
+        personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
-        personalExemptions,
         itemizedDeductions
       ),
       federalTaxDue,

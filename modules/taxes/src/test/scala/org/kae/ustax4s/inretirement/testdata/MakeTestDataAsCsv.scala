@@ -22,10 +22,10 @@ object MakeTestDataAsCsv extends App:
       year = year,
       birthDate = kevin.Kevin.birthDate,
       filingStatus = fs,
+      personalExemptions,
       socSec = ss,
       ordinaryIncomeNonSS = oi,
       qualifiedIncome = qi,
-      personalExemptions,
       itemizedDeductions
     )
     val stateTaxDue = TaxCalculator.stateTaxDue(

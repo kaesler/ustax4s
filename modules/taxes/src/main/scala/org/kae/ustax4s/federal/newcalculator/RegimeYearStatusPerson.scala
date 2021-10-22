@@ -1,6 +1,7 @@
-package org.kae.ustax4s.federal.regimes
+package org.kae.ustax4s.federal.newcalculator
 
-import org.kae.ustax4s.federal.TaxableSocialSecurity
+import org.kae.ustax4s.federal
+import org.kae.ustax4s.federal.{FederalTaxCalculator, FederalTaxResults, TaxableSocialSecurity}
 import org.kae.ustax4s.money.Money
 
 final case class RegimeYearStatusPerson(
@@ -38,7 +39,7 @@ final case class RegimeYearStatusPerson(
         qualifiedIncome
       )
 
-    FederalTaxResults(
+    federal.FederalTaxResults(
       ssRelevantOtherIncome,
       taxableSocialSecurity,
       personalExemptionDeduction,
