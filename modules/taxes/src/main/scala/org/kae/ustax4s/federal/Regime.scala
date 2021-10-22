@@ -5,11 +5,13 @@ import java.time.{LocalDate, Month, Year}
 import org.kae.ustax4s
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
+import org.kae.ustax4s.{FilingStatus, Inflation, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.math.Ordered
 
-sealed trait Regime extends Product:
+sealed trait Regime:
+
+  def name: String
 
   def standardDeduction(
     year: Year,
@@ -43,6 +45,45 @@ sealed trait Regime extends Product:
     year: Year,
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets
+
+  def inflatedBy(inflation: Inflation): Regime =
+    val base = this
+    new {
+      override val name =
+        s"${base.name}-inflatedTo-${inflation.targetFutureYear.getValue}"
+
+      override def standardDeduction(
+        year: Year,
+        filingStatus: FilingStatus,
+        birthDate: LocalDate
+      ): Money =
+        base.standardDeduction(year, filingStatus, birthDate) mul
+          inflation.factor(year)
+
+      override def personalExemptionDeduction(
+        year: Year,
+        personalExemptions: Int
+      ): Money =
+        base.personalExemptionDeduction(year, personalExemptions) mul
+          inflation.factor(year)
+
+      override def ordinaryIncomeBrackets(
+        year: Year,
+        filingStatus: FilingStatus
+      ): OrdinaryIncomeBrackets =
+        base
+          .ordinaryIncomeBrackets(year, filingStatus)
+          .inflatedBy(inflation.factor(year))
+
+      override def qualifiedIncomeBrackets(
+        year: Year,
+        filingStatus: FilingStatus
+      ): QualifiedIncomeBrackets =
+        base
+          .qualifiedIncomeBrackets(year, filingStatus)
+          .inflatedBy(inflation.factor(year))
+    }
+
 end Regime
 
 object Regime:
@@ -64,13 +105,15 @@ object Regime:
     regime: Regime,
     year: Year
   ) extends RuntimeException(
-        s"Regime ${regime.productPrefix} cannot apply in ${year.toString}"
+        s"Regime ${regime.name} cannot apply in ${year.toString}"
       )
 
 end Regime
 
 case object Trump extends Regime:
   import Regime.*
+
+  override val name = "Trump"
 
   override def personalExemptionDeduction(
     year: Year,
@@ -203,6 +246,8 @@ case object Trump extends Regime:
 
 case object NonTrump extends Regime {
   import Regime.*
+
+  override val name = "NonTrump"
 
   override def standardDeduction(
     year: Year,
