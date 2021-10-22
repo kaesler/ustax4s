@@ -46,7 +46,6 @@ sealed trait Regime extends Product:
 end Regime
 
 object Regime:
-  val InflationAssumed             = 0.02
   val FirstYearTrumpRegimeRequired = 2018
   val LastYearTrumpRegimeRequired  = 2025
   val YearsTrumpTaxRegimeRequired: Set[Year] =
