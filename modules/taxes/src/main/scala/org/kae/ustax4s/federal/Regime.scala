@@ -227,17 +227,6 @@ case object NonTrump extends Regime {
     failIfInvalid(year)
 
     (year.getValue, filingStatus) match
-      // An estimate for 2021 as if the Trump tax cuts had not occurred.
-      // We assume the Trump tax cuts will lapse effective 2026,
-      // so we calculate the rates as of 2021 as if they had not happened,
-      // assuming the brackets inflated 2% per year from 2017 to 2021.
-      // An estimate of course.
-      // https://en.wikipedia.org/wiki/Tax_Cuts_and_Jobs_Act_of_2017
-      // TODO: inflate to "year" rather than to 2021 ?
-      case (year, fs) if year > 2025 =>
-        ordinaryIncomeBrackets(Year.of(2017), fs).inflatedBy(
-          math.pow(1.0 + InflationAssumed, (2021 - 2017).toDouble)
-        )
 
       case (2017, Single) =>
         OrdinaryIncomeBrackets.create(
@@ -310,13 +299,6 @@ case object NonTrump extends Regime {
 
   private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
     (year.getValue, filingStatus) match
-
-      case (year, fs) if year > LastYearTrumpRegimeRequired =>
-        stdDeductionUnadjustedForAge(Year.of(2017), fs)
-          .mul(
-            math.pow(1.0 + InflationAssumed, (2021 - 2017).toDouble)
-          )
-          .rounded
 
       case (2017, HeadOfHousehold) => 9350
       case (2017, Single)          => 6350
