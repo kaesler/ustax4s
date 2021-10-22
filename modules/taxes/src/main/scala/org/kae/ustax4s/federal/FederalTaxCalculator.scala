@@ -41,7 +41,7 @@ object FederalTaxCalculator:
       itemizedDeductions: Money
     )(
       inflation: Option[Inflation]
-    ): FederalTaxResults = {
+    ): FederalTaxResults =
       val inflationFactor = inflation.map(_.factor).getOrElse(1.0)
 
       val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
@@ -79,7 +79,7 @@ object FederalTaxCalculator:
         taxOnOrdinaryIncome,
         taxOnQualifiedIncome
       )
-    }
+    end federalTaxResults
   }
 
 end FederalTaxCalculator

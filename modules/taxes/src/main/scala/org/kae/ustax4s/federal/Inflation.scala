@@ -9,7 +9,7 @@ final case class Inflation(
   targetFutureYear: Year,
   // E.g. 0.02 for 2%
   annualGrowthFraction: Double
-) {
+):
   require(targetFutureYear.getValue > 2017)
   require(annualGrowthFraction >= 0)
 
@@ -20,4 +20,3 @@ final case class Inflation(
       1 + annualGrowthFraction,
       targetFutureYear.getValue - baseYear.getValue
     )
-}
