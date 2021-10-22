@@ -1,7 +1,12 @@
 package org.kae.ustax4s.federal.newcalculator
 
 import org.kae.ustax4s.federal
-import org.kae.ustax4s.federal.{FederalTaxCalculator, FederalTaxResults, TaxableSocialSecurity}
+import org.kae.ustax4s.federal.{
+  FederalTaxCalculator,
+  FederalTaxResults,
+  Inflation,
+  TaxableSocialSecurity
+}
 import org.kae.ustax4s.money.Money
 
 final case class RegimeYearStatusPerson(
@@ -16,6 +21,9 @@ final case class RegimeYearStatusPerson(
     ordinaryIncomeNonSS: Money,
     qualifiedIncome: Money,
     itemizedDeductions: Money
+  )(
+    // TODO: ignored here for now
+    inflation: Option[Inflation]
   ): FederalTaxResults =
     val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
     val taxableSocialSecurity =

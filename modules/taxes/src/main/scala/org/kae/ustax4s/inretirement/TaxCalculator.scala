@@ -39,7 +39,7 @@ object TaxCalculator:
         ordinaryIncomeNonSS,
         qualifiedIncome,
         itemizedDeductions
-      )
+      )()
       .taxDue
       .rounded
 

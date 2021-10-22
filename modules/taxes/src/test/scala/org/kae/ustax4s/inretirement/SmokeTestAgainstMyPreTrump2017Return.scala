@@ -50,7 +50,7 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
         ordinaryIncomeNonSS = adjustedGrossIncome subp qualifiedIncome,
         qualifiedIncome,
         itemizedDeductions
-      )
+      )()
     println("")
     println(results.show)
 

@@ -26,6 +26,6 @@ object TaxDueAdHocTests extends App:
         ordinaryIncomeNonSS = 14250,
         qualifiedIncome = 47963,
         itemizedDeductions = 0
-      )
+      )()
 
   println(results.show)
