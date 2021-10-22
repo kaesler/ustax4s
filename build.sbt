@@ -9,7 +9,7 @@ lazy val retirement = project
   .settings(
     name         := "retirement",
     version      := "1.0",
-    scalaVersion := "3.0.2"
+    scalaVersion := "3.1.0"
   )
 
 lazy val taxes = (project in file("modules/taxes"))
