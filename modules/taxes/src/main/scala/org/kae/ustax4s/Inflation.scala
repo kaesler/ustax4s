@@ -1,8 +1,5 @@
-package org.kae.ustax4s.federal
-
-import cats.implicits.*
+package org.kae.ustax4s
 import java.time.Year
-import math.Ordered.orderingToOrdered
 
 // Used to estimate future tax regimes.
 final case class Inflation(
@@ -15,6 +12,7 @@ final case class Inflation(
 
   // Compute the inflation factor for the target year, from a base year.
   def factor(baseYear: Year): Double =
+    import math.Ordered.orderingToOrdered
     require(targetFutureYear >= baseYear)
     math.pow(
       1 + annualGrowthFraction,
