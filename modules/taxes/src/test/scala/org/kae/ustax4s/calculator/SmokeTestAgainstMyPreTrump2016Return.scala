@@ -4,7 +4,7 @@ import cats.implicits.*
 import java.math.MathContext
 import java.time.Year
 import munit.FunSuite
-import org.kae.ustax4s.federal.{FederalTaxCalculator, NonTrump}
+import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, NonTrump}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.money.MoneySyntax.*
@@ -37,20 +37,21 @@ class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
     println(s"taxableOrdinaryIncome: $taxableOrdinaryIncome")
     println(s"qualifiedIncome:       $qualifiedIncome")
 
-    val results = FederalTaxCalculator
+    val results = BoundRegime
       .create(
         regime,
         year,
-        Kevin.birthDate,
         filingStatus,
+        Kevin.birthDate,
         personalExemptions
       )
+      .calculator
       .federalTaxResults(
         socSec = 0,
         ordinaryIncomeNonSS = adjustedGrossIncome subp qualifiedIncome,
         qualifiedIncome,
         itemizedDeductions
-      )()
+      )
     println("")
     println(results.show)
 

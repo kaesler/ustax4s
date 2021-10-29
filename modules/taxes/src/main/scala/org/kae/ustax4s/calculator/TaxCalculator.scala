@@ -5,6 +5,7 @@ import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.{
+  BoundRegime,
   FederalTaxCalculator,
   FederalTaxResults,
   OrdinaryIncomeBrackets,
@@ -32,14 +33,21 @@ object TaxCalculator:
     qualifiedIncome: Money,
     itemizedDeductions: Money
   ): Money =
-    FederalTaxCalculator
-      .create(regime, year, birthDate, filingStatus, personalExemptions)
+    BoundRegime
+      .create(
+        regime,
+        year,
+        filingStatus,
+        birthDate,
+        personalExemptions
+      )
+      .calculator
       .federalTaxResults(
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
         itemizedDeductions
-      )()
+      )
       .taxDue
       .rounded
 

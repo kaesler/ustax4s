@@ -24,18 +24,6 @@ sealed trait Regime:
     personalExemptions: Int
   ): Money
 
-  def netDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate,
-    personalExemptions: Int,
-    itemizedDeductions: Money
-  ): Money =
-    Money.max(
-      standardDeduction(year, filingStatus, birthDate),
-      personalExemptionDeduction(year, personalExemptions) + itemizedDeductions
-    )
-
   def ordinaryIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
@@ -46,45 +34,13 @@ sealed trait Regime:
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets
 
-  // Create a new Regime that behaves like the original but with appropriate
-  // adjustments for inflation.
-  def inflatedBy(inflation: Inflation): Regime =
-    val base = this
-    new {
-      override val name =
-        s"${base.name}-inflatedTo-${inflation.targetFutureYear.getValue}"
-
-      override def standardDeduction(
-        year: Year,
-        filingStatus: FilingStatus,
-        birthDate: LocalDate
-      ): Money =
-        base.standardDeduction(year, filingStatus, birthDate) mul
-          inflation.factor(year)
-
-      override def personalExemptionDeduction(
-        year: Year,
-        personalExemptions: Int
-      ): Money =
-        base.personalExemptionDeduction(year, personalExemptions) mul
-          inflation.factor(year)
-
-      override def ordinaryIncomeBrackets(
-        year: Year,
-        filingStatus: FilingStatus
-      ): OrdinaryIncomeBrackets =
-        base
-          .ordinaryIncomeBrackets(year, filingStatus)
-          .inflatedBy(inflation.factor(year))
-
-      override def qualifiedIncomeBrackets(
-        year: Year,
-        filingStatus: FilingStatus
-      ): QualifiedIncomeBrackets =
-        base
-          .qualifiedIncomeBrackets(year, filingStatus)
-          .inflatedBy(inflation.factor(year))
-    }
+  def bind(
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate,
+    personalExemptions: Int
+  ): BoundRegime =
+    BoundRegime.create(this, year, filingStatus, birthDate, personalExemptions)
 
 end Regime
 
