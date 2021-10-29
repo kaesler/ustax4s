@@ -1,8 +1,9 @@
 package org.kae.ustax4s
+
 import java.time.Year
 
-// Used to estimate future tax regimes.
-final case class Inflation(
+// Used to estimate future tax brackets, exemptions, deductions etc.
+final case class InflationEstimate(
   targetFutureYear: Year,
   // E.g. 0.02 for 2%
   annualGrowthFraction: Double

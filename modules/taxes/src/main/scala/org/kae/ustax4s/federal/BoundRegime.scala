@@ -1,12 +1,12 @@
 package org.kae.ustax4s.federal
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.{FilingStatus, Inflation}
 import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.{FilingStatus, InflationEstimate}
 
 trait BoundRegime(
   regime: Regime,
-  year: Year,
+  val year: Year,
   filingStatus: FilingStatus,
   birthDate: LocalDate,
   personalExemptions: Int
@@ -15,6 +15,8 @@ trait BoundRegime(
   def personalExemptionDeduction: Money
   def ordinaryIncomeBrackets: OrdinaryIncomeBrackets
   def qualifiedIncomeBrackets: QualifiedIncomeBrackets
+
+  def name: String = regime.name
 
   def netDeduction(itemizedDeductions: Money): Money =
     Money.max(
@@ -62,26 +64,36 @@ trait BoundRegime(
       )
     }
 
-  // Create a new Regime that behaves like the original but with appropriate
-  // adjustments for inflation.
-  def inflatedBy(inflation: Inflation): BoundRegime =
+  // Create a new BoundRegime that behaves like the original but with
+  // appropriate adjustments for inflation estimate.
+  def estimated(inflation: InflationEstimate): BoundRegime =
     val base = this
-    new BoundRegime(regime, year, filingStatus, birthDate, personalExemptions) {
+    new BoundRegime(
+      regime,
+      inflation.targetFutureYear,
+      filingStatus,
+      birthDate,
+      personalExemptions
+    ) {
 
-//      override val name =
-//        s"${base.name}-inflatedTo-${inflation.targetFutureYear.getValue}"
+      // TODO: restrict what is legal.
+      import math.Ordered.orderingToOrdered
+      require(inflation.targetFutureYear > base.year)
+
+      override val name =
+        s"${base.name}-estimatedFor-${inflation.targetFutureYear.getValue}"
 
       override val standardDeduction: Money =
-        base.standardDeduction mul inflation.factor(year)
+        base.standardDeduction mul inflation.factor(base.year)
 
       override val personalExemptionDeduction: Money =
-        base.personalExemptionDeduction mul inflation.factor(year)
+        base.personalExemptionDeduction mul inflation.factor(base.year)
 
       override val ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
-        base.ordinaryIncomeBrackets.inflatedBy(inflation.factor(year))
+        base.ordinaryIncomeBrackets.inflatedBy(inflation.factor(base.year))
 
       override val qualifiedIncomeBrackets: QualifiedIncomeBrackets =
-        base.qualifiedIncomeBrackets.inflatedBy(inflation.factor(year))
+        base.qualifiedIncomeBrackets.inflatedBy(inflation.factor(base.year))
     }
 
 end BoundRegime
@@ -98,14 +110,14 @@ object BoundRegime:
     new BoundRegime(regime, year, filingStatus, birthDate, personalExemptions) {
 
       override def standardDeduction: Money =
-        regime.standardDeduction(year, filingStatus, birthDate)
+        regime.standardDeduction(this.year, filingStatus, birthDate)
 
       override def personalExemptionDeduction: Money =
-        regime.personalExemptionDeduction(year, personalExemptions)
+        regime.personalExemptionDeduction(this.year, personalExemptions)
 
       override def ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
-        regime.ordinaryIncomeBrackets(year, filingStatus)
+        regime.ordinaryIncomeBrackets(this.year, filingStatus)
 
       override def qualifiedIncomeBrackets: QualifiedIncomeBrackets =
-        regime.qualifiedIncomeBrackets(year, filingStatus)
+        regime.qualifiedIncomeBrackets(this.year, filingStatus)
     }

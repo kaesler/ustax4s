@@ -5,9 +5,8 @@ import java.time.{LocalDate, Month, Year}
 import org.kae.ustax4s
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.{FilingStatus, Inflation, NotYetImplemented}
+import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
-import scala.math.Ordered
 
 sealed trait Regime:
 
@@ -33,6 +32,8 @@ sealed trait Regime:
     year: Year,
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets
+
+  def failIfInvalid(year: Year): Unit
 
   def bind(
     year: Year,
@@ -176,7 +177,7 @@ case object Trump extends Regime:
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
 
-  private def failIfInvalid(year: Year): Unit =
+  override def failIfInvalid(year: Year): Unit =
     // Note: Trump regime may be extended beyond 2025 by legislation.
     if year.getValue < FirstYearTrumpRegimeRequired then throw RegimeInvalidForYear(this, year)
     else ()
@@ -291,7 +292,7 @@ case object NonTrump extends Regime {
     filingStatus: FilingStatus
   ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
 
-  private def failIfInvalid(year: Year): Unit =
+  override def failIfInvalid(year: Year): Unit =
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
 
   private def personalExemption(year: Year): Money = year.getValue match

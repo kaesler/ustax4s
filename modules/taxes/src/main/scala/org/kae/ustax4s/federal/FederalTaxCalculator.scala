@@ -1,9 +1,8 @@
 package org.kae.ustax4s.federal
 
-import java.time.Year
-import java.time.LocalDate
+import java.time.{LocalDate, Year}
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.{FilingStatus, Inflation}
+import org.kae.ustax4s.{FilingStatus, InflationEstimate}
 
 trait FederalTaxCalculator:
 
