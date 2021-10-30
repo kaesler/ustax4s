@@ -66,11 +66,11 @@ trait BoundRegime(
 
   // Create a new BoundRegime that behaves like the original but with
   // appropriate adjustments for inflation estimate.
-  def estimated(inflation: InflationEstimate): BoundRegime =
+  def futureEstimated(estimate: InflationEstimate): BoundRegime =
     val base = this
     new BoundRegime(
       regime,
-      inflation.targetFutureYear,
+      estimate.targetFutureYear,
       filingStatus,
       birthDate,
       personalExemptions
@@ -78,22 +78,23 @@ trait BoundRegime(
 
       // TODO: restrict what is legal.
       import math.Ordered.orderingToOrdered
-      require(inflation.targetFutureYear > base.year)
+      require(estimate.targetFutureYear > base.year)
+      regime.failIfInvalid(estimate.targetFutureYear)
 
       override val name =
-        s"${base.name}-estimatedFor-${inflation.targetFutureYear.getValue}"
+        s"${base.name}-estimatedFor-${estimate.targetFutureYear.getValue}"
 
       override val standardDeduction: Money =
-        base.standardDeduction mul inflation.factor(base.year)
+        base.standardDeduction mul estimate.factor(base.year)
 
       override val personalExemptionDeduction: Money =
-        base.personalExemptionDeduction mul inflation.factor(base.year)
+        base.personalExemptionDeduction mul estimate.factor(base.year)
 
       override val ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
-        base.ordinaryIncomeBrackets.inflatedBy(inflation.factor(base.year))
+        base.ordinaryIncomeBrackets.inflatedBy(estimate.factor(base.year))
 
       override val qualifiedIncomeBrackets: QualifiedIncomeBrackets =
-        base.qualifiedIncomeBrackets.inflatedBy(inflation.factor(base.year))
+        base.qualifiedIncomeBrackets.inflatedBy(estimate.factor(base.year))
     }
 
 end BoundRegime
