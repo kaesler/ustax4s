@@ -141,3 +141,13 @@ class OrdinaryIncomeBracketsSpec
 
       assertEquals(brackets.taxDue(taxableIncome), expectedTax)
   }
+
+  test("inflated brackets incur lower tax for same income") {
+    forAll { (brackets: OrdinaryIncomeBrackets, income: Money) =>
+      val inflatedBrackets = brackets.inflatedBy(1.2)
+      val baseTaxDue       = brackets.taxDue(income)
+      val inflatedTaxDue   = inflatedBrackets.taxDue(income)
+      inflatedTaxDue <= baseTaxDue
+    }
+  }
+end OrdinaryIncomeBracketsSpec

@@ -144,6 +144,11 @@ final case class OrdinaryIncomeBrackets(
   def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
 
+  def endOfLowestBracket: Money =
+    bracketStarts.keySet.toList.sorted.apply(1)
+
+  def startOfTopBracket: Money = bracketStarts.keySet.toList.max
+
 object OrdinaryIncomeBrackets:
 
   def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
