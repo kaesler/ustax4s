@@ -12,6 +12,8 @@ sealed trait Regime:
 
   def name: String
 
+  def lastYearKnown: Year
+
   def standardDeduction(
     year: Year,
     filingStatus: FilingStatus,
@@ -73,6 +75,8 @@ case object Trump extends Regime:
   import Regime.*
 
   override val name = "Trump"
+
+  override val lastYearKnown: Year = Year.of(2021)
 
   override def personalExemptionDeduction(
     year: Year,
@@ -207,6 +211,8 @@ case object NonTrump extends Regime {
   import Regime.*
 
   override val name = "NonTrump"
+
+  override val lastYearKnown: Year = Year.of(2017)
 
   override def standardDeduction(
     year: Year,
