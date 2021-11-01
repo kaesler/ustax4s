@@ -36,14 +36,14 @@ object StateMATaxCalculator:
       dependentExceptions(dependents)
 
   // Note: Social Security is not taxed.
-  private def rate(year: Year): StateTaxRate =
+  private def rate(year: Year): StateMATaxRate =
     val r = year.getValue match
       case 2018          => 0.051
       case 2019          => 0.0505
       case 2020          => 0.05
       case x if x > 2020 => 0.05
       case x if x < 2018 => 0.051
-    StateTaxRate.unsafeFrom(r)
+    StateMATaxRate.unsafeFrom(r)
 
   @tailrec
   private def personalExemption(
