@@ -10,6 +10,7 @@ object TestDataGeneration:
 
   private val count = 2000
 
+  // TODO: vary year (2021-2055) and regime (Trump NonTrump)
   final case class TestCaseInputs(
     filingStatus: FilingStatus,
     dependents: Int,

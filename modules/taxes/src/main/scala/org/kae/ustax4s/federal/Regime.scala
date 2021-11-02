@@ -228,7 +228,7 @@ case object NonTrump extends Regime {
   override def personalExemptionDeduction(
     year: Year,
     personalExemptions: Int
-  ): Money = personalExemption(year) mul personalExemptions
+  ): Money = perPersonExemption(year) mul personalExemptions
 
   override def ordinaryIncomeBrackets(
     year: Year,
@@ -301,7 +301,7 @@ case object NonTrump extends Regime {
   override def failIfInvalid(year: Year): Unit =
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
 
-  private def personalExemption(year: Year): Money = year.getValue match
+  private def perPersonExemption(year: Year): Money = year.getValue match
     // TODO: Index for inflation?
     case 2017 => 4050
     case 2016 => 4050
