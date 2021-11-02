@@ -6,7 +6,7 @@ import org.kae.ustax4s.money.Money
 final case class FederalTaxResults(
   ssRelevantOtherIncome: Money,
   taxableSocialSecurity: Money,
-  personalExceptionDeduction: Money,
+  personalExemptionDeduction: Money,
   standardDeduction: Money,
   netDeduction: Money,
   taxableOrdinaryIncome: Money,
@@ -22,7 +22,7 @@ object FederalTaxResults:
     import r.*
     b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
     b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
-    b.append(s"  personalExceptionDeduction: $personalExceptionDeduction\n")
+    b.append(s"  personalExceptionDeduction: $personalExemptionDeduction\n")
     b.append(s"  standardDeduction: $standardDeduction\n")
     b.append(s"  netDeduction: $netDeduction\n")
     b.append(s"  taxableOrdinaryIncome: $taxableOrdinaryIncome\n")

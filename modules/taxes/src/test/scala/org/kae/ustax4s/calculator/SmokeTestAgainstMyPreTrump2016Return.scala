@@ -56,7 +56,7 @@ class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
     println(results.show)
 
     assert(
-      results.personalExceptionDeduction == 8100.asMoney
+      results.personalExemptionDeduction == 8100.asMoney
     )
     assert(
       results.netDeduction == 39140.asMoney
