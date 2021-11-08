@@ -40,11 +40,11 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
     val taxableOrdinaryIncome = taxableIncome subp qualifiedDividends
     val qualifiedIncome       = qualifiedDividends
 
-    println(s"Total Income:          $totalIncome")
-    println(s"AGI:                   $adjustedGrossIncome")
-    println(s"taxableIncome:         $taxableIncome")
-    println(s"taxableOrdinaryIncome: $taxableOrdinaryIncome")
-    println(s"qualifiedIncome:       $qualifiedIncome")
+//    println(s"Total Income:          $totalIncome")
+//    println(s"AGI:                   $adjustedGrossIncome")
+//    println(s"taxableIncome:         $taxableIncome")
+//    println(s"taxableOrdinaryIncome: $taxableOrdinaryIncome")
+//    println(s"qualifiedIncome:       $qualifiedIncome")
 
     val results = boundRegime.calculator
       .federalTaxResults(
@@ -53,8 +53,8 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
         qualifiedIncome,
         itemizedDeductions
       )
-    println("")
-    println(results.show)
+    // println("")
+    // println(results.show)
 
     assert(
       results.personalExemptionDeduction == 8100.asMoney
