@@ -20,10 +20,7 @@ sealed trait Regime:
     birthDate: LocalDate
   ): Money
 
-  def personalExemptionDeduction(
-    year: Year,
-    personalExemptions: Int
-  ): Money
+  def perPersonExemption(year: Year): Money
 
   def ordinaryIncomeBrackets(
     year: Year,
@@ -77,11 +74,6 @@ case object Trump extends Regime:
   override val name = "Trump"
 
   override val lastYearKnown: Year = Year.of(2021)
-
-  override def personalExemptionDeduction(
-    year: Year,
-    personalExemptions: Int
-  ): Money = 0
 
   override def standardDeduction(
     year: Year,
@@ -186,6 +178,8 @@ case object Trump extends Regime:
     if year.getValue < FirstYearTrumpRegimeRequired then throw RegimeInvalidForYear(this, year)
     else ()
 
+  override def perPersonExemption(year: Year): Money = 0
+
   @tailrec
   private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
     (year.getValue, filingStatus) match
@@ -224,11 +218,6 @@ case object NonTrump extends Regime {
     stdDeductionUnadjustedForAge(year, filingStatus) +
       (if isAge65OrOlder(birthDate, year) then 1350 else 0)
   }
-
-  override def personalExemptionDeduction(
-    year: Year,
-    personalExemptions: Int
-  ): Money = perPersonExemption(year) mul personalExemptions
 
   override def ordinaryIncomeBrackets(
     year: Year,
@@ -301,7 +290,7 @@ case object NonTrump extends Regime {
   override def failIfInvalid(year: Year): Unit =
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
 
-  private def perPersonExemption(year: Year): Money = year.getValue match
+  override def perPersonExemption(year: Year): Money = year.getValue match
     // TODO: Index for inflation?
     case 2017 => 4050
     case 2016 => 4050

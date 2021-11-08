@@ -23,11 +23,20 @@ class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
   private val hsaDeduction         = 0.asMoney
   private val itemizedDeductions   = 31040.asMoney
 
+  private val boundRegime = BoundRegime
+    .create(
+      regime,
+      year,
+      filingStatus,
+      Kevin.birthDate,
+      personalExemptions
+    )
+
   test("Form1040 totalTax should match what I filed") {
     val totalIncome         = wages + ordinaryDividends subp shortTermCapitalLoss
     val adjustedGrossIncome = totalIncome subp hsaDeduction
-    val taxableIncome = adjustedGrossIncome subp itemizedDeductions subp regime
-      .personalExemptionDeduction(year, personalExemptions)
+    val taxableIncome = adjustedGrossIncome subp itemizedDeductions subp
+      boundRegime.personalExemptionDeduction
     val taxableOrdinaryIncome = taxableIncome subp qualifiedDividends
     val qualifiedIncome       = qualifiedDividends
 
@@ -37,15 +46,7 @@ class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
     println(s"taxableOrdinaryIncome: $taxableOrdinaryIncome")
     println(s"qualifiedIncome:       $qualifiedIncome")
 
-    val results = BoundRegime
-      .create(
-        regime,
-        year,
-        filingStatus,
-        Kevin.birthDate,
-        personalExemptions
-      )
-      .calculator
+    val results = boundRegime.calculator
       .federalTaxResults(
         socSec = 0,
         ordinaryIncomeNonSS = adjustedGrossIncome subp qualifiedIncome,

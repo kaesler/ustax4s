@@ -12,13 +12,15 @@ trait BoundRegime(
   personalExemptions: Int
 ):
   def standardDeduction: Money
-  def personalExemptionDeduction: Money
+  def perPersonExemption: Money
   def ordinaryIncomeBrackets: OrdinaryIncomeBrackets
   def qualifiedIncomeBrackets: QualifiedIncomeBrackets
 
   def name: String = regime.name
 
-  def netDeduction(itemizedDeductions: Money): Money =
+  final def personalExemptionDeduction: Money = perPersonExemption mul personalExemptions
+
+  final def netDeduction(itemizedDeductions: Money): Money =
     Money.max(
       standardDeduction,
       personalExemptionDeduction + itemizedDeductions
@@ -87,8 +89,8 @@ trait BoundRegime(
       override val standardDeduction: Money =
         base.standardDeduction mul estimate.factor(base.year)
 
-      override val personalExemptionDeduction: Money =
-        base.personalExemptionDeduction mul estimate.factor(base.year)
+      override val perPersonExemption: Money =
+        base.perPersonExemption mul estimate.factor(base.year)
 
       override val ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
         base.ordinaryIncomeBrackets.inflatedBy(estimate.factor(base.year))
@@ -113,8 +115,7 @@ object BoundRegime:
       override def standardDeduction: Money =
         regime.standardDeduction(this.year, filingStatus, birthDate)
 
-      override def personalExemptionDeduction: Money =
-        regime.personalExemptionDeduction(this.year, personalExemptions)
+      override val perPersonExemption: Money = regime.perPersonExemption(this.year)
 
       override def ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
         regime.ordinaryIncomeBrackets(this.year, filingStatus)
