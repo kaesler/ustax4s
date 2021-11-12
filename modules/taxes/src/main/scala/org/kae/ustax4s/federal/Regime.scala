@@ -45,6 +45,14 @@ sealed trait Regime:
 end Regime
 
 object Regime:
+
+  val values: Set[Regime] = Set(NonTrump, Trump)
+
+  def parse(s: String): Option[Regime] = values.find(_.name == s)
+  def unsafeParse(s: String): Regime = parse(s).getOrElse(
+    throw new RuntimeException(s"No such regime: $s")
+  )
+
   val FirstYearTrumpRegimeRequired = 2018
   val LastYearTrumpRegimeRequired  = 2025
   val YearsTrumpTaxRegimeRequired: Set[Year] =

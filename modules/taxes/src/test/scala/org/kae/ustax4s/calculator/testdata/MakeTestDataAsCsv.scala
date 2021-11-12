@@ -1,42 +1,34 @@
 package org.kae.ustax4s.calculator.testdata
 
-import java.time.Year
-import org.kae.ustax4s.federal.Trump
 import org.kae.ustax4s.calculator.TaxCalculator
-import org.kae.ustax4s.{FilingStatus, kevin}
 
 object MakeTestDataAsCsv extends App:
   import TestDataGeneration.*
 
-  private val regime             = Trump
-  private val year               = Year.of(2021)
-  private val personalExemptions = 0
-  private val itemizedDeductions = 0
-
   println(
-    "filingStatus,dependents,socSec,ordinaryIncomeNonSS,qualifiedIncome,federalTaxDue,stateTaxDue"
+    "regime,year,birthDate,filingStatus,dependents,socSec,ordinaryIncomeNonSS,qualifiedIncome,itemizedDeductions,federalTaxDue,stateTaxDue"
   )
-  testCases.foreach { case TestCaseInputs(fs, ds, ss, oi, qi) =>
+  testCases.foreach { case tc @ TestCaseInputs(regime, year, bd, fs, ds, ss, oi, qi, itm) =>
     val federalTaxDue = TaxCalculator.federalTaxDue(
-      regime,
+      regime = regime,
       year = year,
-      birthDate = kevin.Kevin.birthDate,
+      birthDate = bd,
       filingStatus = fs,
-      personalExemptions,
+      tc.personalExemptions,
       socSec = ss,
       ordinaryIncomeNonSS = oi,
       qualifiedIncome = qi,
-      itemizedDeductions
+      itemizedDeductions = itm
     )
     val stateTaxDue = TaxCalculator.stateTaxDue(
       year = year,
-      birthDate = kevin.Kevin.birthDate,
+      birthDate = bd,
       filingStatus = fs,
       dependents = ds,
       oi + qi
     )
     println(
-      s"${fs.entryName},$ds,$ss,$oi,$qi,$federalTaxDue,$stateTaxDue"
+      s"${regime.name},${year.getValue},${bd.toString},${fs.entryName},$ds,$ss,$oi,$qi,$itm,$federalTaxDue,$stateTaxDue"
     )
   }
 

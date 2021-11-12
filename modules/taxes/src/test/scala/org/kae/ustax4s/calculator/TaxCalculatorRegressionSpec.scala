@@ -5,6 +5,6 @@ import org.kae.ustax4s.calculator.testdata.RegressionTestCase
 
 class TaxCalculatorRegressionSpec extends FunSuite {
   test("Regression tests pass") {
-    RegressionTestCase.all.foreach(_.run)
+    RegressionTestCase.all.foreach(_.run())
   }
 }
