@@ -2,7 +2,13 @@ package org.kae.ustax4s.calculator
 
 import java.time.Year
 import org.kae.ustax4s.federal.forms.Form1040
-import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets, QualifiedIncomeBrackets, Regime, Trump}
+import org.kae.ustax4s.federal.{
+  BoundRegime,
+  OrdinaryIncomeBrackets,
+  QualifiedIncomeBrackets,
+  Regime,
+  Trump
+}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 
@@ -37,13 +43,20 @@ object MyTaxCalculator:
   ): Money =
     val filingStatus = Kevin.filingStatus(year)
     val regime       = Trump
+    val boundRegime = BoundRegime.create(
+      regime,
+      year,
+      filingStatus,
+      Kevin.birthDate,
+      Kevin.personalExemptions(year)
+    )
 
     val form = Form1040(
       filingStatus,
       taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
-      standardDeduction = regime.standardDeduction(year, filingStatus, Kevin.birthDate),
+      standardDeduction = boundRegime.standardDeduction,
       schedule1 = None,
       schedule3 = None,
       schedule4 = None,

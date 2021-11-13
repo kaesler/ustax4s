@@ -62,13 +62,20 @@ object TaxCalculator:
     verbose: Boolean
   ): Money =
     val regime = Trump
+    val boundRegime = BoundRegime.create(
+      regime,
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions = 2
+    )
 
     val form = Form1040(
       filingStatus,
       taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
-      standardDeduction = regime.standardDeduction(year, filingStatus, birthDate),
+      standardDeduction = boundRegime.standardDeduction,
       schedule1 = None,
       schedule3 = None,
       schedule4 = None,

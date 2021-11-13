@@ -14,11 +14,12 @@ sealed trait Regime:
 
   def lastYearKnown: Year
 
-  def standardDeduction(
+  def unadjustedStandardDeduction(
     year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate
+    filingStatus: FilingStatus
   ): Money
+  def adjustmentWhenOver65(year: Year): Money
+  def adjustmentWhenSingle(year: Year): Money
 
   def perPersonExemption(year: Year): Money
 
@@ -60,6 +61,7 @@ object Regime:
       .map(Year.of)
       .toSet
 
+  // TODO: does this now belong on BoundRegime?
   def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
     birthDate.isBefore(
       LocalDate
@@ -82,16 +84,6 @@ case object Trump extends Regime:
   override val name = "Trump"
 
   override val lastYearKnown: Year = Year.of(2021)
-
-  override def standardDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate
-  ): Money =
-    failIfInvalid(year)
-    stdDeductionUnadjustedForAge(year, filingStatus) +
-      // TODO: should the 1350 be inflated, if we go that way?
-      (if isAge65OrOlder(birthDate, year) then 1350 else 0)
 
   @tailrec
   override def ordinaryIncomeBrackets(
@@ -189,13 +181,12 @@ case object Trump extends Regime:
   override def perPersonExemption(year: Year): Money = 0
 
   @tailrec
-  private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
+  override def unadjustedStandardDeduction(year: Year, filingStatus: FilingStatus): Money =
     (year.getValue, filingStatus) match
 
       // Note: for now assume 2021 rates in later years
-      // TODO: Should I just inflate by 2% per year?
       case (year, fs) if year > 2021 =>
-        stdDeductionUnadjustedForAge(Year.of(2021), fs)
+        unadjustedStandardDeduction(Year.of(2021), fs)
 
       case (2021, HeadOfHousehold) => 18800
       case (2020, HeadOfHousehold) => 18650
@@ -208,24 +199,32 @@ case object Trump extends Regime:
       case (2018, Single) => 12000
 
       case _ => throw ustax4s.NotYetImplemented(year)
+    end match
 
-case object NonTrump extends Regime {
+  override def adjustmentWhenOver65(year: Year): Money =
+    year.getValue match
+      case 2021 => 1350
+      case 2020 => 1300
+      case 2019 => 1300
+      case 2018 => 1300
+      case _    => throw ustax4s.NotYetImplemented(year)
+    end match
+
+  override def adjustmentWhenSingle(year: Year): Money =
+    year.getValue match
+      case 2021 => 350
+      case 2020 => 350
+      case 2019 => 350
+      case 2018 => 300
+      case _    => throw ustax4s.NotYetImplemented(year)
+    end match
+
+case object NonTrump extends Regime:
   import Regime.*
 
   override val name = "NonTrump"
 
   override val lastYearKnown: Year = Year.of(2017)
-
-  override def standardDeduction(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate
-  ): Money = {
-    failIfInvalid(year)
-    // TODO: Did this adjustment apply pre-Trump?
-    stdDeductionUnadjustedForAge(year, filingStatus) +
-      (if isAge65OrOlder(birthDate, year) then 1350 else 0)
-  }
 
   override def ordinaryIncomeBrackets(
     year: Year,
@@ -299,12 +298,11 @@ case object NonTrump extends Regime {
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
 
   override def perPersonExemption(year: Year): Money = year.getValue match
-    // TODO: Index for inflation?
     case 2017 => 4050
     case 2016 => 4050
-    case _    => 4050
+    case _    => throw ustax4s.NotYetImplemented(year)
 
-  private def stdDeductionUnadjustedForAge(year: Year, filingStatus: FilingStatus): Money =
+  override def unadjustedStandardDeduction(year: Year, filingStatus: FilingStatus): Money =
     (year.getValue, filingStatus) match
 
       case (2017, HeadOfHousehold) => 9350
@@ -314,6 +312,20 @@ case object NonTrump extends Regime {
       case (2016, Single)          => 6300
 
       case _ => throw ustax4s.NotYetImplemented(year)
-
     end match
-}
+
+  override def adjustmentWhenOver65(year: Year): Money =
+    year.getValue match
+      case 2017 => 1250
+      case 2016 => 1250
+      case _    => throw ustax4s.NotYetImplemented(year)
+    end match
+
+  override def adjustmentWhenSingle(year: Year): Money =
+    year.getValue match
+      case 2017 => 300
+      case 2016 => 300
+      case _    => throw ustax4s.NotYetImplemented(year)
+    end match
+
+end NonTrump

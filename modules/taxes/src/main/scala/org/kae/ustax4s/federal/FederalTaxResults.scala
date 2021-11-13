@@ -7,6 +7,9 @@ final case class FederalTaxResults(
   ssRelevantOtherIncome: Money,
   taxableSocialSecurity: Money,
   personalExemptionDeduction: Money,
+  unadjustedStandardDeduction: Money,
+  adjustmentWhenOver65: Money,
+  adjustmentWhenOldAndSingle: Money,
   standardDeduction: Money,
   netDeduction: Money,
   taxableOrdinaryIncome: Money,
@@ -23,6 +26,9 @@ object FederalTaxResults:
     b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")
     b.append(s"  taxableSocSec: $taxableSocialSecurity\n")
     b.append(s"  personalExceptionDeduction: $personalExemptionDeduction\n")
+    b.append(s"  unadjustedStandardDeduction: $unadjustedStandardDeduction\n")
+    b.append(s"  adjustmentWhenOver65: $adjustmentWhenOver65\n")
+    b.append(s"  adjustmentWhenOldAndSingle: $adjustmentWhenOldAndSingle\n")
     b.append(s"  standardDeduction: $standardDeduction\n")
     b.append(s"  netDeduction: $netDeduction\n")
     b.append(s"  taxableOrdinaryIncome: $taxableOrdinaryIncome\n")

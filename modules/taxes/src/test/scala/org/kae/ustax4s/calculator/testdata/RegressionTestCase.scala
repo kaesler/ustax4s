@@ -6,7 +6,7 @@ import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
-import org.kae.ustax4s.federal.{Regime, Trump}
+import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
 import org.kae.ustax4s.money.Money
 import scala.io.Source
 
@@ -27,6 +27,35 @@ final case class RegressionTestCase(
   def massachusettsGrossIncome: Money = ordinaryIncomeNonSS + qualifiedIncome
 
   def run(): Unit =
+    if federalTaxDue != TaxCalculator.federalTaxDue(
+        regime,
+        year,
+        birthDate,
+        filingStatus,
+        personalExemptions,
+        socSec,
+        ordinaryIncomeNonSS,
+        qualifiedIncome,
+        itemizedDeductions
+      )
+    then {
+      val results = BoundRegime
+        .create(
+          regime,
+          year,
+          filingStatus,
+          birthDate,
+          personalExemptions
+        )
+        .calculator
+        .federalTaxResults(
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
+      println(results.show)
+    }
     assertEquals(
       TaxCalculator.federalTaxDue(
         regime,

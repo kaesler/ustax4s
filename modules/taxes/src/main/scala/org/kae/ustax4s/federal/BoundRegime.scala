@@ -11,14 +11,30 @@ trait BoundRegime(
   birthDate: LocalDate,
   personalExemptions: Int
 ):
-  def standardDeduction: Money
+  def unadjustedStandardDeduction: Money
+  def adjustmentWhenOver65: Money
+  def adjustmentWhenOldAndSingle: Money
+
   def perPersonExemption: Money
   def ordinaryIncomeBrackets: OrdinaryIncomeBrackets
   def qualifiedIncomeBrackets: QualifiedIncomeBrackets
 
   def name: String = regime.name
 
-  final def personalExemptionDeduction: Money = perPersonExemption mul personalExemptions
+  final def standardDeduction: Money =
+    unadjustedStandardDeduction +
+      (
+        if Regime.isAge65OrOlder(birthDate, year) then
+          adjustmentWhenOver65 +
+            (
+              if filingStatus.isSingle then adjustmentWhenOldAndSingle
+              else 0
+            )
+        else 0
+      )
+
+  final def personalExemptionDeduction: Money =
+    perPersonExemption mul personalExemptions
 
   final def netDeduction(itemizedDeductions: Money): Money =
     Money.max(
@@ -58,6 +74,9 @@ trait BoundRegime(
         ssRelevantOtherIncome,
         taxableSocialSecurity,
         personalExemptionDeduction,
+        unadjustedStandardDeduction,
+        adjustmentWhenOver65,
+        adjustmentWhenOldAndSingle,
         standardDeduction,
         netDeduction(itemizedDeductions),
         taxableOrdinaryIncome,
@@ -86,8 +105,17 @@ trait BoundRegime(
       override val name =
         s"${base.name}-estimatedFor-${estimate.targetFutureYear.getValue}"
 
-      override val standardDeduction: Money =
-        base.standardDeduction mul estimate.factor(base.year)
+      // TODO: split this into:
+      //   - basic stdDed
+      //   - over65Adjustment
+      //   - unmarriedAdjustment
+      // and inflate each.
+      override def unadjustedStandardDeduction: Money =
+        base.unadjustedStandardDeduction mul estimate.factor(base.year)
+      override def adjustmentWhenOver65: Money =
+        base.adjustmentWhenOver65 mul estimate.factor(base.year)
+      override def adjustmentWhenOldAndSingle: Money =
+        base.adjustmentWhenOldAndSingle mul estimate.factor(base.year)
 
       override val perPersonExemption: Money =
         base.perPersonExemption mul estimate.factor(base.year)
@@ -112,8 +140,12 @@ object BoundRegime:
   ): BoundRegime =
     new BoundRegime(regime, year, filingStatus, birthDate, personalExemptions) {
 
-      override def standardDeduction: Money =
-        regime.standardDeduction(this.year, filingStatus, birthDate)
+      override def unadjustedStandardDeduction: Money =
+        regime.unadjustedStandardDeduction(this.year, filingStatus)
+      override def adjustmentWhenOver65: Money =
+        regime.adjustmentWhenOver65(this.year)
+      override def adjustmentWhenOldAndSingle: Money =
+        regime.adjustmentWhenSingle(this.year)
 
       override val perPersonExemption: Money = regime.perPersonExemption(this.year)
 
