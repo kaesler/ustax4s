@@ -25,11 +25,12 @@ object MakeTestDataForHaskell extends App:
       dependents = deps,
       massachusettsGrossIncome = oi + qi
     )
+    val bdString = s"fromGregorian ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth}"
     println(
-      s"  TestCase { regime = ${regime.name}, year = ${year.getValue}, birthDate = $bd, dependents = $deps, filingStatus = $fs, socSec = $ss, " +
+      s"  TestCase { regime = ${regime.name}, year = ${year.getValue}, birthDate = $bdString, dependents = $deps, filingStatus = $fs, socSec = $ss, " +
         s"ordinaryIncomeNonSS = $oi, qualifiedIncome = $qi, " +
-        s"itemizedDeductions: $itm, " +
-        s"expectedFederalTax: $federalTaxDue, expectedStateTax = $stateTaxDue },"
+        s"itemizedDeductions = $itm, " +
+        s"expectedFederalTax = $federalTaxDue, expectedStateTax = $stateTaxDue },"
     )
   }
 
