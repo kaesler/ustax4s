@@ -19,7 +19,7 @@ sealed trait Regime:
     filingStatus: FilingStatus
   ): Money
   def adjustmentWhenOver65(year: Year): Money
-  def adjustmentWhenSingle(year: Year): Money
+  def adjustmentWhenOver65AndSingle(year: Year): Money
 
   def perPersonExemption(year: Year): Money
 
@@ -210,7 +210,7 @@ case object Trump extends Regime:
       case _    => throw ustax4s.NotYetImplemented(year)
     end match
 
-  override def adjustmentWhenSingle(year: Year): Money =
+  override def adjustmentWhenOver65AndSingle(year: Year): Money =
     year.getValue match
       case 2021 => 350
       case 2020 => 350
@@ -321,7 +321,7 @@ case object NonTrump extends Regime:
       case _    => throw ustax4s.NotYetImplemented(year)
     end match
 
-  override def adjustmentWhenSingle(year: Year): Money =
+  override def adjustmentWhenOver65AndSingle(year: Year): Money =
     year.getValue match
       case 2017 => 300
       case 2016 => 300

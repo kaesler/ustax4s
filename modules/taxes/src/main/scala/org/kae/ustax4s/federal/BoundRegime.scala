@@ -13,7 +13,7 @@ trait BoundRegime(
 ):
   def unadjustedStandardDeduction: Money
   def adjustmentWhenOver65: Money
-  def adjustmentWhenOldAndSingle: Money
+  def adjustmentWhenOver65AndSingle: Money
 
   def perPersonExemption: Money
   def ordinaryIncomeBrackets: OrdinaryIncomeBrackets
@@ -27,7 +27,7 @@ trait BoundRegime(
         if Regime.isAge65OrOlder(birthDate, year) then
           adjustmentWhenOver65 +
             (
-              if filingStatus.isSingle then adjustmentWhenOldAndSingle
+              if filingStatus.isSingle then adjustmentWhenOver65AndSingle
               else 0
             )
         else 0
@@ -76,7 +76,7 @@ trait BoundRegime(
         personalExemptionDeduction,
         unadjustedStandardDeduction,
         adjustmentWhenOver65,
-        adjustmentWhenOldAndSingle,
+        adjustmentWhenOver65AndSingle,
         standardDeduction,
         netDeduction(itemizedDeductions),
         taxableOrdinaryIncome,
@@ -114,8 +114,8 @@ trait BoundRegime(
         base.unadjustedStandardDeduction mul estimate.factor(base.year)
       override def adjustmentWhenOver65: Money =
         base.adjustmentWhenOver65 mul estimate.factor(base.year)
-      override def adjustmentWhenOldAndSingle: Money =
-        base.adjustmentWhenOldAndSingle mul estimate.factor(base.year)
+      override def adjustmentWhenOver65AndSingle: Money =
+        base.adjustmentWhenOver65AndSingle mul estimate.factor(base.year)
 
       override val perPersonExemption: Money =
         base.perPersonExemption mul estimate.factor(base.year)
@@ -144,8 +144,8 @@ object BoundRegime:
         regime.unadjustedStandardDeduction(this.year, filingStatus)
       override def adjustmentWhenOver65: Money =
         regime.adjustmentWhenOver65(this.year)
-      override def adjustmentWhenOldAndSingle: Money =
-        regime.adjustmentWhenSingle(this.year)
+      override def adjustmentWhenOver65AndSingle: Money =
+        regime.adjustmentWhenOver65AndSingle(this.year)
 
       override val perPersonExemption: Money = regime.perPersonExemption(this.year)
 
