@@ -27,7 +27,8 @@ lazy val taxes = (project in file("modules/taxes"))
       "-deprecation",
       "-Xfatal-warnings",
       "-unchecked",
-      "-language:implicitConversions"
+      "-language:implicitConversions",
+      "-source:future"
     ),
     testFrameworks += new TestFramework("munit.Framework"),
     Test / parallelExecution := false
