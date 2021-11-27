@@ -152,8 +152,26 @@ object QualifiedIncomeBrackets:
   @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
     (year.getValue, status) match
 
-      // Note: for now assume 2021 rates into the future.
-      case (year, fs) if year > 2021 => of(Year.of(2021), fs)
+      // Note: for now assume 2022 rates into the future.
+      case (year, fs) if year > 2022 => of(Year.of(2022), fs)
+
+      case (2022, HeadOfHousehold) =>
+        create(
+          Map(
+            0      -> 0,
+            55800  -> 15,
+            488500 -> 20
+          )
+        )
+
+      case (2022, Single) =>
+        create(
+          Map(
+            0      -> 0,
+            41675  -> 15,
+            459750 -> 20
+          )
+        )
 
       case (2021, HeadOfHousehold) =>
         create(
@@ -163,6 +181,7 @@ object QualifiedIncomeBrackets:
             473750 -> 20
           )
         )
+
       case (2021, Single) =>
         create(
           Map(

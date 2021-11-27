@@ -83,7 +83,7 @@ case object Trump extends Regime:
 
   override val name = "Trump"
 
-  override val lastYearKnown: Year = Year.of(2021)
+  override val lastYearKnown: Year = Year.of(2022)
 
   @tailrec
   override def ordinaryIncomeBrackets(
@@ -93,11 +93,37 @@ case object Trump extends Regime:
     failIfInvalid(year)
     (year.getValue, filingStatus) match
 
-      // Note: for now assume 2021 rates in later years.
+      // Note: for now assume 2022 rates in later years.
       // TODO: should I inflate them instead ? Closer to what
       // MaxiFi would do?
-      case (year, fs) if year > 2021 =>
-        ordinaryIncomeBrackets(Year.of(2021), fs)
+      case (year, fs) if year > 2022 =>
+        ordinaryIncomeBrackets(Year.of(2022), fs)
+
+      case (2022, HeadOfHousehold) =>
+        OrdinaryIncomeBrackets.create(
+          Map(
+            0      -> 10,
+            14650  -> 12,
+            55900  -> 22,
+            89050  -> 24,
+            170050 -> 32,
+            215950 -> 35,
+            539900 -> 37
+          ).view.mapValues(_.toDouble).toMap
+        )
+
+      case (2022, Single) =>
+        OrdinaryIncomeBrackets.create(
+          Map(
+            0      -> 10,
+            10275  -> 12,
+            41775  -> 22,
+            89075  -> 24,
+            170050 -> 32,
+            215950 -> 35,
+            539900 -> 37
+          ).view.mapValues(_.toDouble).toMap
+        )
 
       case (2021, HeadOfHousehold) =>
         OrdinaryIncomeBrackets.create(
@@ -185,14 +211,16 @@ case object Trump extends Regime:
     (year.getValue, filingStatus) match
 
       // Note: for now assume 2021 rates in later years
-      case (year, fs) if year > 2021 =>
-        unadjustedStandardDeduction(Year.of(2021), fs)
+      case (year, fs) if year > 2022 =>
+        unadjustedStandardDeduction(Year.of(2022), fs)
 
+      case (2022, HeadOfHousehold) => 19400
       case (2021, HeadOfHousehold) => 18800
       case (2020, HeadOfHousehold) => 18650
       case (2019, HeadOfHousehold) => 18350
       case (2018, HeadOfHousehold) => 18000
 
+      case (2022, Single) => 12950
       case (2021, Single) => 12550
       case (2020, Single) => 12400
       case (2019, Single) => 12200
@@ -203,6 +231,7 @@ case object Trump extends Regime:
 
   override def adjustmentWhenOver65(year: Year): Money =
     year.getValue match
+      case 2022 => 1400
       case 2021 => 1350
       case 2020 => 1300
       case 2019 => 1300
@@ -212,6 +241,7 @@ case object Trump extends Regime:
 
   override def adjustmentWhenOver65AndSingle(year: Year): Money =
     year.getValue match
+      case 2022 => 350
       case 2021 => 350
       case 2020 => 350
       case 2019 => 350
