@@ -253,16 +253,19 @@ case object Trump extends Regime:
         unadjustedStandardDeduction(Year.of(2022), fs)
 
       case (2022, HeadOfHousehold) => 19400
-      case (2021, HeadOfHousehold) => 18800
-      case (2020, HeadOfHousehold) => 18650
-      case (2019, HeadOfHousehold) => 18350
-      case (2018, HeadOfHousehold) => 18000
+      case (2022, Single)          => 12950
 
-      case (2022, Single) => 12950
-      case (2021, Single) => 12550
-      case (2020, Single) => 12400
-      case (2019, Single) => 12200
-      case (2018, Single) => 12000
+      case (2021, HeadOfHousehold) => 18800
+      case (2021, Single)          => 12550
+
+      case (2020, HeadOfHousehold) => 18650
+      case (2020, Single)          => 12400
+
+      case (2019, HeadOfHousehold) => 18350
+      case (2019, Single)          => 12200
+
+      case (2018, HeadOfHousehold) => 18000
+      case (2018, Single)          => 12000
 
       case _ => throw ustax4s.NotYetImplemented(year)
     end match

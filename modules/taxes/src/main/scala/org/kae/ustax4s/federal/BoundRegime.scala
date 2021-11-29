@@ -21,6 +21,7 @@ trait BoundRegime(
 
   def name: String = regime.name
 
+  // TODO: needs property spec
   final def standardDeduction: Money =
     unadjustedStandardDeduction +
       (
@@ -33,15 +34,20 @@ trait BoundRegime(
         else 0
       )
 
+  // TODO: needs property spec
   final def personalExemptionDeduction: Money =
     perPersonExemption mul personalExemptions
 
+  // TODO: needs property spec
+  // netDed >= all of ped, stdDm, item
   final def netDeduction(itemizedDeductions: Money): Money =
-    Money.max(
-      standardDeduction,
-      personalExemptionDeduction + itemizedDeductions
-    )
+    personalExemptionDeduction +
+      Money.max(
+        standardDeduction,
+        itemizedDeductions
+      )
 
+  // TODO: needs property spec
   def calculator: FederalTaxCalculator =
     (
       socSec: Money,
