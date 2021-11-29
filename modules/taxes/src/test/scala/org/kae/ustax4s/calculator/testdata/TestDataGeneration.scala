@@ -10,7 +10,7 @@ import org.scalacheck.Gen
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
 object TestDataGeneration:
 
-  private val count = 2000
+  private val count = 4000
 
   // For now held constant.
   private val TheBirthDate = LocalDate.of(1955, 10, 2)
@@ -25,9 +25,9 @@ object TestDataGeneration:
     ordinaryIncomeNonSS: Money,
     qualifiedIncome: Money,
     itemizedDeductions: Money
-  ) {
+  ):
     def personalExemptions: Int = dependents + 1
-  }
+  end TestCaseInputs
 
   private val genTestCase: Gen[TestCaseInputs] =
     for
