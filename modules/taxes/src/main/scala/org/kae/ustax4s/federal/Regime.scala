@@ -163,6 +163,18 @@ case object Trump extends Regime:
             518400 -> 37
           ).view.mapValues(_.toDouble).toMap
         )
+      case (2020, Single) =>
+        OrdinaryIncomeBrackets.create(
+          Map(
+            0      -> 10,
+            9875   -> 12,
+            40125  -> 22,
+            85525  -> 24,
+            163300 -> 32,
+            207350 -> 35,
+            518400 -> 37
+          ).view.mapValues(_.toDouble).toMap
+        )
 
       case (2019, HeadOfHousehold) =>
         OrdinaryIncomeBrackets.create(
@@ -177,12 +189,38 @@ case object Trump extends Regime:
           ).view.mapValues(_.toDouble).toMap
         )
 
+      case (2019, Single) =>
+        OrdinaryIncomeBrackets.create(
+          Map(
+            0      -> 10,
+            9700   -> 12,
+            39475  -> 22,
+            84200  -> 24,
+            160725 -> 32,
+            204100 -> 35,
+            510300 -> 37
+          ).view.mapValues(_.toDouble).toMap
+        )
+
       case (2018, HeadOfHousehold) =>
         OrdinaryIncomeBrackets.create(
           Map(
             0      -> 10,
             13600  -> 12,
             51800  -> 22,
+            82500  -> 24,
+            157500 -> 32,
+            200000 -> 35,
+            500000 -> 37
+          ).view.mapValues(_.toDouble).toMap
+        )
+
+      case (2018, Single) =>
+        OrdinaryIncomeBrackets.create(
+          Map(
+            0      -> 10,
+            9525   -> 12,
+            38700  -> 22,
             82500  -> 24,
             157500 -> 32,
             200000 -> 35,

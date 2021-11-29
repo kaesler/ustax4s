@@ -2,10 +2,10 @@ package org.kae.ustax4s
 package federal
 
 import java.time.Year
-import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
+import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
 /** Calculates tax on qualified investment income,
@@ -190,6 +190,7 @@ object QualifiedIncomeBrackets:
             445850 -> 20
           )
         )
+
       case (2020, HeadOfHousehold) =>
         create(
           Map(
@@ -198,6 +199,16 @@ object QualifiedIncomeBrackets:
             469050 -> 20
           )
         )
+
+      case (2020, Single) =>
+        create(
+          Map(
+            0      -> 0,
+            40000  -> 15,
+            442450 -> 20
+          )
+        )
+
       case (2019, HeadOfHousehold) =>
         create(
           Map(
@@ -206,12 +217,31 @@ object QualifiedIncomeBrackets:
             461700 -> 20
           )
         )
+
+      case (2019, Single) =>
+        create(
+          Map(
+            0      -> 0,
+            39375  -> 15,
+            434550 -> 20
+          )
+        )
+
       case (2018, HeadOfHousehold) =>
         create(
           Map(
             0      -> 0,
             51700  -> 15,
             452400 -> 20
+          )
+        )
+
+      case (2018, Single) =>
+        create(
+          Map(
+            0      -> 0,
+            38600  -> 15,
+            425800 -> 20
           )
         )
 

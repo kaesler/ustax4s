@@ -64,6 +64,9 @@ object StateMATaxCalculator:
       case (2018, HeadOfHousehold) => 6800
       case (2018, Single)          => 4400
 
+      case (2017, HeadOfHousehold) => 6800
+      case (2017, Single)          => 4400
+
       case _ => throw NotYetImplemented(year)
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Money =
