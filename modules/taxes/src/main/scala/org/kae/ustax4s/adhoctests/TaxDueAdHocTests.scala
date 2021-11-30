@@ -11,22 +11,22 @@ import org.kae.ustax4s.money.MoneySyntax.*
 
 object TaxDueAdHocTests extends App:
 
-  val year = Year.of(2017)
+  val year = Year.of(2020)
   val results =
     BoundRegime
       .create(
-        regime = NonTrump,
+        regime = Trump,
         year = year,
-        filingStatus = FilingStatus.HeadOfHousehold,
+        filingStatus = FilingStatus.Single,
         birthDate = Kevin.birthDate,
         personalExemptions = 1
       )
       .calculator
       .federalTaxResults(
-        socSec = 21961,
-        ordinaryIncomeNonSS = 10169,
-        qualifiedIncome = 0,
-        itemizedDeductions = 0
+        socSec = 0,
+        ordinaryIncomeNonSS = 36024,
+        qualifiedIncome = 40828,
+        itemizedDeductions = 11222
       )
 
   println(results.show)

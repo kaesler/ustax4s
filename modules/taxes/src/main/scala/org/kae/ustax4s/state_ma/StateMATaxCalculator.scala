@@ -1,6 +1,7 @@
 package org.kae.ustax4s.state_ma
 
 import java.time.{LocalDate, Year}
+import org.kae.ustax4s.Age
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
@@ -70,11 +71,8 @@ object StateMATaxCalculator:
       case _ => throw NotYetImplemented(year)
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Money =
-    if isAge65OrOlder(birthDate, year) then 700
+    if Age.isAge65OrOlder(birthDate, year) then 700
     else 0
-
-  private def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
-    taxYear.getValue - birthDate.getYear >= 65
 
   private def dependentExceptions(dependents: Int): Money =
     Money(1000) mul dependents

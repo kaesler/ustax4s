@@ -61,14 +61,6 @@ object Regime:
       .map(Year.of)
       .toSet
 
-  // TODO: does this now belong on BoundRegime?
-  def isAge65OrOlder(birthDate: LocalDate, taxYear: Year): Boolean =
-    birthDate.isBefore(
-      LocalDate
-        .of(taxYear.getValue, Month.JANUARY.getValue, 2)
-        .minusYears(65)
-    )
-
   final case class RegimeInvalidForYear(
     regime: Regime,
     year: Year

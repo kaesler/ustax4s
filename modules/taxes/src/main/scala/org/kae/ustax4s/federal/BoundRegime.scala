@@ -1,6 +1,7 @@
 package org.kae.ustax4s.federal
 
 import java.time.{LocalDate, Year}
+import org.kae.ustax4s.Age
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.{FilingStatus, InflationEstimate}
 
@@ -25,7 +26,7 @@ trait BoundRegime(
   final def standardDeduction: Money =
     unadjustedStandardDeduction +
       (
-        if Regime.isAge65OrOlder(birthDate, year) then
+        if Age.isAge65OrOlder(birthDate, year) then
           adjustmentWhenOver65 +
             (
               if filingStatus.isSingle then adjustmentWhenOver65AndSingle

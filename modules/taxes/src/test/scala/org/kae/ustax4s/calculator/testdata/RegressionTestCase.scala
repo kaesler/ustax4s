@@ -39,6 +39,7 @@ final case class RegressionTestCase(
         itemizedDeductions
       )
     then {
+      println(this)
       val results = BoundRegime
         .create(
           regime,
