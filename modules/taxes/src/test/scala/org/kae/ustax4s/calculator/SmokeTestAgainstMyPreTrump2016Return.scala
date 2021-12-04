@@ -4,13 +4,13 @@ import cats.implicits.*
 import java.math.MathContext
 import java.time.Year
 import munit.FunSuite
-import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, NonTrump}
+import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, PreTrump}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.money.MoneySyntax.*
 
 class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
-  private val regime             = NonTrump
+  private val regime             = PreTrump
   private val year               = Year.of(2016)
   private val filingStatus       = Kevin.filingStatus(year)
   private val personalExemptions = 2

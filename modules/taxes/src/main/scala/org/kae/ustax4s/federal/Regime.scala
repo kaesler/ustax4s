@@ -47,7 +47,7 @@ end Regime
 
 object Regime:
 
-  val values: Set[Regime] = Set(NonTrump, Trump)
+  val values: Set[Regime] = Set(PreTrump, Trump)
 
   def parse(s: String): Option[Regime] = values.find(_.name == s)
   def unsafeParse(s: String): Regime = parse(s).getOrElse(
@@ -73,7 +73,7 @@ end Regime
 case object Trump extends Regime:
   import Regime.*
 
-  override val name = "Trump"
+  override val name: String = productPrefix
 
   override val lastYearKnown: Year = Year.of(2022)
 
@@ -282,10 +282,10 @@ case object Trump extends Regime:
       case _    => throw ustax4s.NotYetImplemented(year)
     end match
 
-case object NonTrump extends Regime:
+case object PreTrump extends Regime:
   import Regime.*
 
-  override val name = "NonTrump"
+  override val name: String = this.productPrefix
 
   override val lastYearKnown: Year = Year.of(2017)
 
@@ -391,4 +391,4 @@ case object NonTrump extends Regime:
       case _    => throw ustax4s.NotYetImplemented(year)
     end match
 
-end NonTrump
+end PreTrump

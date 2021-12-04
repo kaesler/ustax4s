@@ -2,7 +2,7 @@ package org.kae.ustax4s.calculator.testdata
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.federal.{NonTrump, Regime, Trump}
+import org.kae.ustax4s.federal.{PreTrump, Regime, Trump}
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
 import org.scalacheck.Gen
@@ -31,9 +31,9 @@ object TestDataGeneration:
 
   private val genTestCase: Gen[TestCaseInputs] =
     for
-      regime <- Gen.oneOf(NonTrump, Trump)
+      regime <- Gen.oneOf(PreTrump, Trump)
       yearNum <-
-        if regime == NonTrump then Gen.const(2017)
+        if regime == PreTrump then Gen.const(2017)
         else Gen.chooseNum(2018, 2022)
       fs                  <- Gen.oneOf(FilingStatus.values.toSeq)
       dependents          <- Gen.oneOf(0, 4)

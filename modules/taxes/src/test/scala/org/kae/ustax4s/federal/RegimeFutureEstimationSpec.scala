@@ -12,7 +12,7 @@ class RegimeFutureEstimationSpec extends FunSuite:
   test("BoundRegime.futureEstimated should work as expected") {
     val baseYear = Year.of(2017)
     val before = BoundRegime.create(
-      NonTrump,
+      PreTrump,
       baseYear,
       HeadOfHousehold,
       Kevin.birthDate,
