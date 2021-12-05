@@ -44,8 +44,8 @@ final case class RegressionTestCase(
         .create(
           regime,
           year,
-          filingStatus,
           birthDate,
+          filingStatus,
           personalExemptions
         )
         .calculator

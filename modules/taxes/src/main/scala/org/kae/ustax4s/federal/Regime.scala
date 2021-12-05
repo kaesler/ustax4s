@@ -37,11 +37,11 @@ sealed trait Regime:
 
   def bind(
     year: Year,
-    filingStatus: FilingStatus,
     birthDate: LocalDate,
+    filingStatus: FilingStatus,
     personalExemptions: Int
   ): BoundRegime =
-    BoundRegime.create(this, year, filingStatus, birthDate, personalExemptions)
+    BoundRegime.create(this, year, birthDate, filingStatus, personalExemptions)
 
 end Regime
 

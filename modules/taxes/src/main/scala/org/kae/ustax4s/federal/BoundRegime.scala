@@ -141,8 +141,8 @@ object BoundRegime:
   def create(
     regime: Regime,
     year: Year,
-    filingStatus: FilingStatus,
     birthDate: LocalDate,
+    filingStatus: FilingStatus,
     personalExemptions: Int
   ): BoundRegime =
     new BoundRegime(regime, year, filingStatus, birthDate, personalExemptions) {

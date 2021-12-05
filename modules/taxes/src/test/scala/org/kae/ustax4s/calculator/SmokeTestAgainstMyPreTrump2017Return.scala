@@ -27,8 +27,8 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
     .create(
       regime,
       year,
-      filingStatus,
       Kevin.birthDate,
+      filingStatus,
       personalExemptions
     )
 

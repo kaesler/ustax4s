@@ -15,8 +15,8 @@ class Form1040_2018Spec extends FunSuite:
   private val boundRegime = BoundRegime.create(
     regime,
     year,
-    filingStatus,
     Kevin.birthDate,
+    filingStatus,
     Kevin.personalExemptions(year)
   )
 

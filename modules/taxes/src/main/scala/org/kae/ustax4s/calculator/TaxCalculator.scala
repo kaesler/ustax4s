@@ -37,8 +37,8 @@ object TaxCalculator:
       .create(
         regime,
         year,
-        filingStatus,
         birthDate,
+        filingStatus,
         personalExemptions
       )
       .calculator
@@ -65,8 +65,8 @@ object TaxCalculator:
     val boundRegime = BoundRegime.create(
       regime,
       year,
-      filingStatus,
       birthDate,
+      filingStatus,
       personalExemptions = 2
     )
 

@@ -14,8 +14,8 @@ class RegimeFutureEstimationSpec extends FunSuite:
     val before = BoundRegime.create(
       PreTrump,
       baseYear,
-      HeadOfHousehold,
       Kevin.birthDate,
+      HeadOfHousehold,
       Kevin.personalExemptions(baseYear)
     )
     val estimate = InflationEstimate(Year.of(2027), 0.03)
