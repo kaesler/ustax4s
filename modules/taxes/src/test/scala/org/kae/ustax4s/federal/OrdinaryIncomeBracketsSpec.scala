@@ -5,8 +5,8 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.money.{Money, MoneyGeneration}
 import org.kae.ustax4s.money.MoneySyntax.*
+import org.kae.ustax4s.money.{Money, MoneyGeneration}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 

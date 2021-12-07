@@ -1,10 +1,10 @@
 package org.kae.ustax4s.federal
 
 import munit.ScalaCheckSuite
-import org.kae.ustax4s.money.{Money, MoneyGeneration}
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity
+import org.kae.ustax4s.money.MoneySyntax.*
+import org.kae.ustax4s.money.{Money, MoneyGeneration}
 
 class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
 

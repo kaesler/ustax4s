@@ -1,7 +1,7 @@
 package org.kae.ustax4s.calculator.testdata
 
-import org.kae.ustax4s.calculator.TaxCalculator
 import java.time.LocalDate
+import org.kae.ustax4s.calculator.TaxCalculator
 
 object MakeTestDataForPureScript extends App:
   import TestDataGeneration.*
