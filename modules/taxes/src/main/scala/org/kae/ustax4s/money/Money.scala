@@ -4,6 +4,20 @@ import cats.kernel.Order
 import org.kae.ustax4s.TaxRate
 import scala.math.BigDecimal.RoundingMode
 
+// TODO: Improve type safety.
+// e.g. Income and Deduction could be separate semigroups,
+// allowing only addition.
+// Then an operation to subtract a deduction from an income,
+// with result constrained to be non-negative.
+// TaxPayable as another Semigroup?
+// Also need to be able to:
+//    - multiply Income by a positive fraction
+//    - find the ratio of two incomes?
+// Or: phantom types? Money & AsIncome, Money & AsDeduction
+// Also: look at Haskell code for taxes.
+// https://github.com/frasertweedale/hs-tax/blob/master/src/Data/Tax.hs
+// https://hackage.haskell.org/package/tax-0.2.0.0/docs/Data-Tax.html
+
 /** Non negative money type.
   */
 opaque type Money = BigDecimal
