@@ -37,14 +37,6 @@ object Money:
     require(i >= 0)
     BigDecimal(i)
 
-  def sum(ms: Money*): Money = ms.sum
-
-  def max(left: Money, right: Money): Money =
-    summon[Order[Money]].max(left, right)
-
-  def min(left: Money, right: Money): Money =
-    summon[Order[Money]].min(left, right)
-
   extension (underlying: Money)
     def isZero: Boolean        = underlying == 0
     def nonZero: Boolean       = !isZero
@@ -52,7 +44,7 @@ object Money:
     def +(right: Money): Money = underlying.combine(right)
 
     // Subtract but don't go negative.
-    infix def subp(right: Money): Money = max(zero, underlying - right)
+    infix def subp(right: Money): Money = List(zero, underlying - right).max
 
     infix def mul(d: Double): Money =
       require(d >= 0, s"multiplication by negative: $d")

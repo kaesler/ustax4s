@@ -1,5 +1,6 @@
 package org.kae.ustax4s.federal
 
+import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.Age
 import org.kae.ustax4s.money.Money
@@ -43,10 +44,10 @@ trait BoundRegime(
   // netDed >= all of ped, stdDm, item
   final def netDeduction(itemizedDeductions: Money): Money =
     personalExemptionDeduction +
-      Money.max(
+      List(
         standardDeduction,
         itemizedDeductions
-      )
+      ).max
 
   // TODO: needs property spec
   def calculator: FederalTaxCalculator =

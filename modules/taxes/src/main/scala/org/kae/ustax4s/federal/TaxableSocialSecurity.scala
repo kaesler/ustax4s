@@ -1,5 +1,6 @@
 package org.kae.ustax4s.federal
 
+import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
@@ -32,10 +33,10 @@ object TaxableSocialSecurity:
     else
       val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
       val adjusted         = unadjusted mul adjustmentFactor
-      Money.min(
+      List(
         adjusted,
         socialSecurityBenefits mul 0.85
-      )
+      ).min
 
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
@@ -51,17 +52,17 @@ object TaxableSocialSecurity:
       val fractionTaxable  = 0.5
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%
-      Money.min(
+      List(
         (combinedIncome subp lowBase) mul fractionTaxable,
         maxSocSecTaxable
-      )
+      ).min
     else
       val fractionTaxable  = 0.85
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
 
-      Money.min(
+      List(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
         Money(4500) + ((combinedIncome subp highBase) mul fractionTaxable),
         maxSocSecTaxable
-      )
+      ).min

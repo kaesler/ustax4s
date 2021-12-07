@@ -1,5 +1,6 @@
 package org.kae.ustax4s.federal.forms
 
+import cats.implicits.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.{
   OrdinaryIncomeBrackets,
@@ -56,7 +57,7 @@ final case class Form1040(
     TaxableSocialSecurity.taxableSocialSecurityBenefits(
       filingStatus = filingStatus,
       socialSecurityBenefits = socialSecurityBenefits,
-      ssRelevantOtherIncome = Money.sum(
+      ssRelevantOtherIncome = List[Money](
         wages,
         taxableInterest,
         taxExemptInterest,
@@ -64,14 +65,14 @@ final case class Form1040(
         ordinaryDividends,
         // This pulls in capital gains.
         schedule1.map(_.additionalIncome).getOrElse(0)
-      )
+      ).combineAll
     )
 
   def scheduleD: Option[ScheduleD] = schedule1.flatMap(_.scheduleD)
 
   // Line 7b:
   def totalIncome: Money =
-    Money.sum(
+    List[Money](
       // Line 1
       wages,
       // Line 2b
@@ -83,7 +84,7 @@ final case class Form1040(
       schedule1.map(_.additionalIncome).getOrElse(0),
       // Line 5b:
       taxableSocialSecurityBenefits
-    )
+    ).combineAll
 
   // Line 7:
   def adjustedGrossIncome: Money =
