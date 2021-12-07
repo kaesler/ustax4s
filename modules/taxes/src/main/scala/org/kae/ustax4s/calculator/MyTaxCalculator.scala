@@ -61,10 +61,10 @@ object MyTaxCalculator:
       schedule3 = None,
       schedule4 = None,
       schedule5 = None,
-      childTaxCredit = Money.zero,
-      wages = Money.zero,
-      taxExemptInterest = Money.zero,
-      taxableInterest = Money.zero,
+      childTaxCredit = 0,
+      wages = 0,
+      taxExemptInterest = 0,
+      taxableInterest = 0,
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )

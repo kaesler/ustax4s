@@ -19,7 +19,7 @@ class QualifiedIncomeBracketsSpec
   )
   private given Arbitrary[Money] = Arbitrary(genMoney)
 
-  private val zero = Money.zero
+  private val zero = Money(0)
 
   test("InvestmentIncomeTaxBrackets should be progressive") {
     def isProgressive(brackets: QualifiedIncomeBrackets): Boolean = {

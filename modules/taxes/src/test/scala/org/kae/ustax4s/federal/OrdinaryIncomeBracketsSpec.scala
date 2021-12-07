@@ -19,7 +19,7 @@ class OrdinaryIncomeBracketsSpec
 
   given Arbitrary[Money] = Arbitrary(genMoney)
 
-  private val zero    = Money.zero
+  private val zero    = Money(0)
   private val TheYear = Year.of(2021)
 
   private def bracketsFor(year: Year, filingStatus: FilingStatus) =
@@ -98,7 +98,7 @@ class OrdinaryIncomeBracketsSpec
 
   property("never tax zero") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
-      brackets.taxDue(Money.zero) == zero
+      brackets.taxDue(Money(0)) == zero
     }
   }
 

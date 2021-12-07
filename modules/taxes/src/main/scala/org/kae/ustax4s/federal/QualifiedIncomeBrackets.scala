@@ -19,7 +19,7 @@ final case class QualifiedIncomeBrackets(
 ):
   // Note: We capture "tax free LTCGs with suitably low income" by having a
   // zero-rate lowest bracket.
-  require(bracketStarts.contains(Money.zero))
+  require(bracketStarts.contains(Money(0)))
   require(bracketStarts.size >= 2)
 
   // Adjust the bracket starts for inflation.
@@ -35,7 +35,7 @@ final case class QualifiedIncomeBrackets(
   val bracketStartsAscending: Vector[(Money, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
 
-  require(bracketStartsAscending(0) == (Money.zero, FederalTaxRate.unsafeFrom(0.0)))
+  require(bracketStartsAscending(0) == (Money(0), FederalTaxRate.unsafeFrom(0.0)))
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
@@ -67,7 +67,7 @@ final case class QualifiedIncomeBrackets(
     )
     object Accum:
       def initial: Accum =
-        apply(Money.zero, qualifiedIncome, Money.zero)
+        apply(0, qualifiedIncome, 0)
 
     val totalTaxableIncome = taxableOrdinaryIncome + qualifiedIncome
     val accum =
@@ -110,9 +110,9 @@ final case class QualifiedIncomeBrackets(
     taxableOrdinaryIncome: Money,
     qualifiedIncome: Money
   ): Money =
-    var totalIncomeInHigherBrackets = Money.zero
+    var totalIncomeInHigherBrackets = Money(0)
     var gainsYetToBeTaxed           = qualifiedIncome
-    var gainsTaxSoFar               = Money.zero
+    var gainsTaxSoFar               = Money(0)
 
     val totalIncome = taxableOrdinaryIncome + qualifiedIncome
     bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>

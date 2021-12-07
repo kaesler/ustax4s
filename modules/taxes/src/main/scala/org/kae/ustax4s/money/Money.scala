@@ -14,7 +14,13 @@ import scala.math.BigDecimal.RoundingMode
 opaque type Money = BigDecimal
 
 object Money:
-  val zero: Money = 0
+
+  given Monoid[Money]             = summonMonoid
+  given Ordering[Money]           = summonOrdering
+  given Conversion[Int, Money]    = apply
+  given Conversion[Double, Money] = apply
+
+  private val zero: Money = 0
 
   def apply(i: Int): Money =
     require(i >= 0, s"attempt to create negative Money from $i")
@@ -37,15 +43,8 @@ object Money:
   def min(left: Money, right: Money): Money =
     summon[Order[Money]].min(left, right)
 
-  given Conversion[Int, Money]    = apply
-  given Conversion[Double, Money] = apply
-
-  given Monoid[Money] = summonMonoid
-
-  given Ordering[Money] = summonOrdering
-
   extension (underlying: Money)
-    def isZero: Boolean        = underlying == zero
+    def isZero: Boolean        = underlying == 0
     def nonZero: Boolean       = !isZero
     def rounded: Money         = underlying.setScale(0, RoundingMode.HALF_UP)
     def +(right: Money): Money = underlying.combine(right)

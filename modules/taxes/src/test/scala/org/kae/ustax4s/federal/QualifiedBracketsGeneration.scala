@@ -19,7 +19,7 @@ trait QualifiedBracketsGeneration extends SetGeneration with TaxRateGeneration:
       nonZeroRates <- genSet(bracketCount - 1, genNonZeroTaxRate)
       ratesSortedAscending = FederalTaxRate.unsafeFrom(0.0) :: nonZeroRates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genNonZeroBracketBorder)
-      bracketStarts = bracketBorders + Money.zero
+      bracketStarts = bracketBorders + Money(0)
     yield QualifiedIncomeBrackets(
       bracketStarts.toList.sorted
         .zip(ratesSortedAscending)

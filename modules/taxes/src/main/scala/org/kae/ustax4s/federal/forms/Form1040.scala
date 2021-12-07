@@ -18,7 +18,7 @@ final case class Form1040(
   // Line 12:
   // This this year-dependent. Julia must be under 17.
   // So it only applies in 2021.
-  childTaxCredit: Money = Money.zero,
+  childTaxCredit: Money = 0,
   // Line 1:
   wages: Money,
   // Line 2a:
@@ -40,7 +40,7 @@ final case class Form1040(
       // Line 6:
       scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(Money.zero)
+        .getOrElse(0)
 
   // This is what gets taxed at LTCG rates.
   def qualifiedIncome: Money =
@@ -49,7 +49,7 @@ final case class Form1040(
       // Line 6:
       scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(Money.zero)
+        .getOrElse(0)
 
   // Line 5b:
   def taxableSocialSecurityBenefits: Money =
@@ -63,7 +63,7 @@ final case class Form1040(
         taxableIraDistributions,
         ordinaryDividends,
         // This pulls in capital gains.
-        schedule1.map(_.additionalIncome).getOrElse(Money.zero)
+        schedule1.map(_.additionalIncome).getOrElse(0)
       )
     )
 
@@ -80,14 +80,14 @@ final case class Form1040(
       taxableIraDistributions,
       ordinaryDividends,
       // This pulls in capital gains.
-      schedule1.map(_.additionalIncome).getOrElse(Money.zero),
+      schedule1.map(_.additionalIncome).getOrElse(0),
       // Line 5b:
       taxableSocialSecurityBenefits
     )
 
   // Line 7:
   def adjustedGrossIncome: Money =
-    totalIncome subp schedule1.map(_.adjustmentsToIncome).getOrElse(Money.zero)
+    totalIncome subp schedule1.map(_.adjustmentsToIncome).getOrElse(0)
 
   // Line 10:
   def taxableIncome: Money =
@@ -123,10 +123,10 @@ object Form1040:
       ordinaryIncomeBrackets,
       qualifiedIncomeBrackets
     ) +
-      form.schedule4.map(_.totalOtherTaxes).getOrElse(Money.zero) subp
+      form.schedule4.map(_.totalOtherTaxes).getOrElse(0) subp
       (form.childTaxCredit + form.schedule3
         .map(_.nonRefundableCredits)
-        .getOrElse(Money.zero))
+        .getOrElse(0))
 
   // Line 11:
   def taxDueBeforeCredits(

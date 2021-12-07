@@ -51,11 +51,11 @@ class Form1040_2018Spec extends FunSuite:
       childTaxCredit = 2000.asMoney,
       wages = 133497.asMoney,
       taxExemptInterest = 2294.asMoney,
-      taxableInterest = Money.zero,
+      taxableInterest = Money(0),
       ordinaryDividends = 7930.asMoney,
       qualifiedDividends = 7365.asMoney,
-      taxableIraDistributions = Money.zero,
-      socialSecurityBenefits = Money.zero
+      taxableIraDistributions = Money(0),
+      socialSecurityBenefits = Money(0)
     )
 
     assertEquals(form.totalIncome, 150919.asMoney)

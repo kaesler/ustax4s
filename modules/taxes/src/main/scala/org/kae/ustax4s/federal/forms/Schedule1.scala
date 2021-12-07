@@ -14,7 +14,7 @@ final case class Schedule1(
 ):
   // TODO: may need negative Money type here
   def capitalGainOrLoss: Money =
-    scheduleD.map(_.netLongTermCapitalGains).getOrElse(Money.zero)
+    scheduleD.map(_.netLongTermCapitalGains).getOrElse(0)
 
   def additionalIncome: Money = businessIncomeOrLoss + capitalGainOrLoss
 

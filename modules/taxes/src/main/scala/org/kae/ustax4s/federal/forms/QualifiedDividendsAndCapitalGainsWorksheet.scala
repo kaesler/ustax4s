@@ -17,7 +17,7 @@ final case class QualifiedDividendsAndCapitalGainsWorksheet(
     form1040.qualifiedDividends +
       form1040.scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(Money.zero)
+        .getOrElse(0)
 
   def taxOnPTGains: Money = ???
 

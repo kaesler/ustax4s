@@ -15,7 +15,7 @@ import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[Money, FederalTaxRate]
 ):
-  require(bracketStarts.contains(Money.zero))
+  require(bracketStarts.contains(0))
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
@@ -45,7 +45,7 @@ final case class OrdinaryIncomeBrackets(
 
     case class Accum(ordinaryIncomeYetToBeTaxed: Money, taxSoFar: Money)
     object Accum:
-      def initial: Accum = apply(taxableOrdinaryIncome, Money.zero)
+      def initial: Accum = apply(taxableOrdinaryIncome, 0)
 
     val accum = bracketsStartsDescending.foldLeft(Accum.initial) {
 
@@ -74,7 +74,7 @@ final case class OrdinaryIncomeBrackets(
     taxableOrdinaryIncome: Money
   ): Money =
     var ordinaryIncomeYetToBeTaxed = taxableOrdinaryIncome
-    var taxSoFar                   = Money.zero
+    var taxSoFar                   = Money(0)
     bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>
       // Result will be non-negative: so becomes zero if bracket does not apply.
       val ordinaryIncomeInThisBracket =
