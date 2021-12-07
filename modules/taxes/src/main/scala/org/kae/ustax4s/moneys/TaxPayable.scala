@@ -9,6 +9,9 @@ opaque type TaxPayable = Money
 // TODO: The result of applying a tax rate to an Income?
 object TaxPayable:
 
+  def apply(i: Int): TaxPayable    = Money(i)
+  def apply(d: Double): TaxPayable = Money(d)
+
   given Monoid[TaxPayable] = summonMonoid
 
   extension (underlying: TaxPayable)

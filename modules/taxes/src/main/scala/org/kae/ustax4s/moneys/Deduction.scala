@@ -8,8 +8,8 @@ opaque type Deduction = Money
 
 object Deduction:
 
-  def apply(i: Int): Deduction = Money(i)
-  def apply(d: Double): Money  = Money(d)
+  def apply(i: Int): Deduction    = Money(i)
+  def apply(d: Double): Deduction = Money(d)
 
   given Monoid[Deduction] = summonMonoid
 

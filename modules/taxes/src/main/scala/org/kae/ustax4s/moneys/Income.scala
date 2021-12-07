@@ -28,6 +28,9 @@ object Income:
   //   TaxableIncome
   //   SocialSecurityIncome
 
+  def apply(i: Int): Income    = Money(i)
+  def apply(d: Double): Income = Money(d)
+
   given Monoid[Income] = summonMonoid
 
   extension (underlying: Income)

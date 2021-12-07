@@ -50,7 +50,7 @@ object Money:
     def +(right: Money): Money = underlying.combine(right)
 
     // Subtract but don't go negative.
-    infix def subp(right: Money): Money = zero.max(underlying - right)
+    infix def subp(right: Money): Money = max(zero, underlying - right)
 
     infix def mul(d: Double): Money =
       require(d >= 0, s"multiplication by negative: $d")
