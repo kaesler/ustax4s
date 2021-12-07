@@ -1,6 +1,7 @@
 package org.kae.ustax4s.moneys
 
 import cats.Monoid
+import cats.Show
 import cats.implicits.*
 import org.kae.ustax4s.money.Money
 
@@ -32,6 +33,7 @@ object Income:
   def apply(d: Double): Income = Money(d)
 
   given Monoid[Income] = summonMonoid
+  given Show[Income]   = summonShow
 
   extension (underlying: Income)
     def +(right: Income): Income             = underlying.combine(right)
@@ -41,5 +43,5 @@ object Income:
   end extension
 
 end Income
-// Avoid infinite recursion by placing outside the Money object.
 private def summonMonoid = summon[Monoid[Money]]
+private def summonShow   = summon[Show[Money]]

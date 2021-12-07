@@ -1,6 +1,7 @@
 package org.kae.ustax4s.money
 
 import cats.Monoid
+import cats.Show
 import cats.implicits.*
 import cats.kernel.Order
 import org.kae.ustax4s.TaxRate
@@ -19,6 +20,7 @@ object Money:
   given Ordering[Money]           = summonOrdering
   given Conversion[Int, Money]    = apply
   given Conversion[Double, Money] = apply
+  given Show[Money]               = Show.fromToString[Money]
 
   private val zero: Money = 0
 

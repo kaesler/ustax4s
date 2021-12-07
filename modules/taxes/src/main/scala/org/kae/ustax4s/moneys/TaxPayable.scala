@@ -1,6 +1,7 @@
 package org.kae.ustax4s.moneys
 
 import cats.Monoid
+import cats.Show
 import cats.implicits.*
 import org.kae.ustax4s.money.Money
 
@@ -13,12 +14,12 @@ object TaxPayable:
   def apply(d: Double): TaxPayable = Money(d)
 
   given Monoid[TaxPayable] = summonMonoid
+  given Show[TaxPayable]   = summonShow
 
   extension (underlying: TaxPayable)
     def +(right: TaxPayable): TaxPayable = underlying.combine(right)
   end extension
 
 end TaxPayable
-
-// Avoid infinite recursion by placing outside the Money object.
 private def summonMonoid = summon[Monoid[Money]]
+private def summonShow   = summon[Show[Money]]
