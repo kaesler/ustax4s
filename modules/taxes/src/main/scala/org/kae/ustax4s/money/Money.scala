@@ -1,8 +1,8 @@
 package org.kae.ustax4s.money
 
-import cats.{Monoid, Show}
 import cats.implicits.*
 import cats.kernel.Order
+import cats.{Monoid, Show}
 import org.kae.ustax4s.TaxRate
 import scala.math.BigDecimal.RoundingMode
 
