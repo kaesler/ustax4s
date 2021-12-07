@@ -1,11 +1,10 @@
 package org.kae.ustax4s.state_ma
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.Age
-import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
+import org.kae.ustax4s.{Age, FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
 object StateMATaxCalculator:

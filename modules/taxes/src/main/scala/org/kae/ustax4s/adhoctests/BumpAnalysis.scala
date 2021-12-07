@@ -2,9 +2,9 @@ package org.kae.ustax4s.adhoctests
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
+import org.kae.ustax4s.calculator.MyTaxCalculator
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
-import org.kae.ustax4s.calculator.MyTaxCalculator
 
 object BumpAnalysis extends App:
   // for each filing status in HOH, Single

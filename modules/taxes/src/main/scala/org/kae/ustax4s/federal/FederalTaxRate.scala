@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
-import scala.math.BigDecimal.RoundingMode
 import org.kae.ustax4s.TaxRate
+import scala.math.BigDecimal.RoundingMode
 
 /** Rate of tax payable in a given bracket.
   */

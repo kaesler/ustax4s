@@ -1,8 +1,7 @@
 package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.money.Money
-
 import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets, QualifiedIncomeBrackets}
+import org.kae.ustax4s.money.Money
 
 final case class QualifiedDividendsAndCapitalGainsWorksheet(
   ordinaryBrackets: OrdinaryIncomeBrackets,

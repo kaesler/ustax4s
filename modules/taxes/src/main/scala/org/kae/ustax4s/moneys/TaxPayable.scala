@@ -1,7 +1,7 @@
 package org.kae.ustax4s.moneys
 
-import cats.{Monoid, Show}
 import cats.implicits.*
+import cats.{Monoid, Show}
 import org.kae.ustax4s.money.Money
 
 opaque type TaxPayable = Money

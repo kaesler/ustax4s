@@ -1,12 +1,12 @@
 package org.kae.ustax4s.adhoctests
 
 import java.time.Year
+import org.kae.ustax4s.FilingStatus.Single
+import org.kae.ustax4s.calculator.TaxCalculator
+import org.kae.ustax4s.federal.TaxableSocialSecurity
+import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.money.MoneySyntax.*
-import org.kae.ustax4s.FilingStatus.Single
-import org.kae.ustax4s.federal.TaxableSocialSecurity
-import org.kae.ustax4s.calculator.TaxCalculator
-import org.kae.ustax4s.kevin.Kevin
 
 object TaxInRetirementTests extends App:
   val year = Year.of(2021)

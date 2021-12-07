@@ -4,16 +4,7 @@ import cats.Show
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.forms.Form1040
-import org.kae.ustax4s.federal.{
-  BoundRegime,
-  FederalTaxCalculator,
-  FederalTaxResults,
-  OrdinaryIncomeBrackets,
-  QualifiedIncomeBrackets,
-  Regime,
-  TaxableSocialSecurity,
-  Trump
-}
+import org.kae.ustax4s.federal.*
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 

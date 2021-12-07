@@ -2,9 +2,8 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.Age
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.{FilingStatus, InflationEstimate}
+import org.kae.ustax4s.{Age, FilingStatus, InflationEstimate}
 
 trait BoundRegime(
   regime: Regime,
