@@ -10,11 +10,13 @@ opaque type IncomeThreshold = Money
 
 object IncomeThreshold:
 
-  given Show[IncomeThreshold] = summonShow
+  given Ordering[IncomeThreshold] = summonOrdering
+  given Show[IncomeThreshold]     = summonShow
 
   extension (underlying: IncomeThreshold)
     def subtractFrom(money: Money): Money =
       money subp underlying
 
 end IncomeThreshold
-private def summonShow = summon[Show[Money]]
+private def summonShow     = summon[Show[Money]]
+private def summonOrdering = summon[Ordering[Money]]

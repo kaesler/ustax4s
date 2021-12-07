@@ -1,7 +1,6 @@
 package org.kae.ustax4s.moneys
 
-import cats.Monoid
-import cats.Show
+import cats.{Monoid, Show}
 import cats.implicits.*
 import org.kae.ustax4s.money.Money
 

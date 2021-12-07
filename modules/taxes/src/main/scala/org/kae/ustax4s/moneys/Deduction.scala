@@ -1,7 +1,6 @@
 package org.kae.ustax4s.moneys
 
-import cats.Monoid
-import cats.Show
+import cats.{Monoid, Show}
 import cats.implicits.*
 import org.kae.ustax4s.money.Money
 
@@ -12,8 +11,9 @@ object Deduction:
   def apply(i: Int): Deduction    = Money(i)
   def apply(d: Double): Deduction = Money(d)
 
-  given Monoid[Deduction] = summonMonoid
-  given Show[Deduction]   = summonShow
+  given Monoid[Deduction]   = summonMonoid
+  given Ordering[Deduction] = summonOrdering
+  given Show[Deduction]     = summonShow
 
   extension (underlying: Deduction)
     def +(right: Deduction): Deduction    = underlying.combine(right)
@@ -21,5 +21,6 @@ object Deduction:
   end extension
 
 end Deduction
-private def summonMonoid = summon[Monoid[Money]]
-private def summonShow   = summon[Show[Money]]
+private def summonMonoid   = summon[Monoid[Money]]
+private def summonOrdering = summon[Ordering[Money]]
+private def summonShow     = summon[Show[Money]]
