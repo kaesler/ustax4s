@@ -42,11 +42,7 @@ object Money:
 
   given Monoid[Money] = summonMonoid
 
-  // Note: careful to avoid recursive instance here.
-  // This seems to do it.
-  given Ordering[Money] with
-    def compare(x: Money, y: Money): Int =
-      if x < y then -1 else if x > y then +1 else 0
+  given Ordering[Money] = summonOrdering
 
   extension (underlying: Money)
     def isZero: Boolean        = underlying == zero
@@ -68,6 +64,8 @@ object Money:
     // Compute tax at the given rate.
     infix def taxAt[T: TaxRate](rate: T): Money = underlying mul rate.asFraction
 
+    // Note: there seems no way to have Money "extends Ordered[Money]"
+    // and then just provide the compare() method, so this is what we do.
     infix def <(that: Money): Boolean  = underlying.compare(that) < 0
     infix def >(that: Money): Boolean  = underlying.compare(that) > 0
     infix def <=(that: Money): Boolean = !(underlying > that)
@@ -81,4 +79,5 @@ object Money:
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.
-private def summonMonoid = summon[Monoid[BigDecimal]]
+private def summonMonoid   = summon[Monoid[BigDecimal]]
+private def summonOrdering = summon[Ordering[BigDecimal]]
