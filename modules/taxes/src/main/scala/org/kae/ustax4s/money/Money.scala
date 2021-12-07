@@ -1,22 +1,13 @@
 package org.kae.ustax4s.money
 
+import cats.Monoid
+import cats.implicits.*
 import cats.kernel.Order
 import org.kae.ustax4s.TaxRate
 import scala.math.BigDecimal.RoundingMode
 
-// TODO: Improve type safety.
-// e.g. Income and Deduction could be separate semigroups,
-// allowing only addition.
-// Then an operation to subtract a deduction from an income,
-// with result constrained to be non-negative.
-// TaxPayable as another Semigroup?
-// Also need to be able to:
-//    - multiply Income by a positive fraction
-//    - find the ratio of two incomes?
-// Or: phantom types? Money & AsIncome, Money & AsDeduction
-// Also: look at Haskell code for taxes.
-// https://github.com/frasertweedale/hs-tax/blob/master/src/Data/Tax.hs
-// https://hackage.haskell.org/package/tax-0.2.0.0/docs/Data-Tax.html
+// TODO: eventually make this type package private.
+// TODO: eventually remove many unneeded methods.
 
 /** Non negative money type.
   */
@@ -49,6 +40,8 @@ object Money:
   given Conversion[Int, Money]    = apply
   given Conversion[Double, Money] = apply
 
+  given Monoid[Money] = summonMonoid
+
   // Note: careful to avoid recursive instance here.
   // This seems to do it.
   given Ordering[Money] with
@@ -56,43 +49,36 @@ object Money:
       if x < y then -1 else if x > y then +1 else 0
 
   extension (underlying: Money)
-    def isZero: Boolean          = underlying == zero
-    def nonZero: Boolean         = !isZero
-    def rounded: Money           = underlying.setScale(0, RoundingMode.HALF_UP)
-    def add(right: Money): Money = underlying + right
-    def +(right: Money): Money   = add(right)
+    def isZero: Boolean        = underlying == zero
+    def nonZero: Boolean       = !isZero
+    def rounded: Money         = underlying.setScale(0, RoundingMode.HALF_UP)
+    def +(right: Money): Money = underlying.combine(right)
 
     // Subtract but don't go negative.
     infix def subp(right: Money): Money = zero.max(underlying - right)
 
-    infix def mul(i: Int): Money =
-      require(i >= 0, s"multiplication by negative: $i")
-      underlying * i
-
     infix def mul(d: Double): Money =
       require(d >= 0, s"multiplication by negative: $d")
       underlying * d
-
-    infix def div(i: Int): Money =
-      require(i > 0, s"division by non-positive: $i")
-      underlying / i
 
     infix def div(m: Money): Money =
       require(m > 0, s"division by non-positive: $m")
       underlying.toDouble / m.toDouble
 
     // Compute tax at the given rate.
-    infix def taxAt[T: TaxRate](rate: T): Money =
-      underlying mul rate.asFraction
+    infix def taxAt[T: TaxRate](rate: T): Money = underlying mul rate.asFraction
 
-    infix def <(that: Money): Boolean =
-      underlying.compare(that) < 0
-    infix def >(that: Money): Boolean =
-      underlying.compare(that) > 0
+    infix def <(that: Money): Boolean  = underlying.compare(that) < 0
+    infix def >(that: Money): Boolean  = underlying.compare(that) > 0
     infix def <=(that: Money): Boolean = !(underlying > that)
     infix def >=(that: Money): Boolean = !(underlying < that)
 
     def isCloseTo(that: Money, tolerance: Int): Boolean =
       (underlying - that).abs <= tolerance
 
+  end extension
+
 end Money
+
+// Avoid infinite recursion by placing outside the Money object.
+private def summonMonoid = summon[Monoid[BigDecimal]]
