@@ -1,5 +1,6 @@
 package org.kae.ustax4s.state_ma
 
+import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
@@ -22,8 +23,9 @@ object StateMATaxCalculator:
     //  - capital gains
     massachusettsGrossIncome: Money
   ): Money =
-    (massachusettsGrossIncome subp
-      totalExemptions(year, filingStatus, birthDate, dependents)) taxAt rate(year)
+    massachusettsGrossIncome
+      .subp(totalExemptions(year, filingStatus, birthDate, dependents))
+      .taxAt(rateFor(year))
 
   private def totalExemptions(
     year: Year,
@@ -31,12 +33,14 @@ object StateMATaxCalculator:
     birthDate: LocalDate,
     dependents: Int
   ): Money =
-    personalExemption(year, filingStatus) +
-      age65OrOlderExemption(year, birthDate) +
+    List(
+      personalExemption(year, filingStatus),
+      age65OrOlderExemption(year, birthDate),
       dependentExceptions(dependents)
+    ).combineAll
 
   // Note: Social Security is not taxed.
-  private def rate(year: Year): StateMATaxRate =
+  private def rateFor(year: Year): StateMATaxRate =
     val r = year.getValue match
       case 2018          => 0.051
       case 2019          => 0.0505

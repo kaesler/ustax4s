@@ -57,7 +57,8 @@ trait BoundRegime(
       itemizedDeductions: Money
     ) => {
 
-      val ssRelevantOtherIncome = ordinaryIncomeNonSS + qualifiedIncome
+      val ssRelevantOtherIncome =
+        List(ordinaryIncomeNonSS, qualifiedIncome).combineAll
 
       // Note: this does not currently get adjusted for inflation.
       val taxableSocialSecurity =
@@ -68,8 +69,9 @@ trait BoundRegime(
         )
 
       val taxableOrdinaryIncome =
-        (taxableSocialSecurity + ordinaryIncomeNonSS) subp
-          netDeduction(itemizedDeductions)
+        List(taxableSocialSecurity, ordinaryIncomeNonSS)
+          .combineAll
+          .subp(netDeduction(itemizedDeductions))
 
       val taxOnOrdinaryIncome = ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
 
@@ -112,11 +114,6 @@ trait BoundRegime(
       override val name =
         s"${base.name}-estimatedFor-${estimate.targetFutureYear.getValue}"
 
-      // TODO: split this into:
-      //   - basic stdDed
-      //   - over65Adjustment
-      //   - unmarriedAdjustment
-      // and inflate each.
       override def unadjustedStandardDeduction: Money =
         base.unadjustedStandardDeduction mul estimate.factor(base.year)
       override def adjustmentWhenOver65: Money =
