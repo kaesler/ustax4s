@@ -1,5 +1,6 @@
 package org.kae.ustax4s.federal
 
+import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.Money
@@ -150,6 +151,10 @@ final case class OrdinaryIncomeBrackets(
   def startOfTopBracket: Money = bracketStarts.keySet.toList.max
 
 object OrdinaryIncomeBrackets:
+
+  given Show[OrdinaryIncomeBrackets] with
+    def show(b: OrdinaryIncomeBrackets): String =
+      b.bracketStartsAscending.mkString("\n")
 
   def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
     OrdinaryIncomeBrackets(

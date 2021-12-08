@@ -1,6 +1,7 @@
 package org.kae.ustax4s
 package federal
 
+import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.Money
@@ -38,10 +39,6 @@ final case class QualifiedIncomeBrackets(
   require(bracketStartsAscending(0) == (Money(0), FederalTaxRate.unsafeFrom(0.0)))
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
-
-  def show: String = {
-    bracketStartsAscending.mkString("\n")
-  }
 
   def startOfNonZeroQualifiedRateBracket: Money = bracketStartsAscending(1)._1
 
@@ -148,6 +145,10 @@ final case class QualifiedIncomeBrackets(
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
 
 object QualifiedIncomeBrackets:
+
+  given Show[QualifiedIncomeBrackets] with
+    def show(b: QualifiedIncomeBrackets): String =
+      b.bracketStartsAscending.mkString("\n")
 
   @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
     (year.getValue, status) match

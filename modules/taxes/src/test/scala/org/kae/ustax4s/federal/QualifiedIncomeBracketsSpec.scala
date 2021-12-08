@@ -1,5 +1,6 @@
 package org.kae.ustax4s.federal
 
+import cats.implicits.*
 import java.time.Year
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
