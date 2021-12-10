@@ -8,6 +8,8 @@ import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 
 object TaxInRetirementTests extends App:
+  import org.kae.ustax4s.MoneyConversions.given
+
   val year = Year.of(2021)
   val ss   = Money(49128)
 

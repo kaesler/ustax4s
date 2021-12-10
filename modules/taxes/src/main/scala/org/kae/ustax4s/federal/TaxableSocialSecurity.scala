@@ -12,7 +12,7 @@ object TaxableSocialSecurity:
 
   private def bases(filingStatus: FilingStatus): (Money, Money) =
     filingStatus match
-      case Single | HeadOfHousehold => (25000, 34000)
+      case Single | HeadOfHousehold => (Money(25000), Money(34000))
 
   // Adjusted to model the fact that the bases are not adjusted annually
   // as tax brackets are. So we just estimate: amount rises 3% per year
@@ -46,7 +46,7 @@ object TaxableSocialSecurity:
 
     val combinedIncome: Money = ssRelevantOtherIncome + (socialSecurityBenefits div two)
 
-    if combinedIncome < lowBase then 0
+    if combinedIncome < lowBase then Money.zero
     else if combinedIncome < highBase then
       val fractionTaxable  = 0.5
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable

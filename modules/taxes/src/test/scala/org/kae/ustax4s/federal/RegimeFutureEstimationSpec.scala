@@ -8,6 +8,7 @@ import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 
 class RegimeFutureEstimationSpec extends FunSuite:
+  import org.kae.ustax4s.MoneyConversions.given
 
   test("BoundRegime.futureEstimated should work as expected") {
     val baseYear = Year.of(2017)

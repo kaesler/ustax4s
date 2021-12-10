@@ -5,7 +5,7 @@ import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Money
 import org.kae.ustax4s.{Age, FilingStatus, NotYetImplemented}
-import scala.annotation.tailrec
+import scala.util.chaining.*
 
 object StateMATaxCalculator:
 
@@ -48,33 +48,38 @@ object StateMATaxCalculator:
       case x if x < 2018 => 0.051
     StateMATaxRate.unsafeFrom(r)
 
-  @tailrec
   private def personalExemption(
     year: Year,
     filingStatus: FilingStatus
   ): Money =
-    (year.getValue, filingStatus) match
-      // Note: for now assume same for future years as 2020.
-      case (year, fs) if year > 2020 =>
-        personalExemption(Year.of(2020), fs)
+    (
+      (year.getValue, filingStatus) match
+        case (2022, HeadOfHousehold) => 6800
+        case (2022, Single)          => 4400
 
-      case (2020, HeadOfHousehold) => 6800
-      case (2020, Single)          => 4400
+        case (2021, HeadOfHousehold) => 6800
+        case (2021, Single)          => 4400
 
-      case (2019, HeadOfHousehold) => 6800
-      case (2019, Single)          => 4400
+        case (2020, HeadOfHousehold) => 6800
+        case (2020, Single)          => 4400
 
-      case (2018, HeadOfHousehold) => 6800
-      case (2018, Single)          => 4400
+        case (2019, HeadOfHousehold) => 6800
+        case (2019, Single)          => 4400
 
-      case (2017, HeadOfHousehold) => 6800
-      case (2017, Single)          => 4400
+        case (2018, HeadOfHousehold) => 6800
+        case (2018, Single)          => 4400
 
-      case _ => throw NotYetImplemented(year)
+        case (2017, HeadOfHousehold) => 6800
+        case (2017, Single)          => 4400
+
+        case _ => throw NotYetImplemented(year)
+    ).pipe(Money.apply)
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Money =
-    if Age.isAge65OrOlder(birthDate, year) then 700
-    else 0
+    Money(
+      if Age.isAge65OrOlder(birthDate, year) then 700
+      else 0
+    )
 
   private def dependentExceptions(dependents: Int): Money =
     Money(1000) mul dependents

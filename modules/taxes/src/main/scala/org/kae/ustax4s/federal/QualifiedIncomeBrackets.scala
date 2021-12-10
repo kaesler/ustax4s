@@ -63,7 +63,7 @@ final case class QualifiedIncomeBrackets(
     )
     object Accum:
       def initial: Accum =
-        apply(0, qualifiedIncome, 0)
+        apply(Money.zero, qualifiedIncome, Money.zero)
 
     val totalTaxableIncome = taxableOrdinaryIncome + qualifiedIncome
     val accum =

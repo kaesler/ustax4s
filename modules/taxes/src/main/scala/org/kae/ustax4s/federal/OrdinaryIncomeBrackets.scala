@@ -15,7 +15,7 @@ import scala.annotation.tailrec
 final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[Money, FederalTaxRate]
 ):
-  require(bracketStarts.contains(0))
+  require(bracketStarts.contains(Money.zero))
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
@@ -45,7 +45,7 @@ final case class OrdinaryIncomeBrackets(
 
     case class Accum(ordinaryIncomeYetToBeTaxed: Money, taxSoFar: Money)
     object Accum:
-      def initial: Accum = apply(taxableOrdinaryIncome, 0)
+      def initial: Accum = apply(taxableOrdinaryIncome, Money.zero)
 
     val accum = bracketsStartsDescending.foldLeft(Accum.initial) {
 

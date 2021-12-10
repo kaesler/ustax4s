@@ -32,10 +32,6 @@ object Money:
   given Ordering[Money] = summonOrdering
   given Show[Money]     = Show.fromToString[Money]
 
-  // Note: not a concern once this type is package private.
-  // OR: only use in test code?
-  given Conversion[Int, Money] = apply
-
   extension (underlying: Money)
     def isZero: Boolean        = underlying == 0
     def nonZero: Boolean       = !isZero
@@ -48,6 +44,10 @@ object Money:
     infix def mul(d: Double): Money =
       require(d >= 0, s"multiplication by negative: $d")
       underlying * d
+
+    infix def div(i: Int): Money =
+      require(i > 0, s"division by non-positive: $i")
+      underlying.toDouble / i.toDouble
 
     infix def div(m: Money): Money =
       require(m > 0, s"division by non-positive: $m")

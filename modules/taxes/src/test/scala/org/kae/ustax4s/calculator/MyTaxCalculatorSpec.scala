@@ -7,6 +7,7 @@ import org.kae.ustax4s.federal.Trump
 import org.kae.ustax4s.money.Money
 
 class MyTaxCalculatorSpec extends FunSuite:
+  import org.kae.ustax4s.MoneyConversions.given
 
   private val regime             = Trump
   private val personalExemptions = 0

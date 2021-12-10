@@ -47,7 +47,7 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
 
     val results = boundRegime.calculator
       .federalTaxResults(
-        socSec = 0,
+        socSec = Money.zero,
         ordinaryIncomeNonSS = adjustedGrossIncome subp qualifiedIncome,
         qualifiedIncome,
         itemizedDeductions

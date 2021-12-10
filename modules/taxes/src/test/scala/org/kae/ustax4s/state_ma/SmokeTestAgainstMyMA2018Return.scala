@@ -7,6 +7,7 @@ import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
 
 class SmokeTestAgainstMyMA2018Return extends FunSuite:
+  import org.kae.ustax4s.MoneyConversions.given
 
   test("MA State tax should match what I filed in 2018") {
 

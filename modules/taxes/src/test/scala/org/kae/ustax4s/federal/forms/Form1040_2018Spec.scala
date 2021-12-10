@@ -8,6 +8,8 @@ import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.*
 
 class Form1040_2018Spec extends FunSuite:
+  import org.kae.ustax4s.MoneyConversions.given
+
   private val regime       = Trump
   private val year         = Year.of(2018)
   private val filingStatus = Kevin.filingStatus(year)

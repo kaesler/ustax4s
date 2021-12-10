@@ -10,6 +10,8 @@ import org.kae.ustax4s.money.Money
 
 object TaxDueAdHocTests extends App:
 
+  import org.kae.ustax4s.MoneyConversions.given
+
   val year = Year.of(2020)
   val results =
     BoundRegime

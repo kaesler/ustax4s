@@ -30,9 +30,9 @@ trait BoundRegime(
           adjustmentWhenOver65 +
             (
               if filingStatus.isSingle then adjustmentWhenOver65AndSingle
-              else 0
+              else Money.zero
             )
-        else 0
+        else Money.zero
       )
 
   // TODO: needs property spec
