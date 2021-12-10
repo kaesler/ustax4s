@@ -9,19 +9,11 @@ import scala.math.BigDecimal.RoundingMode
 // TODO: eventually make this type package private.
 // TODO: eventually remove many unneeded methods.
 
-/** Non negative money type.
-  */
+// Type for non-negative money values.
 opaque type Money = BigDecimal
-
 object Money:
 
-  given Monoid[Money]             = summonMonoid
-  given Ordering[Money]           = summonOrdering
-  given Conversion[Int, Money]    = apply
-  given Conversion[Double, Money] = apply
-  given Show[Money]               = Show.fromToString[Money]
-
-  private val zero: Money = 0
+  val zero: Money = 0
 
   def apply(i: Int): Money =
     require(i >= 0, s"attempt to create negative Money from $i")
@@ -35,6 +27,15 @@ object Money:
     val i = Integer.parseInt(s)
     require(i >= 0)
     BigDecimal(i)
+
+  given Monoid[Money]   = summonMonoid
+  given Ordering[Money] = summonOrdering
+  given Show[Money]     = Show.fromToString[Money]
+
+  // Note: not a concern once this type is package private.
+  // OR: only use in test code?
+  given Conversion[Int, Money]    = apply
+  given Conversion[Double, Money] = apply
 
   extension (underlying: Money)
     def isZero: Boolean        = underlying == 0
@@ -65,9 +66,7 @@ object Money:
 
     def isCloseTo(that: Money, tolerance: Int): Boolean =
       (underlying - that).abs <= tolerance
-
   end extension
-
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.
