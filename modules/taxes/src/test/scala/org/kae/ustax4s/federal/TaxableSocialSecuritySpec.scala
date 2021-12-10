@@ -3,7 +3,6 @@ package org.kae.ustax4s.federal
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.money.{Money, MoneyGeneration}
 
 class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
@@ -12,10 +11,10 @@ class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
     assertEquals(
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
-        socialSecurityBenefits = 50000.asMoney,
-        ssRelevantOtherIncome = 0.asMoney
+        socialSecurityBenefits = 50000,
+        ssRelevantOtherIncome = 0
       ),
-      0.asMoney
+      Money(0)
     )
   }
 
@@ -23,10 +22,10 @@ class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
     assertEquals(
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
-        socialSecurityBenefits = 40000.asMoney,
-        ssRelevantOtherIncome = 5000.asMoney
+        socialSecurityBenefits = Money(40000),
+        ssRelevantOtherIncome = Money(5000)
       ),
-      0.asMoney
+      Money(0)
     )
   }
 
@@ -34,10 +33,10 @@ class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
     assertEquals(
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
-        socialSecurityBenefits = 68000.asMoney,
-        ssRelevantOtherIncome = 0.asMoney
+        socialSecurityBenefits = Money(68000),
+        ssRelevantOtherIncome = Money(0)
       ),
-      4500.asMoney
+      Money(4500)
     )
   }
 
@@ -45,10 +44,10 @@ class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
     assertEquals(
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
-        socialSecurityBenefits = 28000.asMoney,
-        ssRelevantOtherIncome = 20000.asMoney
+        socialSecurityBenefits = Money(28000),
+        ssRelevantOtherIncome = Money(20000)
       ),
-      4500.asMoney
+      Money(4500)
     )
   }
 
@@ -56,10 +55,10 @@ class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
     assertEquals(
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
-        socialSecurityBenefits = 5980.asMoney,
-        ssRelevantOtherIncome = 28900.asMoney
+        socialSecurityBenefits = Money(5980),
+        ssRelevantOtherIncome = Money(28900)
       ),
-      2990.asMoney
+      Money(2990)
     )
   }
 
@@ -67,10 +66,10 @@ class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
     assertEquals(
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
-        socialSecurityBenefits = 11000.asMoney,
-        ssRelevantOtherIncome = 25500.asMoney
+        socialSecurityBenefits = Money(11000),
+        ssRelevantOtherIncome = Money(25500)
       ),
-      3000.asMoney
+      Money(3000)
     )
   }
 
@@ -78,9 +77,9 @@ class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
     assertEquals(
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,
-        socialSecurityBenefits = 49000.asMoney,
-        ssRelevantOtherIncome = 17000.asMoney
+        socialSecurityBenefits = Money(49000),
+        ssRelevantOtherIncome = Money(17000)
       ),
-      10875.asMoney
+      Money(10875)
     )
   }

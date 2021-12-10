@@ -6,11 +6,10 @@ import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.TaxableSocialSecurity
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 
 object TaxInRetirementTests extends App:
   val year = Year.of(2021)
-  val ss   = 49128.asMoney
+  val ss   = Money(49128)
 
   doCase(0)
   doCase(17000)

@@ -4,7 +4,6 @@ import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
@@ -120,7 +119,7 @@ final case class OrdinaryIncomeBrackets(
         (nextBracketStart subp bracketStart) taxAt rate
       }
 
-    taxes.foldLeft(0.asMoney)(_ + _)
+    taxes.foldLeft(Money(0))(_ + _)
 
   def bracketWidth(bracketRate: FederalTaxRate): Money =
     bracketStartsAscending

@@ -7,7 +7,6 @@ import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, PreTrump, Trump}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 
 object TaxDueAdHocTests extends App:
 

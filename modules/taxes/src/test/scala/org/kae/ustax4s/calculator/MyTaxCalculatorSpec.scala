@@ -5,7 +5,6 @@ import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.Trump
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 
 class MyTaxCalculatorSpec extends FunSuite:
 
@@ -24,8 +23,8 @@ class MyTaxCalculatorSpec extends FunSuite:
       ss <- 0 to 49000 by 500
     do
       import org.kae.ustax4s.calculator.MyTaxCalculator.*
-      val income         = i.asMoney
-      val socialSecurity = ss.asMoney
+      val income         = Money(i)
+      val socialSecurity = Money(ss)
 
       assertEquals(
         federalTaxDue(
@@ -40,7 +39,7 @@ class MyTaxCalculatorSpec extends FunSuite:
           year = year,
           socSec = socialSecurity,
           ordinaryIncomeNonSS = income,
-          qualifiedDividends = 0.asMoney,
+          qualifiedDividends = 0,
           verbose = false
         )
       )
@@ -59,9 +58,9 @@ class MyTaxCalculatorSpec extends FunSuite:
       inv    <- 0 to 30000 by 1000
     do
       import org.kae.ustax4s.calculator.MyTaxCalculator.*
-      val income             = i.asMoney
-      val socialSecurity     = ss.asMoney
-      val qualifiedDividends = inv.asMoney
+      val income             = Money(i)
+      val socialSecurity     = Money(ss)
+      val qualifiedDividends = Money(inv)
 
       if federalTaxDue(
           regime,

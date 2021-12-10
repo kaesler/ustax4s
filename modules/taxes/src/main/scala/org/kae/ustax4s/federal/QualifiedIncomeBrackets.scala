@@ -5,7 +5,6 @@ import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 

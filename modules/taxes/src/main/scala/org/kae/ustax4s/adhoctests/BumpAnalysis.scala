@@ -4,7 +4,6 @@ import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.calculator.MyTaxCalculator
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 
 object BumpAnalysis extends App:
   // for each filing status in HOH, Single
@@ -14,12 +13,12 @@ object BumpAnalysis extends App:
   //     - bracket
   //     - slope  (delta tax due)/(delta income)
   // Try it in a spreadsheet
-  val socialSecurityIncome = 49908.asMoney
+  val socialSecurityIncome = Money(49908)
 
   val filingStatus = Single // HeadOfHousehold
   val pairs = for
     i <- 0 to 60000 by 100
-    ssRelevantOtherIncome = i.asMoney
+    ssRelevantOtherIncome = Money(i)
 //    taxableSocialSecurity = TaxableSocialSecurity.taxableSocialSecurityBenefits(
 //      relevantIncome,
 //      socialSecurityIncome

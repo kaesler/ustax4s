@@ -5,7 +5,6 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.kae.ustax4s.money.{Money, MoneyGeneration}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
@@ -44,27 +43,27 @@ class OrdinaryIncomeBracketsSpec
 
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
-      1420.asMoney
+      Money(1420)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
-      6220.asMoney
+      Money(6220)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
-      13293.asMoney
+      Money(13293)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
-      32145.asMoney
+      Money(32145)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
-      46385.asMoney
+      Money(46385)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
-      156355.asMoney
+      Money(156355)
     )
   }
 
@@ -72,27 +71,27 @@ class OrdinaryIncomeBracketsSpec
     val brackets = bracketsFor(TheYear, Single)
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
-      995.asMoney
+      Money(995)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
-      4664.asMoney
+      Money(4664)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
-      14751.asMoney
+      Money(14751)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
-      33603.asMoney
+      Money(33603)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
-      47843.asMoney
+      Money(47843)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
-      157804.asMoney
+      Money(157804)
     )
   }
 

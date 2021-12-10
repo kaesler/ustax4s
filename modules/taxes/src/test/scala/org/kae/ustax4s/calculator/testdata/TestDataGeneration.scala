@@ -4,7 +4,6 @@ import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.{PreTrump, Regime, Trump}
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
@@ -47,7 +46,7 @@ object TestDataGeneration:
       birthDate = TheBirthDate,
       filingStatus = fs,
       dependents = dependents,
-      socSec = ss.asMoney,
+      socSec = ss,
       ordinaryIncomeNonSS = ordinaryIncomeNonSS,
       qualifiedIncome = qualifiedIncome,
       itemizedDeductions = itemizedDeductions

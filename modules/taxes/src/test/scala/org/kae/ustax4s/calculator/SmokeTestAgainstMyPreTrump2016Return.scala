@@ -7,7 +7,6 @@ import munit.FunSuite
 import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, PreTrump}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.*
-import org.kae.ustax4s.money.MoneySyntax.*
 
 class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
   private val regime             = PreTrump
@@ -15,13 +14,13 @@ class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
   private val filingStatus       = Kevin.filingStatus(year)
   private val personalExemptions = 2
 
-  private val wages              = 153455.asMoney
-  private val ordinaryDividends  = 6932.asMoney
-  private val qualifiedDividends = 5592.asMoney
+  private val wages              = Money(153455)
+  private val ordinaryDividends  = Money(6932)
+  private val qualifiedDividends = Money(5592)
 
-  private val shortTermCapitalLoss = 3000.asMoney
-  private val hsaDeduction         = 0.asMoney
-  private val itemizedDeductions   = 31040.asMoney
+  private val shortTermCapitalLoss = Money(3000)
+  private val hsaDeduction         = Money(0)
+  private val itemizedDeductions   = Money(31040)
 
   private val boundRegime = BoundRegime
     .create(
@@ -57,22 +56,22 @@ class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
     // println(results.show)
 
     assert(
-      results.personalExemptionDeduction == 8100.asMoney
+      results.personalExemptionDeduction == Money(8100)
     )
     assert(
-      results.netDeduction == 39140.asMoney
+      results.netDeduction == Money(39140)
     )
     assert(
-      results.taxOnQualifiedIncome.rounded == 839.asMoney
+      results.taxOnQualifiedIncome.rounded == Money(839)
     )
 
     // Note: My tax return used the tax tables, because the taxable amount was
     // < $100k.This introduces some imprecision. So allow for a few dollars
     // difference here.
     assert {
-      results.taxOnOrdinaryIncome.isCloseTo(22464.asMoney, 3)
+      results.taxOnOrdinaryIncome.isCloseTo(Money(22464), 3)
     }
     assert {
-      results.taxDue.isCloseTo(23303.asMoney, 3)
+      results.taxDue.isCloseTo(Money(23303), 3)
     }
   }

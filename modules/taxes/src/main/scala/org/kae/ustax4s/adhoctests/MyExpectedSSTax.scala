@@ -3,11 +3,10 @@ package org.kae.ustax4s.adhoctests
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.federal.TaxableSocialSecurity
 import org.kae.ustax4s.money.Money
-import org.kae.ustax4s.money.MoneySyntax.*
 
 object MyExpectedSSTax extends App:
-  val ssRelevantOtherIncomeFromRmd = 17000.asMoney
-  val socialSecurityBenefits       = 49000.asMoney
+  val ssRelevantOtherIncomeFromRmd = Money(17000)
+  val socialSecurityBenefits       = Money(49000)
 
   val taxableSS = TaxableSocialSecurity.taxableSocialSecurityBenefits(
     filingStatus = Single,
