@@ -34,8 +34,7 @@ object Money:
 
   // Note: not a concern once this type is package private.
   // OR: only use in test code?
-  given Conversion[Int, Money]    = apply
-  given Conversion[Double, Money] = apply
+  given Conversion[Int, Money] = apply
 
   extension (underlying: Money)
     def isZero: Boolean        = underlying == 0
