@@ -75,7 +75,7 @@ trait BoundRegime(
 
       val taxOnOrdinaryIncome = ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
 
-      val taxOnQualifiedIncome = qualifiedIncomeBrackets.taxDueFunctionally(
+      val taxOnQualifiedIncome = qualifiedIncomeBrackets.taxDue(
         taxableOrdinaryIncome,
         qualifiedIncome
       )

@@ -36,9 +36,6 @@ final case class OrdinaryIncomeBrackets(
     taxDue(taxableOrdinaryIncome).rounded
 
   def taxDue(taxableOrdinaryIncome: Money): Money =
-    taxDueFunctionally(taxableOrdinaryIncome)
-
-  private def taxDueFunctionally(taxableOrdinaryIncome: Money): Money =
 
     // Note: Qualified investment income sort of occupies the top brackets above
     // ordinary income and so does not affect this.
@@ -68,26 +65,6 @@ final case class OrdinaryIncomeBrackets(
     val res = accum.taxSoFar
     // println(s"taxDueFunctionally($taxableOrdinaryIncome): $res")
     res
-
-  // Note: kept here for translation to TypeScript.
-  def taxDueImperatively(
-    taxableOrdinaryIncome: Money
-  ): Money =
-    var ordinaryIncomeYetToBeTaxed = taxableOrdinaryIncome
-    var taxSoFar                   = Money(0)
-    bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>
-      // Result will be non-negative: so becomes zero if bracket does not apply.
-      val ordinaryIncomeInThisBracket =
-        ordinaryIncomeYetToBeTaxed subp bracketStart
-
-      // Non-negative: so zero if bracket does not apply.
-      val taxInThisBracket = ordinaryIncomeInThisBracket taxAt bracketRate
-
-      ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed subp ordinaryIncomeInThisBracket
-      taxSoFar = taxSoFar + taxInThisBracket
-    }
-    assert(ordinaryIncomeYetToBeTaxed.isZero)
-    taxSoFar
 
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Money =
     bracketStartsAscending

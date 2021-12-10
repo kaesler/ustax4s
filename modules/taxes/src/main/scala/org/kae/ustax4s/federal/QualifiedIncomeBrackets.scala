@@ -50,11 +50,6 @@ final case class QualifiedIncomeBrackets(
   def taxDue(
     taxableOrdinaryIncome: Money,
     qualifiedIncome: Money
-  ): Money = taxDueFunctionally(taxableOrdinaryIncome, qualifiedIncome)
-
-  def taxDueFunctionally(
-    taxableOrdinaryIncome: Money,
-    qualifiedIncome: Money
   ): Money =
     case class Accum(
       totalIncomeInHigherBrackets: Money,
@@ -100,45 +95,6 @@ final case class QualifiedIncomeBrackets(
     assert(accum.totalIncomeInHigherBrackets == totalTaxableIncome)
     assert(accum.gainsYetToBeTaxed.isZero)
     accum.gainsTaxSoFar
-
-  // Note: kept here for translation to TypeScript.
-  def taxDueImperatively(
-    taxableOrdinaryIncome: Money,
-    qualifiedIncome: Money
-  ): Money =
-    var totalIncomeInHigherBrackets = Money(0)
-    var gainsYetToBeTaxed           = qualifiedIncome
-    var gainsTaxSoFar               = Money(0)
-
-    val totalIncome = taxableOrdinaryIncome + qualifiedIncome
-    bracketsStartsDescending.foreach { (bracketStart, bracketRate) =>
-      val totalIncomeYetToBeTaxed = totalIncome subp totalIncomeInHigherBrackets
-      val ordinaryIncomeYetToBeTaxed =
-        totalIncomeYetToBeTaxed subp gainsYetToBeTaxed
-
-      // Non-negative: so zero if bracket does not apply.
-      val totalIncomeInThisBracket = totalIncomeYetToBeTaxed subp bracketStart
-
-      // Non-negative: so zero if bracket does not apply.
-      val ordinaryIncomeInThisBracket =
-        ordinaryIncomeYetToBeTaxed subp bracketStart
-
-      val gainsInThisBracket: Money =
-        totalIncomeInThisBracket subp ordinaryIncomeInThisBracket
-      val taxInThisBracket = gainsInThisBracket taxAt bracketRate
-      totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket
-      gainsYetToBeTaxed = gainsYetToBeTaxed subp gainsInThisBracket
-      gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
-
-    }
-    assert(totalIncomeInHigherBrackets == totalIncome)
-    assert(gainsYetToBeTaxed.isZero)
-    val res = gainsTaxSoFar
-
-//    println(
-//      s"taxDueOnInvestments(${taxableOrdinaryIncome}, $qualifiedInvestmentIncome): $res"
-//    )
-    res
 
   def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }

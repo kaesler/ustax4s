@@ -68,7 +68,7 @@ class Form1040_2018Spec extends FunSuite:
 
     val taxOnInv = regime
       .qualifiedIncomeBrackets(year, filingStatus)
-      .taxDueFunctionally(form.taxableOrdinaryIncome, form.qualifiedIncome)
+      .taxDue(form.taxableOrdinaryIncome, form.qualifiedIncome)
       .rounded
     assertEquals(taxOnInv, Money(2217))
 

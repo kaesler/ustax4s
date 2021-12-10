@@ -137,7 +137,7 @@ object Form1040:
     qualifiedIncomeBrackets: QualifiedIncomeBrackets
   ): Money =
     ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
-      qualifiedIncomeBrackets.taxDueFunctionally(
+      qualifiedIncomeBrackets.taxDue(
         ordinaryIncome,
         qualifiedIncome
       )
