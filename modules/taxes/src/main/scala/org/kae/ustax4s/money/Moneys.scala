@@ -1,8 +1,7 @@
 package org.kae.ustax4s.money
 
+import cats.{Monoid, Show}
 import cats.implicits.*
-import cats.Monoid
-import cats.Show
 import org.kae.ustax4s.TaxRate
 
 private[money] object Moneys:
@@ -145,9 +144,9 @@ private[money] object Moneys:
   private def summonOrdering       = summon[Ordering[Money]]
 
 end Moneys
+export Moneys.Deduction
 export Moneys.Income
 export Moneys.IncomeThreshold
-export Moneys.Deduction
 export Moneys.TaxableIncome
 export Moneys.TaxCredit
 export Moneys.TaxPayable

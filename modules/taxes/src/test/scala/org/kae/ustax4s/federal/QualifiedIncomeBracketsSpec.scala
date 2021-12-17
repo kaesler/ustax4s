@@ -5,8 +5,7 @@ import java.time.Year
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.QualifiedIncomeBrackets
-import org.kae.ustax4s.money.MoneyGeneration
-import org.kae.ustax4s.money.{Income, TaxPayable}
+import org.kae.ustax4s.money.{Income, MoneyGeneration, TaxPayable}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 
