@@ -26,6 +26,9 @@ object Money:
   def absoluteDifference(left: Money, right: Money): Money = (left - right).abs
   def add(left: Money, right: Money): Money                = left.combine(right)
 
+  def areClose(left: Money, right: Money, tolerance: Int): Boolean =
+    (left - right).abs <= tolerance
+
   def divide(m: Money, i: Int): Money =
     require(i > 0, s"division by non-positive: $i")
     m.toDouble / i.toDouble
@@ -33,9 +36,6 @@ object Money:
   def divide(left: Money, right: Money): Double =
     require(right > 0, s"division by non-positive: $right")
     left.toDouble / right.toDouble
-
-  def areClose(left: Money, right: Money, tolerance: Int): Boolean =
-    (left - right).abs <= tolerance
 
   def isZero(m: Money): Boolean  = m == 0
   def nonZero(m: Money): Boolean = m != 0

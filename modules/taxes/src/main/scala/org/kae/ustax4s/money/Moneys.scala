@@ -20,11 +20,10 @@ private[money] object Moneys:
 
   opaque type Income = Money
   object Income:
+    val zero: Income                   = Money.zero
+    def apply(i: Int): Income          = Money(i)
+    def apply(d: Double): Income       = Money(d)
     def unsafeParse(s: String): Income = Money.unsafeParse(s)
-
-    val zero: Income             = Money.zero
-    def apply(i: Int): Income    = Money(i)
-    def apply(d: Double): Income = Money(d)
 
     given Monoid[Income]   = summonAdditionMonoid
     given Ordering[Income] = summonOrdering
@@ -33,31 +32,35 @@ private[money] object Moneys:
     extension (left: Income)
       def +(right: Income): Income = left.combine(right)
 
-      infix def div(right: Income): Double             = Money.divide(left, right)
-      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.taxAt(left, rate)
-      def isZero: Boolean                              = Money.isZero(left)
-
-      infix def mul(d: Double): Income = Money.multiply(left, d)
-      infix def applyDeductions(deductions: Deduction*): Income =
-        Money.subtractNonNegative(left, deductions.combineAll)
       infix def amountAbove(threshold: IncomeThreshold): Income =
         Money.subtractNonNegative(left, threshold)
+
+      infix def applyDeductions(deductions: Deduction*): Income =
+        Money.subtractNonNegative(left, deductions.combineAll)
+
+      infix def div(right: Income): Double = Money.divide(left, right)
+
+      infix def inflateBy(d: Double): Income = Money.multiply(left, d)
+
       infix def isBelow(threshold: IncomeThreshold): Boolean =
         summon[Ordering[Income]].lt(left, threshold)
 
-      infix def reduceBy(right: Income): Income = Money.subtractNonNegative(left, right)
-      infix def inflateBy(d: Double): Income    = Money.multiply(left, d)
+      def isZero: Boolean = Money.isZero(left)
 
+      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.taxAt(left, rate)
+
+      infix def mul(d: Double): Income = Money.multiply(left, d)
+
+      infix def reduceBy(right: Income): Income = Money.subtractNonNegative(left, right)
     end extension
   end Income
 
   opaque type Deduction = Money
   object Deduction:
+    val zero: Deduction                   = Money.zero
+    def apply(i: Int): Deduction          = Money(i)
+    def apply(d: Double): Deduction       = Money(d)
     def unsafeParse(s: String): Deduction = Money.unsafeParse(s)
-
-    val zero: Deduction             = Money.zero
-    def apply(i: Int): Deduction    = Money(i)
-    def apply(d: Double): Deduction = Money(d)
 
     given Monoid[Deduction]   = summonAdditionMonoid
     given Ordering[Deduction] = summonOrdering
@@ -66,9 +69,8 @@ private[money] object Moneys:
     extension (left: Deduction)
       def +(right: Deduction): Deduction = left.combine(right)
 
-      infix def mul(i: Int): Deduction          = Money.multiply(left, i)
       infix def inflateBy(d: Double): Deduction = Money.multiply(left, d)
-
+      infix def mul(i: Int): Deduction          = Money.multiply(left, i)
     end extension
   end Deduction
 
@@ -83,15 +85,15 @@ private[money] object Moneys:
     given Show[IncomeThreshold]     = summonShow
 
     extension (left: IncomeThreshold)
+      infix def absoluteDifference(right: IncomeThreshold): Income =
+        Money.absoluteDifference(left, right)
+
+      def asIncome: Income         = left
       def rounded: IncomeThreshold = Money.rounded(left)
 
-      def asIncome: Income = left
       infix def increaseBy(factor: Double): IncomeThreshold =
         require(factor > 1.0)
         Money.multiply(left, factor).rounded
-
-      infix def absoluteDifference(right: IncomeThreshold): Income =
-        Money.absoluteDifference(left, right)
   end IncomeThreshold
 
   opaque type TaxableIncome = Money
@@ -103,10 +105,10 @@ private[money] object Moneys:
   // Note: The result of applying a tax rate to an Income.
   opaque type TaxPayable = Money
   object TaxPayable:
-    def unsafeParse(s: String): TaxPayable = Money.unsafeParse(s)
     val zero: TaxPayable                   = Money.zero
     def apply(i: Int): TaxPayable          = Money(i)
     def apply(d: Double): TaxPayable       = Money(d)
+    def unsafeParse(s: String): TaxPayable = Money.unsafeParse(s)
 
     given Monoid[TaxPayable]   = summonAdditionMonoid
     given Ordering[TaxPayable] = summonOrdering
@@ -114,28 +116,35 @@ private[money] object Moneys:
 
     extension (left: TaxPayable)
       def +(right: TaxPayable): TaxPayable = left.combine(right)
-      def isZero: Boolean                  = left == zero
-      def nonZero: Boolean                 = !isZero
+
+      infix def absoluteDifference(right: TaxPayable): TaxPayable =
+        Money.absoluteDifference(left, right)
+
+      infix def applyCredits(cs: TaxCredit*): TaxPayable =
+        Money.subtractNonNegative(left, cs.combineAll)
+
+      infix def div(i: Int): TaxPayable = Money.divide(left, i)
+
+      def isZero: Boolean = left == zero
 
       infix def isCloseTo(right: TaxPayable, tolerance: Int): Boolean =
         Money.areClose(left, right, tolerance)
 
-      infix def div(i: Int): TaxPayable = Money.divide(left, i)
-      def rounded: TaxPayable           = Money.rounded(left)
-      infix def applyCredits(cs: TaxCredit*): TaxPayable =
-        Money.subtractNonNegative(left, cs.combineAll)
-      infix def absoluteDifference(right: TaxPayable): TaxPayable =
-        Money.absoluteDifference(left, right)
+      def nonZero: Boolean = !isZero
+
+      def rounded: TaxPayable = Money.rounded(left)
     end extension
   end TaxPayable
 
   opaque type TaxCredit = Money
   object TaxCredit:
-    def apply(i: Int): TaxCredit                                   = Money(i)
-    val zero: TaxCredit                                            = Money.zero
-    given Monoid[TaxCredit]                                        = summonAdditionMonoid
-    given Ordering[TaxCredit]                                      = summonOrdering
-    given Show[TaxCredit]                                          = summonShow
+    val zero: TaxCredit          = Money.zero
+    def apply(i: Int): TaxCredit = Money(i)
+
+    given Monoid[TaxCredit]   = summonAdditionMonoid
+    given Ordering[TaxCredit] = summonOrdering
+    given Show[TaxCredit]     = summonShow
+
     extension (left: TaxCredit) def +(right: TaxCredit): TaxCredit = left.combine(right)
   end TaxCredit
 
