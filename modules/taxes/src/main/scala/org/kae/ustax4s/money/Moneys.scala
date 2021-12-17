@@ -4,6 +4,13 @@ import cats.{Monoid, Show}
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
 
+export Moneys.Deduction
+export Moneys.Income
+export Moneys.IncomeThreshold
+export Moneys.TaxableIncome
+export Moneys.TaxCredit
+export Moneys.TaxPayable
+
 private[money] object Moneys:
 
   // TODO: look at Haskell code for taxes.
@@ -153,9 +160,3 @@ private[money] object Moneys:
   private def summonOrdering       = summon[Ordering[Money]]
 
 end Moneys
-export Moneys.Deduction
-export Moneys.Income
-export Moneys.IncomeThreshold
-export Moneys.TaxableIncome
-export Moneys.TaxCredit
-export Moneys.TaxPayable
