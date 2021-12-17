@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable}
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
@@ -13,9 +13,9 @@ import scala.annotation.tailrec
   *   the tax brackets in effect
   */
 final case class OrdinaryIncomeBrackets(
-  bracketStarts: Map[Money, FederalTaxRate]
+  bracketStarts: Map[IncomeThreshold, FederalTaxRate]
 ):
-  require(bracketStarts.contains(Money.zero))
+  require(bracketStarts.contains(IncomeThreshold.zero))
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
@@ -23,26 +23,26 @@ final case class OrdinaryIncomeBrackets(
     require(factor >= 1.0)
     OrdinaryIncomeBrackets(
       bracketStarts.map { (start, rate) =>
-        ((start mul factor).rounded, rate)
+        (start.increaseBy(factor).rounded, rate)
       }
     )
 
-  val bracketStartsAscending: Vector[(Money, FederalTaxRate)] =
+  val bracketStartsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
-  def taxDueWholeDollar(taxableOrdinaryIncome: Money): Money =
+  def taxDueWholeDollar(taxableOrdinaryIncome: Income): TaxPayable =
     taxDue(taxableOrdinaryIncome).rounded
 
-  def taxDue(taxableOrdinaryIncome: Money): Money =
+  def taxDue(taxableOrdinaryIncome: Income): TaxPayable =
 
     // Note: Qualified investment income sort of occupies the top brackets above
     // ordinary income and so does not affect this.
 
-    case class Accum(ordinaryIncomeYetToBeTaxed: Money, taxSoFar: Money)
+    case class Accum(ordinaryIncomeYetToBeTaxed: Income, taxSoFar: TaxPayable)
     object Accum:
-      def initial: Accum = apply(taxableOrdinaryIncome, Money.zero)
+      def initial: Accum = apply(taxableOrdinaryIncome, TaxPayable.zero)
 
     val accum = bracketsStartsDescending.foldLeft(Accum.initial) {
 
@@ -52,12 +52,13 @@ final case class OrdinaryIncomeBrackets(
           ) =>
         // Result will be non-negative: so becomes zero if bracket does not apply.
         val ordinaryIncomeInThisBracket =
-          ordinaryIncomeYetToBeTaxed subp bracketStart
+          ordinaryIncomeYetToBeTaxed.amountAbove(bracketStart)
 
         // Non-negative: so zero if bracket does not apply.
         val taxInThisBracket = ordinaryIncomeInThisBracket taxAt bracketRate
         Accum(
-          ordinaryIncomeYetToBeTaxed = ordinaryIncomeYetToBeTaxed subp ordinaryIncomeInThisBracket,
+          ordinaryIncomeYetToBeTaxed =
+            ordinaryIncomeYetToBeTaxed reduceBy ordinaryIncomeInThisBracket,
           taxSoFar = taxSoFar + taxInThisBracket
         )
     }
@@ -66,7 +67,7 @@ final case class OrdinaryIncomeBrackets(
     // println(s"taxDueFunctionally($taxableOrdinaryIncome): $res")
     res
 
-  def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Money =
+  def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Income =
     bracketStartsAscending
       .sliding(2)
       .collect { case Vector((_, `bracketRate`), (nextBracketStart, _)) =>
@@ -79,8 +80,9 @@ final case class OrdinaryIncomeBrackets(
           s"rate not found or has no successor: $bracketRate"
         )
       )
+      .asIncome
 
-  def taxToEndOfBracket(bracketRate: FederalTaxRate): Money =
+  def taxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
     require(bracketExists(bracketRate))
 
     val taxes = bracketStartsAscending
@@ -93,16 +95,16 @@ final case class OrdinaryIncomeBrackets(
       }
       .collect { case Vector((bracketStart, rate), (nextBracketStart, _)) =>
         // Tax due on current bracket:
-        (nextBracketStart subp bracketStart) taxAt rate
+        (nextBracketStart absoluteDifference bracketStart).taxAt(rate)
       }
 
-    taxes.foldLeft(Money(0))(_ + _)
+    taxes.foldLeft(TaxPayable.zero)(_ + _)
 
-  def bracketWidth(bracketRate: FederalTaxRate): Money =
+  def bracketWidth(bracketRate: FederalTaxRate): Income =
     bracketStartsAscending
       .sliding(2)
       .collect { case Vector((rateStart, `bracketRate`), (nextRateStart, _)) =>
-        nextRateStart subp rateStart
+        nextRateStart absoluteDifference rateStart
       }
       .toList
       .headOption
@@ -121,10 +123,10 @@ final case class OrdinaryIncomeBrackets(
   def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
 
-  def endOfLowestBracket: Money =
+  def endOfLowestBracket: IncomeThreshold =
     bracketStarts.keySet.toList.sorted.apply(1)
 
-  def startOfTopBracket: Money = bracketStarts.keySet.toList.max
+  def startOfTopBracket: IncomeThreshold = bracketStarts.keySet.toList.max
 
 object OrdinaryIncomeBrackets:
 
@@ -136,7 +138,7 @@ object OrdinaryIncomeBrackets:
     OrdinaryIncomeBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100.0d)
-        Money(bracketStart) ->
+        IncomeThreshold(bracketStart) ->
           FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
       }
     )

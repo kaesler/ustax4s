@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.TaxPayable
 
 class SmokeTestAgainstMyMA2018Return extends FunSuite:
   import org.kae.ustax4s.MoneyConversions.given
@@ -25,7 +25,7 @@ class SmokeTestAgainstMyMA2018Return extends FunSuite:
           incomeBeforeExemptions
         )
         .rounded,
-      Money(6690)
+      TaxPayable(6690)
     )
   }
 
@@ -45,6 +45,6 @@ class SmokeTestAgainstMyMA2018Return extends FunSuite:
         .rounded,
       // Note: we ignore the 12% income and cap gains complication
       // here.
-      Money(7868)
+      TaxPayable(7868)
     )
   }

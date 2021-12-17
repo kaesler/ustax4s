@@ -1,16 +1,11 @@
 package org.kae.ustax4s.money
 
 import cats.implicits.*
-import cats.kernel.Order
 import cats.{Monoid, Show}
 import org.kae.ustax4s.TaxRate
 import scala.math.BigDecimal.RoundingMode
 
-// TODO: eventually make this type package private.
-// TODO: eventually remove many unneeded methods.
-
-// Type for non-negative money values.
-opaque type Money = BigDecimal
+private[money] type Money = BigDecimal
 object Money:
 
   val zero: Money = 0
@@ -28,44 +23,38 @@ object Money:
     require(i >= 0)
     BigDecimal(i)
 
+  def absoluteDifference(left: Money, right: Money): Money = (left - right).abs
+  def add(left: Money, right: Money): Money                = left.combine(right)
+
+  def divide(m: Money, i: Int): Money =
+    require(i > 0, s"division by non-positive: $i")
+    m.toDouble / i.toDouble
+
+  def divide(left: Money, right: Money): Double =
+    require(right > 0, s"division by non-positive: $right")
+    left.toDouble / right.toDouble
+
+  def areClose(left: Money, right: Money, tolerance: Int): Boolean =
+    (left - right).abs <= tolerance
+
+  def isZero(m: Money): Boolean  = m == 0
+  def nonZero(m: Money): Boolean = m != 0
+
+  def multiply(m: Money, d: Double): Money =
+    require(d >= 0, s"multiplication by negative: $d")
+    m * d
+
+  def rounded(m: Money): Money = m.setScale(0, RoundingMode.HALF_UP)
+
+  def subtractNonNegative(left: Money, right: Money): Money =
+    List(zero, left - right).max
+
+  def taxAt[T: TaxRate](m: Money, rate: T): Money = multiply(m, rate.asFraction)
+
   given Monoid[Money]   = summonMonoid
   given Ordering[Money] = summonOrdering
   given Show[Money]     = Show.fromToString[Money]
 
-  extension (underlying: Money)
-    def isZero: Boolean        = underlying == 0
-    def nonZero: Boolean       = !isZero
-    def rounded: Money         = underlying.setScale(0, RoundingMode.HALF_UP)
-    def +(right: Money): Money = underlying.combine(right)
-
-    // Subtract but don't go negative.
-    infix def subp(right: Money): Money = List(zero, underlying - right).max
-
-    infix def mul(d: Double): Money =
-      require(d >= 0, s"multiplication by negative: $d")
-      underlying * d
-
-    infix def div(i: Int): Money =
-      require(i > 0, s"division by non-positive: $i")
-      underlying.toDouble / i.toDouble
-
-    infix def div(m: Money): Money =
-      require(m > 0, s"division by non-positive: $m")
-      underlying.toDouble / m.toDouble
-
-    // Compute tax at the given rate.
-    infix def taxAt[T: TaxRate](rate: T): Money = underlying mul rate.asFraction
-
-    // Note: there seems no way to have Money "extends Ordered[Money]"
-    // and then just provide the compare() method, so this is what we do.
-    infix def <(that: Money): Boolean  = underlying.compare(that) < 0
-    infix def >(that: Money): Boolean  = underlying.compare(that) > 0
-    infix def <=(that: Money): Boolean = !(underlying > that)
-    infix def >=(that: Money): Boolean = !(underlying < that)
-
-    def isCloseTo(that: Money, tolerance: Int): Boolean =
-      (underlying - that).abs <= tolerance
-  end extension
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.

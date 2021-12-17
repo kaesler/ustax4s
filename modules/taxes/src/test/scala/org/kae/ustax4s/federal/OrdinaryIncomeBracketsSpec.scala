@@ -5,7 +5,8 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.money.{Money, MoneyGeneration}
+import org.kae.ustax4s.money.MoneyGeneration
+import org.kae.ustax4s.money.{Income, TaxPayable}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 
@@ -14,11 +15,13 @@ class OrdinaryIncomeBracketsSpec
     with TaxBracketsGeneration
     with MoneyGeneration:
 
+  // import math.Ordered.orderingToOrdered
+  import math.Ordering.Implicits.infixOrderingOps
+
   given Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
 
-  given Arbitrary[Money] = Arbitrary(genMoney)
+  given Arbitrary[Income] = Arbitrary(genIncome)
 
-  private val zero    = Money(0)
   private val TheYear = Year.of(2021)
 
   private def bracketsFor(year: Year, filingStatus: FilingStatus) =
@@ -43,27 +46,27 @@ class OrdinaryIncomeBracketsSpec
 
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
-      Money(1420)
+      TaxPayable(1420)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
-      Money(6220)
+      TaxPayable(6220)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
-      Money(13293)
+      TaxPayable(13293)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
-      Money(32145)
+      TaxPayable(32145)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
-      Money(46385)
+      TaxPayable(46385)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
-      Money(156355)
+      TaxPayable(156355)
     )
   }
 
@@ -71,45 +74,45 @@ class OrdinaryIncomeBracketsSpec
     val brackets = bracketsFor(TheYear, Single)
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
-      Money(995)
+      TaxPayable(995)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
-      Money(4664)
+      TaxPayable(4664)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
-      Money(14751)
+      TaxPayable(14751)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
-      Money(33603)
+      TaxPayable(33603)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
-      Money(47843)
+      TaxPayable(47843)
     )
     assertEquals(
       brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
-      Money(157804)
+      TaxPayable(157804)
     )
   }
 
   property("never tax zero") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
-      brackets.taxDue(Money(0)) == zero
+      brackets.taxDue(Income.zero) == TaxPayable.zero
     }
   }
 
   property("tax in lowest bracket as expected") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
       val (lowBracketTop, lowBracketRate) = brackets.bracketStartsAscending.head
-      brackets.taxDue(lowBracketTop) == (lowBracketTop taxAt lowBracketRate)
+      brackets.taxDue(lowBracketTop.asIncome) == (lowBracketTop.asIncome taxAt lowBracketRate)
     }
   }
 
   property("tax rises monotonically with income") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income1: Money, income2: Money) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income1: Income, income2: Income) =>
       if income1 < income2 then brackets.taxDue(income1) < brackets.taxDue(income2)
       else if income1 > income2 then brackets.taxDue(income1) > brackets.taxDue(income2)
       else brackets.taxDue(income1) == brackets.taxDue(income2)
@@ -117,13 +120,13 @@ class OrdinaryIncomeBracketsSpec
   }
 
   property("tax is never zero except on zero") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: Money) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
       brackets.taxDue(income).nonZero || income.isZero
     }
   }
 
   property("max tax rate is the max tax rate") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: Money) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
       val maxTax = income taxAt brackets.bracketStartsAscending.map(_._2).max
       brackets.taxDue(income) <= maxTax
     }
@@ -142,7 +145,7 @@ class OrdinaryIncomeBracketsSpec
   }
 
   test("inflated brackets incur lower tax for same income") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: Money) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
       val inflatedBrackets = brackets.inflatedBy(1.2)
       val baseTaxDue       = brackets.taxDue(income)
       val inflatedTaxDue   = inflatedBrackets.taxDue(income)

@@ -6,7 +6,7 @@ import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, PreTrump, Trump}
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Deduction, Income}
 
 object TaxDueAdHocTests extends App:
 
@@ -24,10 +24,10 @@ object TaxDueAdHocTests extends App:
       )
       .calculator
       .federalTaxResults(
-        socSec = 0,
-        ordinaryIncomeNonSS = 36024,
-        qualifiedIncome = 40828,
-        itemizedDeductions = 11222
+        socSec = Income(0),
+        ordinaryIncomeNonSS = Income(36024),
+        qualifiedIncome = Income(40828),
+        itemizedDeductions = Deduction(11222)
       )
 
   println(results.show)

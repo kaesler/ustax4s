@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal.forms
 
 import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets, QualifiedIncomeBrackets}
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.*
 
 final case class QualifiedDividendsAndCapitalGainsWorksheet(
   ordinaryBrackets: OrdinaryIncomeBrackets,
@@ -12,18 +12,18 @@ final case class QualifiedDividendsAndCapitalGainsWorksheet(
   //  - adjust brackets for non-investments by amount receiving preferential treatment?
 
   // Line 4
-  def preferentiallyTaxedGains(form1040: Form1040): Money =
+  def preferentiallyTaxedGains(form1040: Form1040): Income =
     form1040.qualifiedDividends +
       form1040.scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(Money.zero)
+        .getOrElse(Income.zero)
 
-  def taxOnPTGains: Money = ???
+  def taxOnPTGains: TaxPayable = ???
 
-  def taxOnNonGains: Money = ???
+  def taxOnNonGains: TaxPayable = ???
 
   // Line 27
-  def taxOnAllTaxableIncome: Money =
+  def taxOnAllTaxableIncome: TaxPayable =
     // Lesser of:
     //   - preferential rates applied
     //   - no preferential rates applied

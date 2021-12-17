@@ -5,13 +5,13 @@ import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.TaxableSocialSecurity
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.Income
 
 object TaxInRetirementTests extends App:
   import org.kae.ustax4s.MoneyConversions.given
 
   val year = Year.of(2021)
-  val ss   = Money(49128)
+  val ss   = 49128
 
   doCase(0)
   doCase(17000)
@@ -19,7 +19,7 @@ object TaxInRetirementTests extends App:
   doCase(30000)
   doCase(40000)
 
-  def doCase(income: Money): Unit =
+  def doCase(income: Income): Unit =
     val ssTaxable =
       TaxableSocialSecurity.taxableSocialSecurityBenefits(
         filingStatus = Single,

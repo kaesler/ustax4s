@@ -3,7 +3,7 @@ package org.kae.ustax4s.state_ma
 import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.*
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.{Age, FilingStatus, NotYetImplemented}
 import scala.util.chaining.*
 
@@ -20,10 +20,10 @@ object StateMATaxCalculator:
     //  - interest
     //  - dividends
     //  - capital gains
-    massachusettsGrossIncome: Money
-  ): Money =
+    massachusettsGrossIncome: Income
+  ): TaxPayable =
     massachusettsGrossIncome
-      .subp(totalExemptions(year, filingStatus, birthDate, dependents))
+      .applyDeductions(totalExemptions(year, filingStatus, birthDate, dependents))
       .taxAt(rateFor(year))
 
   private def totalExemptions(
@@ -31,7 +31,7 @@ object StateMATaxCalculator:
     filingStatus: FilingStatus,
     birthDate: LocalDate,
     dependents: Int
-  ): Money =
+  ): Deduction =
     List(
       personalExemption(year, filingStatus),
       age65OrOlderExemption(year, birthDate),
@@ -51,7 +51,7 @@ object StateMATaxCalculator:
   private def personalExemption(
     year: Year,
     filingStatus: FilingStatus
-  ): Money =
+  ): Deduction =
     (
       (year.getValue, filingStatus) match
         case (2022, HeadOfHousehold) => 6800
@@ -73,13 +73,13 @@ object StateMATaxCalculator:
         case (2017, Single)          => 4400
 
         case _ => throw NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
-  private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Money =
-    Money(
+  private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Deduction =
+    Deduction(
       if Age.isAge65OrOlder(birthDate, year) then 700
       else 0
     )
 
-  private def dependentExceptions(dependents: Int): Money =
-    Money(1000) mul dependents
+  private def dependentExceptions(dependents: Int): Deduction =
+    Deduction(1000) mul dependents

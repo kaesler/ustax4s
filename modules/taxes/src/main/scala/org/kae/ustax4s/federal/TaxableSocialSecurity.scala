@@ -4,25 +4,23 @@ import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Income, IncomeThreshold}
 
 object TaxableSocialSecurity:
 
-  private val two = 2
-
-  private def bases(filingStatus: FilingStatus): (Money, Money) =
+  private def bases(filingStatus: FilingStatus): (IncomeThreshold, IncomeThreshold) =
     filingStatus match
-      case Single | HeadOfHousehold => (Money(25000), Money(34000))
+      case Single | HeadOfHousehold => (IncomeThreshold(25000), IncomeThreshold(34000))
 
   // Adjusted to model the fact that the bases are not adjusted annually
   // as tax brackets are. So we just estimate: amount rises 3% per year
   // but does not exceed 85%.
   def taxableSocialSecurityBenefitsAdjusted(
     filingStatus: FilingStatus,
-    socialSecurityBenefits: Money,
-    ssRelevantOtherIncome: Money,
+    socialSecurityBenefits: Income,
+    ssRelevantOtherIncome: Income,
     year: Year
-  ): Money =
+  ): Income =
     val unadjusted = taxableSocialSecurityBenefits(
       filingStatus = filingStatus,
       socialSecurityBenefits = socialSecurityBenefits,
@@ -31,7 +29,7 @@ object TaxableSocialSecurity:
     if year.isBefore(Year.of(2022)) then unadjusted
     else
       val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
-      val adjusted         = unadjusted mul adjustmentFactor
+      val adjusted         = unadjusted inflateBy adjustmentFactor
       List(
         adjusted,
         socialSecurityBenefits mul 0.85
@@ -39,20 +37,20 @@ object TaxableSocialSecurity:
 
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
-    socialSecurityBenefits: Money,
-    ssRelevantOtherIncome: Money
-  ): Money =
+    socialSecurityBenefits: Income,
+    ssRelevantOtherIncome: Income
+  ): Income =
     val (lowBase, highBase) = bases(filingStatus)
 
-    val combinedIncome: Money = ssRelevantOtherIncome + (socialSecurityBenefits div two)
+    val combinedIncome: Income = ssRelevantOtherIncome + (socialSecurityBenefits mul 0.5)
 
-    if combinedIncome < lowBase then Money.zero
-    else if combinedIncome < highBase then
+    if combinedIncome isBelow lowBase then Income.zero
+    else if combinedIncome isBelow highBase then
       val fractionTaxable  = 0.5
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%
       List(
-        (combinedIncome subp lowBase) mul fractionTaxable,
+        (combinedIncome amountAbove lowBase) mul fractionTaxable,
         maxSocSecTaxable
       ).min
     else
@@ -62,6 +60,6 @@ object TaxableSocialSecurity:
       List(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
-        Money(4500) + ((combinedIncome subp highBase) mul fractionTaxable),
+        Income(4500) + ((combinedIncome amountAbove highBase) mul fractionTaxable),
         maxSocSecTaxable
       ).min

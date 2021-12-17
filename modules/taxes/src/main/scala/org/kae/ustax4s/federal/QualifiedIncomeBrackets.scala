@@ -4,7 +4,7 @@ package federal
 import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable}
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
@@ -15,11 +15,11 @@ import scala.annotation.tailrec
   *   the tax brackets in effect
   */
 final case class QualifiedIncomeBrackets(
-  bracketStarts: Map[Money, FederalTaxRate]
+  bracketStarts: Map[IncomeThreshold, FederalTaxRate]
 ):
   // Note: We capture "tax free LTCGs with suitably low income" by having a
   // zero-rate lowest bracket.
-  require(bracketStarts.contains(Money(0)))
+  require(bracketStarts.contains(IncomeThreshold.zero))
   require(bracketStarts.size >= 2)
 
   // Adjust the bracket starts for inflation.
@@ -27,38 +27,39 @@ final case class QualifiedIncomeBrackets(
   def inflatedBy(factor: Double): QualifiedIncomeBrackets =
     require(factor >= 1.0)
     QualifiedIncomeBrackets(
-      bracketStarts.map { (start, rate) =>
-        ((start mul factor).rounded, rate)
+      bracketStarts.map { pair =>
+        val (start, rate) = pair
+        (start.increaseBy(factor).rounded, rate)
       }
     )
 
-  val bracketStartsAscending: Vector[(Money, FederalTaxRate)] =
+  val bracketStartsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
     bracketStarts.toVector.sortBy(_._1)
 
-  require(bracketStartsAscending(0) == (Money(0), FederalTaxRate.unsafeFrom(0.0)))
+  require(bracketStartsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
-  def startOfNonZeroQualifiedRateBracket: Money = bracketStartsAscending(1)._1
+  def startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketStartsAscending(1)._1
 
   def taxDueWholeDollar(
-    taxableOrdinaryIncome: Money,
-    qualifiedIncome: Money
-  ): Money =
+    taxableOrdinaryIncome: Income,
+    qualifiedIncome: Income
+  ): TaxPayable =
     taxDue(taxableOrdinaryIncome, qualifiedIncome).rounded
 
   def taxDue(
-    taxableOrdinaryIncome: Money,
-    qualifiedIncome: Money
-  ): Money =
+    taxableOrdinaryIncome: Income,
+    qualifiedIncome: Income
+  ): TaxPayable =
     case class Accum(
-      totalIncomeInHigherBrackets: Money,
-      gainsYetToBeTaxed: Money,
-      gainsTaxSoFar: Money
+      totalIncomeInHigherBrackets: Income,
+      gainsYetToBeTaxed: Income,
+      gainsTaxSoFar: TaxPayable
     )
     object Accum:
       def initial: Accum =
-        apply(Money.zero, qualifiedIncome, Money.zero)
+        apply(Income.zero, qualifiedIncome, TaxPayable.zero)
 
     val totalTaxableIncome = taxableOrdinaryIncome + qualifiedIncome
     val accum =
@@ -72,23 +73,23 @@ final case class QualifiedIncomeBrackets(
               (bracketStart, bracketRate)
             ) =>
           val totalIncomeYetToBeTaxed =
-            totalTaxableIncome subp totalIncomeInHigherBrackets
+            totalTaxableIncome reduceBy totalIncomeInHigherBrackets
           val ordinaryIncomeYetToBeTaxed =
-            totalIncomeYetToBeTaxed subp gainsYetToBeTaxed
+            totalIncomeYetToBeTaxed reduceBy gainsYetToBeTaxed
 
           // Non-negative: so zero if bracket does not apply.
-          val totalIncomeInThisBracket = totalIncomeYetToBeTaxed subp bracketStart
+          val totalIncomeInThisBracket = totalIncomeYetToBeTaxed amountAbove bracketStart
 
           // Non-negative: so zero if bracket does not apply.
           val ordinaryIncomeInThisBracket =
-            ordinaryIncomeYetToBeTaxed subp bracketStart
+            ordinaryIncomeYetToBeTaxed amountAbove bracketStart
 
-          val gainsInThisBracket: Money =
-            totalIncomeInThisBracket subp ordinaryIncomeInThisBracket
+          val gainsInThisBracket: Income =
+            totalIncomeInThisBracket reduceBy ordinaryIncomeInThisBracket
           val taxInThisBracket = gainsInThisBracket taxAt bracketRate
           Accum(
             totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket,
-            gainsYetToBeTaxed = gainsYetToBeTaxed subp gainsInThisBracket,
+            gainsYetToBeTaxed = gainsYetToBeTaxed reduceBy gainsInThisBracket,
             gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
           )
       }
@@ -245,7 +246,7 @@ object QualifiedIncomeBrackets:
     QualifiedIncomeBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
-        Money(bracketStart) ->
+        IncomeThreshold(bracketStart) ->
           FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       }
     )

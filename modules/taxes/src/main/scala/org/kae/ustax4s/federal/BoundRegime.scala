@@ -2,7 +2,7 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.*
 import org.kae.ustax4s.{Age, FilingStatus, InflationEstimate}
 
 trait BoundRegime(
@@ -12,36 +12,36 @@ trait BoundRegime(
   birthDate: LocalDate,
   personalExemptions: Int
 ):
-  def unadjustedStandardDeduction: Money
-  def adjustmentWhenOver65: Money
-  def adjustmentWhenOver65AndSingle: Money
+  def unadjustedStandardDeduction: Deduction
+  def adjustmentWhenOver65: Deduction
+  def adjustmentWhenOver65AndSingle: Deduction
 
-  def perPersonExemption: Money
+  def perPersonExemption: Deduction
   def ordinaryIncomeBrackets: OrdinaryIncomeBrackets
   def qualifiedIncomeBrackets: QualifiedIncomeBrackets
 
   def name: String = regime.name
 
   // TODO: needs property spec
-  final def standardDeduction: Money =
+  final def standardDeduction: Deduction =
     unadjustedStandardDeduction +
       (
         if Age.isAge65OrOlder(birthDate, year) then
           adjustmentWhenOver65 +
             (
               if filingStatus.isSingle then adjustmentWhenOver65AndSingle
-              else Money.zero
+              else Deduction.zero
             )
-        else Money.zero
+        else Deduction.zero
       )
 
   // TODO: needs property spec
-  final def personalExemptionDeduction: Money =
+  final def personalExemptionDeduction: Deduction =
     perPersonExemption mul personalExemptions
 
   // TODO: needs property spec
   // netDed >= all of ped, stdDm, item
-  final def netDeduction(itemizedDeductions: Money): Money =
+  final def netDeduction(itemizedDeductions: Deduction): Deduction =
     personalExemptionDeduction +
       List(
         standardDeduction,
@@ -51,10 +51,10 @@ trait BoundRegime(
   // TODO: needs property spec
   def calculator: FederalTaxCalculator =
     (
-      socSec: Money,
-      ordinaryIncomeNonSS: Money,
-      qualifiedIncome: Money,
-      itemizedDeductions: Money
+      socSec: Income,
+      ordinaryIncomeNonSS: Income,
+      qualifiedIncome: Income,
+      itemizedDeductions: Deduction
     ) => {
 
       val ssRelevantOtherIncome =
@@ -71,7 +71,7 @@ trait BoundRegime(
       val taxableOrdinaryIncome =
         List(taxableSocialSecurity, ordinaryIncomeNonSS)
           .combineAll
-          .subp(netDeduction(itemizedDeductions))
+          .applyDeductions(netDeduction(itemizedDeductions))
 
       val taxOnOrdinaryIncome = ordinaryIncomeBrackets.taxDue(taxableOrdinaryIncome)
 
@@ -114,15 +114,15 @@ trait BoundRegime(
       override val name =
         s"${base.name}-estimatedFor-${estimate.targetFutureYear.getValue}"
 
-      override def unadjustedStandardDeduction: Money =
-        base.unadjustedStandardDeduction mul estimate.factor(base.year)
-      override def adjustmentWhenOver65: Money =
-        base.adjustmentWhenOver65 mul estimate.factor(base.year)
-      override def adjustmentWhenOver65AndSingle: Money =
-        base.adjustmentWhenOver65AndSingle mul estimate.factor(base.year)
+      override def unadjustedStandardDeduction: Deduction =
+        base.unadjustedStandardDeduction inflateBy estimate.factor(base.year)
+      override def adjustmentWhenOver65: Deduction =
+        base.adjustmentWhenOver65 inflateBy estimate.factor(base.year)
+      override def adjustmentWhenOver65AndSingle: Deduction =
+        base.adjustmentWhenOver65AndSingle inflateBy estimate.factor(base.year)
 
-      override val perPersonExemption: Money =
-        base.perPersonExemption mul estimate.factor(base.year)
+      override val perPersonExemption: Deduction =
+        base.perPersonExemption inflateBy estimate.factor(base.year)
 
       override val ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
         base.ordinaryIncomeBrackets.inflatedBy(estimate.factor(base.year))
@@ -144,14 +144,14 @@ object BoundRegime:
   ): BoundRegime =
     new BoundRegime(regime, year, filingStatus, birthDate, personalExemptions) {
 
-      override def unadjustedStandardDeduction: Money =
+      override def unadjustedStandardDeduction: Deduction =
         regime.unadjustedStandardDeduction(this.year, filingStatus)
-      override def adjustmentWhenOver65: Money =
+      override def adjustmentWhenOver65: Deduction =
         regime.adjustmentWhenOver65(this.year)
-      override def adjustmentWhenOver65AndSingle: Money =
+      override def adjustmentWhenOver65AndSingle: Deduction =
         regime.adjustmentWhenOver65AndSingle(this.year)
 
-      override val perPersonExemption: Money = regime.perPersonExemption(this.year)
+      override val perPersonExemption: Deduction = regime.perPersonExemption(this.year)
 
       override def ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
         regime.ordinaryIncomeBrackets(this.year, filingStatus)

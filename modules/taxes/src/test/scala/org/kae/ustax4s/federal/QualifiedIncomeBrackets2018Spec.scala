@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.federal.QualifiedIncomeBrackets
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.TaxPayable
 
 class QualifiedIncomeBrackets2018Spec extends FunSuite:
   import org.kae.ustax4s.MoneyConversions.given
@@ -20,6 +20,6 @@ class QualifiedIncomeBrackets2018Spec extends FunSuite:
           14777
         )
         .rounded,
-      Money(2217)
+      TaxPayable(2217)
     )
   }

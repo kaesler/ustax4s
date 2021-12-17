@@ -3,7 +3,7 @@ package org.kae.ustax4s.calculator.testdata
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.{PreTrump, Regime, Trump}
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Deduction, Income}
 import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
@@ -21,10 +21,10 @@ object TestDataGeneration:
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     dependents: Int,
-    socSec: Money,
-    ordinaryIncomeNonSS: Money,
-    qualifiedIncome: Money,
-    itemizedDeductions: Money
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedIncome: Income,
+    itemizedDeductions: Deduction
   ):
     def personalExemptions: Int = dependents + 1
   end TestCaseInputs

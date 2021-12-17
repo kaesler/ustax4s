@@ -4,7 +4,7 @@ import cats.implicits.*
 import java.time.{LocalDate, Month, Year}
 import org.kae.ustax4s
 import org.kae.ustax4s.FilingStatus.*
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.*
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.util.chaining.*
@@ -18,11 +18,11 @@ sealed trait Regime:
   def unadjustedStandardDeduction(
     year: Year,
     filingStatus: FilingStatus
-  ): Money
-  def adjustmentWhenOver65(year: Year): Money
-  def adjustmentWhenOver65AndSingle(year: Year): Money
+  ): Deduction
+  def adjustmentWhenOver65(year: Year): Deduction
+  def adjustmentWhenOver65AndSingle(year: Year): Deduction
 
-  def perPersonExemption(year: Year): Money
+  def perPersonExemption(year: Year): Deduction
 
   def ordinaryIncomeBrackets(
     year: Year,
@@ -235,9 +235,9 @@ case object Trump extends Regime:
     if year.getValue < FirstYearTrumpRegimeRequired then throw RegimeInvalidForYear(this, year)
     else ()
 
-  override def perPersonExemption(year: Year): Money = Money.zero
+  override def perPersonExemption(year: Year): Deduction = Deduction.zero
 
-  override def unadjustedStandardDeduction(year: Year, filingStatus: FilingStatus): Money =
+  override def unadjustedStandardDeduction(year: Year, filingStatus: FilingStatus): Deduction =
     (
       (year.getValue, filingStatus) match
 
@@ -257,9 +257,9 @@ case object Trump extends Regime:
         case (2018, Single)          => 12000
 
         case _ => throw ustax4s.NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
-  override def adjustmentWhenOver65(year: Year): Money =
+  override def adjustmentWhenOver65(year: Year): Deduction =
     (
       year.getValue match
         case 2022 => 1400
@@ -268,9 +268,9 @@ case object Trump extends Regime:
         case 2019 => 1300
         case 2018 => 1300
         case _    => throw ustax4s.NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
-  override def adjustmentWhenOver65AndSingle(year: Year): Money =
+  override def adjustmentWhenOver65AndSingle(year: Year): Deduction =
     (
       year.getValue match
         case 2022 => 350
@@ -279,7 +279,7 @@ case object Trump extends Regime:
         case 2019 => 350
         case 2018 => 300
         case _    => throw ustax4s.NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
 case object PreTrump extends Regime:
   import Regime.*
@@ -359,14 +359,14 @@ case object PreTrump extends Regime:
   override def failIfInvalid(year: Year): Unit =
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)
 
-  override def perPersonExemption(year: Year): Money =
+  override def perPersonExemption(year: Year): Deduction =
     (year.getValue match
       case 2017 => 4050
       case 2016 => 4050
       case _    => throw ustax4s.NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
-  override def unadjustedStandardDeduction(year: Year, filingStatus: FilingStatus): Money =
+  override def unadjustedStandardDeduction(year: Year, filingStatus: FilingStatus): Deduction =
     (
       (year.getValue, filingStatus) match
 
@@ -377,22 +377,22 @@ case object PreTrump extends Regime:
         case (2016, Single)          => 6300
 
         case _ => throw ustax4s.NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
-  override def adjustmentWhenOver65(year: Year): Money =
+  override def adjustmentWhenOver65(year: Year): Deduction =
     (
       year.getValue match
         case 2017 => 1250
         case 2016 => 1250
         case _    => throw ustax4s.NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
-  override def adjustmentWhenOver65AndSingle(year: Year): Money =
+  override def adjustmentWhenOver65AndSingle(year: Year): Deduction =
     (
       year.getValue match
         case 2017 => 300
         case 2016 => 300
         case _    => throw ustax4s.NotYetImplemented(year)
-    ).pipe(Money.apply)
+    ).pipe(Deduction.apply)
 
 end PreTrump

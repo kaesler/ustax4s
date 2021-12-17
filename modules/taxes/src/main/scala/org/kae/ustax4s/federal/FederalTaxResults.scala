@@ -1,22 +1,22 @@
 package org.kae.ustax4s.federal
 
 import cats.Show
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 
 final case class FederalTaxResults(
-  ssRelevantOtherIncome: Money,
-  taxableSocialSecurity: Money,
-  personalExemptionDeduction: Money,
-  unadjustedStandardDeduction: Money,
-  adjustmentWhenOver65: Money,
-  adjustmentWhenOldAndSingle: Money,
-  standardDeduction: Money,
-  netDeduction: Money,
-  taxableOrdinaryIncome: Money,
-  taxOnOrdinaryIncome: Money,
-  taxOnQualifiedIncome: Money
+  ssRelevantOtherIncome: Income,
+  taxableSocialSecurity: Income,
+  personalExemptionDeduction: Deduction,
+  unadjustedStandardDeduction: Deduction,
+  adjustmentWhenOver65: Deduction,
+  adjustmentWhenOldAndSingle: Deduction,
+  standardDeduction: Deduction,
+  netDeduction: Deduction,
+  taxableOrdinaryIncome: Income,
+  taxOnOrdinaryIncome: TaxPayable,
+  taxOnQualifiedIncome: TaxPayable
 ):
-  def taxDue: Money = taxOnOrdinaryIncome + taxOnQualifiedIncome
+  def taxDue: TaxPayable = taxOnOrdinaryIncome + taxOnQualifiedIncome
 
 object FederalTaxResults:
   given Show[FederalTaxResults] = (r: FederalTaxResults) =>

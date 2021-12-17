@@ -1,12 +1,12 @@
 package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.*
 
 final case class ScheduleD(
   // Line 8b
-  longTermCapitalGains: Money,
+  longTermCapitalGains: Income,
   // Line 13
-  capitalGainsDistributions: Money
+  capitalGainsDistributions: Income
 ):
-  def netLongTermCapitalGains: Money =
+  def netLongTermCapitalGains: Income =
     longTermCapitalGains + capitalGainsDistributions

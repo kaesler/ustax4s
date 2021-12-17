@@ -1,14 +1,14 @@
 package org.kae.ustax4s.federal
 
 import org.kae.ustax4s.SetGeneration
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.IncomeThreshold
 import org.scalacheck.Gen
 
 trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:
 
   // Somewhat realistic.
-  private val genBracketBorder: Gen[Money] =
-    Gen.choose(10, 500000).map(Money.apply)
+  private val genIncomeThreshold: Gen[IncomeThreshold] =
+    Gen.choose(10, 500000).map(IncomeThreshold.apply)
 
   val genTaxBrackets: Gen[OrdinaryIncomeBrackets] =
     for
@@ -16,9 +16,9 @@ trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:
       rates        <- genSet(bracketCount, genNonZeroTaxRate)
       // rates should always be progressive
       ratesSortedAscending = rates.toList.sorted
-      bracketBorders <- genSet(bracketCount - 1, genBracketBorder)
+      bracketBorders <- genSet(bracketCount - 1, genIncomeThreshold)
     yield OrdinaryIncomeBrackets(
-      (Money(0) :: bracketBorders.toList).sorted
+      (IncomeThreshold.zero :: bracketBorders.toList).sorted
         .zip(ratesSortedAscending)
         .toMap
     )

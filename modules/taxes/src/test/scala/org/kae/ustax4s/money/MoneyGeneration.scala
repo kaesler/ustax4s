@@ -1,8 +1,8 @@
 package org.kae.ustax4s.money
 
 import org.scalacheck.Gen
+import org.kae.ustax4s.money.Moneys.*
 
 trait MoneyGeneration:
-  val genMoney: Gen[Money] =
-    for dollars <- Gen.choose(0, 5000000)
-    yield Money(dollars)
+  val genDollars: Gen[Int]   = Gen.choose(0, 5000000)
+  val genIncome: Gen[Income] = genDollars.map(Income.apply)

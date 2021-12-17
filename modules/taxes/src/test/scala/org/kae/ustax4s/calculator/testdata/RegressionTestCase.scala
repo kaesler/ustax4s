@@ -7,7 +7,7 @@ import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 import scala.io.Source
 
 final case class RegressionTestCase(
@@ -16,15 +16,15 @@ final case class RegressionTestCase(
   birthDate: LocalDate,
   filingStatus: FilingStatus,
   dependents: Int,
-  socSec: Money,
-  ordinaryIncomeNonSS: Money,
-  qualifiedIncome: Money,
-  itemizedDeductions: Money,
-  federalTaxDue: Money,
-  stateTaxDue: Money
+  socSec: Income,
+  ordinaryIncomeNonSS: Income,
+  qualifiedIncome: Income,
+  itemizedDeductions: Deduction,
+  federalTaxDue: TaxPayable,
+  stateTaxDue: TaxPayable
 ):
-  def personalExemptions: Int         = dependents + 1
-  def massachusettsGrossIncome: Money = ordinaryIncomeNonSS + qualifiedIncome
+  def personalExemptions: Int          = dependents + 1
+  def massachusettsGrossIncome: Income = ordinaryIncomeNonSS + qualifiedIncome
 
   def run(): Unit =
     if federalTaxDue != TaxCalculator.federalTaxDue(
@@ -88,19 +88,19 @@ end RegressionTestCase
 object RegressionTestCase:
 
   private def parseFromCsvLine(s: String): RegressionTestCase =
-    val fields                    = s.split(',')
-    val regime: Regime            = Regime.unsafeParse(fields(0))
-    val year: Year                = Year.of(Integer.parseInt(fields(1)))
-    val birthDate: LocalDate      = LocalDate.parse(fields(2))
-    val filingStatus              = FilingStatus.valueOf(fields(3))
-    val dependents                = Integer.parseInt(fields(4))
-    val socSec                    = Money.unsafeParse(fields(5))
-    val ordinaryIncomeNonSS       = Money.unsafeParse(fields(6))
-    val qualifiedIncome           = Money.unsafeParse(fields(7))
-    val itemizedDeductions: Money = Money.unsafeParse(fields(8))
+    val fields               = s.split(',')
+    val regime: Regime       = Regime.unsafeParse(fields(0))
+    val year: Year           = Year.of(Integer.parseInt(fields(1)))
+    val birthDate: LocalDate = LocalDate.parse(fields(2))
+    val filingStatus         = FilingStatus.valueOf(fields(3))
+    val dependents           = Integer.parseInt(fields(4))
+    val socSec               = Income.unsafeParse(fields(5))
+    val ordinaryIncomeNonSS  = Income.unsafeParse(fields(6))
+    val qualifiedIncome      = Income.unsafeParse(fields(7))
+    val itemizedDeductions   = Deduction.unsafeParse(fields(8))
 
-    val federalTaxDue = Money.unsafeParse(fields(9))
-    val stateTaxDue   = Money.unsafeParse(fields(10))
+    val federalTaxDue = TaxPayable.unsafeParse(fields(9))
+    val stateTaxDue   = TaxPayable.unsafeParse(fields(10))
 
     RegressionTestCase(
       regime,

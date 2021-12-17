@@ -5,9 +5,9 @@ import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.InflationEstimate
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.Money
 
 class RegimeFutureEstimationSpec extends FunSuite:
+  import math.Ordering.Implicits.infixOrderingOps
   import org.kae.ustax4s.MoneyConversions.given
 
   test("BoundRegime.futureEstimated should work as expected") {
@@ -29,7 +29,7 @@ class RegimeFutureEstimationSpec extends FunSuite:
       before.netDeduction(4000) < after.netDeduction(4000)
     )
     assert(
-      after.perPersonExemption == (before.perPersonExemption mul estimate.factor(baseYear))
+      after.perPersonExemption == (before.perPersonExemption inflateBy estimate.factor(baseYear))
     )
   }
 end RegimeFutureEstimationSpec

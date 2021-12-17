@@ -5,7 +5,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.federal.{BoundRegime, Trump}
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.*
+import org.kae.ustax4s.money.{Income, TaxCredit, TaxPayable}
 
 class Form1040_2018Spec extends FunSuite:
   import org.kae.ustax4s.MoneyConversions.given
@@ -41,43 +41,43 @@ class Form1040_2018Spec extends FunSuite:
         deductiblePartOfSelfEmploymentTax = 28
       ).some,
       schedule3 = Schedule3(
-        foreignTaxCredit = 257
+        foreignTaxCredit = TaxCredit(257)
       ).some,
       schedule4 = Schedule4(
-        selfEmploymentTax = Money(56)
+        selfEmploymentTax = TaxPayable(56)
       ).some,
       schedule5 = Schedule5(
-        excessSocialSecurityWithheld = 1709
+        excessSocialSecurityWithheld = TaxCredit(1709)
       ).some,
-      childTaxCredit = 2000,
-      wages = 133497,
-      taxExemptInterest = 2294,
-      taxableInterest = 0,
-      ordinaryDividends = 7930,
-      qualifiedDividends = 7365,
-      taxableIraDistributions = 0,
-      socialSecurityBenefits = 0
+      childTaxCredit = TaxCredit(2000),
+      wages = Income(133497),
+      taxExemptInterest = Income(2294),
+      taxableInterest = Income(0),
+      ordinaryDividends = Income(7930),
+      qualifiedDividends = Income(7365),
+      taxableIraDistributions = Income(0),
+      socialSecurityBenefits = Income(0)
     )
 
-    assertEquals(form.totalIncome, Money(150919))
-    assertEquals(form.adjustedGrossIncome, Money(147324))
-    assertEquals(form.taxableIncome, Money(129324))
+    assertEquals(form.totalIncome, Income(150919))
+    assertEquals(form.adjustedGrossIncome, Income(147324))
+    assertEquals(form.taxableIncome, Income(129324))
 
-    assertEquals(form.taxableOrdinaryIncome, Money(114547))
-    assertEquals(form.qualifiedIncome, Money(14777))
+    assertEquals(form.taxableOrdinaryIncome, Income(114547))
+    assertEquals(form.qualifiedIncome, Income(14777))
 
     val taxOnInv = regime
       .qualifiedIncomeBrackets(year, filingStatus)
       .taxDue(form.taxableOrdinaryIncome, form.qualifiedIncome)
       .rounded
-    assertEquals(taxOnInv, Money(2217))
+    assertEquals(taxOnInv, TaxPayable(2217))
 
     val taxOnOrd =
       regime
         .ordinaryIncomeBrackets(year, filingStatus)
         .taxDue(form.taxableOrdinaryIncome)
         .rounded
-    assertEquals(taxOnOrd, Money(20389))
+    assertEquals(taxOnOrd, TaxPayable(20389))
 
     assertEquals(
       Form1040
@@ -88,7 +88,7 @@ class Form1040_2018Spec extends FunSuite:
           qualifiedIncomeBrackets
         )
         .rounded,
-      Money(22606)
+      TaxPayable(22606)
     )
     assertEquals(
       Form1040
@@ -98,6 +98,6 @@ class Form1040_2018Spec extends FunSuite:
           qualifiedIncomeBrackets
         )
         .rounded,
-      Money(20405)
+      TaxPayable(20405)
     )
   }

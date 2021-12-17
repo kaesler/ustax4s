@@ -10,18 +10,18 @@ import org.kae.ustax4s.federal.{
   Trump
 }
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.{Deduction, Income, TaxCredit, TaxPayable}
 
 object MyTaxCalculator:
 
   def federalTaxDue(
     regime: Regime,
     year: Year,
-    socSec: Money,
-    ordinaryIncomeNonSS: Money,
-    qualifiedIncome: Money,
-    itemizedDeductions: Money
-  ): Money =
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedIncome: Income,
+    itemizedDeductions: Deduction
+  ): TaxPayable =
     TaxCalculator.federalTaxDue(
       regime,
       year,
@@ -36,11 +36,11 @@ object MyTaxCalculator:
 
   def federalTaxDueUsingForm1040(
     year: Year,
-    socSec: Money,
-    ordinaryIncomeNonSS: Money,
-    qualifiedDividends: Money,
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedDividends: Income,
     verbose: Boolean
-  ): Money =
+  ): TaxPayable =
     val filingStatus = Kevin.filingStatus(year)
     val regime       = Trump
     val boundRegime = BoundRegime.create(
@@ -61,10 +61,10 @@ object MyTaxCalculator:
       schedule3 = None,
       schedule4 = None,
       schedule5 = None,
-      childTaxCredit = Money.zero,
-      wages = Money.zero,
-      taxExemptInterest = Money.zero,
-      taxableInterest = Money.zero,
+      childTaxCredit = TaxCredit.zero,
+      wages = Income.zero,
+      taxExemptInterest = Income.zero,
+      taxableInterest = Income.zero,
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
@@ -86,8 +86,8 @@ object MyTaxCalculator:
     //  - interest
     //  - dividends
     //  - capital gains
-    massachusettsGrossIncome: Money
-  ): Money =
+    massachusettsGrossIncome: Income
+  ): TaxPayable =
     TaxCalculator.stateTaxDue(
       year,
       Kevin.birthDate,

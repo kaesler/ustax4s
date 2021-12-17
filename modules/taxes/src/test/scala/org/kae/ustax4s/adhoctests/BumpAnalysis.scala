@@ -3,7 +3,7 @@ package org.kae.ustax4s.adhoctests
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.calculator.MyTaxCalculator
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.*
 
 object BumpAnalysis extends App:
   // for each filing status in HOH, Single
@@ -13,12 +13,12 @@ object BumpAnalysis extends App:
   //     - bracket
   //     - slope  (delta tax due)/(delta income)
   // Try it in a spreadsheet
-  val socialSecurityIncome = Money(49908)
+  val socialSecurityIncome = Income(49908)
 
   val filingStatus = Single // HeadOfHousehold
   val pairs = for
     i <- 0 to 60000 by 100
-    ssRelevantOtherIncome = Money(i)
+    ssRelevantOtherIncome = Income(i)
 //    taxableSocialSecurity = TaxableSocialSecurity.taxableSocialSecurityBenefits(
 //      relevantIncome,
 //      socialSecurityIncome
@@ -27,7 +27,7 @@ object BumpAnalysis extends App:
       year = Year.of(2021),
       socSec = socialSecurityIncome,
       ordinaryIncomeNonSS = ssRelevantOtherIncome,
-      qualifiedDividends = Money.zero,
+      qualifiedDividends = Income.zero,
       verbose = false
     )
   yield (ssRelevantOtherIncome, taxDue)
@@ -39,6 +39,6 @@ object BumpAnalysis extends App:
       val p0                    = pairs(0)
       val p1                    = pairs(1)
       val ssRelevantOtherIncome = p0._1
-      val slope                 = (p1._2 subp p0._2) div 100
+      val slope                 = (p1._2 absoluteDifference p0._2) div 100
       println(s"Income: $ssRelevantOtherIncome, slope: $slope")
     }

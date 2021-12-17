@@ -5,7 +5,7 @@ import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.*
 import org.kae.ustax4s.federal.forms.Form1040
-import org.kae.ustax4s.money.Money
+import org.kae.ustax4s.money.*
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 
 /** Simplified interface to 1040 calculations. Assume: No deductions credits or other complications.
@@ -19,11 +19,11 @@ object TaxCalculator:
     filingStatus: FilingStatus,
     // Self plus dependents
     personalExemptions: Int,
-    socSec: Money,
-    ordinaryIncomeNonSS: Money,
-    qualifiedIncome: Money,
-    itemizedDeductions: Money
-  ): Money =
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedIncome: Income,
+    itemizedDeductions: Deduction
+  ): TaxPayable =
     BoundRegime
       .create(
         regime,
@@ -47,11 +47,11 @@ object TaxCalculator:
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
-    socSec: Money,
-    ordinaryIncomeNonSS: Money,
-    qualifiedDividends: Money,
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedDividends: Income,
     verbose: Boolean
-  ): Money =
+  ): TaxPayable =
     val regime = Trump
     val boundRegime = BoundRegime.create(
       regime,
@@ -71,10 +71,10 @@ object TaxCalculator:
       schedule3 = None,
       schedule4 = None,
       schedule5 = None,
-      childTaxCredit = Money.zero,
-      wages = Money.zero,
-      taxExemptInterest = Money.zero,
-      taxableInterest = Money.zero,
+      childTaxCredit = TaxCredit.zero,
+      wages = Income.zero,
+      taxExemptInterest = Income.zero,
+      taxableInterest = Income.zero,
       qualifiedDividends = qualifiedDividends,
       ordinaryDividends = qualifiedDividends
     )
@@ -99,8 +99,8 @@ object TaxCalculator:
     //  - interest
     //  - dividends
     //  - capital gains
-    massachusettsGrossIncome: Money
-  ): Money =
+    massachusettsGrossIncome: Income
+  ): TaxPayable =
     StateMATaxCalculator
       .taxDue(
         year,

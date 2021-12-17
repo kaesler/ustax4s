@@ -6,7 +6,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, PreTrump}
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.*
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 
 class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
   private val regime             = PreTrump
@@ -14,13 +14,13 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
   private val filingStatus       = Kevin.filingStatus(year)
   private val personalExemptions = 2
 
-  private val wages              = Money(128270)
-  private val ordinaryDividends  = Money(9196)
-  private val qualifiedDividends = Money(7686)
+  private val wages              = Income(128270)
+  private val ordinaryDividends  = Income(9196)
+  private val qualifiedDividends = Income(7686)
 
-  private val shortTermCapitalLoss = Money(2419)
-  private val hsaDeduction         = Money(750)
-  private val itemizedDeductions   = Money(22529)
+  private val shortTermCapitalLoss = Deduction(2419)
+  private val hsaDeduction         = Deduction(750)
+  private val itemizedDeductions   = Deduction(22529)
 
   private val boundRegime = BoundRegime
     .create(
@@ -32,11 +32,12 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
     )
 
   test("Form1040 totalTax should match what I filed") {
-    val totalIncome         = wages + ordinaryDividends subp shortTermCapitalLoss
-    val adjustedGrossIncome = totalIncome subp hsaDeduction
+    val totalIncome         = (wages + ordinaryDividends) applyDeductions shortTermCapitalLoss
+    val adjustedGrossIncome = totalIncome applyDeductions hsaDeduction
     val taxableIncome =
-      adjustedGrossIncome subp itemizedDeductions subp boundRegime.personalExemptionDeduction
-    val taxableOrdinaryIncome = taxableIncome subp qualifiedDividends
+      adjustedGrossIncome applyDeductions
+        (itemizedDeductions, boundRegime.personalExemptionDeduction)
+    val taxableOrdinaryIncome = taxableIncome reduceBy qualifiedDividends
     val qualifiedIncome       = qualifiedDividends
 
 //    println(s"Total Income:          $totalIncome")
@@ -47,8 +48,8 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
 
     val results = boundRegime.calculator
       .federalTaxResults(
-        socSec = Money.zero,
-        ordinaryIncomeNonSS = adjustedGrossIncome subp qualifiedIncome,
+        socSec = Income.zero,
+        ordinaryIncomeNonSS = adjustedGrossIncome reduceBy qualifiedIncome,
         qualifiedIncome,
         itemizedDeductions
       )
@@ -56,22 +57,22 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
     // println(results.show)
 
     assert(
-      results.personalExemptionDeduction == Money(8100)
+      results.personalExemptionDeduction == Deduction(8100)
     )
     assert(
-      results.netDeduction == Money(30629)
+      results.netDeduction == Deduction(30629)
     )
     assert(
-      results.taxOnQualifiedIncome.rounded == Money(1153)
+      results.taxOnQualifiedIncome.rounded == TaxPayable(1153)
     )
 
     // Note: My tax return used the tax tables, because the taxable amount was
     // < $100k.This introduces some imprecision. So allow for a few dollars
     // difference here.
     assert {
-      results.taxOnOrdinaryIncome.isCloseTo(Money(18246), 2)
+      results.taxOnOrdinaryIncome.isCloseTo(TaxPayable(18246), 2)
     }
     assert {
-      results.taxDue.isCloseTo(Money(19399), 2)
+      results.taxDue.isCloseTo(TaxPayable(19399), 2)
     }
   }

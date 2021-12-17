@@ -4,7 +4,6 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.Trump
-import org.kae.ustax4s.money.Money
 
 class MyTaxCalculatorSpec extends FunSuite:
   import org.kae.ustax4s.MoneyConversions.given
@@ -24,8 +23,8 @@ class MyTaxCalculatorSpec extends FunSuite:
       ss <- 0 to 49000 by 500
     do
       import org.kae.ustax4s.calculator.MyTaxCalculator.*
-      val income         = Money(i)
-      val socialSecurity = Money(ss)
+      val income         = i
+      val socialSecurity = ss
 
       assertEquals(
         federalTaxDue(
@@ -59,9 +58,9 @@ class MyTaxCalculatorSpec extends FunSuite:
       inv    <- 0 to 30000 by 1000
     do
       import org.kae.ustax4s.calculator.MyTaxCalculator.*
-      val income             = Money(i)
-      val socialSecurity     = Money(ss)
-      val qualifiedDividends = Money(inv)
+      val income             = i
+      val socialSecurity     = ss
+      val qualifiedDividends = inv
 
       if federalTaxDue(
           regime,
