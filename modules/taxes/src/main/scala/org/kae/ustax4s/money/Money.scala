@@ -47,8 +47,8 @@ object Money:
 
   def rounded(m: Money): Money = m.setScale(0, RoundingMode.HALF_UP)
 
-  def subtractNonNegative(left: Money, right: Money): Money =
-    List(zero, left - right).max
+  def subtractTruncated(left: Money, right: Money): Money =
+    summon[Monus[Money]].subtractTruncated(left, right)
 
   def taxAt[T: TaxRate](m: Money, rate: T): Money = multiply(m, rate.asFraction)
 
