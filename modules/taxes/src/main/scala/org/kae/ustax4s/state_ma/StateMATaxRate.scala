@@ -16,7 +16,10 @@ object StateMATaxRate:
     d
 
   given tr: TaxRate[StateMATaxRate] with
-    extension (r: StateMATaxRate) def asFraction = r
+    extension (left: StateMATaxRate)
+      def asFraction = left
+      infix def absoluteDifference(right: StateMATaxRate): StateMATaxRate =
+        (left - right).abs
 
   given Ordering[StateMATaxRate] with
     def compare(x: StateMATaxRate, y: StateMATaxRate): Int =
