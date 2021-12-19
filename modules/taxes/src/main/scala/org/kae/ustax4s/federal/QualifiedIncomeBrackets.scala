@@ -17,10 +17,16 @@ import scala.annotation.tailrec
 final case class QualifiedIncomeBrackets(
   bracketStarts: Map[IncomeThreshold, FederalTaxRate]
 ):
-  // Note: We capture "tax free LTCGs with suitably low income" by having a
-  // zero-rate lowest bracket.
+  // Note: well-formedness checks.
+  require(isProgressive)
   require(bracketStarts.contains(IncomeThreshold.zero))
   require(bracketStarts.size >= 2)
+
+  private def isProgressive: Boolean =
+    val ratesAscending = bracketStarts.toList.sorted.map(_._2)
+    ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
+      left < right
+    }
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
