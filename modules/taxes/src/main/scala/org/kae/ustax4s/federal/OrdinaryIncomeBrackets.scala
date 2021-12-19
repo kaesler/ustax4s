@@ -15,7 +15,28 @@ import scala.annotation.tailrec
 final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[IncomeThreshold, FederalTaxRate]
 ):
+  // Note: well-formedness checks.
+  require(isProgressive)
   require(bracketStarts.contains(IncomeThreshold.zero))
+  require(bracketStarts.nonEmpty)
+
+  private def isProgressive: Boolean =
+    val ratesAscending = bracketStarts.toList.sorted.map(_._2)
+    ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
+      left < right
+    }
+
+  def asRateDeltas: List[(IncomeThreshold, FederalTaxRate)] =
+    bracketStarts.keys.toList.sorted.zip(rateDeltas)
+
+  private def rateDeltas: List[FederalTaxRate] =
+    val ratesWithZeroAtFront = FederalTaxRate.zero :: bracketStarts.values.toList
+    ratesWithZeroAtFront
+      .sorted
+      .zip(ratesWithZeroAtFront.tail)
+      .map { (previousRate, currentRate) =>
+        currentRate absoluteDifference previousRate
+      }
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
