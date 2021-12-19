@@ -11,7 +11,13 @@ end Monus
 
 object Monus extends MonusOps:
 
-  // TODO: verify the laws
+  // TODO: verify the laws are satisfied
+  //   Monoid laws
+  //   Commmutativity: a <> b = b <> a
+  //   x <> (y - x) = y <> (x - y)
+  //   (x - y) - z = x - (y <> z)
+  //   x - x = mempty
+  //   mempty - x = mempty
 
   // The natural Monus on functions returning B, when B has a Monus.
   given [A, B](using mb: Monus[B]): Monus[A => B] with
