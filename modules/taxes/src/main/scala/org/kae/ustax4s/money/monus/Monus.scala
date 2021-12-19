@@ -3,12 +3,15 @@ package org.kae.ustax4s.money.monus
 import cats.implicits.*
 import cats.kernel.{CommutativeMonoid, Group}
 
+// A commutative monoid with truncated subtraction.
 // See https://en.wikipedia.org/wiki/Monus
 trait Monus[A] extends CommutativeMonoid[A]:
   def subtractTruncated(left: A, right: A): A
 end Monus
 
 object Monus extends MonusOps:
+
+  // TODO: verify the laws
 
   // The natural Monus on functions returning B, when B has a Monus.
   given [A, B](using mb: Monus[B]): Monus[A => B] with
@@ -29,4 +32,5 @@ end Monus
 trait MonusOps:
   extension [A: Monus](left: A)
     infix def subt(right: A): A = summon[Monus[A]].subtractTruncated(left, right)
+    def -|(right: A): A         = left subt right
 end MonusOps
