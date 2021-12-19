@@ -3,11 +3,13 @@ package org.kae.ustax4s.money
 import cats.Show
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
-import org.kae.ustax4s.money.monus.Monus
+import org.kae.ustax4s.money.monus.{Monus, MonusOps}
 import scala.math.BigDecimal.RoundingMode
 
 private[money] type Money = BigDecimal
 object Money:
+
+  given monusOps: MonusOps = new MonusOps {}
 
   val zero: Money = 0
 
@@ -47,8 +49,7 @@ object Money:
 
   def rounded(m: Money): Money = m.setScale(0, RoundingMode.HALF_UP)
 
-  def subtractTruncated(left: Money, right: Money): Money =
-    summon[Monus[Money]].subtractTruncated(left, right)
+  def subtractTruncated(left: Money, right: Money): Money = left subt right
 
   def taxAt[T: TaxRate](m: Money, rate: T): Money = multiply(m, rate.asFraction)
 
