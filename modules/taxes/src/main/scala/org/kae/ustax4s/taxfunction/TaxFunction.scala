@@ -15,8 +15,9 @@ import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome
 type TaxFunction = Income => TaxPayable
 
 object TaxFunction:
+  type Brackets = Map[IncomeThreshold, FederalTaxRate]
   // TODO: explain why the following works.
-  def fromBrackets(brackets: OrdinaryIncomeBrackets): TaxFunction =
+  def fromBrackets(brackets: Brackets): TaxFunction =
     asRateDeltas(brackets)
       .map(makeThresholdTax.tupled)
       // Note: Tax has a natural Monoid because TaxPayable has one.
@@ -31,18 +32,16 @@ object TaxFunction:
   ): TaxFunction =
     _.amountAbove(threshold).taxAt(rate)
 
-  private def asRateDeltas(
-    brackets: OrdinaryIncomeBrackets
-  ): List[(IncomeThreshold, FederalTaxRate)] =
-    brackets.bracketStarts
+  private def asRateDeltas(brackets: Brackets): List[(IncomeThreshold, FederalTaxRate)] =
+    brackets
       .keys
       .toList
       .sorted
       .zip(rateDeltas(brackets))
 
-  private def rateDeltas(brackets: OrdinaryIncomeBrackets): List[FederalTaxRate] =
+  private def rateDeltas(brackets: Brackets): List[FederalTaxRate] =
     val ratesWithZeroAtFront =
-      FederalTaxRate.zero :: brackets.bracketStarts.values.toList.sorted
+      FederalTaxRate.zero :: brackets.values.toList.sorted
     ratesWithZeroAtFront
       .zip(ratesWithZeroAtFront.tail)
       .map { (previousRate, currentRate) =>

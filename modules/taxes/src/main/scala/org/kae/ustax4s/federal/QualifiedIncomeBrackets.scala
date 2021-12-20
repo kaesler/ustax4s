@@ -11,42 +11,41 @@ import scala.annotation.tailrec
 /** Calculates tax on qualified investment income,
   * i.e. long-term capital gains and qualified dividends.
   *
-  * @param bracketStarts
+  * @param thresholds
   *   the tax brackets in effect
   */
 final case class QualifiedIncomeBrackets(
-  bracketStarts: Map[IncomeThreshold, FederalTaxRate]
+  thresholds: Map[IncomeThreshold, FederalTaxRate]
 ):
-  // Note: well-formedness checks.
   require(isProgressive)
-  require(bracketStarts.contains(IncomeThreshold.zero))
-  require(bracketStarts.size >= 2)
+  require(thresholds.contains(IncomeThreshold.zero))
+  require(thresholds.size >= 2)
 
   private def isProgressive: Boolean =
-    val ratesAscending = bracketStarts.toList.sorted.map(_._2)
+    val ratesAscending = thresholds.toList.sorted.map(_._2)
     ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
       left < right
     }
 
-  // Adjust the bracket starts for inflation.
+  // Adjust the thresholds for inflation.
   // E.g. for 2% inflation: inflated(1.02)
   def inflatedBy(factor: Double): QualifiedIncomeBrackets =
     require(factor >= 1.0)
     QualifiedIncomeBrackets(
-      bracketStarts.map { pair =>
-        val (start, rate) = pair
-        (start.increaseBy(factor).rounded, rate)
+      thresholds.map { pair =>
+        val (threshold, rate) = pair
+        (threshold.increaseBy(factor).rounded, rate)
       }
     )
 
-  val bracketStartsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    bracketStarts.toVector.sortBy(_._1)
+  val thresholdsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+    thresholds.toVector.sortBy(_._1)
 
-  require(bracketStartsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
+  require(thresholdsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
 
-  private val bracketsStartsDescending = bracketStartsAscending.reverse
+  private val thresholdsDescending = thresholdsAscending.reverse
 
-  def startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketStartsAscending(1)._1
+  def startOfNonZeroQualifiedRateBracket: IncomeThreshold = thresholdsAscending(1)._1
 
   def taxDueWholeDollar(
     taxableOrdinaryIncome: Income,
@@ -69,14 +68,14 @@ final case class QualifiedIncomeBrackets(
 
     val totalTaxableIncome = taxableOrdinaryIncome + qualifiedIncome
     val accum =
-      bracketsStartsDescending.foldLeft(Accum.initial) {
+      thresholdsDescending.foldLeft(Accum.initial) {
         case (
               Accum(
                 totalIncomeInHigherBrackets,
                 gainsYetToBeTaxed,
                 gainsTaxSoFar
               ),
-              (bracketStart, bracketRate)
+              (bracketThreshold, bracketRate)
             ) =>
           val totalIncomeYetToBeTaxed =
             totalTaxableIncome reduceBy totalIncomeInHigherBrackets
@@ -84,11 +83,11 @@ final case class QualifiedIncomeBrackets(
             totalIncomeYetToBeTaxed reduceBy gainsYetToBeTaxed
 
           // Non-negative: so zero if bracket does not apply.
-          val totalIncomeInThisBracket = totalIncomeYetToBeTaxed amountAbove bracketStart
+          val totalIncomeInThisBracket = totalIncomeYetToBeTaxed amountAbove bracketThreshold
 
           // Non-negative: so zero if bracket does not apply.
           val ordinaryIncomeInThisBracket =
-            ordinaryIncomeYetToBeTaxed amountAbove bracketStart
+            ordinaryIncomeYetToBeTaxed amountAbove bracketThreshold
 
           val gainsInThisBracket: Income =
             totalIncomeInThisBracket reduceBy ordinaryIncomeInThisBracket
@@ -104,13 +103,13 @@ final case class QualifiedIncomeBrackets(
     accum.gainsTaxSoFar
 
   def bracketExists(bracketRate: FederalTaxRate): Boolean =
-    bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
+    thresholdsAscending.exists { (_, rate) => rate == bracketRate }
 
 object QualifiedIncomeBrackets:
 
   given Show[QualifiedIncomeBrackets] with
     def show(b: QualifiedIncomeBrackets): String =
-      b.bracketStartsAscending.mkString("\n")
+      b.thresholdsAscending.mkString("\n")
 
   @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
     (year.getValue, status) match

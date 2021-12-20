@@ -17,7 +17,7 @@ class OrdinaryIncomeBrackets2018Spec extends FunSuite:
 
   test("TaxBrackets for HOH 2018 should match IRS tables") {
     val brackets = Trump.ordinaryIncomeBrackets(Year.of(2018), HeadOfHousehold)
-    val tax      = TaxFunction.fromBrackets(brackets)
+    val tax      = TaxFunction.fromBrackets(brackets.thresholds)
     headOfHouseHoldSamples foreach { (income, expectedTaxDue) =>
       assertEquals(
         tax(income).rounded,

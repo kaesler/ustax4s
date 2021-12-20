@@ -24,7 +24,7 @@ class QualifiedIncomeBracketsSpec
 
   test("InvestmentIncomeTaxBrackets should be progressive") {
     def isProgressive(brackets: QualifiedIncomeBrackets): Boolean = {
-      val rates = brackets.bracketStartsAscending.map(_._2)
+      val rates = brackets.thresholdsAscending.map(_._2)
       (rates zip rates.tail)
         .forall { pair =>
           val (left, right) = pair
@@ -117,7 +117,7 @@ class QualifiedIncomeBracketsSpec
 
   property("max tax rate is the max tax rate") {
     forAll { (brackets: QualifiedIncomeBrackets, gains: Income) =>
-      val maxTax = gains taxAt brackets.bracketStartsAscending.map(_._2).max
+      val maxTax = gains taxAt brackets.thresholdsAscending.map(_._2).max
       brackets.taxDue(Income.zero, gains) <= maxTax
     }
   }

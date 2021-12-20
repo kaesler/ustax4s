@@ -75,7 +75,7 @@ trait BoundRegime(
           .applyDeductions(netDeduction(itemizedDeductions))
 
       val taxOnOrdinaryIncome =
-        TaxFunction.fromBrackets(ordinaryIncomeBrackets)(taxableOrdinaryIncome)
+        TaxFunction.fromBrackets(ordinaryIncomeBrackets.thresholds)(taxableOrdinaryIncome)
 
       val taxOnQualifiedIncome = qualifiedIncomeBrackets.taxDue(
         taxableOrdinaryIncome,

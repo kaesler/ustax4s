@@ -76,7 +76,7 @@ class Form1040_2018Spec extends FunSuite:
     val taxOnOrd =
       TaxFunction.fromBrackets(
         regime
-          .ordinaryIncomeBrackets(year, filingStatus)
+          .ordinaryIncomeBrackets(year, filingStatus).thresholds
       )(form.taxableOrdinaryIncome)
         .rounded
     assertEquals(taxOnOrd, TaxPayable(20389))

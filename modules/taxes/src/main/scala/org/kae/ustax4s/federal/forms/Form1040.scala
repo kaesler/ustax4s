@@ -138,7 +138,7 @@ object Form1040:
     ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
     qualifiedIncomeBrackets: QualifiedIncomeBrackets
   ): TaxPayable =
-    TaxFunction.fromBrackets(ordinaryIncomeBrackets)(ordinaryIncome) +
+    TaxFunction.fromBrackets(ordinaryIncomeBrackets.thresholds)(ordinaryIncome) +
       qualifiedIncomeBrackets.taxDue(
         ordinaryIncome,
         qualifiedIncome

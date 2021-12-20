@@ -86,14 +86,14 @@ class OrdinaryIncomeBracketsSpec
 
   property("never tax zero") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
-      TaxFunction.fromBrackets(brackets)(Income.zero) == TaxPayable.zero
+      TaxFunction.fromBrackets(brackets.thresholds)(Income.zero) == TaxPayable.zero
     }
   }
 
   property("tax in lowest bracket as expected") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
-      val (lowBracketTop, lowBracketRate) = brackets.bracketStartsAscending.head
-      TaxFunction.fromBrackets(brackets)(
+      val (lowBracketTop, lowBracketRate) = brackets.thresholdsAscending.head
+      TaxFunction.fromBrackets(brackets.thresholds)(
         lowBracketTop.asIncome
       ) == (lowBracketTop.asIncome taxAt lowBracketRate)
     }
@@ -101,7 +101,7 @@ class OrdinaryIncomeBracketsSpec
 
   property("tax rises monotonically with income") {
     forAll { (brackets: OrdinaryIncomeBrackets, income1: Income, income2: Income) =>
-      val tax = TaxFunction.fromBrackets(brackets)
+      val tax = TaxFunction.fromBrackets(brackets.thresholds)
       if income1 < income2 then tax(income1) < tax(income2)
       else if income1 > income2 then tax(income1) > tax(income2)
       else tax(income1) == tax(income2)
@@ -110,14 +110,14 @@ class OrdinaryIncomeBracketsSpec
 
   property("tax is never zero except on zero") {
     forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
-      TaxFunction.fromBrackets(brackets)(income).nonZero || income.isZero
+      TaxFunction.fromBrackets(brackets.thresholds)(income).nonZero || income.isZero
     }
   }
 
   property("max tax rate is the max tax rate") {
     forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
-      val maxTax = income taxAt brackets.bracketStartsAscending.map(_._2).max
-      TaxFunction.fromBrackets(brackets)(income) <= maxTax
+      val maxTax = income taxAt brackets.thresholdsAscending.map(_._2).max
+      TaxFunction.fromBrackets(brackets.thresholds)(income) <= maxTax
     }
   }
 
@@ -131,7 +131,7 @@ class OrdinaryIncomeBracketsSpec
       val expectedTax   = brackets.taxToEndOfBracket(rate)
 
       assertEquals(
-        TaxFunction.fromBrackets(brackets)(taxableIncome).rounded,
+        TaxFunction.fromBrackets(brackets.thresholds)(taxableIncome).rounded,
         expectedTax.rounded
       )
   }
@@ -139,8 +139,8 @@ class OrdinaryIncomeBracketsSpec
   test("inflated brackets incur lower tax for same income") {
     forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
       val inflatedBrackets = brackets.inflatedBy(1.2)
-      val baseTaxDue       = TaxFunction.fromBrackets(brackets)(income)
-      val inflatedTaxDue   = TaxFunction.fromBrackets(inflatedBrackets)(income)
+      val baseTaxDue       = TaxFunction.fromBrackets(brackets.thresholds)(income)
+      val inflatedTaxDue   = TaxFunction.fromBrackets(inflatedBrackets.thresholds)(income)
       inflatedTaxDue <= baseTaxDue
     }
   }

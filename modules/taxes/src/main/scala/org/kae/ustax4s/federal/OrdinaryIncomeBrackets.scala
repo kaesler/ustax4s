@@ -10,36 +10,36 @@ import scala.annotation.tailrec
 
 /** Calculates tax on ordinary (non-investment) income.
   *
-  * @param bracketStarts
+  * @param thresholds
   *   the tax brackets in effect
   */
 final case class OrdinaryIncomeBrackets(
-  bracketStarts: Map[IncomeThreshold, FederalTaxRate]
+  thresholds: Map[IncomeThreshold, FederalTaxRate]
 ):
   require(isProgressive)
-  require(bracketStarts.contains(IncomeThreshold.zero))
-  require(bracketStarts.nonEmpty)
+  require(thresholds.contains(IncomeThreshold.zero))
+  require(thresholds.nonEmpty)
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
   def inflatedBy(factor: Double): OrdinaryIncomeBrackets =
     require(factor >= 1.0)
     OrdinaryIncomeBrackets(
-      bracketStarts.map { (start, rate) =>
+      thresholds.map { (start, rate) =>
         (start.increaseBy(factor).rounded, rate)
       }
     )
 
-  val bracketStartsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    bracketStarts.toVector.sortBy(_._1)
+  val thresholdsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+    thresholds.toVector.sortBy(_._1)
 
-  private val bracketsStartsDescending = bracketStartsAscending.reverse
+  private val thresholdsDescending = thresholdsAscending.reverse
 
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Income =
-    bracketStartsAscending
+    thresholdsAscending
       .sliding(2)
-      .collect { case Vector((_, `bracketRate`), (nextBracketStart, _)) =>
-        nextBracketStart
+      .collect { case Vector((_, `bracketRate`), (nextThreshold, _)) =>
+        nextThreshold
       }
       .toList
       .headOption
@@ -53,7 +53,7 @@ final case class OrdinaryIncomeBrackets(
   def taxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
     require(bracketExists(bracketRate))
 
-    val taxes = bracketStartsAscending
+    val taxes = thresholdsAscending
       .sliding(2)
       .toList
       .takeWhile {
@@ -61,34 +61,34 @@ final case class OrdinaryIncomeBrackets(
         // Note: can't happen.
         case _ => false
       }
-      .collect { case Vector((bracketStart, rate), (nextBracketStart, _)) =>
+      .collect { case Vector((threshold, rate), (nextThreshold, _)) =>
         // Tax due on current bracket:
-        (nextBracketStart absoluteDifference bracketStart).taxAt(rate)
+        (nextThreshold absoluteDifference threshold).taxAt(rate)
       }
 
     taxes.foldLeft(TaxPayable.zero)(_ + _)
 
   def ratesForBoundedBrackets: Vector[FederalTaxRate] =
-    bracketsStartsDescending
+    thresholdsDescending
       .drop(1)
       .reverse
       .map(_._2)
 
   private def isProgressive: Boolean =
-    val ratesAscending = bracketStarts.toList.sorted.map(_._2)
+    val ratesAscending = thresholds.toList.sorted.map(_._2)
     ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
       left < right
     }
 
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
-    bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
+    thresholdsAscending.exists { (_, rate) => rate == bracketRate }
 end OrdinaryIncomeBrackets
 
 object OrdinaryIncomeBrackets:
 
   given Show[OrdinaryIncomeBrackets] with
     def show(b: OrdinaryIncomeBrackets): String =
-      b.bracketStartsAscending.mkString("\n")
+      b.thresholdsAscending.mkString("\n")
 
   def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
     OrdinaryIncomeBrackets(
