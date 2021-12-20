@@ -5,7 +5,7 @@ import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
 import org.kae.ustax4s.money.{Income, TaxPayable}
-import org.kae.ustax4s.tax.Tax
+import org.kae.ustax4s.taxfunction.TaxFunction
 
 class OrdinaryIncomeBrackets2018Spec extends FunSuite:
   private val headOfHouseHoldSamples = List(
@@ -17,7 +17,7 @@ class OrdinaryIncomeBrackets2018Spec extends FunSuite:
 
   test("TaxBrackets for HOH 2018 should match IRS tables") {
     val brackets = Trump.ordinaryIncomeBrackets(Year.of(2018), HeadOfHousehold)
-    val tax      = Tax.fromBrackets(brackets)
+    val tax      = TaxFunction.fromBrackets(brackets)
     headOfHouseHoldSamples foreach { (income, expectedTaxDue) =>
       assertEquals(
         tax(income).rounded,

@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.money.*
-import org.kae.ustax4s.tax.Tax
+import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{Age, FilingStatus, InflationEstimate}
 
 trait BoundRegime(
@@ -75,7 +75,7 @@ trait BoundRegime(
           .applyDeductions(netDeduction(itemizedDeductions))
 
       val taxOnOrdinaryIncome =
-        Tax.fromBrackets(ordinaryIncomeBrackets)(taxableOrdinaryIncome)
+        TaxFunction.fromBrackets(ordinaryIncomeBrackets)(taxableOrdinaryIncome)
 
       val taxOnQualifiedIncome = qualifiedIncomeBrackets.taxDue(
         taxableOrdinaryIncome,

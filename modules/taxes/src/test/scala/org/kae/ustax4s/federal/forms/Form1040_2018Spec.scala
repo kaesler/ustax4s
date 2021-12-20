@@ -6,7 +6,7 @@ import munit.FunSuite
 import org.kae.ustax4s.federal.{BoundRegime, Trump}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.{Income, TaxCredit, TaxPayable}
-import org.kae.ustax4s.tax.Tax
+import org.kae.ustax4s.taxfunction.TaxFunction
 
 class Form1040_2018Spec extends FunSuite:
   import org.kae.ustax4s.MoneyConversions.given
@@ -74,7 +74,7 @@ class Form1040_2018Spec extends FunSuite:
     assertEquals(taxOnInv, TaxPayable(2217))
 
     val taxOnOrd =
-      Tax.fromBrackets(
+      TaxFunction.fromBrackets(
         regime
           .ordinaryIncomeBrackets(year, filingStatus)
       )(form.taxableOrdinaryIncome)
