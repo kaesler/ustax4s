@@ -41,10 +41,10 @@ private[money] object Moneys:
 
       // TODO: move to TaxableIncome?
       infix def amountAbove(threshold: IncomeThreshold): Income =
-        Money.subtractTruncated(left, threshold)
+        Money.monus(left, threshold)
 
       infix def applyDeductions(deductions: Deduction*): Income =
-        Money.subtractTruncated(left, deductions.combineAll)
+        Money.monus(left, deductions.combineAll)
 
       infix def div(right: Income): Double = Money.divide(left, right)
 
@@ -61,7 +61,7 @@ private[money] object Moneys:
       infix def mul(d: Double): Income = Money.multiply(left, d)
 
       // TODO: can be flushed when we redo how we apply brackets.
-      infix def reduceBy(right: Income): Income = Money.subtractTruncated(left, right)
+      infix def reduceBy(right: Income): Income = Money.monus(left, right)
     end extension
   end Income
 
@@ -116,7 +116,7 @@ private[money] object Moneys:
 
     extension (left: TaxableIncome)
       infix def amountAbove(threshold: IncomeThreshold): TaxableIncome =
-        Money.subtractTruncated(left, threshold)
+        Money.monus(left, threshold)
 
       infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.taxAt(left, rate)
     end extension
@@ -142,7 +142,7 @@ private[money] object Moneys:
         Money.absoluteDifference(left, right)
 
       infix def applyCredits(cs: TaxCredit*): TaxPayable =
-        Money.subtractTruncated(left, cs.combineAll)
+        Money.monus(left, cs.combineAll)
 
       infix def div(i: Int): TaxPayable = Money.divide(left, i)
 
@@ -156,7 +156,7 @@ private[money] object Moneys:
       def rounded: TaxPayable = Money.rounded(left)
 
       infix def reduceBy(right: TaxPayable): TaxPayable =
-        Money.subtractTruncated(left, right)
+        Money.monus(left, right)
 
     end extension
   end TaxPayable

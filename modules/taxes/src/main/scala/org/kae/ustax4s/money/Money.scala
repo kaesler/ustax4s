@@ -49,7 +49,7 @@ object Money:
 
   def rounded(m: Money): Money = m.setScale(0, RoundingMode.HALF_UP)
 
-  def subtractTruncated(left: Money, right: Money): Money = left subt right
+  def monus(left: Money, right: Money): Money = left monus right
 
   def taxAt[T: TaxRate](m: Money, rate: T): Money = multiply(m, rate.asFraction)
 

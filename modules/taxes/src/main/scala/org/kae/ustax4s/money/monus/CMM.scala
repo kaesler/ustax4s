@@ -7,7 +7,6 @@ import cats.kernel.{CommutativeMonoid, Group}
 // See https://en.wikipedia.org/wiki/Monus
 trait CMM[A] extends CommutativeMonoid[A]:
   def monus(left: A, right: A): A
-  def subtractTruncated(left: A, right: A): A = monus(left, right)
 end CMM
 
 object CMM extends CMMOps:
@@ -25,7 +24,7 @@ object CMM extends CMMOps:
     type F = A => B
     def empty: F               = { _ => mb.empty }
     def combine(f: F, g: F): F = { a => f(a).combine(g(a)) }
-    def monus(f: F, g: F): F   = { a => f(a) subt g(a) }
+    def monus(f: F, g: F): F   = { a => f(a) monus g(a) }
 
   // Provides a Monus for many types.
   given [A](using group: Group[A], ordering: Ordering[A]): CMM[A] with
@@ -37,7 +36,5 @@ object CMM extends CMMOps:
 end CMM
 
 trait CMMOps:
-  extension [A: CMM](left: A)
-    infix def subt(right: A): A = summon[CMM[A]].monus(left, right)
-    def -|(right: A): A         = left subt right
+  extension [A: CMM](left: A) infix def monus(right: A): A = summon[CMM[A]].monus(left, right)
 end CMMOps
