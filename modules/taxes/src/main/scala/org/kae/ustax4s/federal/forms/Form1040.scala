@@ -8,6 +8,7 @@ import org.kae.ustax4s.federal.{
   TaxableSocialSecurity
 }
 import org.kae.ustax4s.money.*
+import org.kae.ustax4s.tax.Tax
 
 final case class Form1040(
   filingStatus: FilingStatus,
@@ -137,7 +138,7 @@ object Form1040:
     ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
     qualifiedIncomeBrackets: QualifiedIncomeBrackets
   ): TaxPayable =
-    ordinaryIncomeBrackets.taxDue(ordinaryIncome) +
+    Tax.fromBrackets(ordinaryIncomeBrackets)(ordinaryIncome) +
       qualifiedIncomeBrackets.taxDue(
         ordinaryIncome,
         qualifiedIncome

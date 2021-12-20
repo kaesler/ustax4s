@@ -6,6 +6,7 @@ import munit.FunSuite
 import org.kae.ustax4s.federal.{BoundRegime, Trump}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.{Income, TaxCredit, TaxPayable}
+import org.kae.ustax4s.tax.Tax
 
 class Form1040_2018Spec extends FunSuite:
   import org.kae.ustax4s.MoneyConversions.given
@@ -73,9 +74,10 @@ class Form1040_2018Spec extends FunSuite:
     assertEquals(taxOnInv, TaxPayable(2217))
 
     val taxOnOrd =
-      regime
-        .ordinaryIncomeBrackets(year, filingStatus)
-        .taxDue(form.taxableOrdinaryIncome)
+      Tax.fromBrackets(
+        regime
+          .ordinaryIncomeBrackets(year, filingStatus)
+      )(form.taxableOrdinaryIncome)
         .rounded
     assertEquals(taxOnOrd, TaxPayable(20389))
 

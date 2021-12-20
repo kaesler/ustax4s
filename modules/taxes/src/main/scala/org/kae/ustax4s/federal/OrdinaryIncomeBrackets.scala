@@ -22,6 +22,7 @@ final case class OrdinaryIncomeBrackets(
   require(bracketStarts.contains(IncomeThreshold.zero))
   require(bracketStarts.nonEmpty)
 
+  // TODO: maybe move to Tax
   def asRateDeltas: List[(IncomeThreshold, FederalTaxRate)] =
     bracketStarts.keys.toList.sorted.zip(rateDeltas)
 
@@ -39,14 +40,6 @@ final case class OrdinaryIncomeBrackets(
     bracketStarts.toVector.sortBy(_._1)
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
-
-  // TODO: Probably doesn't belong here now.
-  def taxDueWholeDollar(taxableOrdinaryIncome: Income): TaxPayable =
-    taxDue(taxableOrdinaryIncome).rounded
-
-  // TODO: Probably doesn't belong here now.
-  def taxDue(taxableOrdinaryIncome: Income): TaxPayable =
-    Tax.fromBrackets(this)(taxableOrdinaryIncome)
 
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Income =
     bracketStartsAscending
@@ -95,6 +88,8 @@ final case class OrdinaryIncomeBrackets(
 
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
+
+  // TODO: maybe move to Tax
   private def rateDeltas: List[FederalTaxRate] =
     val ratesWithZeroAtFront =
       FederalTaxRate.zero :: bracketStarts.values.toList.sorted
