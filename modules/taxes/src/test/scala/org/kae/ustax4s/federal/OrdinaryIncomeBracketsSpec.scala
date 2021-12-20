@@ -26,20 +26,6 @@ class OrdinaryIncomeBracketsSpec
   private def bracketsFor(year: Year, filingStatus: FilingStatus) =
     Trump.ordinaryIncomeBrackets(year, filingStatus)
 
-  test("OrdinaryIncomeTaxBrackets should be progressive") {
-
-    def isProgressive(brackets: OrdinaryIncomeBrackets): Boolean = {
-      val rates = brackets.bracketStartsAscending.map(_._2)
-      (rates zip rates.tail)
-        .forall { (left, right) =>
-          left < right
-        }
-    }
-
-    assert(isProgressive(bracketsFor(TheYear, Single)))
-    assert(isProgressive(bracketsFor(TheYear, HeadOfHousehold)))
-  }
-
   test("taxToEndOfBracket should be correct for 2021 HeadOfHousehold") {
     val brackets = bracketsFor(TheYear, HeadOfHousehold)
 
@@ -140,7 +126,7 @@ class OrdinaryIncomeBracketsSpec
       val taxableIncome = brackets.taxableIncomeToEndOfBracket(rate)
       val expectedTax   = brackets.taxToEndOfBracket(rate)
 
-      assertEquals(brackets.taxDue(taxableIncome), expectedTax)
+      assertEquals(brackets.taxDue(taxableIncome).rounded, expectedTax.rounded)
   }
 
   test("inflated brackets incur lower tax for same income") {

@@ -4,9 +4,11 @@ import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable}
+import org.kae.ustax4s.tax.Tax
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
+// TODO: Do I need all this code now.
 /** Calculates tax on ordinary (non-investment) income.
   *
   * @param bracketStarts
@@ -20,23 +22,8 @@ final case class OrdinaryIncomeBrackets(
   require(bracketStarts.contains(IncomeThreshold.zero))
   require(bracketStarts.nonEmpty)
 
-  private def isProgressive: Boolean =
-    val ratesAscending = bracketStarts.toList.sorted.map(_._2)
-    ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
-      left < right
-    }
-
   def asRateDeltas: List[(IncomeThreshold, FederalTaxRate)] =
     bracketStarts.keys.toList.sorted.zip(rateDeltas)
-
-  private def rateDeltas: List[FederalTaxRate] =
-    val ratesWithZeroAtFront = FederalTaxRate.zero :: bracketStarts.values.toList
-    ratesWithZeroAtFront
-      .sorted
-      .zip(ratesWithZeroAtFront.tail)
-      .map { (previousRate, currentRate) =>
-        currentRate absoluteDifference previousRate
-      }
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
@@ -53,40 +40,13 @@ final case class OrdinaryIncomeBrackets(
 
   private val bracketsStartsDescending = bracketStartsAscending.reverse
 
+  // TODO: Probably doesn't belong here now.
   def taxDueWholeDollar(taxableOrdinaryIncome: Income): TaxPayable =
     taxDue(taxableOrdinaryIncome).rounded
 
+  // TODO: Probably doesn't belong here now.
   def taxDue(taxableOrdinaryIncome: Income): TaxPayable =
-
-    // Note: Qualified investment income sort of occupies the top brackets above
-    // ordinary income and so does not affect this.
-
-    case class Accum(ordinaryIncomeYetToBeTaxed: Income, taxSoFar: TaxPayable)
-    object Accum:
-      def initial: Accum = apply(taxableOrdinaryIncome, TaxPayable.zero)
-
-    val accum = bracketsStartsDescending.foldLeft(Accum.initial) {
-
-      case (
-            Accum(ordinaryIncomeYetToBeTaxed, taxSoFar),
-            (bracketStart, bracketRate)
-          ) =>
-        // Result will be non-negative: so becomes zero if bracket does not apply.
-        val ordinaryIncomeInThisBracket =
-          ordinaryIncomeYetToBeTaxed.amountAbove(bracketStart)
-
-        // Non-negative: so zero if bracket does not apply.
-        val taxInThisBracket = ordinaryIncomeInThisBracket taxAt bracketRate
-        Accum(
-          ordinaryIncomeYetToBeTaxed =
-            ordinaryIncomeYetToBeTaxed reduceBy ordinaryIncomeInThisBracket,
-          taxSoFar = taxSoFar + taxInThisBracket
-        )
-    }
-    assert(accum.ordinaryIncomeYetToBeTaxed.isZero)
-    val res = accum.taxSoFar
-    // println(s"taxDueFunctionally($taxableOrdinaryIncome): $res")
-    res
+    Tax.fromBrackets(this)(taxableOrdinaryIncome)
 
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Income =
     bracketStartsAscending
@@ -121,33 +81,30 @@ final case class OrdinaryIncomeBrackets(
 
     taxes.foldLeft(TaxPayable.zero)(_ + _)
 
-  def bracketWidth(bracketRate: FederalTaxRate): Income =
-    bracketStartsAscending
-      .sliding(2)
-      .collect { case Vector((rateStart, `bracketRate`), (nextRateStart, _)) =>
-        nextRateStart absoluteDifference rateStart
-      }
-      .toList
-      .headOption
-      .getOrElse(
-        throw RuntimeException(
-          s"rate not found or has no successor: $bracketRate"
-        )
-      )
-
   def ratesForBoundedBrackets: Vector[FederalTaxRate] =
     bracketsStartsDescending
       .drop(1)
       .reverse
       .map(_._2)
 
-  def bracketExists(bracketRate: FederalTaxRate): Boolean =
+  private def isProgressive: Boolean =
+    val ratesAscending = bracketStarts.toList.sorted.map(_._2)
+    ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
+      left < right
+    }
+
+  private def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
+  private def rateDeltas: List[FederalTaxRate] =
+    val ratesWithZeroAtFront =
+      FederalTaxRate.zero :: bracketStarts.values.toList.sorted
+    ratesWithZeroAtFront
+      .zip(ratesWithZeroAtFront.tail)
+      .map { (previousRate, currentRate) =>
+        currentRate absoluteDifference previousRate
+      }
 
-  def endOfLowestBracket: IncomeThreshold =
-    bracketStarts.keySet.toList.sorted.apply(1)
-
-  def startOfTopBracket: IncomeThreshold = bracketStarts.keySet.toList.max
+end OrdinaryIncomeBrackets
 
 object OrdinaryIncomeBrackets:
 
