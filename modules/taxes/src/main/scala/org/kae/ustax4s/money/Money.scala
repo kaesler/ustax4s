@@ -3,13 +3,13 @@ package org.kae.ustax4s.money
 import cats.Show
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
-import org.kae.ustax4s.money.monus.{Monus, MonusOps}
+import org.kae.ustax4s.money.monus.{CMM, CMMOps}
 import scala.math.BigDecimal.RoundingMode
 
 private[money] type Money = BigDecimal
 object Money:
 
-  given monusOps: MonusOps = new MonusOps {}
+  given monusOps: CMMOps = new CMMOps {}
 
   val zero: Money = 0
 
@@ -53,12 +53,12 @@ object Money:
 
   def taxAt[T: TaxRate](m: Money, rate: T): Money = multiply(m, rate.asFraction)
 
-  given Monus[Money]    = summonMonus
+  given CMM[Money]      = summonMonus
   given Ordering[Money] = summonOrdering
   given Show[Money]     = Show.fromToString[Money]
 
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.
-private def summonMonus    = summon[Monus[BigDecimal]]
+private def summonMonus    = summon[CMM[BigDecimal]]
 private def summonOrdering = summon[Ordering[BigDecimal]]

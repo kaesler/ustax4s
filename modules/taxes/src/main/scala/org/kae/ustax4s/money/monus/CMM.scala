@@ -5,11 +5,12 @@ import cats.kernel.{CommutativeMonoid, Group}
 
 // A commutative monoid with truncated subtraction.
 // See https://en.wikipedia.org/wiki/Monus
-trait Monus[A] extends CommutativeMonoid[A]:
-  def subtractTruncated(left: A, right: A): A
-end Monus
+trait CMM[A] extends CommutativeMonoid[A]:
+  def monus(left: A, right: A): A
+  def subtractTruncated(left: A, right: A): A = monus(left, right)
+end CMM
 
-object Monus extends MonusOps:
+object CMM extends CMMOps:
 
   // TODO: verify the laws are satisfied
   //   Monoid laws
@@ -20,23 +21,23 @@ object Monus extends MonusOps:
   //   mempty - x = mempty
 
   // The natural Monus on functions returning B, when B has a Monus.
-  given [A, B](using mb: Monus[B]): Monus[A => B] with
+  given [A, B](using mb: CMM[B]): CMM[A => B] with
     type F = A => B
-    def empty: F                         = { _ => mb.empty }
-    def combine(f: F, g: F): F           = { a => f(a).combine(g(a)) }
-    def subtractTruncated(f: F, g: F): F = { a => f(a) subt g(a) }
+    def empty: F               = { _ => mb.empty }
+    def combine(f: F, g: F): F = { a => f(a).combine(g(a)) }
+    def monus(f: F, g: F): F   = { a => f(a) subt g(a) }
 
   // Provides a Monus for many types.
-  given [A](using group: Group[A], ordering: Ordering[A]): Monus[A] with
+  given [A](using group: Group[A], ordering: Ordering[A]): CMM[A] with
     def empty: A                      = group.empty
     def combine(left: A, right: A): A = group.combine(left, right)
-    def subtractTruncated(left: A, right: A): A =
+    def monus(left: A, right: A): A =
       if ordering.lt(right, left) then group.remove(left, right)
       else empty
-end Monus
+end CMM
 
-trait MonusOps:
-  extension [A: Monus](left: A)
-    infix def subt(right: A): A = summon[Monus[A]].subtractTruncated(left, right)
+trait CMMOps:
+  extension [A: CMM](left: A)
+    infix def subt(right: A): A = summon[CMM[A]].monus(left, right)
     def -|(right: A): A         = left subt right
-end MonusOps
+end CMMOps
