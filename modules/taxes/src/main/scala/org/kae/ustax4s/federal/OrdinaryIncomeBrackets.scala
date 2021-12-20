@@ -8,7 +8,6 @@ import org.kae.ustax4s.tax.Tax
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
-// TODO: Do I need all this code now.
 /** Calculates tax on ordinary (non-investment) income.
   *
   * @param bracketStarts
@@ -17,14 +16,9 @@ import scala.annotation.tailrec
 final case class OrdinaryIncomeBrackets(
   bracketStarts: Map[IncomeThreshold, FederalTaxRate]
 ):
-  // Note: well-formedness checks.
   require(isProgressive)
   require(bracketStarts.contains(IncomeThreshold.zero))
   require(bracketStarts.nonEmpty)
-
-  // TODO: maybe move to Tax
-  def asRateDeltas: List[(IncomeThreshold, FederalTaxRate)] =
-    bracketStarts.keys.toList.sorted.zip(rateDeltas)
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
@@ -88,17 +82,6 @@ final case class OrdinaryIncomeBrackets(
 
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketStartsAscending.exists { (_, rate) => rate == bracketRate }
-
-  // TODO: maybe move to Tax
-  private def rateDeltas: List[FederalTaxRate] =
-    val ratesWithZeroAtFront =
-      FederalTaxRate.zero :: bracketStarts.values.toList.sorted
-    ratesWithZeroAtFront
-      .zip(ratesWithZeroAtFront.tail)
-      .map { (previousRate, currentRate) =>
-        currentRate absoluteDifference previousRate
-      }
-
 end OrdinaryIncomeBrackets
 
 object OrdinaryIncomeBrackets:
