@@ -5,6 +5,7 @@ import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable}
+import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
@@ -40,70 +41,21 @@ final case class QualifiedIncomeBrackets(
 
   val thresholdsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
     thresholds.toVector.sortBy(_._1)
-
   require(thresholdsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
-
-  private val thresholdsDescending = thresholdsAscending.reverse
 
   def startOfNonZeroQualifiedRateBracket: IncomeThreshold = thresholdsAscending(1)._1
 
-  def taxDueWholeDollar(
-    taxableOrdinaryIncome: Income,
-    qualifiedIncome: Income
-  ): TaxPayable =
-    taxDue(taxableOrdinaryIncome, qualifiedIncome).rounded
-
+  // TODO: move out of here.
+  // TODO: explain why it works.
   def taxDue(
     taxableOrdinaryIncome: Income,
     qualifiedIncome: Income
-  ): TaxPayable =
-    case class Accum(
-      totalIncomeInHigherBrackets: Income,
-      gainsYetToBeTaxed: Income,
-      gainsTaxSoFar: TaxPayable
-    )
-    object Accum:
-      def initial: Accum =
-        apply(Income.zero, qualifiedIncome, TaxPayable.zero)
-
-    val totalTaxableIncome = taxableOrdinaryIncome + qualifiedIncome
-    val accum =
-      thresholdsDescending.foldLeft(Accum.initial) {
-        case (
-              Accum(
-                totalIncomeInHigherBrackets,
-                gainsYetToBeTaxed,
-                gainsTaxSoFar
-              ),
-              (bracketThreshold, bracketRate)
-            ) =>
-          val totalIncomeYetToBeTaxed =
-            totalTaxableIncome reduceBy totalIncomeInHigherBrackets
-          val ordinaryIncomeYetToBeTaxed =
-            totalIncomeYetToBeTaxed reduceBy gainsYetToBeTaxed
-
-          // Non-negative: so zero if bracket does not apply.
-          val totalIncomeInThisBracket = totalIncomeYetToBeTaxed amountAbove bracketThreshold
-
-          // Non-negative: so zero if bracket does not apply.
-          val ordinaryIncomeInThisBracket =
-            ordinaryIncomeYetToBeTaxed amountAbove bracketThreshold
-
-          val gainsInThisBracket: Income =
-            totalIncomeInThisBracket reduceBy ordinaryIncomeInThisBracket
-          val taxInThisBracket = gainsInThisBracket taxAt bracketRate
-          Accum(
-            totalIncomeInHigherBrackets = totalIncomeInHigherBrackets + totalIncomeInThisBracket,
-            gainsYetToBeTaxed = gainsYetToBeTaxed reduceBy gainsInThisBracket,
-            gainsTaxSoFar = gainsTaxSoFar + taxInThisBracket
-          )
-      }
-    assert(accum.totalIncomeInHigherBrackets == totalTaxableIncome)
-    assert(accum.gainsYetToBeTaxed.isZero)
-    accum.gainsTaxSoFar
-
-  def bracketExists(bracketRate: FederalTaxRate): Boolean =
-    thresholdsAscending.exists { (_, rate) => rate == bracketRate }
+  ): TaxPayable = {
+    val func = TaxFunction.fromBrackets(thresholds)
+    func(taxableOrdinaryIncome + qualifiedIncome)
+      .reduceBy(func(taxableOrdinaryIncome))
+  }
+end QualifiedIncomeBrackets
 
 object QualifiedIncomeBrackets:
 
