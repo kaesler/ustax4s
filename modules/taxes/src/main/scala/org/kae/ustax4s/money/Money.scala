@@ -27,7 +27,6 @@ object Money:
     BigDecimal(i)
 
   def absoluteDifference(left: Money, right: Money): Money = (left - right).abs
-  def add(left: Money, right: Money): Money                = left.combine(right)
 
   def areClose(left: Money, right: Money, tolerance: Int): Boolean =
     (left - right).abs <= tolerance
@@ -40,8 +39,7 @@ object Money:
     require(right > 0, s"division by non-positive: $right")
     left.toDouble / right.toDouble
 
-  def isZero(m: Money): Boolean  = m == 0
-  def nonZero(m: Money): Boolean = m != 0
+  def isZero(m: Money): Boolean = m == 0
 
   def multiply(m: Money, d: Double): Money =
     require(d >= 0, s"multiplication by negative: $d")
@@ -54,7 +52,6 @@ object Money:
   given CMM[Money]      = summonMonus
   given Ordering[Money] = summonOrdering
   given Show[Money]     = Show.fromToString[Money]
-
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.

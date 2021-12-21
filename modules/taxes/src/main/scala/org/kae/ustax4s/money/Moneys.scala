@@ -78,8 +78,7 @@ private[money] object Moneys:
     given Show[Deduction]     = summonShow
 
     extension (left: Deduction)
-      def +(right: Deduction): Deduction = left.combine(right)
-
+      def +(right: Deduction): Deduction        = left.combine(right)
       infix def inflateBy(d: Double): Deduction = Money.multiply(left, d)
       infix def mul(i: Int): Deduction          = Money.multiply(left, i)
     end extension
@@ -143,8 +142,7 @@ private[money] object Moneys:
         Money.monus(left, cs.combineAll)
 
       infix def div(i: Int): TaxPayable = Money.divide(left, i)
-
-      def isZero: Boolean = left == zero
+      def isZero: Boolean               = left == zero
 
       infix def isCloseTo(right: TaxPayable, tolerance: Int): Boolean =
         Money.areClose(left, right, tolerance)
@@ -155,7 +153,6 @@ private[money] object Moneys:
 
       infix def reduceBy(right: TaxPayable): TaxPayable =
         Money.monus(left, right)
-
     end extension
   end TaxPayable
 
@@ -175,5 +172,4 @@ private[money] object Moneys:
   private def summonAdditionMonoid = summon[Monoid[Money]]
   private def summonShow           = summon[Show[Money]]
   private def summonOrdering       = summon[Ordering[Money]]
-
 end Moneys
