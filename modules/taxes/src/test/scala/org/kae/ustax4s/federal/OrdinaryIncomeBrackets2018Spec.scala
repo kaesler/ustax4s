@@ -4,7 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.money.{Income, TaxPayable}
+import org.kae.ustax4s.money.{TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 
 class OrdinaryIncomeBrackets2018Spec extends FunSuite:
@@ -13,7 +13,7 @@ class OrdinaryIncomeBrackets2018Spec extends FunSuite:
     (990, 99),
     (13500, 1350),
     (114547, 20389)
-  ).map { (income, tax) => (Income(income), TaxPayable(tax)) }
+  ).map { (income, tax) => (TaxableIncome(income), TaxPayable(tax)) }
 
   test("TaxBrackets for HOH 2018 should match IRS tables") {
     val brackets = Trump.ordinaryIncomeBrackets(Year.of(2018), HeadOfHousehold)

@@ -35,14 +35,13 @@ private[money] object Moneys:
     extension (left: Income)
       def +(right: Income): Income = left.combine(right)
 
-      // TODO: move to TaxableIncome?
       infix def amountAbove(threshold: IncomeThreshold): Income =
         Money.monus(left, threshold)
 
       infix def applyAdjustments(deductions: Deduction*): Income =
         Money.monus(left, deductions.combineAll)
 
-      infix def applyDeductions(deductions: Deduction*): Income =
+      infix def applyDeductions(deductions: Deduction*): TaxableIncome =
         Money.monus(left, deductions.combineAll)
 
       infix def div(right: Income): Double = Money.divide(left, right)
@@ -54,12 +53,8 @@ private[money] object Moneys:
 
       def isZero: Boolean = Money.isZero(left)
 
-      // TODO: move to TaxableIncome?
-      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.multiply(left, rate.asFraction)
-
       infix def mul(d: Double): Income = Money.multiply(left, d)
 
-      // TODO: can be flushed when we redo how we apply brackets.
       infix def reduceBy(right: Income): Income = Money.monus(left, right)
     end extension
   end Income
@@ -93,11 +88,11 @@ private[money] object Moneys:
     given Show[IncomeThreshold]     = summonShow
 
     extension (left: IncomeThreshold)
-      infix def absoluteDifference(right: IncomeThreshold): Income =
+      infix def absoluteDifference(right: IncomeThreshold): TaxableIncome =
         Money.absoluteDifference(left, right)
 
-      def asIncome: Income         = left
-      def rounded: IncomeThreshold = Money.rounded(left)
+      def asTaxableIncome: TaxableIncome = left
+      def rounded: IncomeThreshold       = Money.rounded(left)
 
       infix def increaseBy(factor: Double): IncomeThreshold =
         require(factor > 1.0)
@@ -106,13 +101,25 @@ private[money] object Moneys:
 
   opaque type TaxableIncome = Money
   object TaxableIncome:
+    val zero: TaxableIncome          = Money.zero
+    def apply(i: Int): TaxableIncome = Money(i)
+
     given Monoid[TaxableIncome]   = summonAdditionMonoid
     given Ordering[TaxableIncome] = summonOrdering
     given Show[TaxableIncome]     = summonShow
 
     extension (left: TaxableIncome)
+      def +(right: TaxableIncome): TaxableIncome = left.combine(right)
+
       infix def amountAbove(threshold: IncomeThreshold): TaxableIncome =
         Money.monus(left, threshold)
+
+      def isZero: Boolean = Money.isZero(left)
+
+      infix def reduceBy(right: TaxableIncome): TaxableIncome =
+        Money.monus(left, right)
+
+      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.multiply(left, rate.asFraction)
     end extension
   end TaxableIncome
 
@@ -164,6 +171,7 @@ private[money] object Moneys:
     extension (left: TaxCredit) def +(right: TaxCredit): TaxCredit = left.combine(right)
   end TaxCredit
 
+  // Note: must be outside the scopes above.
   private def summonAdditionMonoid = summon[Monoid[Money]]
   private def summonShow           = summon[Show[Money]]
   private def summonOrdering       = summon[Ordering[Money]]

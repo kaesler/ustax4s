@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable}
+import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
@@ -31,7 +31,7 @@ final case class OrdinaryIncomeBrackets(
 
   private val thresholdsDescending = bracketsAscending.reverse
 
-  def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Income =
+  def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): TaxableIncome =
     bracketsAscending
       .sliding(2)
       .collect { case Vector((_, `bracketRate`), (nextThreshold, _)) =>
@@ -44,7 +44,7 @@ final case class OrdinaryIncomeBrackets(
           s"rate not found or has no successor: $bracketRate"
         )
       )
-      .asIncome
+      .asTaxableIncome
 
   def taxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
     require(bracketExists(bracketRate))

@@ -5,7 +5,7 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
-import org.kae.ustax4s.money.{Income, MoneyGeneration, TaxPayable}
+import org.kae.ustax4s.money.{Income, MoneyGeneration, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
@@ -20,7 +20,7 @@ class OrdinaryIncomeBracketsSpec
 
   given Arbitrary[OrdinaryIncomeBrackets] = Arbitrary(genTaxBrackets)
 
-  given Arbitrary[Income] = Arbitrary(genIncome)
+  given Arbitrary[TaxableIncome] = Arbitrary(genTaxableIncome)
 
   private val TheYear = Year.of(2021)
 
@@ -86,7 +86,7 @@ class OrdinaryIncomeBracketsSpec
 
   property("never tax zero") {
     forAll { (brackets: OrdinaryIncomeBrackets) =>
-      TaxFunction.fromBrackets(brackets.brackets)(Income.zero) == TaxPayable.zero
+      TaxFunction.fromBrackets(brackets.brackets)(TaxableIncome.zero) == TaxPayable.zero
     }
   }
 
@@ -94,13 +94,13 @@ class OrdinaryIncomeBracketsSpec
     forAll { (brackets: OrdinaryIncomeBrackets) =>
       val (lowBracketTop, lowBracketRate) = brackets.bracketsAscending.head
       TaxFunction.fromBrackets(brackets.brackets)(
-        lowBracketTop.asIncome
-      ) == (lowBracketTop.asIncome taxAt lowBracketRate)
+        lowBracketTop.asTaxableIncome
+      ) == (lowBracketTop.asTaxableIncome taxAt lowBracketRate)
     }
   }
 
   property("tax rises monotonically with income") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income1: Income, income2: Income) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income1: TaxableIncome, income2: TaxableIncome) =>
       val tax = TaxFunction.fromBrackets(brackets.brackets)
       if income1 < income2 then tax(income1) < tax(income2)
       else if income1 > income2 then tax(income1) > tax(income2)
@@ -109,13 +109,13 @@ class OrdinaryIncomeBracketsSpec
   }
 
   property("tax is never zero except on zero") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: TaxableIncome) =>
       TaxFunction.fromBrackets(brackets.brackets)(income).nonZero || income.isZero
     }
   }
 
   property("max tax rate is the max tax rate") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: TaxableIncome) =>
       val maxTax = income taxAt brackets.bracketsAscending.map(_._2).max
       TaxFunction.fromBrackets(brackets.brackets)(income) <= maxTax
     }
@@ -137,7 +137,7 @@ class OrdinaryIncomeBracketsSpec
   }
 
   test("inflated brackets incur lower tax for same income") {
-    forAll { (brackets: OrdinaryIncomeBrackets, income: Income) =>
+    forAll { (brackets: OrdinaryIncomeBrackets, income: TaxableIncome) =>
       val inflatedBrackets = brackets.inflatedBy(1.2)
       val baseTaxDue       = TaxFunction.fromBrackets(brackets.brackets)(income)
       val inflatedTaxDue   = TaxFunction.fromBrackets(inflatedBrackets.brackets)(income)

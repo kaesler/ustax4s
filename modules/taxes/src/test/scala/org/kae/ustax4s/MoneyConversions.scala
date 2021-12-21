@@ -1,9 +1,10 @@
 package org.kae.ustax4s
 
-import org.kae.ustax4s.money.{Deduction, Income}
+import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 
 // Simplify test syntax.
 object MoneyConversions:
-  given Conversion[Int, Income]    = Income.apply
-  given Conversion[Int, Deduction] = Deduction.apply
+  given Conversion[Int, Income]        = Income.apply
+  given Conversion[Int, TaxableIncome] = TaxableIncome.apply
+  given Conversion[Int, Deduction]     = Deduction.apply
 end MoneyConversions

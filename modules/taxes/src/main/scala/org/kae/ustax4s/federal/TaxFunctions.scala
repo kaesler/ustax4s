@@ -1,17 +1,17 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.money.{Income, TaxPayable}
+import org.kae.ustax4s.money.{Income, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 
 object TaxFunctions:
   def taxDueOnOrdinaryIncome(brackets: OrdinaryIncomeBrackets)(
-    taxableOrdinaryIncome: Income
+    taxableOrdinaryIncome: TaxableIncome
   ): TaxPayable =
     TaxFunction.fromBrackets(brackets.brackets)(taxableOrdinaryIncome)
 
   def taxDueOnQualifiedIncome(brackets: QualifiedIncomeBrackets)(
-    taxableOrdinaryIncome: Income,
-    qualifiedIncome: Income
+    taxableOrdinaryIncome: TaxableIncome,
+    qualifiedIncome: TaxableIncome
   ): TaxPayable =
     // We use the qualified income brackets to compute the
     // tax on the sum of ordinaryIncome and qualifiedIncome,

@@ -5,7 +5,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.federal.{BoundRegime, TaxFunctions, Trump}
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.{Income, TaxCredit, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, Income, TaxCredit, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 
 class Form1040_2018Spec extends FunSuite:
@@ -62,9 +62,9 @@ class Form1040_2018Spec extends FunSuite:
 
     assertEquals(form.totalIncome, Income(150919))
     assertEquals(form.adjustedGrossIncome, Income(147324))
-    assertEquals(form.taxableIncome, Income(129324))
+    assertEquals(form.taxableIncome, TaxableIncome(129324))
 
-    assertEquals(form.taxableOrdinaryIncome, Income(114547))
+    assertEquals(form.taxableOrdinaryIncome, TaxableIncome(114547))
     assertEquals(form.qualifiedIncome, Income(14777))
 
     val taxOnInv =
@@ -73,7 +73,7 @@ class Form1040_2018Spec extends FunSuite:
           .qualifiedIncomeBrackets(year, filingStatus)
       )(
         form.taxableOrdinaryIncome,
-        form.qualifiedIncome
+        form.qualifiedIncome.applyDeductions(Deduction.zero)
       )
         .rounded
     assertEquals(taxOnInv, TaxPayable(2217))

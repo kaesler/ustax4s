@@ -7,12 +7,9 @@ import org.kae.ustax4s.federal.{FederalTaxRate, OrdinaryIncomeBrackets, Qualifie
 import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}
 
 // Note: function type here gives us a natural Monoid[Tax].
-// TODO: Tighten up to be TaxableIncome => TaxPayable
-// TODO: abstract to TaxRate
-type TaxFunction = Income => TaxPayable
+type TaxFunction = TaxableIncome => TaxPayable
 
 object TaxFunction:
-  // TODO: need
   type Brackets[R] = Map[IncomeThreshold, R]
 
   // TODO: explain why the following works.

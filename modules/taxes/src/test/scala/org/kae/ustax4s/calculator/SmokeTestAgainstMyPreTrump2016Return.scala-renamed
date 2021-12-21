@@ -34,8 +34,8 @@ class SmokeTestAgainstMyPreTrump2016Return extends FunSuite:
     )
 
   test("Form1040 totalTax should match what I filed") {
-    val totalIncome         = (wages + ordinaryDividends) applyDeductions shortTermCapitalLoss
-    val adjustedGrossIncome = totalIncome applyDeductions hsaDeduction
+    val totalIncome         = (wages + ordinaryDividends) reduceBy shortTermCapitalLoss
+    val adjustedGrossIncome = totalIncome reduceBy hsaDeduction
     val taxableIncome = adjustedGrossIncome applyDeductions
       (itemizedDeductions, boundRegime.personalExemptionDeduction)
     val taxableOrdinaryIncome = taxableIncome reduceBy qualifiedDividends

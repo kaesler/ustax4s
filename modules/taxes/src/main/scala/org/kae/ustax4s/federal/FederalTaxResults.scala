@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.Show
-import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 
 final case class FederalTaxResults(
   ssRelevantOtherIncome: Income,
@@ -12,7 +12,7 @@ final case class FederalTaxResults(
   adjustmentWhenOldAndSingle: Deduction,
   standardDeduction: Deduction,
   netDeduction: Deduction,
-  taxableOrdinaryIncome: Income,
+  taxableOrdinaryIncome: TaxableIncome,
   taxOnOrdinaryIncome: TaxPayable,
   taxOnQualifiedIncome: TaxPayable
 ):

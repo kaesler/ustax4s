@@ -93,10 +93,11 @@ final case class Form1040(
     totalIncome applyAdjustments schedule1.map(_.adjustmentsToIncome).getOrElse(Deduction.zero)
 
   // Line 10:
-  def taxableIncome: Income =
+  def taxableIncome: TaxableIncome =
     adjustedGrossIncome applyDeductions standardDeduction
 
-  def taxableOrdinaryIncome: Income = taxableIncome reduceBy qualifiedIncome
+  def taxableOrdinaryIncome: TaxableIncome =
+    taxableIncome reduceBy qualifiedIncome.applyDeductions(Deduction.zero)
 
   def showValues: String =
     s"""
@@ -134,12 +135,15 @@ object Form1040:
 
   // Line 11:
   def taxDueBeforeCredits(
-    ordinaryIncome: Income,
+    ordinaryIncome: TaxableIncome,
     qualifiedIncome: Income,
     ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
     qualifiedIncomeBrackets: QualifiedIncomeBrackets
   ): TaxPayable =
     TaxFunctions.taxDueOnOrdinaryIncome(ordinaryIncomeBrackets)(ordinaryIncome) +
-      TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(ordinaryIncome, qualifiedIncome)
+      TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(
+        ordinaryIncome,
+        qualifiedIncome.applyDeductions(Deduction.zero)
+      )
 
 end Form1040
