@@ -56,7 +56,7 @@ private[money] object Moneys:
       def isZero: Boolean = Money.isZero(left)
 
       // TODO: move to TaxableIncome?
-      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.taxAt(left, rate)
+      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.multiply(left, rate.asFraction)
 
       infix def mul(d: Double): Income = Money.multiply(left, d)
 

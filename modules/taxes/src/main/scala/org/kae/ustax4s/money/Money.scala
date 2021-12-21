@@ -51,8 +51,6 @@ object Money:
 
   def monus(left: Money, right: Money): Money = left monus right
 
-  def taxAt[T: TaxRate](m: Money, rate: T): Money = multiply(m, rate.asFraction)
-
   given CMM[Money]      = summonMonus
   given Ordering[Money] = summonOrdering
   given Show[Money]     = Show.fromToString[Money]

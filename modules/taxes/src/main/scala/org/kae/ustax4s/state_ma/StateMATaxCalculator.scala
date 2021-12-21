@@ -22,9 +22,13 @@ object StateMATaxCalculator:
     //  - capital gains
     massachusettsGrossIncome: Income
   ): TaxPayable =
-    massachusettsGrossIncome
-      .applyDeductions(totalExemptions(year, filingStatus, birthDate, dependents))
-      .taxAt(rateFor(year))
+    TaxFunctions.forStateTaxableIncome(rateFor(year))(
+      // taxableIncome
+      massachusettsGrossIncome
+        .applyDeductions(
+          totalExemptions(year, filingStatus, birthDate, dependents)
+        )
+    )
 
   private def totalExemptions(
     year: Year,
