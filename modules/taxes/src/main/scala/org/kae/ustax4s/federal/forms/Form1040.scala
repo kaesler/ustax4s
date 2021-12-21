@@ -90,7 +90,7 @@ final case class Form1040(
 
   // Line 7:
   def adjustedGrossIncome: Income =
-    totalIncome applyDeductions schedule1.map(_.adjustmentsToIncome).getOrElse(Deduction.zero)
+    totalIncome applyAdjustments schedule1.map(_.adjustmentsToIncome).getOrElse(Deduction.zero)
 
   // Line 10:
   def taxableIncome: Income =

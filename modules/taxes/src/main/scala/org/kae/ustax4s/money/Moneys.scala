@@ -13,10 +13,6 @@ export Moneys.TaxPayable
 
 private[money] object Moneys:
 
-  // TODO: look at Haskell code for taxes.
-  // https://github.com/frasertweedale/hs-tax/blob/master/src/Data/Tax.hs
-  // https://hackage.haskell.org/package/tax-0.2.0.0/docs/Data-Tax.html
-
   // TODO: make further distinctions:
   //   OrdinaryIncome
   //   QualifiedIncome
@@ -42,6 +38,9 @@ private[money] object Moneys:
       // TODO: move to TaxableIncome?
       infix def amountAbove(threshold: IncomeThreshold): Income =
         Money.monus(left, threshold)
+
+      infix def applyAdjustments(deductions: Deduction*): Income =
+        Money.monus(left, deductions.combineAll)
 
       infix def applyDeductions(deductions: Deduction*): Income =
         Money.monus(left, deductions.combineAll)
@@ -72,7 +71,6 @@ private[money] object Moneys:
     def apply(d: Double): Deduction       = Money(d)
     def unsafeParse(s: String): Deduction = Money.unsafeParse(s)
 
-    // Note: Monoid suffices.
     given Monoid[Deduction]   = summonAdditionMonoid
     given Ordering[Deduction] = summonOrdering
     given Show[Deduction]     = summonShow
@@ -108,7 +106,6 @@ private[money] object Moneys:
 
   opaque type TaxableIncome = Money
   object TaxableIncome:
-    // Note: Monoid suffices.
     given Monoid[TaxableIncome]   = summonAdditionMonoid
     given Ordering[TaxableIncome] = summonOrdering
     given Show[TaxableIncome]     = summonShow
@@ -127,7 +124,6 @@ private[money] object Moneys:
     def apply(d: Double): TaxPayable       = Money(d)
     def unsafeParse(s: String): TaxPayable = Money.unsafeParse(s)
 
-    // Note: Monoid suffices.
     given Monoid[TaxPayable]   = summonAdditionMonoid
     given Ordering[TaxPayable] = summonOrdering
     given Show[TaxPayable]     = summonShow
@@ -161,7 +157,6 @@ private[money] object Moneys:
     val zero: TaxCredit          = Money.zero
     def apply(i: Int): TaxCredit = Money(i)
 
-    // Note: Monoid suffices.
     given Monoid[TaxCredit]   = summonAdditionMonoid
     given Ordering[TaxCredit] = summonOrdering
     given Show[TaxCredit]     = summonShow
