@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal.forms
 import cats.implicits.*
 import java.time.Year
 import munit.FunSuite
-import org.kae.ustax4s.federal.{BoundRegime, Trump}
+import org.kae.ustax4s.federal.{BoundRegime, TaxFunctions, Trump}
 import org.kae.ustax4s.kevin.Kevin
 import org.kae.ustax4s.money.{Income, TaxCredit, TaxPayable}
 import org.kae.ustax4s.taxfunction.TaxFunction
@@ -67,10 +67,15 @@ class Form1040_2018Spec extends FunSuite:
     assertEquals(form.taxableOrdinaryIncome, Income(114547))
     assertEquals(form.qualifiedIncome, Income(14777))
 
-    val taxOnInv = regime
-      .qualifiedIncomeBrackets(year, filingStatus)
-      .taxDue(form.taxableOrdinaryIncome, form.qualifiedIncome)
-      .rounded
+    val taxOnInv =
+      TaxFunctions.taxDueOnQualifiedIncome(
+        regime
+          .qualifiedIncomeBrackets(year, filingStatus)
+      )(
+        form.taxableOrdinaryIncome,
+        form.qualifiedIncome
+      )
+        .rounded
     assertEquals(taxOnInv, TaxPayable(2217))
 
     val taxOnOrd =

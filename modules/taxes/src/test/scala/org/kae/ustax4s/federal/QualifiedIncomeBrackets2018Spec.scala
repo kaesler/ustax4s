@@ -14,12 +14,10 @@ class QualifiedIncomeBrackets2018Spec extends FunSuite:
   ) {
     val brackets = QualifiedIncomeBrackets.of(Year.of(2018), HeadOfHousehold)
     assertEquals(
-      brackets
-        .taxDue(
-          114547,
-          14777
-        )
-        .rounded,
+      TaxFunctions.taxDueOnQualifiedIncome(brackets)(
+        114547,
+        14777
+      ).rounded,
       TaxPayable(2217)
     )
   }

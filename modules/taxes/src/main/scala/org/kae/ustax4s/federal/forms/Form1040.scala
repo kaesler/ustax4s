@@ -5,6 +5,7 @@ import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.{
   OrdinaryIncomeBrackets,
   QualifiedIncomeBrackets,
+  TaxFunctions,
   TaxableSocialSecurity
 }
 import org.kae.ustax4s.money.*
@@ -138,10 +139,7 @@ object Form1040:
     ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
     qualifiedIncomeBrackets: QualifiedIncomeBrackets
   ): TaxPayable =
-    TaxFunction.fromBrackets(ordinaryIncomeBrackets.thresholds)(ordinaryIncome) +
-      qualifiedIncomeBrackets.taxDue(
-        ordinaryIncome,
-        qualifiedIncome
-      )
+    TaxFunctions.taxDueOnOrdinaryIncome(ordinaryIncomeBrackets)(ordinaryIncome) +
+      TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(ordinaryIncome, qualifiedIncome)
 
 end Form1040

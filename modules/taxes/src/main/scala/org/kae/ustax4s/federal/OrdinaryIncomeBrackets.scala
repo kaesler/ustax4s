@@ -8,11 +8,6 @@ import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
-/** Calculates tax on ordinary (non-investment) income.
-  *
-  * @param thresholds
-  *   the tax brackets in effect
-  */
 final case class OrdinaryIncomeBrackets(
   thresholds: Map[IncomeThreshold, FederalTaxRate]
 ):

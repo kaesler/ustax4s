@@ -9,12 +9,6 @@ import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 
-/** Calculates tax on qualified investment income,
-  * i.e. long-term capital gains and qualified dividends.
-  *
-  * @param thresholds
-  *   the tax brackets in effect
-  */
 final case class QualifiedIncomeBrackets(
   thresholds: Map[IncomeThreshold, FederalTaxRate]
 ):
@@ -45,16 +39,6 @@ final case class QualifiedIncomeBrackets(
 
   def startOfNonZeroQualifiedRateBracket: IncomeThreshold = thresholdsAscending(1)._1
 
-  // TODO: move out of here.
-  // TODO: explain why it works.
-  def taxDue(
-    taxableOrdinaryIncome: Income,
-    qualifiedIncome: Income
-  ): TaxPayable = {
-    val func = TaxFunction.fromBrackets(thresholds)
-    func(taxableOrdinaryIncome + qualifiedIncome)
-      .reduceBy(func(taxableOrdinaryIncome))
-  }
 end QualifiedIncomeBrackets
 
 object QualifiedIncomeBrackets:
