@@ -117,8 +117,6 @@ private[money] object Moneys:
     extension (left: TaxableIncome)
       infix def amountAbove(threshold: IncomeThreshold): TaxableIncome =
         Money.monus(left, threshold)
-
-      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.taxAt(left, rate)
     end extension
   end TaxableIncome
 

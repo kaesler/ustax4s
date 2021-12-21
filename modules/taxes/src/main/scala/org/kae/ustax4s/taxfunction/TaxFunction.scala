@@ -12,40 +12,43 @@ import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome
 // i.e. perhaps (ordBracketTax - qualBracketTax)(ordIncome) + qualBracketTax(ord + qual)
 // Is this right?
 // TODO: Tighten up to be TaxableIncome => TaxPayable
+// TODO: abstract to TaxRate
 type TaxFunction = Income => TaxPayable
 
 object TaxFunction:
-  type Brackets = Map[IncomeThreshold, FederalTaxRate]
+  // TODO: need
+  type Brackets[R] = Map[IncomeThreshold, R]
+
   // TODO: explain why the following works.
-  def fromBrackets(brackets: Brackets): TaxFunction =
+  def fromBrackets[R: TaxRate](brackets: Brackets[R]): TaxFunction =
     asRateDeltas(brackets)
-      .map(makeThresholdTax.tupled)
+      .map(makeThresholdTax[R].tupled)
       // Note: Tax has a natural Monoid because TaxPayable has one.
       .combineAll
 
-  def makeFlatTax(rate: FederalTaxRate): TaxFunction =
+  def makeFlatTax[R: TaxRate](rate: R): TaxFunction =
     makeThresholdTax(IncomeThreshold.zero, rate)
 
-  def makeThresholdTax(
+  def makeThresholdTax[R: TaxRate](
     threshold: IncomeThreshold,
-    rate: FederalTaxRate
+    rate: R
   ): TaxFunction =
     _.amountAbove(threshold).taxAt(rate)
 
-  private def asRateDeltas(brackets: Brackets): List[(IncomeThreshold, FederalTaxRate)] =
+  private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): List[(IncomeThreshold, R)] =
     brackets
       .keys
       .toList
       .sorted
       .zip(rateDeltas(brackets))
 
-  private def rateDeltas(brackets: Brackets): List[FederalTaxRate] =
+  private def rateDeltas[R: TaxRate](brackets: Brackets[R]): List[R] =
     val ratesWithZeroAtFront =
-      FederalTaxRate.zero :: brackets.values.toList.sorted
+      summon[TaxRate[R]].zero :: brackets.values.toList.sorted
     ratesWithZeroAtFront
       .zip(ratesWithZeroAtFront.tail)
       .map { (previousRate, currentRate) =>
-        currentRate absoluteDifference previousRate
+        currentRate delta previousRate
       }
 
 end TaxFunction

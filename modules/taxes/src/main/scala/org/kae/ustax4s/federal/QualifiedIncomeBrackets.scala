@@ -8,6 +8,7 @@ import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable}
 import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 final case class QualifiedIncomeBrackets(
   thresholds: Map[IncomeThreshold, FederalTaxRate]
