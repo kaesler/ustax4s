@@ -1,5 +1,4 @@
-package org.kae.ustax4s
-package federal
+package org.kae.ustax4s.federal
 
 import cats.Show
 import java.time.Year
@@ -11,14 +10,14 @@ import scala.annotation.tailrec
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 final case class QualifiedIncomeBrackets(
-  thresholds: Map[IncomeThreshold, FederalTaxRate]
+  brackets: Map[IncomeThreshold, FederalTaxRate]
 ):
   require(isProgressive)
-  require(thresholds.contains(IncomeThreshold.zero))
-  require(thresholds.size >= 2)
+  require(brackets.contains(IncomeThreshold.zero))
+  require(brackets.size >= 2)
 
   private def isProgressive: Boolean =
-    val ratesAscending = thresholds.toList.sorted.map(_._2)
+    val ratesAscending = brackets.toList.sorted.map(_._2)
     ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
       left < right
     }
@@ -28,17 +27,17 @@ final case class QualifiedIncomeBrackets(
   def inflatedBy(factor: Double): QualifiedIncomeBrackets =
     require(factor >= 1.0)
     QualifiedIncomeBrackets(
-      thresholds.map { pair =>
+      brackets.map { pair =>
         val (threshold, rate) = pair
         (threshold.increaseBy(factor).rounded, rate)
       }
     )
 
-  val thresholdsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    thresholds.toVector.sortBy(_._1)
-  require(thresholdsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
+  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+    brackets.toVector.sortBy(_._1)
+  require(bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
 
-  def startOfNonZeroQualifiedRateBracket: IncomeThreshold = thresholdsAscending(1)._1
+  def startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketsAscending(1)._1
 
 end QualifiedIncomeBrackets
 
@@ -46,7 +45,7 @@ object QualifiedIncomeBrackets:
 
   given Show[QualifiedIncomeBrackets] with
     def show(b: QualifiedIncomeBrackets): String =
-      b.thresholdsAscending.mkString("\n")
+      b.bracketsAscending.mkString("\n")
 
   @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
     (year.getValue, status) match

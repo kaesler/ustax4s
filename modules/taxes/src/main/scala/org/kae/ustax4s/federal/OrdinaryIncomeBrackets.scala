@@ -10,29 +10,29 @@ import scala.annotation.tailrec
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 final case class OrdinaryIncomeBrackets(
-  thresholds: Map[IncomeThreshold, FederalTaxRate]
+  brackets: Map[IncomeThreshold, FederalTaxRate]
 ):
   require(isProgressive)
-  require(thresholds.contains(IncomeThreshold.zero))
-  require(thresholds.nonEmpty)
+  require(brackets.contains(IncomeThreshold.zero))
+  require(brackets.nonEmpty)
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
   def inflatedBy(factor: Double): OrdinaryIncomeBrackets =
     require(factor >= 1.0)
     OrdinaryIncomeBrackets(
-      thresholds.map { (start, rate) =>
+      brackets.map { (start, rate) =>
         (start.increaseBy(factor).rounded, rate)
       }
     )
 
-  val thresholdsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    thresholds.toVector.sortBy(_._1)
+  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+    brackets.toVector.sortBy(_._1)
 
-  private val thresholdsDescending = thresholdsAscending.reverse
+  private val thresholdsDescending = bracketsAscending.reverse
 
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): Income =
-    thresholdsAscending
+    bracketsAscending
       .sliding(2)
       .collect { case Vector((_, `bracketRate`), (nextThreshold, _)) =>
         nextThreshold
@@ -49,7 +49,7 @@ final case class OrdinaryIncomeBrackets(
   def taxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
     require(bracketExists(bracketRate))
 
-    val taxes = thresholdsAscending
+    val taxes = bracketsAscending
       .sliding(2)
       .toList
       .takeWhile {
@@ -71,20 +71,20 @@ final case class OrdinaryIncomeBrackets(
       .map(_._2)
 
   private def isProgressive: Boolean =
-    val ratesAscending = thresholds.toList.sorted.map(_._2)
+    val ratesAscending = brackets.toList.sorted.map(_._2)
     ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
       left < right
     }
 
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
-    thresholdsAscending.exists { (_, rate) => rate == bracketRate }
+    bracketsAscending.exists { (_, rate) => rate == bracketRate }
 end OrdinaryIncomeBrackets
 
 object OrdinaryIncomeBrackets:
 
   given Show[OrdinaryIncomeBrackets] with
     def show(b: OrdinaryIncomeBrackets): String =
-      b.thresholdsAscending.mkString("\n")
+      b.bracketsAscending.mkString("\n")
 
   def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
     OrdinaryIncomeBrackets(

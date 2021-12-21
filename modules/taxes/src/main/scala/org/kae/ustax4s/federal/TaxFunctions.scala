@@ -7,7 +7,7 @@ object TaxFunctions:
   def taxDueOnOrdinaryIncome(brackets: OrdinaryIncomeBrackets)(
     taxableOrdinaryIncome: Income
   ): TaxPayable =
-    TaxFunction.fromBrackets(brackets.thresholds)(taxableOrdinaryIncome)
+    TaxFunction.fromBrackets(brackets.brackets)(taxableOrdinaryIncome)
 
   def taxDueOnQualifiedIncome(brackets: QualifiedIncomeBrackets)(
     taxableOrdinaryIncome: Income,
@@ -18,7 +18,7 @@ object TaxFunctions:
     // and then subtract the tax it computed on ordinary
     // income because it is taxed using the (steeper) brackets for
     // ordinary income.
-    val f = TaxFunction.fromBrackets(brackets.thresholds)
-    f(taxableOrdinaryIncome + qualifiedIncome)
-      .reduceBy(f(taxableOrdinaryIncome))
+    val taxFunction = TaxFunction.fromBrackets(brackets.brackets)
+    taxFunction(taxableOrdinaryIncome + qualifiedIncome)
+      .reduceBy(taxFunction(taxableOrdinaryIncome))
 end TaxFunctions

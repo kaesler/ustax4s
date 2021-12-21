@@ -7,10 +7,6 @@ import org.kae.ustax4s.federal.{FederalTaxRate, OrdinaryIncomeBrackets, Qualifie
 import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}
 
 // Note: function type here gives us a natural Monoid[Tax].
-//  TODO: Is the natural Monus[Tax] useful?
-//  fed tax = ordBracketTax(ordinaryIncome) + qualBracketTax(ord + qual) - qualBracketTax(ord)
-// i.e. perhaps (ordBracketTax - qualBracketTax)(ordIncome) + qualBracketTax(ord + qual)
-// Is this right?
 // TODO: Tighten up to be TaxableIncome => TaxPayable
 // TODO: abstract to TaxRate
 type TaxFunction = Income => TaxPayable
