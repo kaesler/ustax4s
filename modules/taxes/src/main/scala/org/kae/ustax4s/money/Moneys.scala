@@ -138,8 +138,7 @@ private[money] object Moneys:
       infix def isCloseTo(right: TaxPayable, tolerance: Int): Boolean =
         Money.areClose(left, right, tolerance)
 
-      def nonZero: Boolean = !isZero
-
+      def nonZero: Boolean    = !isZero
       def rounded: TaxPayable = Money.rounded(left)
 
       infix def reduceBy(right: TaxPayable): TaxPayable =
