@@ -12,7 +12,14 @@ type TaxFunction = TaxableIncome => TaxPayable
 object TaxFunction:
   type Brackets[R] = Map[IncomeThreshold, R]
 
-  // TODO: explain why the following works.
+  // How this works: Because taxes are progressive, with higher rates applying
+  // in higher brackets, for each bracket threshold we pre-compute the
+  // increase in tax rate from the previous threshold. Then we can just apply
+  // that delta for a threshold for all income above the threshold, and sum the
+  // results for all thresholds.
+  // E.g. if we had a 10% bracket and a 20% bracket total tax is
+  //   - 10% of all income above the 10% threshold, PLUS
+  //   - (20% - 10%) of all income above the 20% threshold.
   def fromBrackets[R: TaxRate](brackets: Brackets[R]): TaxFunction =
     asRateDeltas(brackets)
       .map(makeThresholdTax[R].tupled)

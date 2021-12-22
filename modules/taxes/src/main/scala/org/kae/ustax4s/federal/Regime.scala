@@ -6,7 +6,6 @@ import org.kae.ustax4s
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
-import scala.annotation.tailrec
 import scala.util.chaining.*
 
 sealed trait Regime:
@@ -78,7 +77,6 @@ case object Trump extends Regime:
 
   override val lastYearKnown: Year = Year.of(2022)
 
-  @tailrec
   override def ordinaryIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
@@ -87,10 +85,8 @@ case object Trump extends Regime:
     (year.getValue, filingStatus) match
 
       // Note: for now assume 2022 rates in later years.
-      // TODO: should I inflate them instead ? Closer to what
-      // MaxiFi would do?
-      case (year, fs) if year > 2022 =>
-        ordinaryIncomeBrackets(Year.of(2022), fs)
+//      case (year, fs) if year > 2022 =>
+//        ordinaryIncomeBrackets(Year.of(2022), fs)
 
       case (2022, HeadOfHousehold) =>
         OrdinaryIncomeBrackets.create(
