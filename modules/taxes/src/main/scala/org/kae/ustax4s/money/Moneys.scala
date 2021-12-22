@@ -11,15 +11,15 @@ export Moneys.TaxableIncome
 export Moneys.TaxCredit
 export Moneys.TaxPayable
 
+/** Module for various types for money. They are all distinct opaque types over Money. Money in turn
+  * is an opaque type over BigDecimal with a restricted repertoire of operations. All have a Monoid
+  * which is the addition Monoid Cats provides for BigDecimal. Money itself has a CommutativeMonoid
+  * enhanced with the monus operator, subtraction truncated so the result is non-negative. Some of
+  * the important functions defined: applyAdjustments: (Income, List[Deduction]) -> Income
+  * applyDeductions: (Income, List[Deduction]) -> TaxableIncome TaxFunction: TaxableIncome ->
+  * TaxPayable applyCredits: (TaxPayable, List[TaxCredit]) -> TaxPayable
+  */
 private[money] object Moneys:
-
-  // TODO: make further distinctions:
-  //   OrdinaryIncome
-  //   QualifiedIncome
-  //   SocialSecurityIncome
-  //   Allow them to be added to form Income?
-  //   OR use phantom types for those?
-  //   Federal vs State
 
   opaque type Income = Money
   object Income:
@@ -81,7 +81,6 @@ private[money] object Moneys:
   object IncomeThreshold:
     val zero: IncomeThreshold = Money.zero
 
-    // Note: these are always integers.
     def apply(i: Int): IncomeThreshold = Money(i)
 
     given Ordering[IncomeThreshold] = summonOrdering
@@ -123,7 +122,6 @@ private[money] object Moneys:
     end extension
   end TaxableIncome
 
-  // Note: The result of applying a tax rate to an Income.
   opaque type TaxPayable = Money
   object TaxPayable:
     val zero: TaxPayable                   = Money.zero
@@ -171,7 +169,7 @@ private[money] object Moneys:
     extension (left: TaxCredit) def +(right: TaxCredit): TaxCredit = left.combine(right)
   end TaxCredit
 
-  // Note: must be outside the scopes above.
+  // Note: must be outside the object scopes above.
   private def summonAdditionMonoid = summon[Monoid[Money]]
   private def summonShow           = summon[Show[Money]]
   private def summonOrdering       = summon[Ordering[Money]]
