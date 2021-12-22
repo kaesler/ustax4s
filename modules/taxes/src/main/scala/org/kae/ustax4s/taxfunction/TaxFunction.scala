@@ -10,7 +10,7 @@ import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome
 type TaxFunction = TaxableIncome => TaxPayable
 
 object TaxFunction:
-  type Brackets[R] = Map[IncomeThreshold, R]
+  type Brackets = [R] =>> Map[IncomeThreshold, R]
 
   /** Return a function to apply a rate to all income over a specified threshold.
     */
