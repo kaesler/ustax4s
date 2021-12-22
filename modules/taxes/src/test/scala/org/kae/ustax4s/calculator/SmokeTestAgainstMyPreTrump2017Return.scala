@@ -37,8 +37,8 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
     val taxableIncome =
       adjustedGrossIncome applyDeductions
         (itemizedDeductions, boundRegime.personalExemptionDeduction)
-    // val taxableOrdinaryIncome = taxableIncome reduceBy qualifiedDividends
-    // val qualifiedIncome       = qualifiedDividends
+    val taxableOrdinaryIncome = taxableIncome reduceBy qualifiedDividends
+    val qualifiedIncome       = qualifiedDividends
 
 //    println(s"Total Income:          $totalIncome")
 //    println(s"AGI:                   $adjustedGrossIncome")
