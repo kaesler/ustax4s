@@ -27,7 +27,7 @@ final case class OrdinaryIncomeBrackets(
     )
 
   val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    brackets.toVector.sortBy(_._1)
+    brackets.toVector.sortBy(_._1: Income)
 
   private val thresholdsDescending = bracketsAscending.reverse
 
@@ -44,7 +44,6 @@ final case class OrdinaryIncomeBrackets(
           s"rate not found or has no successor: $bracketRate"
         )
       )
-      .asTaxableIncome
 
   def taxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
     require(bracketExists(bracketRate))

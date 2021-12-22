@@ -94,13 +94,16 @@ class OrdinaryIncomeBracketsSpec
     forAll { (brackets: OrdinaryIncomeBrackets) =>
       val (lowBracketTop, lowBracketRate) = brackets.bracketsAscending.head
       TaxFunction.fromBrackets(brackets.brackets)(
-        lowBracketTop.asTaxableIncome
-      ) == (lowBracketTop.asTaxableIncome taxAt lowBracketRate)
+        lowBracketTop
+      ) == (lowBracketTop taxAt lowBracketRate)
     }
   }
 
   property("tax rises monotonically with income") {
     forAll { (brackets: OrdinaryIncomeBrackets, income1: TaxableIncome, income2: TaxableIncome) =>
+      given Ordering[TaxableIncome] with
+        def compare(x: TaxableIncome, y: TaxableIncome): Int =
+          summon[Ordering[Income]].compare(x, y)
       val tax = TaxFunction.fromBrackets(brackets.brackets)
       if income1 < income2 then tax(income1) < tax(income2)
       else if income1 > income2 then tax(income1) > tax(income2)

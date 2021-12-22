@@ -1,6 +1,5 @@
 package org.kae.ustax4s.money
 
-import cats.Show
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
 import org.kae.ustax4s.money.monus.{CMM, CMMOps}
@@ -51,7 +50,6 @@ object Money:
 
   given CMM[Money]      = summonMonus
   given Ordering[Money] = summonOrdering
-  given Show[Money]     = Show.fromToString[Money]
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.

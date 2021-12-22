@@ -34,7 +34,7 @@ final case class QualifiedIncomeBrackets(
     )
 
   val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    brackets.toVector.sortBy(_._1)
+    brackets.toVector.sortBy(_._1: Income)
   require(bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
 
   def startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketsAscending(1)._1

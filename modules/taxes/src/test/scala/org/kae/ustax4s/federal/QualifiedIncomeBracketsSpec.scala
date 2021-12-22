@@ -45,7 +45,7 @@ class QualifiedIncomeBracketsSpec
 
   property("never tax gains in the lowest (zero-rate) bracket") {
     forAll { (brackets: QualifiedIncomeBrackets) =>
-      val qualifiedIncome = brackets.startOfNonZeroQualifiedRateBracket.asTaxableIncome
+      val qualifiedIncome = brackets.startOfNonZeroQualifiedRateBracket
       taxDueOnQualifiedIncome(brackets)(TaxableIncome.zero, qualifiedIncome) == TaxPayable.zero
     }
   }
@@ -56,7 +56,10 @@ class QualifiedIncomeBracketsSpec
   ) {
     forAll { (brackets: QualifiedIncomeBrackets, gains1: TaxableIncome, gains2: TaxableIncome) =>
       {
-        val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket.asTaxableIncome
+        given Ordering[TaxableIncome] with
+          def compare(x: TaxableIncome, y: TaxableIncome): Int =
+            summon[Ordering[Income]].compare(x, y)
+        val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
         val f              = taxDueOnQualifiedIncome(brackets)
         if gains1 < gains2 then f(ordinaryIncome, gains1) < f(ordinaryIncome, gains2)
         else if gains1 > gains2 then f(ordinaryIncome, gains1) > f(ordinaryIncome, gains2)
@@ -73,6 +76,9 @@ class QualifiedIncomeBracketsSpec
         income1: TaxableIncome,
         income2: TaxableIncome
       ) =>
+        given Ordering[TaxableIncome] with
+          def compare(x: TaxableIncome, y: TaxableIncome): Int =
+            summon[Ordering[Income]].compare(x, y)
         val f = taxDueOnQualifiedIncome(brackets)
         val res = {
           if income1 < income2 then f(income1, gains) <= f(income1, gains)
@@ -93,7 +99,7 @@ class QualifiedIncomeBracketsSpec
       "rate"
   ) {
     forAll { (brackets: QualifiedIncomeBrackets, gains: TaxableIncome) =>
-      val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket.asTaxableIncome
+      val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
       taxDueOnQualifiedIncome(brackets)(ordinaryIncome, gains).nonZero || gains.isZero
     }
   }

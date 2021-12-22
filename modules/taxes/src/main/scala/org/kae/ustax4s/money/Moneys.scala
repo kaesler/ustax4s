@@ -1,7 +1,7 @@
 package org.kae.ustax4s.money
 
+import cats.Monoid
 import cats.implicits.*
-import cats.{Monoid, Show}
 import org.kae.ustax4s.TaxRate
 
 export Moneys.Deduction
@@ -30,7 +30,6 @@ private[money] object Moneys:
 
     given Monoid[Income]   = summonAdditionMonoid
     given Ordering[Income] = summonOrdering
-    given Show[Income]     = summonShow
 
     extension (left: Income)
       def +(right: Income): Income = left.combine(right)
@@ -44,8 +43,7 @@ private[money] object Moneys:
       infix def applyDeductions(deductions: Deduction*): TaxableIncome =
         Money.monus(left, deductions.combineAll)
 
-      infix def div(right: Income): Double = Money.divide(left, right)
-
+      infix def div(right: Income): Double   = Money.divide(left, right)
       infix def inflateBy(d: Double): Income = Money.multiply(left, d)
 
       infix def isBelow(threshold: IncomeThreshold): Boolean =
@@ -68,7 +66,6 @@ private[money] object Moneys:
 
     given Monoid[Deduction]   = summonAdditionMonoid
     given Ordering[Deduction] = summonOrdering
-    given Show[Deduction]     = summonShow
 
     extension (left: Deduction)
       def +(right: Deduction): Deduction        = left.combine(right)
@@ -77,21 +74,16 @@ private[money] object Moneys:
     end extension
   end Deduction
 
-  opaque type IncomeThreshold = Money
+  opaque type IncomeThreshold <: TaxableIncome = Money
   object IncomeThreshold:
-    val zero: IncomeThreshold = Money.zero
-
+    val zero: IncomeThreshold          = Money.zero
     def apply(i: Int): IncomeThreshold = Money(i)
-
-    given Ordering[IncomeThreshold] = summonOrdering
-    given Show[IncomeThreshold]     = summonShow
 
     extension (left: IncomeThreshold)
       infix def absoluteDifference(right: IncomeThreshold): TaxableIncome =
         Money.absoluteDifference(left, right)
 
-      def asTaxableIncome: TaxableIncome = left
-      def rounded: IncomeThreshold       = Money.rounded(left)
+      def rounded: IncomeThreshold = Money.rounded(left)
 
       infix def increaseBy(factor: Double): IncomeThreshold =
         require(factor > 1.0)
@@ -104,9 +96,7 @@ private[money] object Moneys:
     def apply(i: Int): TaxableIncome          = Money(i)
     def unsafeParse(s: String): TaxableIncome = Money.unsafeParse(s)
 
-    given Monoid[TaxableIncome]   = summonAdditionMonoid
-    given Ordering[TaxableIncome] = summonOrdering
-    given Show[TaxableIncome]     = summonShow
+    given Monoid[TaxableIncome] = summonAdditionMonoid
 
     extension (left: TaxableIncome)
       def +(right: TaxableIncome): TaxableIncome = left.combine(right)
@@ -132,7 +122,6 @@ private[money] object Moneys:
 
     given Monoid[TaxPayable]   = summonAdditionMonoid
     given Ordering[TaxPayable] = summonOrdering
-    given Show[TaxPayable]     = summonShow
 
     extension (left: TaxPayable)
       def +(right: TaxPayable): TaxPayable = left.combine(right)
@@ -163,15 +152,12 @@ private[money] object Moneys:
     val zero: TaxCredit          = Money.zero
     def apply(i: Int): TaxCredit = Money(i)
 
-    given Monoid[TaxCredit]   = summonAdditionMonoid
-    given Ordering[TaxCredit] = summonOrdering
-    given Show[TaxCredit]     = summonShow
+    given Monoid[TaxCredit] = summonAdditionMonoid
 
     extension (left: TaxCredit) def +(right: TaxCredit): TaxCredit = left.combine(right)
   end TaxCredit
 
   // Note: must be outside the object scopes above.
   private def summonAdditionMonoid = summon[Monoid[Money]]
-  private def summonShow           = summon[Show[Money]]
   private def summonOrdering       = summon[Ordering[Money]]
 end Moneys
