@@ -12,28 +12,36 @@ type TaxFunction = TaxableIncome => TaxPayable
 object TaxFunction:
   type Brackets[R] = Map[IncomeThreshold, R]
 
-  // How this works: Because taxes are progressive, with higher rates applying
-  // in higher brackets, for each bracket threshold we pre-compute the
-  // increase in tax rate from the previous threshold. Then we can just apply
-  // that delta for a threshold for all income above the threshold, and sum the
-  // results for all thresholds.
-  // E.g. if we had a 10% bracket and a 20% bracket total tax is
-  //   - 10% of all income above the 10% threshold, PLUS
-  //   - (20% - 10%) of all income above the 20% threshold.
-  def fromBrackets[R: TaxRate](brackets: Brackets[R]): TaxFunction =
-    asRateDeltas(brackets)
-      .map(makeThresholdTax[R].tupled)
-      // Note: Tax has a natural Monoid because TaxPayable has one.
-      .combineAll
-
-  def makeFlatTax[R: TaxRate](rate: R): TaxFunction =
-    makeThresholdTax(IncomeThreshold.zero, rate)
-
+  /** Return a function to apply a rate to all income over a specified threshold.
+    */
   def makeThresholdTax[R: TaxRate](
     threshold: IncomeThreshold,
     rate: R
   ): TaxFunction =
     _.amountAbove(threshold).taxAt(rate)
+
+  /** Return a function to apply a rate to all the income.
+    */
+  def makeFlatTax[R: TaxRate](rate: R): TaxFunction =
+    makeThresholdTax(IncomeThreshold.zero, rate)
+
+  /** Return a function to apply a set of progressive tax brackets.
+    */
+  def fromBrackets[R: TaxRate](brackets: Brackets[R]): TaxFunction =
+    // How this works:
+    // Because taxes are progressive, with higher rates applying
+    // in higher brackets, for each bracket threshold we pre-compute the
+    // increase in tax rate from the previous threshold. Then we can just apply
+    // that delta for a threshold for all income above the threshold, and sum the
+    // results for all thresholds.
+    // E.g. if we had a 10% bracket and a 20% bracket total tax is
+    //   - 10% of all income above the 10% threshold, PLUS
+    //   - (20% - 10%) of all income above the 20% threshold.
+
+    asRateDeltas(brackets)
+      .map(makeThresholdTax[R].tupled)
+      // Note: Tax has a natural Monoid because TaxPayable has one.
+      .combineAll
 
   private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): List[(IncomeThreshold, R)] =
     brackets
