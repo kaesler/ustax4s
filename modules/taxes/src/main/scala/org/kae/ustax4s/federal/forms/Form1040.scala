@@ -97,7 +97,7 @@ final case class Form1040(
     adjustedGrossIncome applyDeductions standardDeduction
 
   def taxableOrdinaryIncome: TaxableIncome =
-    taxableIncome reduceBy qualifiedIncome.applyDeductions(Deduction.zero)
+    taxableIncome reduceBy qualifiedIncome.asTaxable
 
   def showValues: String =
     s"""
@@ -143,7 +143,7 @@ object Form1040:
     TaxFunctions.taxDueOnOrdinaryIncome(ordinaryIncomeBrackets)(ordinaryIncome) +
       TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(
         ordinaryIncome,
-        qualifiedIncome.applyDeductions(Deduction.zero)
+        qualifiedIncome.asTaxable
       )
 
 end Form1040

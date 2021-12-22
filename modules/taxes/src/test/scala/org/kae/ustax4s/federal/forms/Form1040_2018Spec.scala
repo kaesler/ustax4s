@@ -73,7 +73,7 @@ class Form1040_2018Spec extends FunSuite:
           .qualifiedIncomeBrackets(year, filingStatus)
       )(
         form.taxableOrdinaryIncome,
-        form.qualifiedIncome.applyDeductions(Deduction.zero)
+        form.qualifiedIncome.asTaxable
       )
         .rounded
     assertEquals(taxOnInv, TaxPayable(2217))

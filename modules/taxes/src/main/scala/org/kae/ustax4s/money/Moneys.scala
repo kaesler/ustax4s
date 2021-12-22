@@ -44,6 +44,8 @@ private[money] object Moneys:
       infix def applyDeductions(deductions: Deduction*): TaxableIncome =
         Money.monus(left, deductions.combineAll)
 
+      def asTaxable: TaxableIncome = applyDeductions(Deduction.zero)
+
       infix def div(right: Income): Double = Money.divide(left, right)
 
       infix def inflateBy(d: Double): Income = Money.multiply(left, d)
