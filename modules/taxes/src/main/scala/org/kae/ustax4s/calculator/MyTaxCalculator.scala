@@ -10,7 +10,7 @@ import org.kae.ustax4s.federal.{
   Trump
 }
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.{Deduction, Income, TaxCredit, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome, TaxCredit, TaxPayable}
 
 object MyTaxCalculator:
 
@@ -19,7 +19,7 @@ object MyTaxCalculator:
     year: Year,
     socSec: Income,
     ordinaryIncomeNonSS: Income,
-    qualifiedIncome: Income,
+    qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
   ): TaxPayable =
     TaxCalculator.federalTaxDue(
@@ -38,7 +38,7 @@ object MyTaxCalculator:
     year: Year,
     socSec: Income,
     ordinaryIncomeNonSS: Income,
-    qualifiedDividends: Income,
+    qualifiedDividends: TaxableIncome,
     verbose: Boolean
   ): TaxPayable =
     val filingStatus = Kevin.filingStatus(year)

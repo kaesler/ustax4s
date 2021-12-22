@@ -21,7 +21,7 @@ object TaxCalculator:
     personalExemptions: Int,
     socSec: Income,
     ordinaryIncomeNonSS: Income,
-    qualifiedIncome: Income,
+    qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
   ): TaxPayable =
     BoundRegime
@@ -49,7 +49,7 @@ object TaxCalculator:
     filingStatus: FilingStatus,
     socSec: Income,
     ordinaryIncomeNonSS: Income,
-    qualifiedDividends: Income,
+    qualifiedDividends: TaxableIncome,
     verbose: Boolean
   ): TaxPayable =
     val regime = Trump

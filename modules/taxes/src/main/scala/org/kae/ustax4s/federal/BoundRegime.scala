@@ -54,7 +54,7 @@ trait BoundRegime(
     (
       socSec: Income,
       ordinaryIncomeNonSS: Income,
-      qualifiedIncome: Income,
+      qualifiedIncome: TaxableIncome,
       itemizedDeductions: Deduction
     ) => {
 
@@ -80,7 +80,7 @@ trait BoundRegime(
       val taxOnQualifiedIncome =
         TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(
           taxableOrdinaryIncome,
-          qualifiedIncome.asTaxable
+          qualifiedIncome
         )
       FederalTaxResults(
         ssRelevantOtherIncome,

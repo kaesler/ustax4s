@@ -12,11 +12,11 @@ final case class QualifiedDividendsAndCapitalGainsWorksheet(
   //  - adjust brackets for non-investments by amount receiving preferential treatment?
 
   // Line 4
-  def preferentiallyTaxedGains(form1040: Form1040): Income =
+  def preferentiallyTaxedGains(form1040: Form1040): TaxableIncome =
     form1040.qualifiedDividends +
       form1040.scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(Income.zero)
+        .getOrElse(TaxableIncome.zero)
 
   def taxOnPTGains: TaxPayable = ???
 

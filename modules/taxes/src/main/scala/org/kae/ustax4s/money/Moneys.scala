@@ -44,8 +44,6 @@ private[money] object Moneys:
       infix def applyDeductions(deductions: Deduction*): TaxableIncome =
         Money.monus(left, deductions.combineAll)
 
-      def asTaxable: TaxableIncome = applyDeductions(Deduction.zero)
-
       infix def div(right: Income): Double = Money.divide(left, right)
 
       infix def inflateBy(d: Double): Income = Money.multiply(left, d)
@@ -100,10 +98,11 @@ private[money] object Moneys:
         Money.multiply(left, factor).rounded
   end IncomeThreshold
 
-  opaque type TaxableIncome = Money
+  opaque type TaxableIncome <: Income = Money
   object TaxableIncome:
-    val zero: TaxableIncome          = Money.zero
-    def apply(i: Int): TaxableIncome = Money(i)
+    val zero: TaxableIncome                   = Money.zero
+    def apply(i: Int): TaxableIncome          = Money(i)
+    def unsafeParse(s: String): TaxableIncome = Money.unsafeParse(s)
 
     given Monoid[TaxableIncome]   = summonAdditionMonoid
     given Ordering[TaxableIncome] = summonOrdering

@@ -6,7 +6,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.federal.{BoundRegime, FederalTaxCalculator, PreTrump}
 import org.kae.ustax4s.kevin.Kevin
-import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome, TaxPayable}
 
 class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
   private val regime             = PreTrump
@@ -16,7 +16,7 @@ class SmokeTestAgainstMyPreTrump2017Return extends FunSuite:
 
   private val wages              = Income(128270)
   private val ordinaryDividends  = Income(9196)
-  private val qualifiedDividends = Income(7686)
+  private val qualifiedDividends = TaxableIncome(7686)
 
   private val shortTermCapitalLoss = Deduction(2419)
   private val hsaDeduction         = Deduction(750)

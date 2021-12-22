@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.money.{Deduction, Income}
+import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 import org.kae.ustax4s.{FilingStatus, InflationEstimate}
 
 trait FederalTaxCalculator:
@@ -15,7 +15,7 @@ trait FederalTaxCalculator:
   def federalTaxResults(
     socSec: Income,
     ordinaryIncomeNonSS: Income,
-    qualifiedIncome: Income,
+    qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
   ): FederalTaxResults
 

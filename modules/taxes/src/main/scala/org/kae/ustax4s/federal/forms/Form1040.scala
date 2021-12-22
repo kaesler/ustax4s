@@ -29,7 +29,7 @@ final case class Form1040(
   // Line 2b:
   taxableInterest: Income,
   // Line 3a: Note that this is a subset of ordinary dividends.
-  qualifiedDividends: Income,
+  qualifiedDividends: TaxableIncome,
   // Line 3b: Note this includes qualifiedDividends
   ordinaryDividends: Income,
   // Line 4b:
@@ -46,13 +46,13 @@ final case class Form1040(
         .getOrElse(Income.zero)
 
   // This is what gets taxed at LTCG rates.
-  def qualifiedIncome: Income =
+  def qualifiedIncome: TaxableIncome =
     // Line 3a:
     qualifiedDividends +
       // Line 6:
       scheduleD
         .map(_.netLongTermCapitalGains)
-        .getOrElse(Income.zero)
+        .getOrElse(TaxableIncome.zero)
 
   // Line 5b:
   def taxableSocialSecurityBenefits: Income =
@@ -97,7 +97,7 @@ final case class Form1040(
     adjustedGrossIncome applyDeductions standardDeduction
 
   def taxableOrdinaryIncome: TaxableIncome =
-    taxableIncome reduceBy qualifiedIncome.asTaxable
+    taxableIncome reduceBy qualifiedIncome
 
   def showValues: String =
     s"""
@@ -136,14 +136,14 @@ object Form1040:
   // Line 11:
   def taxDueBeforeCredits(
     ordinaryIncome: TaxableIncome,
-    qualifiedIncome: Income,
+    qualifiedIncome: TaxableIncome,
     ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
     qualifiedIncomeBrackets: QualifiedIncomeBrackets
   ): TaxPayable =
     TaxFunctions.taxDueOnOrdinaryIncome(ordinaryIncomeBrackets)(ordinaryIncome) +
       TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(
         ordinaryIncome,
-        qualifiedIncome.asTaxable
+        qualifiedIncome
       )
 
 end Form1040

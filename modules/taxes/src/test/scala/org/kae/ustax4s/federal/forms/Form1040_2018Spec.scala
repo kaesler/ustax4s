@@ -55,7 +55,7 @@ class Form1040_2018Spec extends FunSuite:
       taxExemptInterest = Income(2294),
       taxableInterest = Income(0),
       ordinaryDividends = Income(7930),
-      qualifiedDividends = Income(7365),
+      qualifiedDividends = TaxableIncome(7365),
       taxableIraDistributions = Income(0),
       socialSecurityBenefits = Income(0)
     )
@@ -65,7 +65,7 @@ class Form1040_2018Spec extends FunSuite:
     assertEquals(form.taxableIncome, TaxableIncome(129324))
 
     assertEquals(form.taxableOrdinaryIncome, TaxableIncome(114547))
-    assertEquals(form.qualifiedIncome, Income(14777))
+    assertEquals(form.qualifiedIncome, TaxableIncome(14777))
 
     val taxOnInv =
       TaxFunctions.taxDueOnQualifiedIncome(
@@ -73,7 +73,7 @@ class Form1040_2018Spec extends FunSuite:
           .qualifiedIncomeBrackets(year, filingStatus)
       )(
         form.taxableOrdinaryIncome,
-        form.qualifiedIncome.asTaxable
+        form.qualifiedIncome
       )
         .rounded
     assertEquals(taxOnInv, TaxPayable(2217))

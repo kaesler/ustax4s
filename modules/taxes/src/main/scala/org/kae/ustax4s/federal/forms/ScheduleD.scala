@@ -4,9 +4,9 @@ import org.kae.ustax4s.money.*
 
 final case class ScheduleD(
   // Line 8b
-  longTermCapitalGains: Income,
+  longTermCapitalGains: TaxableIncome,
   // Line 13
-  capitalGainsDistributions: Income
+  capitalGainsDistributions: TaxableIncome
 ):
-  def netLongTermCapitalGains: Income =
+  def netLongTermCapitalGains: TaxableIncome =
     longTermCapitalGains + capitalGainsDistributions

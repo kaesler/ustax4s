@@ -7,7 +7,7 @@ import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
-import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome, TaxPayable}
 import scala.io.Source
 
 final case class RegressionTestCase(
@@ -18,7 +18,7 @@ final case class RegressionTestCase(
   dependents: Int,
   socSec: Income,
   ordinaryIncomeNonSS: Income,
-  qualifiedIncome: Income,
+  qualifiedIncome: TaxableIncome,
   itemizedDeductions: Deduction,
   federalTaxDue: TaxPayable,
   stateTaxDue: TaxPayable
@@ -96,7 +96,7 @@ object RegressionTestCase:
     val dependents           = Integer.parseInt(fields(4))
     val socSec               = Income.unsafeParse(fields(5))
     val ordinaryIncomeNonSS  = Income.unsafeParse(fields(6))
-    val qualifiedIncome      = Income.unsafeParse(fields(7))
+    val qualifiedIncome      = TaxableIncome.unsafeParse(fields(7))
     val itemizedDeductions   = Deduction.unsafeParse(fields(8))
 
     val federalTaxDue = TaxPayable.unsafeParse(fields(9))
