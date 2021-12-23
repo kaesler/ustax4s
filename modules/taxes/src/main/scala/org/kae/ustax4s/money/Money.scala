@@ -2,7 +2,7 @@ package org.kae.ustax4s.money
 
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
-import org.kae.ustax4s.money.monus.{CMM, CMMOps}
+import org.kae.ustax4s.money.cmm.{CMM, CMMOps}
 import scala.math.BigDecimal.RoundingMode
 
 private[money] type Money = BigDecimal

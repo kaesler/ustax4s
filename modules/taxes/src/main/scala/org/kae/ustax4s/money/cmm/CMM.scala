@@ -1,9 +1,9 @@
-package org.kae.ustax4s.money.monus
+package org.kae.ustax4s.money.cmm
 
 import cats.implicits.*
 import cats.kernel.{CommutativeMonoid, Group}
 
-// A commutative monoid with truncated subtraction.
+// A commutative monoid with monus, a truncated subtraction.
 // See https://en.wikipedia.org/wiki/Monus
 trait CMM[A] extends CommutativeMonoid[A]:
   def monus(left: A, right: A): A
@@ -24,9 +24,9 @@ object CMM extends CMMOps:
     type F = A => B
     def empty: F               = { _ => mb.empty }
     def combine(f: F, g: F): F = { a => f(a).combine(g(a)) }
-    def monus(f: F, g: F): F   = { a => f(a) monus g(a) }
+    def monus(f: F, g: F): F   = { a => f(a).monus(g(a)) }
 
-  // Provides a Monus for many types.
+  // Provides a CMM for many types via Cats.
   given [A](using group: Group[A], ordering: Ordering[A]): CMM[A] with
     def empty: A                      = group.empty
     def combine(left: A, right: A): A = group.combine(left, right)
