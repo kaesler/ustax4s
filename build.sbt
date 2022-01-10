@@ -1,7 +1,5 @@
 import org.kae.Dependencies._
 
-// ThisBuild / scalaVersion := "3.0.0"
-
 lazy val retirement = project
   .in(file("."))
   .aggregate(taxes)
@@ -32,13 +30,4 @@ lazy val taxes = (project in file("modules/taxes"))
     ),
     testFrameworks += new TestFramework("munit.Framework"),
     Test / parallelExecution := false
-  )
-
-lazy val withdrawals = (project in file("modules/withdrawals"))
-  .settings(
-    name := "withdrawals",
-    libraryDependencies ++= Seq(
-      Scalanlp.breeze,
-      Scalanlp.natives
-    )
   )
