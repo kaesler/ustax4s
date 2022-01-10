@@ -1,6 +1,6 @@
 package org.kae.ustax4s.adhoctests
 
-import java.time.Year
+import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.Single
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.TaxableSocialSecurity
@@ -10,8 +10,9 @@ import org.kae.ustax4s.money.Income
 object TaxInRetirementTests extends App:
   import org.kae.ustax4s.MoneyConversions.given
 
-  val year = Year.of(2021)
-  val ss   = 49128
+  private val year                 = Year.of(2021)
+  private val ss                   = 49128
+  private val birthDate: LocalDate = LocalDate.of(1955, 10, 2)
 
   doCase(0)
   doCase(17000)
@@ -30,7 +31,7 @@ object TaxInRetirementTests extends App:
     val tax =
       TaxCalculator.federalTaxDueUsingForm1040(
         year = year,
-        birthDate = Kevin.birthDate,
+        birthDate = birthDate,
         filingStatus = Single,
         socSec = ss,
         ordinaryIncomeNonSS = income,
