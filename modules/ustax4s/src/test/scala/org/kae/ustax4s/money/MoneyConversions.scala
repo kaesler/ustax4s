@@ -1,6 +1,4 @@
-package org.kae.ustax4s
-
-import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
+package org.kae.ustax4s.money
 
 // Simplify test syntax.
 object MoneyConversions:

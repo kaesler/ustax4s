@@ -7,7 +7,7 @@ import org.kae.ustax4s.InflationEstimate
 
 class RegimeFutureEstimationSpec extends FunSuite:
   import math.Ordering.Implicits.infixOrderingOps
-  import org.kae.ustax4s.MoneyConversions.given
+  import org.kae.ustax4s.money.MoneyConversions.given
 
   private val birthDate: LocalDate = LocalDate.of(1955, 10, 2)
 

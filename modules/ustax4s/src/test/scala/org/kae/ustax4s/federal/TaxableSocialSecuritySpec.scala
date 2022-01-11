@@ -6,7 +6,7 @@ import org.kae.ustax4s.federal.TaxableSocialSecurity
 import org.kae.ustax4s.money.{Income, MoneyGeneration}
 
 class TaxableSocialSecuritySpec extends ScalaCheckSuite with MoneyGeneration:
-  import org.kae.ustax4s.MoneyConversions.given
+  import org.kae.ustax4s.money.MoneyConversions.given
 
   test("Untaxable 1") {
     assertEquals(

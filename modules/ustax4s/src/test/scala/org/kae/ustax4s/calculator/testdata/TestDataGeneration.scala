@@ -8,7 +8,7 @@ import org.scalacheck.Gen
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
 object TestDataGeneration:
-  import org.kae.ustax4s.MoneyConversions.given
+  import org.kae.ustax4s.money.MoneyConversions.given
 
   private val count = 4000
 
