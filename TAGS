@@ -1,0 +1,224 @@
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/testdata/MakeTestDataForPureScript.scala,95
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold5,100
+  val year 12,327
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/testdata/TestDataGeneration.scala,28
+  private val count 11,300
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/testdata/MakeTestDataForTypeScript.scala,95
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold5,104
+  val year 13,332
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/testdata/RegressionTestCase.scala,39
+  def massachusettsGrossIncome 23,561
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/testdata/MakeTestDataAsCsv.scala,84
+import org.kae.ustax4s.{FilingStatus,FilingStatus6,156
+  private val year 11,271
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/testdata/MakeTestDataForHaskell.scala,95
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold5,104
+  val year 13,329
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/RegressionSpec.scala,45
+class RegressionSpec extends FunSuite 6,125
+
+modules/taxes/src/test/scala/org/kae/ustax4s/inretirement/MyTaxInRetirementSpec.scala,119
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold7,161
+    val year 16,414
+    val year 47,1227
+
+modules/taxes/src/test/scala/org/kae/ustax4s/SetGeneration.scala,112
+import org.scalacheck.{Arbitrary,Arbitrary5,99
+  def genSet[genSet19,492
+  def genSetOfN[genSetOfN41,1094
+
+modules/taxes/src/test/scala/org/kae/ustax4s/state/StateTaxMA_AsFiled_Spec.scala,30
+  test(13,331
+  test(33,843
+
+modules/taxes/src/test/scala/org/kae/ustax4s/money/TMoneyGeneration.scala,30
+  val genMoney: Gen[Gen6,82
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/forms/Form1040_2018Spec.scala,66
+import org.kae.ustax4s.money.{TMoney,TMoney9,225
+  test(13,310
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/OrdinaryIncomeBrackets2018Spec.scala,60
+  private val headOfHouseHoldSamples 11,318
+  test(18,489
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/TaxableSocialSecuritySpec.scala,159
+import org.kae.ustax4s.money.{TMoney,TMoney4,62
+  test(11,338
+  test(22,596
+  test(33,857
+  test(44,1127
+  test(55,1401
+  test(66,1676
+  test(77,1958
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/QualifiedIncomeBracketsSpec.scala,201
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold6,119
+  private given Arbitrary[Arbitrary20,543
+  property(40,1191
+  property(46,1369
+  property(82,2521
+  property(120,3825
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/QualifiedBracketsGeneration.scala,55
+  private val genNonZeroBracketBorder: Gen[Gen11,269
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/TaxRateGeneration.scala,39
+  val genNonZeroTaxRate: Gen[Gen5,84
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/TaxBracketsGeneration.scala,48
+  private val genBracketBorder: Gen[Gen11,270
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/QualifiedIncomeBrackets2018Spec.scala,15
+  test(12,313
+
+modules/taxes/src/test/scala/org/kae/ustax4s/federal/OrdinaryIncomeBracketsSpec.scala,315
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold5,84
+import org.kae.ustax4s.money.{TMoney,TMoney7,200
+  given Arbitrary[Arbitrary20,543
+  test(41,1186
+  test(70,2049
+  property(98,2892
+  property(104,3028
+  property(111,3298
+  property(119,3683
+  property(125,3865
+  test(132,4110
+
+modules/taxes/src/main/scala/org/kae/ustax4s/FilingStatus.scala,41
+  case Single extends FilingStatus(4,67
+
+modules/taxes/src/main/scala/org/kae/ustax4s/inretirement/MyTaxInRetirement.scala,111
+import org.kae.ustax4s.federal.{TaxRates,TaxRates5,91
+  def federalTaxDue(11,249
+  def stateTaxDue(65,1562
+
+modules/taxes/src/main/scala/org/kae/ustax4s/inretirement/TaxInRetirement.scala,203
+import java.time.{LocalDate,LocalDate4,55
+import org.kae.ustax4s.federal.{TaxRates,TaxRates6,126
+import org.kae.ustax4s.federal.{TaxRates, TaxableSocialSecurity,6,126
+    def taxDue: TMoney 23,697
+
+modules/taxes/src/main/scala/org/kae/ustax4s/state/StateTaxRate.scala,241
+import eu.timepit.refined.types.numeric.{NonNegBigDecimal,NonNegBigDecimal7,165
+import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble,7,165
+private[state] type StateTaxRateRefinement 14,408
+given Ordering[Ordering26,785
+
+modules/taxes/src/main/scala/org/kae/ustax4s/state/StateTaxMA.scala,65
+import java.time.{LocalDate,LocalDate3,31
+  def taxDue(14,295
+
+modules/taxes/src/main/scala/org/kae/ustax4s/TaxRate.scala,18
+  extension 5,58
+
+modules/taxes/src/main/scala/org/kae/ustax4s/adhoctests/MyExpectedSSTax.scala,42
+  val ssRelevantOtherIncomeFromRmd 9,248
+
+modules/taxes/src/main/scala/org/kae/ustax4s/adhoctests/BumpAnalysis.scala,35
+  val socialSecurityIncome 17,512
+
+modules/taxes/src/main/scala/org/kae/ustax4s/adhoctests/ApparentAnomalyIn2021.scala,18
+  val year 9,234
+
+modules/taxes/src/main/scala/org/kae/ustax4s/adhoctests/TaxDueAdHocTests.scala,22
+  val results 13,323
+
+modules/taxes/src/main/scala/org/kae/ustax4s/adhoctests/TaxInRetirementTests.scala,19
+  val year 12,362
+
+modules/taxes/src/main/scala/org/kae/ustax4s/money/MoneySyntax.scala,18
+  extension 5,52
+
+modules/taxes/src/main/scala/org/kae/ustax4s/money/TMoney.scala,26
+opaque type TMoney 9,164
+
+modules/taxes/src/main/scala/org/kae/ustax4s/money/IntTaxRate.scala,29
+opaque type IntTaxRate 3,31
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/forms/Form1040.scala,89
+import org.kae.ustax4s.federal.{TaxRates,TaxRates3,39
+  childTaxCredit: TMoney 17,488
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/forms/ScheduleD.scala,46
+  def netLongTermCapitalGains: TMoney 11,196
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/forms/QualifiedDividendsAndCapitalGainsWorksheet.scala,123
+import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets,OrdinaryIncomeBrackets5,71
+  def preferentiallyTaxedGains(16,512
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/forms/Schedule3.scala,42
+  def nonRefundableCredits: TMoney 9,143
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/forms/Schedule1.scala,40
+  def capitalGainOrLoss: TMoney 16,383
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/forms/Schedule4.scala,37
+  def totalOtherTaxes: TMoney 8,124
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/StandardDeduction.scala,102
+import java.time.{LocalDate,LocalDate3,33
+import java.time.{LocalDate, Month,3,33
+  def of(10,208
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/OrdinaryIncomeBrackets.scala,282
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold6,134
+  require(20,508
+    assert(61,2043
+    assert(82,2902
+      .getOrElse(getOrElse93,3220
+    taxes.foldLeft(0.asMoney)asMoney115,3880
+      .getOrElse(getOrElse125,4175
+  @tailrec def of(142,4603
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/FederalTaxRate.scala,228
+import eu.timepit.refined.types.numeric.{NonNegBigDecimal,NonNegBigDecimal7,167
+import eu.timepit.refined.types.numeric.{NonNegBigDecimal, PosDouble,7,167
+type FederalTaxRateRefinement 14,410
+given Ordering[Ordering26,773
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/TaxRates.scala,163
+import java.time.{LocalDate,LocalDate5,65
+import org.kae.ustax4s.federal.{OrdinaryIncomeBrackets,OrdinaryIncomeBrackets7,146
+  def taxDueBeforeCredits(20,599
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/TaxableSocialSecurity.scala,171
+import eu.timepit.refined.types.numeric.{PosDouble,PosDouble7,168
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold12,365
+  private val two 18,482
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/QualifiedIncomeBrackets.scala,220
+import org.kae.ustax4s.FilingStatus.{HeadOfHousehold,HeadOfHousehold6,99
+  require(24,677
+  def startOfNonZeroQualifiedRateBracket: TMoney 38,1096
+    assert(96,3130
+    assert(134,4629
+  @tailrec def of(148,5038
+
+modules/taxes/src/main/scala/org/kae/ustax4s/kevin/Kevin.scala,79
+import java.time.{LocalDate,LocalDate4,39
+  val birthDate: LocalDate 10,150
+
+modules/taxes/src/main/scala/org/kae/ustax4s/InflationRate.scala,26
+type InflationRate 9,179
+
+modules/withdrawals/src/main/scala/org/kae/withdrawals/YearlyParameters.scala,30
+class YearlyParameters 5,109
+
+modules/withdrawals/src/main/scala/org/kae/withdrawals/DemoApp.scala,52
+import breeze.linalg.{DenseVector,DenseVector3,29
+
+modules/withdrawals/src/main/scala/org/kae/withdrawals/Model.scala,0
+
+modules/taxes/src/main/scala/org/kae/ustax4s/federal/forms/Schedule5.scala,0
+
+modules/taxes/src/main/scala/org/kae/ustax4s/money/AdHocTest.scala,0
+
+project/Dependencies.scala,0

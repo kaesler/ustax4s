@@ -1,19 +1,21 @@
 import org.kae.Dependencies._
 
-lazy val retirement = project
+ThisBuild / organization := "org.kae"
+ThisBuild / version      := "1.1-SNAPSHOT"
+ThisBuild / scalaVersion := "3.1.0"
+
+lazy val root = project
   .in(file("."))
-  .aggregate(taxes)
-  .dependsOn(taxes)
+  .aggregate(ustax4s)
+  .dependsOn(ustax4s)
   .settings(
-    name         := "retirement",
-    version      := "1.0",
-    scalaVersion := "3.1.0"
+    name           := "root",
+    publish / skip := true
   )
 
-lazy val taxes = (project in file("modules/taxes"))
+lazy val ustax4s = (project in file("modules/ustax4s"))
   .settings(
-    name         := "taxes",
-    scalaVersion := "3.0.0",
+    name := "ustax4s",
     libraryDependencies ++= Seq(
       Cats.core withSources (),
       Cats.effect withSources (),
