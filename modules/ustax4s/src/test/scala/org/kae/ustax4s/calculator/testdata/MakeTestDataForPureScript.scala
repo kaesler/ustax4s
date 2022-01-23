@@ -30,8 +30,8 @@ object MakeTestDataForPureScript extends App:
     println(
       s"  TestCase { regime: ${regime.name}, year: $yearRep, birthDate: $bdRep, " +
         s"personalExemptions: ${tc.personalExemptions}, filingStatus: $fs, " +
-        s"socSec: $ss.0, ordinaryIncomeNonSS: $oi.0, qualifiedIncome: $qi.0, " +
-        s"itemizedDeductions: $itm.0, " +
-        s"federalTaxDue: $federalTaxDue.0, stateTaxDue: $stateTaxDue.0 },"
+        s"socSec: makeFromInt $ss, ordinaryIncomeNonSS: makeFromInt $oi, qualifiedIncome: makeFromInt $qi, " +
+        s"itemizedDeductions: makeFromInt $itm, " +
+        s"federalTaxDue: makeFromInt $federalTaxDue, stateTaxDue: makeFromInt $stateTaxDue },"
     )
   }
