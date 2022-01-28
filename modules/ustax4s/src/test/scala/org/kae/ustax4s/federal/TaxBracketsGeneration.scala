@@ -10,14 +10,14 @@ trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:
   private val genIncomeThreshold: Gen[IncomeThreshold] =
     Gen.choose(10, 500000).map(IncomeThreshold.apply)
 
-  val genTaxBrackets: Gen[OrdinaryIncomeBrackets] =
+  val genTaxBrackets: Gen[OrdinaryBrackets] =
     for
       bracketCount <- Gen.choose(1, 10)
       rates        <- genSet(bracketCount, genNonZeroTaxRate)
       // rates should always be progressive
       ratesSortedAscending = rates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genIncomeThreshold)
-    yield OrdinaryIncomeBrackets(
+    yield OrdinaryBrackets(
       (IncomeThreshold.zero :: bracketBorders.toList).sorted
         .zip(ratesSortedAscending)
         .toMap

@@ -18,8 +18,8 @@ trait BoundRegime(
   def adjustmentWhenOver65AndSingle: Deduction
 
   def perPersonExemption: Deduction
-  def ordinaryIncomeBrackets: OrdinaryIncomeBrackets
-  def qualifiedIncomeBrackets: QualifiedIncomeBrackets
+  def ordinaryBrackets: OrdinaryBrackets
+  def qualifiedBrackets: QualifiedBrackets
 
   def name: String = regime.name
 
@@ -75,10 +75,10 @@ trait BoundRegime(
           .applyDeductions(netDeduction(itemizedDeductions))
 
       val taxOnOrdinaryIncome =
-        TaxFunctions.taxDueOnOrdinaryIncome(ordinaryIncomeBrackets)(taxableOrdinaryIncome)
+        TaxFunctions.taxDueOnOrdinaryIncome(ordinaryBrackets)(taxableOrdinaryIncome)
 
       val taxOnQualifiedIncome =
-        TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(
+        TaxFunctions.taxDueOnQualifiedIncome(qualifiedBrackets)(
           taxableOrdinaryIncome,
           qualifiedIncome
         )
@@ -127,11 +127,11 @@ trait BoundRegime(
       override val perPersonExemption: Deduction =
         base.perPersonExemption inflateBy estimate.factor(base.year)
 
-      override val ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
-        base.ordinaryIncomeBrackets.inflatedBy(estimate.factor(base.year))
+      override val ordinaryBrackets: OrdinaryBrackets =
+        base.ordinaryBrackets.inflatedBy(estimate.factor(base.year))
 
-      override val qualifiedIncomeBrackets: QualifiedIncomeBrackets =
-        base.qualifiedIncomeBrackets.inflatedBy(estimate.factor(base.year))
+      override val qualifiedBrackets: QualifiedBrackets =
+        base.qualifiedBrackets.inflatedBy(estimate.factor(base.year))
     }
 
 end BoundRegime
@@ -156,9 +156,9 @@ object BoundRegime:
 
       override val perPersonExemption: Deduction = regime.perPersonExemption(this.year)
 
-      override def ordinaryIncomeBrackets: OrdinaryIncomeBrackets =
+      override def ordinaryBrackets: OrdinaryBrackets =
         regime.ordinaryIncomeBrackets(this.year, filingStatus)
 
-      override def qualifiedIncomeBrackets: QualifiedIncomeBrackets =
+      override def qualifiedBrackets: QualifiedBrackets =
         regime.qualifiedIncomeBrackets(this.year, filingStatus)
     }

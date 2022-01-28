@@ -9,7 +9,7 @@ import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.math.Ordering.Implicits.infixOrderingOps
 
-final case class OrdinaryIncomeBrackets(
+final case class OrdinaryBrackets(
   brackets: Map[IncomeThreshold, FederalTaxRate]
 ):
   require(isProgressive)
@@ -18,9 +18,9 @@ final case class OrdinaryIncomeBrackets(
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
-  def inflatedBy(factor: Double): OrdinaryIncomeBrackets =
+  def inflatedBy(factor: Double): OrdinaryBrackets =
     require(factor >= 1.0)
-    OrdinaryIncomeBrackets(
+    OrdinaryBrackets(
       brackets.map { (start, rate) =>
         (start.increaseBy(factor).rounded, rate)
       }
@@ -77,16 +77,16 @@ final case class OrdinaryIncomeBrackets(
 
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketsAscending.exists { (_, rate) => rate == bracketRate }
-end OrdinaryIncomeBrackets
+end OrdinaryBrackets
 
-object OrdinaryIncomeBrackets:
+object OrdinaryBrackets:
 
-  given Show[OrdinaryIncomeBrackets] with
-    def show(b: OrdinaryIncomeBrackets): String =
+  given Show[OrdinaryBrackets] with
+    def show(b: OrdinaryBrackets): String =
       b.bracketsAscending.mkString("\n")
 
-  def create(pairs: Map[Int, Double]): OrdinaryIncomeBrackets =
-    OrdinaryIncomeBrackets(
+  def create(pairs: Map[Int, Double]): OrdinaryBrackets =
+    OrdinaryBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100.0d)
         IncomeThreshold(bracketStart) ->

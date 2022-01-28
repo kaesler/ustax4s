@@ -26,12 +26,12 @@ sealed trait Regime:
   def ordinaryIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
-  ): OrdinaryIncomeBrackets
+  ): OrdinaryBrackets
 
   def qualifiedIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
-  ): QualifiedIncomeBrackets
+  ): QualifiedBrackets
 
   def failIfInvalid(year: Year): Unit
 
@@ -80,7 +80,7 @@ case object Trump extends Regime:
   override def ordinaryIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
-  ): OrdinaryIncomeBrackets =
+  ): OrdinaryBrackets =
     failIfInvalid(year)
     (year.getValue, filingStatus) match
 
@@ -89,7 +89,7 @@ case object Trump extends Regime:
 //        ordinaryIncomeBrackets(Year.of(2022), fs)
 
       case (2022, HeadOfHousehold) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             14650  -> 12,
@@ -102,7 +102,7 @@ case object Trump extends Regime:
         )
 
       case (2022, Single) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             10275  -> 12,
@@ -115,7 +115,7 @@ case object Trump extends Regime:
         )
 
       case (2021, HeadOfHousehold) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             14200  -> 12,
@@ -128,7 +128,7 @@ case object Trump extends Regime:
         )
 
       case (2021, Single) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             9950   -> 12,
@@ -141,7 +141,7 @@ case object Trump extends Regime:
         )
 
       case (2020, HeadOfHousehold) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             14100  -> 12,
@@ -153,7 +153,7 @@ case object Trump extends Regime:
           ).view.mapValues(_.toDouble).toMap
         )
       case (2020, Single) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             9875   -> 12,
@@ -166,7 +166,7 @@ case object Trump extends Regime:
         )
 
       case (2019, HeadOfHousehold) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             13850  -> 12,
@@ -179,7 +179,7 @@ case object Trump extends Regime:
         )
 
       case (2019, Single) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             9700   -> 12,
@@ -192,7 +192,7 @@ case object Trump extends Regime:
         )
 
       case (2018, HeadOfHousehold) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             13600  -> 12,
@@ -205,7 +205,7 @@ case object Trump extends Regime:
         )
 
       case (2018, Single) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10,
             9525   -> 12,
@@ -224,7 +224,7 @@ case object Trump extends Regime:
   override def qualifiedIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
-  ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
+  ): QualifiedBrackets = QualifiedBrackets.of(year, filingStatus)
 
   override def failIfInvalid(year: Year): Unit =
     // Note: Trump regime may be extended beyond 2025 by legislation.
@@ -287,13 +287,13 @@ case object PreTrump extends Regime:
   override def ordinaryIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
-  ): OrdinaryIncomeBrackets =
+  ): OrdinaryBrackets =
     failIfInvalid(year)
 
     (year.getValue, filingStatus) match
 
       case (2017, Single) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10d,
             9235   -> 15d,
@@ -306,7 +306,7 @@ case object PreTrump extends Regime:
         )
 
       case (2017, HeadOfHousehold) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10d,
             13350  -> 15d,
@@ -319,7 +319,7 @@ case object PreTrump extends Regime:
         )
 
       case (2016, Single) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10d,
             9275   -> 15d,
@@ -332,7 +332,7 @@ case object PreTrump extends Regime:
         )
 
       case (2016, HeadOfHousehold) =>
-        OrdinaryIncomeBrackets.create(
+        OrdinaryBrackets.create(
           Map(
             0      -> 10d,
             13250  -> 15d,
@@ -350,7 +350,7 @@ case object PreTrump extends Regime:
   override def qualifiedIncomeBrackets(
     year: Year,
     filingStatus: FilingStatus
-  ): QualifiedIncomeBrackets = QualifiedIncomeBrackets.of(year, filingStatus)
+  ): QualifiedBrackets = QualifiedBrackets.of(year, filingStatus)
 
   override def failIfInvalid(year: Year): Unit =
     if YearsTrumpTaxRegimeRequired(year) then throw RegimeInvalidForYear(this, year)

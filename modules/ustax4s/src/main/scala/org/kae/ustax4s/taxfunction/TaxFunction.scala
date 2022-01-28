@@ -3,7 +3,7 @@ package org.kae.ustax4s.taxfunction
 import cats.Monoid
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
-import org.kae.ustax4s.federal.{FederalTaxRate, OrdinaryIncomeBrackets, QualifiedIncomeBrackets}
+import org.kae.ustax4s.federal.{FederalTaxRate, OrdinaryBrackets, QualifiedBrackets}
 import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}
 
 // Note: function type here gives us a natural Monoid[Tax].

@@ -9,7 +9,7 @@ import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.math.Ordering.Implicits.infixOrderingOps
 
-final case class QualifiedIncomeBrackets(
+final case class QualifiedBrackets(
   brackets: Map[IncomeThreshold, FederalTaxRate]
 ):
   require(isProgressive)
@@ -24,9 +24,9 @@ final case class QualifiedIncomeBrackets(
 
   // Adjust the thresholds for inflation.
   // E.g. for 2% inflation: inflated(1.02)
-  def inflatedBy(factor: Double): QualifiedIncomeBrackets =
+  def inflatedBy(factor: Double): QualifiedBrackets =
     require(factor >= 1.0)
-    QualifiedIncomeBrackets(
+    QualifiedBrackets(
       brackets.map { pair =>
         val (threshold, rate) = pair
         (threshold.increaseBy(factor).rounded, rate)
@@ -39,15 +39,15 @@ final case class QualifiedIncomeBrackets(
 
   def startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketsAscending(1)._1
 
-end QualifiedIncomeBrackets
+end QualifiedBrackets
 
-object QualifiedIncomeBrackets:
+object QualifiedBrackets:
 
-  given Show[QualifiedIncomeBrackets] with
-    def show(b: QualifiedIncomeBrackets): String =
+  given Show[QualifiedBrackets] with
+    def show(b: QualifiedBrackets): String =
       b.bracketsAscending.mkString("\n")
 
-  @tailrec def of(year: Year, status: FilingStatus): QualifiedIncomeBrackets =
+  @tailrec def of(year: Year, status: FilingStatus): QualifiedBrackets =
     (year.getValue, status) match
 
       // Note: for now assume 2022 rates into the future.
@@ -183,8 +183,8 @@ object QualifiedIncomeBrackets:
 
     end match
 
-  private def create(pairs: Map[Int, Int]): QualifiedIncomeBrackets =
-    QualifiedIncomeBrackets(
+  private def create(pairs: Map[Int, Int]): QualifiedBrackets =
+    QualifiedBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
         IncomeThreshold(bracketStart) ->

@@ -4,12 +4,12 @@ import org.kae.ustax4s.money.{Income, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 
 object TaxFunctions:
-  def taxDueOnOrdinaryIncome(brackets: OrdinaryIncomeBrackets)(
+  def taxDueOnOrdinaryIncome(brackets: OrdinaryBrackets)(
     taxableOrdinaryIncome: TaxableIncome
   ): TaxPayable =
     TaxFunction.fromBrackets(brackets.brackets)(taxableOrdinaryIncome)
 
-  def taxDueOnQualifiedIncome(brackets: QualifiedIncomeBrackets)(
+  def taxDueOnQualifiedIncome(brackets: QualifiedBrackets)(
     taxableOrdinaryIncome: TaxableIncome,
     qualifiedIncome: TaxableIncome
   ): TaxPayable =

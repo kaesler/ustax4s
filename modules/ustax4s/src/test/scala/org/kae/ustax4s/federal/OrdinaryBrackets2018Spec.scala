@@ -3,11 +3,11 @@ package org.kae.ustax4s.federal
 import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
-import org.kae.ustax4s.federal.OrdinaryIncomeBrackets
+import org.kae.ustax4s.federal.OrdinaryBrackets
 import org.kae.ustax4s.money.{TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 
-class OrdinaryIncomeBrackets2018Spec extends FunSuite:
+class OrdinaryBrackets2018Spec extends FunSuite:
   private val headOfHouseHoldSamples = List(
     (0, 0),
     (990, 99),

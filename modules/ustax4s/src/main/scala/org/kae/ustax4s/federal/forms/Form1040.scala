@@ -3,8 +3,8 @@ package org.kae.ustax4s.federal.forms
 import cats.implicits.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.{
-  OrdinaryIncomeBrackets,
-  QualifiedIncomeBrackets,
+  OrdinaryBrackets,
+  QualifiedBrackets,
   TaxFunctions,
   TaxableSocialSecurity
 }
@@ -118,8 +118,8 @@ object Form1040:
 
   def totalFederalTax(
     form: Form1040,
-    ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
-    qualifiedIncomeBrackets: QualifiedIncomeBrackets
+    ordinaryIncomeBrackets: OrdinaryBrackets,
+    qualifiedIncomeBrackets: QualifiedBrackets
   ): TaxPayable =
     taxDueBeforeCredits(
       form.taxableOrdinaryIncome,
@@ -137,8 +137,8 @@ object Form1040:
   def taxDueBeforeCredits(
     ordinaryIncome: TaxableIncome,
     qualifiedIncome: TaxableIncome,
-    ordinaryIncomeBrackets: OrdinaryIncomeBrackets,
-    qualifiedIncomeBrackets: QualifiedIncomeBrackets
+    ordinaryIncomeBrackets: OrdinaryBrackets,
+    qualifiedIncomeBrackets: QualifiedBrackets
   ): TaxPayable =
     TaxFunctions.taxDueOnOrdinaryIncome(ordinaryIncomeBrackets)(ordinaryIncome) +
       TaxFunctions.taxDueOnQualifiedIncome(qualifiedIncomeBrackets)(
