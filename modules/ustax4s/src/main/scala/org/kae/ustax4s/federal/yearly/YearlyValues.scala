@@ -6,6 +6,12 @@ import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Deduction
 
+// TODO some sanity tests for this static data:
+//   - correct regime
+//   - consistent perPersonExemption
+//   - monotonicity by year
+//   - monotonicity by FS
+
 final case class YearlyValues(
   regime: Regime,
   perPersonExemption: Deduction,
