@@ -37,8 +37,14 @@ object Year2021:
     ).view.mapValues(OrdinaryBrackets.create),
     qualifiedBrackets = Map(
       HeadOfHousehold -> Map(
+        0      -> 0,
+        54100  -> 15,
+        473750 -> 20
       ),
       Single -> Map(
+        0      -> 0,
+        40400  -> 15,
+        445850 -> 20
       )
     ).view.mapValues(QualifiedBrackets.create)
   )
