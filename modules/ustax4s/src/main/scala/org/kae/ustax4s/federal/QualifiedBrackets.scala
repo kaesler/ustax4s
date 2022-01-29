@@ -183,7 +183,7 @@ object QualifiedBrackets:
 
     end match
 
-  private def create(pairs: Map[Int, Int]): QualifiedBrackets =
+  def create(pairs: Map[Int, Int]): QualifiedBrackets =
     QualifiedBrackets(
       pairs.map { (bracketStart, ratePercentage) =>
         require(ratePercentage < 100)
