@@ -9,14 +9,31 @@ object Year2021:
   val values: YearlyValues = YearlyValues(
     regime = Trump,
     perPersonExemption = Deduction.zero,
-    unadjustedStandardDeduction = ???,
-    adjustmentWhenOver65 = ???,
-    adjustmentWhenOver65AndSingle = ???,
+    unadjustedStandardDeduction = Map(
+      HeadOfHousehold -> 18800,
+      Single          -> 12550
+    ).view.mapValues(Deduction.apply),
+    adjustmentWhenOver65 = Deduction(1350),
+    adjustmentWhenOver65AndSingle = Deduction(350),
     ordinaryBrackets = Map(
       HeadOfHousehold -> Map(
-      ),
+        0      -> 10,
+        14200  -> 12,
+        54200  -> 22,
+        86350  -> 24,
+        164900 -> 32,
+        209400 -> 35,
+        523600 -> 37
+      ).view.mapValues(_.toDouble).toMap,
       Single -> Map(
-      )
+        0      -> 10,
+        9950   -> 12,
+        40525  -> 22,
+        86375  -> 24,
+        164925 -> 32,
+        209425 -> 35,
+        523600 -> 37
+      ).view.mapValues(_.toDouble).toMap
     ).view.mapValues(OrdinaryBrackets.create),
     qualifiedBrackets = Map(
       HeadOfHousehold -> Map(

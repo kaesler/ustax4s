@@ -10,9 +10,9 @@ object Year2017:
     regime = PreTrump,
     perPersonExemption = Deduction(4050),
     unadjustedStandardDeduction = Map(
-      HeadOfHousehold -> Deduction(9350),
-      Single          -> Deduction(6350)
-    ),
+      HeadOfHousehold -> 9350,
+      Single          -> 6350
+    ).view.mapValues(Deduction.apply),
     adjustmentWhenOver65 = Deduction(1250),
     adjustmentWhenOver65AndSingle = Deduction(300),
     ordinaryBrackets = Map(
