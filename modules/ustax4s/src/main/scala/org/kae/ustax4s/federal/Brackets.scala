@@ -22,10 +22,8 @@ object Brackets:
     def bracketsAscending: Vector[(IncomeThreshold, R)] =
       bs.iterator.toVector.sortBy(_._1: Income)
 
-    def ratesAscending(using Ordering[R]): Vector[R] =
-      bs.iterator.toVector.sorted.map(_._2)
-
     def isProgressive(using Ordering[R]): Boolean =
+      val ratesAscending = rates.toList.sorted
       ratesAscending.zip(ratesAscending.tail).forall(_ < _)
 
     // Adjust the bracket starts for inflation.
