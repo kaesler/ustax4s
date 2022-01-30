@@ -1,12 +1,14 @@
 package org.kae.ustax4s.federal
 package yearly
 
+import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Deduction
 
 object Year2019:
   val values: YearlyValues = YearlyValues(
+    year = Year.of(2019),
     regime = Trump,
     perPersonExemption = Deduction.zero,
     unadjustedStandardDeduction = Map(
@@ -34,7 +36,7 @@ object Year2019:
         204100 -> 35,
         510300 -> 37
       ).view.mapValues(_.toDouble).toMap
-    ).view.mapValues(OrdinaryBrackets.create),
+    ).view.mapValues(OrdinaryBrackets.create).toMap,
     qualifiedBrackets = Map(
       HeadOfHousehold -> Map(
         0      -> 0,
@@ -44,7 +46,7 @@ object Year2019:
       Single -> Map(
         0      -> 0,
         39375  -> 15,
-        434550 -> 2
+        434550 -> 20
       )
-    ).view.mapValues(QualifiedBrackets.create)
+    ).view.mapValues(QualifiedBrackets.create).toMap
   )

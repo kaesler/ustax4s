@@ -31,6 +31,9 @@ final case class OrdinaryBrackets(
 
   private val thresholdsDescending = bracketsAscending.reverse
 
+  def thresholds: Set[IncomeThreshold] = brackets.keySet
+  def rates: Set[FederalTaxRate]       = brackets.values.toSet
+
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): TaxableIncome =
     bracketsAscending
       .sliding(2)

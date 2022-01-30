@@ -6,20 +6,15 @@ import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Deduction
 
-// TODO some sanity tests for this static data:
-//   - correct regime
-//   - consistent perPersonExemption
-//   - monotonicity by year
-//   - monotonicity by FS
-
 final case class YearlyValues(
+  year: Year,
   regime: Regime,
   perPersonExemption: Deduction,
   unadjustedStandardDeduction: FilingStatus => Deduction,
   adjustmentWhenOver65: Deduction,
   adjustmentWhenOver65AndSingle: Deduction,
-  ordinaryBrackets: FilingStatus => OrdinaryBrackets,
-  qualifiedBrackets: FilingStatus => QualifiedBrackets
+  ordinaryBrackets: Map[FilingStatus, OrdinaryBrackets],
+  qualifiedBrackets: Map[FilingStatus, QualifiedBrackets]
 )
 
 object YearlyValues:

@@ -12,7 +12,7 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 final case class QualifiedBrackets(
   brackets: Map[IncomeThreshold, FederalTaxRate]
 ):
-  require(isProgressive)
+  require(isProgressive, brackets.toString)
   require(brackets.contains(IncomeThreshold.zero))
   require(brackets.size >= 2)
 
