@@ -9,39 +9,40 @@ import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.math.Ordering.Implicits.infixOrderingOps
 
+// Note: contain a Brackets[FederalTaxRate] rather than opaque type
+// so we can precompute and store val properties.
 final case class QualifiedBrackets(
-  brackets: Map[IncomeThreshold, FederalTaxRate]
+  brackets: Brackets[FederalTaxRate]
 ):
-  require(isProgressive, brackets.toString)
+  require(brackets.isProgressive, brackets.toString)
   require(brackets.contains(IncomeThreshold.zero))
   require(brackets.size >= 2)
 
-  private def isProgressive: Boolean =
-    val ratesAscending = brackets.toList.sorted.map(_._2)
-    ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
-      left < right
-    }
+  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+    brackets.bracketsAscending
+  require(bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
 
   // Adjust the thresholds for inflation.
   // E.g. for 2% inflation: inflated(1.02)
   def inflatedBy(factor: Double): QualifiedBrackets =
-    require(factor >= 1.0)
-    QualifiedBrackets(
-      brackets.map { pair =>
-        val (threshold, rate) = pair
-        (threshold.increaseBy(factor).rounded, rate)
-      }
-    )
-
-  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    brackets.toVector.sortBy(_._1: Income)
-  require(bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
+    QualifiedBrackets(brackets.inflatedBy(factor))
 
   def startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketsAscending(1)._1
 
 end QualifiedBrackets
 
 object QualifiedBrackets:
+
+  def create(pairs: Iterable[(Int, Int)]): QualifiedBrackets =
+    apply(
+      Brackets.create(
+        pairs.map { (bracketStart, ratePercentage) =>
+          require(ratePercentage < 100)
+          IncomeThreshold(bracketStart) ->
+            FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
+        }
+      )
+    )
 
   given Show[QualifiedBrackets] with
     def show(b: QualifiedBrackets): String =
@@ -182,12 +183,3 @@ object QualifiedBrackets:
       case _ => throw NotYetImplemented(year)
 
     end match
-
-  def create(pairs: Map[Int, Int]): QualifiedBrackets =
-    QualifiedBrackets(
-      pairs.map { (bracketStart, ratePercentage) =>
-        require(ratePercentage < 100)
-        IncomeThreshold(bracketStart) ->
-          FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
-      }
-    )

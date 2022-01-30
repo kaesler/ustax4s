@@ -3,14 +3,13 @@ package org.kae.ustax4s.taxfunction
 import cats.Monoid
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
-import org.kae.ustax4s.federal.{FederalTaxRate, OrdinaryBrackets, QualifiedBrackets}
-import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}
+import org.kae.ustax4s.federal.Brackets
+import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
 
 // Note: function type here gives us a natural Monoid[Tax].
 type TaxFunction = TaxableIncome => TaxPayable
 
 object TaxFunction:
-  type Brackets = [R] =>> Map[IncomeThreshold, R]
 
   /** Return a function to apply a rate to all income over a specified threshold.
     */
@@ -45,14 +44,14 @@ object TaxFunction:
 
   private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): List[(IncomeThreshold, R)] =
     brackets
-      .keys
+      .thresholds
       .toList
       .sorted
       .zip(rateDeltas(brackets))
 
   private def rateDeltas[R: TaxRate](brackets: Brackets[R]): List[R] =
     val ratesWithZeroAtFront =
-      summon[TaxRate[R]].zero :: brackets.values.toList.sorted
+      summon[TaxRate[R]].zero :: brackets.rates.toList.sorted
     ratesWithZeroAtFront
       .zip(ratesWithZeroAtFront.tail)
       .map { (previousRate, currentRate) =>

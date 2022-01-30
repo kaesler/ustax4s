@@ -9,30 +9,26 @@ import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
 import scala.annotation.tailrec
 import scala.math.Ordering.Implicits.infixOrderingOps
 
+// Note: contain a Brackets[FederalTaxRate] rather than opaque type
+// so we can precompute and store val properties.
 final case class OrdinaryBrackets(
-  brackets: Map[IncomeThreshold, FederalTaxRate]
+  brackets: Brackets[FederalTaxRate]
 ):
-  require(isProgressive)
+  require(brackets.isProgressive)
   require(brackets.contains(IncomeThreshold.zero))
-  require(brackets.nonEmpty)
+
+  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+    brackets.bracketsAscending
+
+  private val thresholdsDescending = bracketsAscending.reverse
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
   def inflatedBy(factor: Double): OrdinaryBrackets =
-    require(factor >= 1.0)
-    OrdinaryBrackets(
-      brackets.map { (start, rate) =>
-        (start.increaseBy(factor).rounded, rate)
-      }
-    )
+    OrdinaryBrackets(brackets.inflatedBy(factor))
 
-  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    brackets.toVector.sortBy(_._1: Income)
-
-  private val thresholdsDescending = bracketsAscending.reverse
-
-  def thresholds: Set[IncomeThreshold] = brackets.keySet
-  def rates: Set[FederalTaxRate]       = brackets.values.toSet
+  def thresholds: Set[IncomeThreshold] = brackets.thresholds
+  def rates: Set[FederalTaxRate]       = brackets.rates
 
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): TaxableIncome =
     bracketsAscending
@@ -72,14 +68,9 @@ final case class OrdinaryBrackets(
       .reverse
       .map(_._2)
 
-  private def isProgressive: Boolean =
-    val ratesAscending = brackets.toList.sorted.map(_._2)
-    ratesAscending.zip(ratesAscending.tail).forall { (left, right) =>
-      left < right
-    }
-
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
     bracketsAscending.exists { (_, rate) => rate == bracketRate }
+
 end OrdinaryBrackets
 
 object OrdinaryBrackets:
@@ -88,11 +79,13 @@ object OrdinaryBrackets:
     def show(b: OrdinaryBrackets): String =
       b.bracketsAscending.mkString("\n")
 
-  def create(pairs: Map[Int, Double]): OrdinaryBrackets =
+  def create(pairs: Iterable[(Int, Double)]): OrdinaryBrackets =
     OrdinaryBrackets(
-      pairs.map { (bracketStart, ratePercentage) =>
-        require(ratePercentage < 100.0d)
-        IncomeThreshold(bracketStart) ->
-          FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
-      }
+      Brackets.create(
+        pairs.map { (bracketStart, ratePercentage) =>
+          require(ratePercentage < 100.0d)
+          IncomeThreshold(bracketStart) ->
+            FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
+        }
+      )
     )
