@@ -79,7 +79,11 @@ private[money] object Moneys:
     val zero: IncomeThreshold          = Money.zero
     def apply(i: Int): IncomeThreshold = Money(i)
 
+    given Monoid[IncomeThreshold]   = summonAdditionMonoid
+    given Ordering[IncomeThreshold] = summonOrdering
+
     extension (left: IncomeThreshold)
+      infix def asIncome: Income = left
       infix def absoluteDifference(right: IncomeThreshold): TaxableIncome =
         Money.absoluteDifference(left, right)
 

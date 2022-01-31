@@ -42,11 +42,9 @@ object TaxFunction:
       // Note: Tax has a natural Monoid because TaxPayable has one.
       .combineAll
 
-  private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): List[(IncomeThreshold, R)] =
+  private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): Vector[(IncomeThreshold, R)] =
     brackets
-      .thresholds
-      .toList
-      .sorted
+      .thresholdsAscending
       .zip(rateDeltas(brackets))
 
   private def rateDeltas[R: TaxRate](brackets: Brackets[R]): List[R] =

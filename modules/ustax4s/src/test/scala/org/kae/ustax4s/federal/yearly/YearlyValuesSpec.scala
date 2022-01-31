@@ -2,20 +2,13 @@ package org.kae.ustax4s.federal
 package yearly
 
 import cats.implicits.*
-import cats.PartialOrder
-import org.kae.ustax4s.money.Deduction
+import cats.syntax.*
 import munit.{Assertions, FunSuite}
-import org.kae.ustax4s.money.IncomeThreshold
+import org.kae.ustax4s.FilingStatus.*
+import org.kae.ustax4s.money.{Deduction, Income, IncomeThreshold}
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 // Tests that the static data encoding yearly values is correctly entered.
-// TODO some sanity tests for this static data:
-//   - consistent bracket rates
-//   - correct regime for year
-//   - monotonicity by year
-//     - deduction values
-//     - ordinary bracket thresholds
-//     - qualified bracket thresholds
-//   - monotonicity by FS within each year: Single < HeadOfHousehold
 class YearlyValuesSpec extends FunSuite:
   private val allYears = List(
     Year2016.values,
@@ -30,7 +23,10 @@ class YearlyValuesSpec extends FunSuite:
   private val preTrumpYears = allYears.filter(_.regime == PreTrump)
   private val trumpYears    = allYears.filter(_.regime == Trump)
 
-  private def massert(b: Boolean): Unit = Assertions.assert(b)
+  private def massert(
+    b: Boolean,
+    clue: => Any = "assertion failed"
+  ): Unit = Assertions.assert(b, clue)
 
   test("No duplicate years") {
     assertEquals(
@@ -55,7 +51,8 @@ class YearlyValuesSpec extends FunSuite:
     allYears.foreach { year =>
       assertEquals(
         year.ordinaryBrackets.values.map(_.rates).toList.distinct.size,
-        1
+        1,
+        s"Year is $year"
       )
     }
   }
@@ -68,5 +65,34 @@ class YearlyValuesSpec extends FunSuite:
       Set(2016, 2017)
     )
   }
+
+  test("Every year Single pays more than HeadOfHousehold") {
+    allYears.foreach { year =>
+      massert(
+        year.unadjustedStandardDeduction(Single) <=
+          year.unadjustedStandardDeduction(HeadOfHousehold)
+      )
+
+      // Note: we'd like to assert that Single thresholds all start lower
+      // than the corresponding threshold, but not true, at least in 2019.
+      // So we settle for this weaker metric.
+
+      val sumOfSingleThresholds =
+        year.ordinaryBrackets(Single).thresholds.toList.combineAll
+      val sumOfHohThresholds =
+        year.ordinaryBrackets(HeadOfHousehold).thresholds.toList.combineAll
+
+      massert(
+        summon[Ordering[IncomeThreshold]]
+          .lt(sumOfSingleThresholds, sumOfHohThresholds)
+      )
+    }
+  }
+
+  // TODO:
+  //   - monotonicity by year
+  //     - deduction values
+  //     - ordinary bracket thresholds
+  //     - qualified bracket thresholds
 
 end YearlyValuesSpec

@@ -1,6 +1,7 @@
 package org.kae.ustax4s.federal
 
-import cats.Show
+import cats.{PartialOrder, Show}
+import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}
@@ -78,6 +79,8 @@ object OrdinaryBrackets:
   given Show[OrdinaryBrackets] with
     def show(b: OrdinaryBrackets): String =
       b.bracketsAscending.mkString("\n")
+
+  given [R]: PartialOrder[OrdinaryBrackets] = PartialOrder.by(_.brackets)
 
   def create(pairs: Iterable[(Int, Double)]): OrdinaryBrackets =
     OrdinaryBrackets(

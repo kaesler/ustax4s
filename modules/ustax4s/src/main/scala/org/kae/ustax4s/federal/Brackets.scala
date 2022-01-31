@@ -22,9 +22,12 @@ object Brackets:
     def bracketsAscending: Vector[(IncomeThreshold, R)] =
       bs.iterator.toVector.sortBy(_._1: Income)
 
+    def ratesAscending: Vector[R]                    = bracketsAscending.map(_._2)
+    def thresholdsAscending: Vector[IncomeThreshold] = bracketsAscending.map(_._1)
+
     def isProgressive(using Ordering[R]): Boolean =
-      val ratesAscending = rates.toList.sorted
-      ratesAscending.zip(ratesAscending.tail).forall(_ < _)
+      val rates = ratesAscending
+      rates.zip(rates.tail).forall(_ < _)
 
     // Adjust the bracket starts for inflation.
     // E.g. for 2% inflation: inflated(1.02)
@@ -37,7 +40,8 @@ object Brackets:
   given [R]: PartialOrder[Brackets[R]] with
     def partialCompare(left: Brackets[R], right: Brackets[R]): Double =
       if areComparable(left, right) then
-        val pairs = left.keys.zip(right.keys)
+        val pairs = left.thresholdsAscending
+          .zip(right.thresholdsAscending)
 
         // All equal
         if pairs.forall(_ == _) then 0.0
@@ -50,7 +54,7 @@ object Brackets:
         else Double.NaN
       else Double.NaN
 
-  private def areComparable[R](left: Brackets[R], right: Brackets[R]): Boolean =
+  def areComparable[R](left: Brackets[R], right: Brackets[R]): Boolean =
     left.size == right.size && left.rates == right.rates
 
 end Brackets
