@@ -10,7 +10,7 @@ import org.scalacheck.Gen
 object TestDataGeneration:
   import org.kae.ustax4s.money.MoneyConversions.given
 
-  private val count = 4000
+  private val count = 5000
 
   // For now held constant.
   private val TheBirthDate = LocalDate.of(1955, 10, 2)
