@@ -89,10 +89,56 @@ class YearlyValuesSpec extends FunSuite:
     }
   }
 
-  // TODO:
-  //   - monotonicity by year
-  //     - deduction values
-  //     - ordinary bracket thresholds
-  //     - qualified bracket thresholds
+  test("ordinaryBrackets are monotonically non-decreasing year over year") {
+    for
+      fs    <- List(Single, HeadOfHousehold)
+      years <- List(preTrumpYears, trumpYears)
+    do
+      val list = years.map(_.ordinaryBrackets(fs))
+      list.zip(list.tail).foreach { (l, r) =>
+        massert(l <= r, s"${fs.show}\n${l.show}\n${r.show}")
+      }
+  }
+
+  test("qualifiedBrackets are monotonically non-decreasing year over year") {
+    for
+      fs    <- List(Single, HeadOfHousehold)
+      years <- List(preTrumpYears, trumpYears)
+    do
+      val list = years.map(_.qualifiedBrackets(fs))
+      list.zip(list.tail).foreach { (l, r) =>
+        massert(l <= r, s"${fs.show}\n${l.show}\n${r.show}")
+      }
+  }
+
+  test("unadjustedStandardDeduction is monotonic year over year") {
+    for
+      fs    <- List(Single, HeadOfHousehold)
+      years <- List(preTrumpYears, trumpYears)
+    do
+      val list = years.map(_.unadjustedStandardDeduction(fs))
+      list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
+  }
+
+  test("perPersonExemption is monotonic year over year") {
+    for years <- List(preTrumpYears, trumpYears)
+    do
+      val list = years.map(_.perPersonExemption)
+      list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
+  }
+
+  test("adjustmentWhenOver65 is monotonic year over year") {
+    for years <- List(preTrumpYears, trumpYears)
+    do
+      val list = years.map(_.adjustmentWhenOver65)
+      list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
+  }
+
+  test("adjustmentWhenOver65ndSingle is monotonic year over year") {
+    for years <- List(preTrumpYears, trumpYears)
+    do
+      val list = years.map(_.adjustmentWhenOver65AndSingle)
+      list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
+  }
 
 end YearlyValuesSpec

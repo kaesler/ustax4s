@@ -1,5 +1,6 @@
 package org.kae.ustax4s.federal
 
+import cats.PartialOrder
 import cats.Show
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
@@ -47,6 +48,8 @@ object QualifiedBrackets:
   given Show[QualifiedBrackets] with
     def show(b: QualifiedBrackets): String =
       b.bracketsAscending.mkString("\n")
+
+  given [R]: PartialOrder[QualifiedBrackets] = PartialOrder.by(_.brackets)
 
   @tailrec def of(year: Year, status: FilingStatus): QualifiedBrackets =
     (year.getValue, status) match
