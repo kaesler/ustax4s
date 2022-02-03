@@ -296,7 +296,7 @@ case object PreTrump extends Regime:
         OrdinaryBrackets.create(
           Map(
             0      -> 10d,
-            9235   -> 15d,
+            9325   -> 15d,
             37950  -> 25d,
             91900  -> 28d,
             191650 -> 33d,
