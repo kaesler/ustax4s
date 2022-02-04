@@ -5,6 +5,7 @@ import java.time.Year
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.QualifiedBrackets
+import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Income, MoneyGeneration, TaxPayable, TaxableIncome}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
@@ -33,8 +34,16 @@ class QualifiedBracketsSpec
         }
     }
 
-    assert(isProgressive(QualifiedBrackets.of(Year.of(2021), Single)))
-    assert(isProgressive(QualifiedBrackets.of(Year.of(2021), HeadOfHousehold)))
+    assert(
+      isProgressive(
+        YearlyValues.of(Year.of(2021)).get.qualifiedBrackets(Single)
+      )
+    )
+    assert(
+      isProgressive(
+        YearlyValues.of(Year.of(2021)).get.qualifiedBrackets(HeadOfHousehold)
+      )
+    )
   }
 
   property("never tax zero gains") {

@@ -4,6 +4,7 @@ import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.federal.QualifiedBrackets
+import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.TaxPayable
 
 class QualifiedBrackets2018Spec extends FunSuite:
@@ -12,7 +13,8 @@ class QualifiedBrackets2018Spec extends FunSuite:
   test(
     "QualifiedIncomeTaxBrackets for HOH 2018 should match my actual return"
   ) {
-    val brackets = QualifiedBrackets.of(Year.of(2018), HeadOfHousehold)
+    val brackets = YearlyValues.of(Year.of(2018))
+      .get.qualifiedBrackets(HeadOfHousehold)
     assertEquals(
       TaxFunctions.taxDueOnQualifiedIncome(brackets)(
         114547,

@@ -5,6 +5,7 @@ import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.OrdinaryBrackets
+import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Income, MoneyGeneration, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 import org.scalacheck.Arbitrary
@@ -22,7 +23,7 @@ class OrdinaryBracketsSpec extends ScalaCheckSuite with TaxBracketsGeneration wi
   private val TheYear = Year.of(2021)
 
   private def bracketsFor(year: Year, filingStatus: FilingStatus) =
-    Trump.ordinaryIncomeBrackets(year, filingStatus)
+    YearlyValues.of(year).get.ordinaryBrackets(filingStatus)
 
   test("taxToEndOfBracket should be correct for 2021 HeadOfHousehold") {
     val brackets = bracketsFor(TheYear, HeadOfHousehold)

@@ -5,6 +5,7 @@ import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.*
 import org.kae.ustax4s.federal.forms.Form1040
+import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 
@@ -80,11 +81,12 @@ object TaxCalculator:
     )
     if verbose then println(form.showValues)
 
+    val yv = YearlyValues.of(year).get
     Form1040
       .totalFederalTax(
         form,
-        regime.ordinaryIncomeBrackets(year, filingStatus),
-        regime.qualifiedIncomeBrackets(year, filingStatus)
+        yv.ordinaryBrackets(filingStatus),
+        yv.qualifiedBrackets(filingStatus)
       )
       .rounded
   end federalTaxDueUsingForm1040

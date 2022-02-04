@@ -2,6 +2,7 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import java.time.{LocalDate, Year}
+import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{Age, FilingStatus, InflationEstimate}
@@ -145,20 +146,24 @@ object BoundRegime:
     filingStatus: FilingStatus,
     personalExemptions: Int
   ): BoundRegime =
+    val yv = YearlyValues.of(year).get
+    require(regime == yv.regime)
+
     new BoundRegime(regime, year, filingStatus, birthDate, personalExemptions) {
 
       override def unadjustedStandardDeduction: Deduction =
-        regime.unadjustedStandardDeduction(this.year, filingStatus)
-      override def adjustmentWhenOver65: Deduction =
-        regime.adjustmentWhenOver65(this.year)
-      override def adjustmentWhenOver65AndSingle: Deduction =
-        regime.adjustmentWhenOver65AndSingle(this.year)
+        yv.unadjustedStandardDeduction(filingStatus)
 
-      override val perPersonExemption: Deduction = regime.perPersonExemption(this.year)
+      override def adjustmentWhenOver65: Deduction = yv.adjustmentWhenOver65
+
+      override def adjustmentWhenOver65AndSingle: Deduction =
+        yv.adjustmentWhenOver65AndSingle
+
+      override val perPersonExemption: Deduction = yv.perPersonExemption
 
       override def ordinaryBrackets: OrdinaryBrackets =
-        regime.ordinaryIncomeBrackets(this.year, filingStatus)
+        yv.ordinaryBrackets(filingStatus)
 
       override def qualifiedBrackets: QualifiedBrackets =
-        regime.qualifiedIncomeBrackets(this.year, filingStatus)
+        yv.qualifiedBrackets(filingStatus)
     }
