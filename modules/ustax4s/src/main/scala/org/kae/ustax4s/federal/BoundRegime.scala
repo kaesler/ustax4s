@@ -23,7 +23,7 @@ trait BoundRegime(
   def ordinaryBrackets: OrdinaryBrackets
   def qualifiedBrackets: QualifiedBrackets
 
-  def name: String = regime.name
+  def name: String = regime.show
 
   // TODO: needs property spec
   final def standardDeduction: Deduction =

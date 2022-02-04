@@ -1,5 +1,6 @@
 package org.kae.ustax4s.calculator.testdata
 
+import cats.implicits.*
 import java.time.LocalDate
 import org.kae.ustax4s.calculator.TaxCalculator
 
@@ -27,7 +28,7 @@ object MakeTestDataForPureScript extends App:
     val bdRep   = s"(unsafeMakeDate ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth})"
     val yearRep = s"(unsafeMakeYear ${year.getValue})"
     println(
-      s"  TestCase { regime: ${regime.name}, year: $yearRep, birthDate: $bdRep, " +
+      s"  TestCase { regime: ${regime.show}, year: $yearRep, birthDate: $bdRep, " +
         s"personalExemptions: ${tc.personalExemptions}, filingStatus: $fs, " +
         s"socSec: makeFromInt $ss, ordinaryIncomeNonSS: makeFromInt $oi, qualifiedIncome: makeFromInt $qi, " +
         s"itemizedDeductions: makeFromInt $itm, " +

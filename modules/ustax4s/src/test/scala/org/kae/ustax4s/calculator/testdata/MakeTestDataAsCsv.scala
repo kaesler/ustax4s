@@ -1,5 +1,6 @@
 package org.kae.ustax4s.calculator.testdata
 
+import cats.implicits.*
 import org.kae.ustax4s.calculator.TaxCalculator
 
 object MakeTestDataAsCsv extends App:
@@ -27,7 +28,7 @@ object MakeTestDataAsCsv extends App:
       oi + qi
     )
     println(
-      s"${regime.name},${year.getValue},${bd.toString},${fs.entryName},$ds,$ss,$oi,$qi,$itm,$federalTaxDue,$stateTaxDue"
+      s"${regime.show},${year.getValue},${bd.toString},${fs.show},$ds,$ss,$oi,$qi,$itm,$federalTaxDue,$stateTaxDue"
     )
   }
 

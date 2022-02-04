@@ -1,5 +1,6 @@
 package org.kae.ustax4s.calculator.testdata
 
+import cats.implicits.*
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.calculator.TaxCalculator
 
@@ -29,7 +30,7 @@ object MakeTestDataForTypeScript extends App:
       case HeadOfHousehold => "FilingStatus.HOH"
       case Single          => "FilingStatus.Single"
     println(
-      s"  { regime = ${regime.name}, year = ${year.getValue}, birthDate: $bd, " +
+      s"  { regime = ${regime.show}, year = ${year.getValue}, birthDate: $bd, " +
         s"dependents: $deps, filingStatus: $status, socSec: $ss, " +
         s"ordinaryIncomeNonSS: $oi, qualifiedIncome: $qi, " +
         s"itemizedDeductions: $itm, " +

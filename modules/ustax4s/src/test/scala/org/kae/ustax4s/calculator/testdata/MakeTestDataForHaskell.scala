@@ -1,5 +1,6 @@
 package org.kae.ustax4s.calculator.testdata
 
+import cats.implicits.*
 import org.kae.ustax4s.calculator.TaxCalculator
 
 object MakeTestDataForHaskell extends App:
@@ -26,7 +27,7 @@ object MakeTestDataForHaskell extends App:
     )
     val bdString = s"fromGregorian ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth}"
     println(
-      s"  TestCase { regime = ${regime.name}, year = ${year.getValue}, birthDate = $bdString, dependents = $deps, filingStatus = $fs, socSec = makeFromInt $ss, " +
+      s"  TestCase { regime = ${regime.show}, year = ${year.getValue}, birthDate = $bdString, dependents = $deps, filingStatus = $fs, socSec = makeFromInt $ss, " +
         s"ordinaryIncomeNonSS = makeFromInt $oi, qualifiedIncome = makeFromInt $qi, " +
         s"itemizedDeductions = makeFromInt $itm, " +
         s"expectedFederalTax = makeFromInt $federalTaxDue, expectedStateTax = makeFromInt $stateTaxDue },"
