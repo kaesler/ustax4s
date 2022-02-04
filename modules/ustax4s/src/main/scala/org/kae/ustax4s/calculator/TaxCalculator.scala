@@ -14,7 +14,6 @@ import org.kae.ustax4s.state_ma.StateMATaxCalculator
 object TaxCalculator:
 
   def federalTaxDue(
-    regime: Regime,
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
@@ -26,8 +25,7 @@ object TaxCalculator:
     itemizedDeductions: Deduction
   ): TaxPayable =
     BoundRegime
-      .create(
-        regime,
+      .createForKnownYear(
         year,
         birthDate,
         filingStatus,
@@ -53,9 +51,7 @@ object TaxCalculator:
     qualifiedDividends: TaxableIncome,
     verbose: Boolean
   ): TaxPayable =
-    val regime = Trump
-    val boundRegime = BoundRegime.create(
-      regime,
+    val boundRegime = BoundRegime.createForKnownYear(
       year,
       birthDate,
       filingStatus,

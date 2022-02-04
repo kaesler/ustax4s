@@ -28,7 +28,6 @@ final case class RegressionTestCase(
 
   def run(): Unit =
     if federalTaxDue != TaxCalculator.federalTaxDue(
-        regime,
         year,
         birthDate,
         filingStatus,
@@ -41,8 +40,7 @@ final case class RegressionTestCase(
     then {
       println(this)
       val results = BoundRegime
-        .create(
-          regime,
+        .createForKnownYear(
           year,
           birthDate,
           filingStatus,
@@ -59,7 +57,7 @@ final case class RegressionTestCase(
     }
     assertEquals(
       TaxCalculator.federalTaxDue(
-        regime,
+        // regime,
         year,
         birthDate,
         filingStatus,

@@ -139,17 +139,15 @@ end BoundRegime
 
 object BoundRegime:
 
-  def create(
-    regime: Regime,
+  def createForKnownYear(
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     personalExemptions: Int
   ): BoundRegime =
     val yv = YearlyValues.of(year).get
-    require(regime == yv.regime)
 
-    new BoundRegime(regime, year, filingStatus, birthDate, personalExemptions) {
+    new BoundRegime(yv.regime, year, filingStatus, birthDate, personalExemptions) {
 
       override def unadjustedStandardDeduction: Deduction =
         yv.unadjustedStandardDeduction(filingStatus)
