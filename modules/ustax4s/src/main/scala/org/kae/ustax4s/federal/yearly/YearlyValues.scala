@@ -20,6 +20,16 @@ final case class YearlyValues(
 object YearlyValues:
   def of(year: Year): Option[YearlyValues] = m.get(year.getValue)
 
+  def last: YearlyValues = m.values.toList.max
+
+  def lastFor(regime: Regime): YearlyValues = m.values
+    .filter(_.regime == regime)
+    .toList
+    .sorted
+    .max
+
+  given Ordering[YearlyValues] = Ordering.by(_.year)
+
   private val m: Map[Int, YearlyValues] = Map(
     2016 -> Year2016.values,
     2017 -> Year2017.values,

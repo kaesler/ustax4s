@@ -6,6 +6,7 @@ import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.taxfunction.TaxFunction
 import org.kae.ustax4s.{Age, FilingStatus, InflationEstimate}
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 trait BoundRegime(
   regime: Regime,
@@ -109,19 +110,17 @@ trait BoundRegime(
       birthDate,
       personalExemptions
     ) {
-
-      // TODO: restrict what is legal.
-      import math.Ordered.orderingToOrdered
-      require(estimate.targetFutureYear > base.year)
-      regime.failIfInvalid(estimate.targetFutureYear)
+      require(estimate.targetFutureYear > YearlyValues.last.year)
 
       override val name =
         s"${base.name}-estimatedFor-${estimate.targetFutureYear.getValue}"
 
       override def unadjustedStandardDeduction: Deduction =
         base.unadjustedStandardDeduction inflateBy estimate.factor(base.year)
+
       override def adjustmentWhenOver65: Deduction =
         base.adjustmentWhenOver65 inflateBy estimate.factor(base.year)
+
       override def adjustmentWhenOver65AndSingle: Deduction =
         base.adjustmentWhenOver65AndSingle inflateBy estimate.factor(base.year)
 
@@ -138,6 +137,21 @@ trait BoundRegime(
 end BoundRegime
 
 object BoundRegime:
+
+  def createForFutureYear(
+    regime: Regime,
+    futureYear: Year,
+    annualGrowthFraction: Double,
+    birthDate: LocalDate,
+    filingStatus: FilingStatus,
+    personalExemptions: Int
+  ): BoundRegime =
+    require(futureYear > YearlyValues.last.year)
+    val baseValues = YearlyValues.lastFor(regime)
+    createForKnownYear(baseValues.year, birthDate, filingStatus, personalExemptions)
+      .futureEstimated(
+        InflationEstimate(futureYear, annualGrowthFraction)
+      )
 
   def createForKnownYear(
     year: Year,
