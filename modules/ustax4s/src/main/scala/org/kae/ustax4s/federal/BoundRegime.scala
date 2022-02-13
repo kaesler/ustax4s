@@ -140,18 +140,15 @@ object BoundRegime:
 
   def createForFutureYear(
     regime: Regime,
-    futureYear: Year,
-    annualGrowthFraction: Double,
+    inflationEstimate: InflationEstimate,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     personalExemptions: Int
   ): BoundRegime =
-    require(futureYear > YearlyValues.last.year)
+    require(inflationEstimate.targetFutureYear > YearlyValues.last.year)
     val baseValues = YearlyValues.lastFor(regime)
     createForKnownYear(baseValues.year, birthDate, filingStatus, personalExemptions)
-      .futureEstimated(
-        InflationEstimate(futureYear, annualGrowthFraction)
-      )
+      .futureEstimated(inflationEstimate)
 
   def createForKnownYear(
     year: Year,
