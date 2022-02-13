@@ -16,7 +16,7 @@ trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:
       // rates should always be progressive
       ratesSortedAscending = rates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genIncomeThresholdInt)
-    yield OrdinaryBrackets.create(
+    yield OrdinaryBrackets.of(
       (0 :: bracketBorders.toList).sorted
         .zip(ratesSortedAscending)
         .toMap

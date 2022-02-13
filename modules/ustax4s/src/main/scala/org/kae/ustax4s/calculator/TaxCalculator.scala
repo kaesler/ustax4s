@@ -25,7 +25,7 @@ object TaxCalculator:
     itemizedDeductions: Deduction
   ): TaxPayable =
     BoundRegime
-      .createForKnownYear(
+      .forKnownYear(
         year,
         birthDate,
         filingStatus,
@@ -51,7 +51,7 @@ object TaxCalculator:
     qualifiedDividends: TaxableIncome,
     verbose: Boolean
   ): TaxPayable =
-    val boundRegime = BoundRegime.createForKnownYear(
+    val boundRegime = BoundRegime.forKnownYear(
       year,
       birthDate,
       filingStatus,

@@ -82,9 +82,9 @@ object OrdinaryBrackets:
 
   given [R]: PartialOrder[OrdinaryBrackets] = PartialOrder.by(_.brackets)
 
-  def create(pairs: Iterable[(Int, Double)]): OrdinaryBrackets =
+  def of(pairs: Iterable[(Int, Double)]): OrdinaryBrackets =
     OrdinaryBrackets(
-      Brackets.create(
+      Brackets.of(
         pairs.map { (bracketStart, ratePercentage) =>
           require(ratePercentage < 100.0d)
           IncomeThreshold(bracketStart) ->

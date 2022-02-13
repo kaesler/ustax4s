@@ -33,9 +33,9 @@ end QualifiedBrackets
 
 object QualifiedBrackets:
 
-  def create(pairs: Iterable[(Int, Int)]): QualifiedBrackets =
+  def of(pairs: Iterable[(Int, Int)]): QualifiedBrackets =
     apply(
-      Brackets.create(
+      Brackets.of(
         pairs.map { (bracketStart, ratePercentage) =>
           require(ratePercentage < 100)
           IncomeThreshold(bracketStart) ->

@@ -40,7 +40,7 @@ final case class RegressionTestCase(
     then {
       println(this)
       val results = BoundRegime
-        .createForKnownYear(
+        .forKnownYear(
           year,
           birthDate,
           filingStatus,

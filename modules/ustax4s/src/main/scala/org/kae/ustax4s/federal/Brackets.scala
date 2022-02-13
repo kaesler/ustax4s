@@ -10,7 +10,7 @@ export Brackets.Brackets
 object Brackets:
   opaque type Brackets = [R] =>> Map[IncomeThreshold, R]
 
-  def create[R](pairs: Iterable[(IncomeThreshold, R)]): Brackets[R] =
+  def of[R](pairs: Iterable[(IncomeThreshold, R)]): Brackets[R] =
     pairs.toMap
 
   extension [R](bs: Brackets[R])

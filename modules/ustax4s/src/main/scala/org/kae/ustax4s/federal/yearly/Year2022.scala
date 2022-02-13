@@ -36,7 +36,7 @@ object Year2022:
         215950 -> 35,
         539900 -> 37
       ).view.mapValues(_.toDouble).toMap
-    ).view.mapValues(OrdinaryBrackets.create).toMap,
+    ).view.mapValues(OrdinaryBrackets.of).toMap,
     qualifiedBrackets = Map(
       HeadOfHousehold -> Map(
         0      -> 0,
@@ -48,5 +48,5 @@ object Year2022:
         41675  -> 15,
         459750 -> 20
       )
-    ).view.mapValues(QualifiedBrackets.create).toMap
+    ).view.mapValues(QualifiedBrackets.of).toMap
   )

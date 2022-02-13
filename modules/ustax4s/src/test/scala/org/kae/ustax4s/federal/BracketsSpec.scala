@@ -8,7 +8,7 @@ import org.kae.ustax4s.money.IncomeThreshold
 class BracketsSpec extends FunSuite:
 
   test("PartialOrder[Brackets]") {
-    val br1 = Brackets.create(
+    val br1 = Brackets.of(
       List(
         0      -> 10d,
         9275   -> 15d,
@@ -19,7 +19,7 @@ class BracketsSpec extends FunSuite:
         415050 -> 39.6d
       ).map((i, j) => (IncomeThreshold(i), j))
     )
-    val br2 = Brackets.create(
+    val br2 = Brackets.of(
       List(
         0      -> 10d,
         13250  -> 15d,
