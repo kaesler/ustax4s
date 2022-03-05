@@ -1,7 +1,7 @@
 package org.kae.ustax4s.calculator.testdata
 
 import cats.implicits.*
-import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.calculator.TaxCalculator
 
 object MakeTestDataForTypeScript extends App:
@@ -28,6 +28,7 @@ object MakeTestDataForTypeScript extends App:
     )
     val status = fs match
       case HeadOfHousehold => "FilingStatus.HOH"
+      case Married         => ???
       case Single          => "FilingStatus.Single"
     println(
       s"  { regime = ${regime.show}, year = ${year.getValue}, birthDate: $bd, " +

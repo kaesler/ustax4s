@@ -12,12 +12,22 @@ object Year2020:
     regime = Trump,
     perPersonExemption = Deduction.zero,
     unadjustedStandardDeduction = Map(
+      Married         -> 24800,
       HeadOfHousehold -> 18650,
       Single          -> 12400
     ).view.mapValues(Deduction.apply),
     adjustmentWhenOver65 = Deduction(1300),
     adjustmentWhenOver65AndSingle = Deduction(350),
     ordinaryBrackets = Map(
+      Married -> Map(
+        0      -> 10,
+        19750  -> 12,
+        80250  -> 22,
+        171050 -> 24,
+        326600 -> 32,
+        414700 -> 35,
+        622050 -> 37
+      ).view.mapValues(_.toDouble).toMap,
       HeadOfHousehold -> Map(
         0      -> 10,
         14100  -> 12,
@@ -38,6 +48,11 @@ object Year2020:
       ).view.mapValues(_.toDouble).toMap
     ).view.mapValues(OrdinaryBrackets.of).toMap,
     qualifiedBrackets = Map(
+      Married -> Map(
+        0      -> 0,
+        80000  -> 15,
+        496600 -> 20
+      ),
       HeadOfHousehold -> Map(
         0      -> 0,
         53600  -> 15,

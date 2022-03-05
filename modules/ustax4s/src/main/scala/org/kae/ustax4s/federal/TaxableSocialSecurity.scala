@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.{Income, IncomeThreshold}
 
 object TaxableSocialSecurity:
@@ -11,6 +11,7 @@ object TaxableSocialSecurity:
   private def bases(filingStatus: FilingStatus): (IncomeThreshold, IncomeThreshold) =
     filingStatus match
       case Single | HeadOfHousehold => (IncomeThreshold(25000), IncomeThreshold(34000))
+      case Married                  => ???
 
   // Adjusted to model the fact that the bases are not adjusted annually
   // as tax brackets are. So we just estimate: amount rises 3% per year
