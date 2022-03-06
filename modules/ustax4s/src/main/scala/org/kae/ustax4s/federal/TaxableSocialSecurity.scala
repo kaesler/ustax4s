@@ -10,8 +10,10 @@ object TaxableSocialSecurity:
 
   private def bases(filingStatus: FilingStatus): (IncomeThreshold, IncomeThreshold) =
     filingStatus match
-      case Single | HeadOfHousehold => (IncomeThreshold(25000), IncomeThreshold(34000))
-      case Married                  => ???
+      case Single | HeadOfHousehold =>
+        (IncomeThreshold(25000), IncomeThreshold(34000))
+      case Married =>
+        (IncomeThreshold(32000), IncomeThreshold(44000))
 
   // Adjusted to model the fact that the bases are not adjusted annually
   // as tax brackets are. So we just estimate: amount rises 3% per year
