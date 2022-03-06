@@ -4,6 +4,7 @@ package yearly
 import cats.implicits.*
 import cats.syntax.*
 import munit.{Assertions, FunSuite}
+import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.{Deduction, Income, IncomeThreshold}
 import scala.math.Ordering.Implicits.infixOrderingOps
@@ -73,6 +74,11 @@ class YearlyValuesSpec extends FunSuite:
           year.unadjustedStandardDeduction(HeadOfHousehold)
       )
 
+      massert(
+        year.unadjustedStandardDeduction(HeadOfHousehold) <=
+          year.unadjustedStandardDeduction(Married)
+      )
+
       // Note: we'd like to assert that Single thresholds all start lower
       // than the corresponding threshold, but not true, at least in 2019.
       // So we settle for this weaker metric.
@@ -81,17 +87,23 @@ class YearlyValuesSpec extends FunSuite:
         year.ordinaryBrackets(Single).thresholds.toList.combineAll
       val sumOfHohThresholds =
         year.ordinaryBrackets(HeadOfHousehold).thresholds.toList.combineAll
+      val sumOfMarriedThresholds =
+        year.ordinaryBrackets(Married).thresholds.toList.combineAll
 
       massert(
         summon[Ordering[IncomeThreshold]]
           .lt(sumOfSingleThresholds, sumOfHohThresholds)
+      )
+      massert(
+        summon[Ordering[IncomeThreshold]]
+          .lt(sumOfHohThresholds, sumOfMarriedThresholds)
       )
     }
   }
 
   test("ordinaryBrackets are monotonically non-decreasing year over year") {
     for
-      fs    <- List(Single, HeadOfHousehold)
+      fs    <- FilingStatus.values
       years <- List(preTrumpYears, trumpYears)
     do
       val list = years.map(_.ordinaryBrackets(fs))
@@ -102,7 +114,7 @@ class YearlyValuesSpec extends FunSuite:
 
   test("qualifiedBrackets are monotonically non-decreasing year over year") {
     for
-      fs    <- List(Single, HeadOfHousehold)
+      fs    <- FilingStatus.values
       years <- List(preTrumpYears, trumpYears)
     do
       val list = years.map(_.qualifiedBrackets(fs))
@@ -113,7 +125,7 @@ class YearlyValuesSpec extends FunSuite:
 
   test("unadjustedStandardDeduction is monotonic year over year") {
     for
-      fs    <- List(Single, HeadOfHousehold)
+      fs    <- FilingStatus.values
       years <- List(preTrumpYears, trumpYears)
     do
       val list = years.map(_.unadjustedStandardDeduction(fs))
