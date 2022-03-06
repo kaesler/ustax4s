@@ -58,21 +58,27 @@ object StateMATaxCalculator:
   ): Deduction =
     (
       (year.getValue, filingStatus) match
+        case (2022, Married)         => 8800
         case (2022, HeadOfHousehold) => 6800
         case (2022, Single)          => 4400
 
+        case (2021, Married)         => 8800
         case (2021, HeadOfHousehold) => 6800
         case (2021, Single)          => 4400
 
+        case (2020, Married)         => 8800
         case (2020, HeadOfHousehold) => 6800
         case (2020, Single)          => 4400
 
+        case (2019, Married)         => 8800
         case (2019, HeadOfHousehold) => 6800
         case (2019, Single)          => 4400
 
+        case (2018, Married)         => 8800
         case (2018, HeadOfHousehold) => 6800
         case (2018, Single)          => 4400
 
+        case (2017, Married)         => 8800
         case (2017, HeadOfHousehold) => 6800
         case (2017, Single)          => 4400
 
