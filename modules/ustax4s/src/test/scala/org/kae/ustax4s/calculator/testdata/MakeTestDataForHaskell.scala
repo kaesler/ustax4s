@@ -7,7 +7,7 @@ object MakeTestDataForHaskell extends App:
 
   import TestDataGeneration.*
 
-  testCases.foreach { case tc @ TestCaseInputs(regime, year, bd, fs, deps, ss, oi, qi, itm) =>
+  testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, qi, itm) =>
     val federalTaxDue = TaxCalculator.federalTaxDue(
       year = year,
       birthDate = bd,
@@ -27,7 +27,7 @@ object MakeTestDataForHaskell extends App:
     )
     val bdString = s"fromGregorian ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth}"
     println(
-      s"  TestCase { regime = ${regime.show}, year = ${year.getValue}, birthDate = $bdString, dependents = $deps, filingStatus = $fs, socSec = makeFromInt $ss, " +
+      s"  TestCase { year = ${year.getValue}, birthDate = $bdString, dependents = $deps, filingStatus = $fs, socSec = makeFromInt $ss, " +
         s"ordinaryIncomeNonSS = makeFromInt $oi, qualifiedIncome = makeFromInt $qi, " +
         s"itemizedDeductions = makeFromInt $itm, " +
         s"expectedFederalTax = makeFromInt $federalTaxDue, expectedStateTax = makeFromInt $stateTaxDue },"

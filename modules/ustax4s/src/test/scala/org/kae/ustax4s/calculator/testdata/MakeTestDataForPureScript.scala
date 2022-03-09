@@ -7,7 +7,7 @@ import org.kae.ustax4s.calculator.TaxCalculator
 object MakeTestDataForPureScript extends App:
   import TestDataGeneration.*
 
-  testCases.foreach { case tc @ TestCaseInputs(regime, year, bd, fs, deps, ss, oi, qi, itm) =>
+  testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, qi, itm) =>
     val federalTaxDue = TaxCalculator.federalTaxDue(
       year = year,
       birthDate = bd,
@@ -28,7 +28,7 @@ object MakeTestDataForPureScript extends App:
     val bdRep   = s"(unsafeMakeDate ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth})"
     val yearRep = s"(unsafeMakeYear ${year.getValue})"
     println(
-      s"  TestCase { regime: ${regime.show}, year: $yearRep, birthDate: $bdRep, " +
+      s"  TestCase { year: $yearRep, birthDate: $bdRep, " +
         s"personalExemptions: ${tc.personalExemptions}, filingStatus: $fs, " +
         s"socSec: makeFromInt $ss, ordinaryIncomeNonSS: makeFromInt $oi, qualifiedIncome: makeFromInt $qi, " +
         s"itemizedDeductions: makeFromInt $itm, " +

@@ -82,6 +82,10 @@ object StateMATaxCalculator:
         case (2017, HeadOfHousehold) => 6800
         case (2017, Single)          => 4400
 
+        case (2016, Married)         => 8800
+        case (2016, HeadOfHousehold) => 6800
+        case (2016, Single)          => 4400
+
         case _ => throw NotYetImplemented(year)
     ).pipe(Deduction.apply)
 

@@ -8,7 +8,7 @@ object MakeTestDataForTypeScript extends App:
 
   import TestDataGeneration.*
 
-  testCases.foreach { case tc @ TestCaseInputs(regime, year, bd, fs, deps, ss, oi, qi, itm) =>
+  testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, qi, itm) =>
     val federalTaxDue = TaxCalculator.federalTaxDue(
       year = year,
       birthDate = bd,
@@ -28,10 +28,10 @@ object MakeTestDataForTypeScript extends App:
     )
     val status = fs match
       case HeadOfHousehold => "FilingStatus.HOH"
-      case Married         => ???
+      case Married         => "Married"
       case Single          => "FilingStatus.Single"
     println(
-      s"  { regime = ${regime.show}, year = ${year.getValue}, birthDate: $bd, " +
+      s"  { year = ${year.getValue}, birthDate: $bd, " +
         s"dependents: $deps, filingStatus: $status, socSec: $ss, " +
         s"ordinaryIncomeNonSS: $oi, qualifiedIncome: $qi, " +
         s"itemizedDeductions: $itm, " +

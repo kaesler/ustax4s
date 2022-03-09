@@ -7,9 +7,9 @@ object MakeTestDataAsCsv extends App:
   import TestDataGeneration.*
 
   println(
-    "regime,year,birthDate,filingStatus,dependents,socSec,ordinaryIncomeNonSS,qualifiedIncome,itemizedDeductions,federalTaxDue,stateTaxDue"
+    "year,birthDate,filingStatus,dependents,socSec,ordinaryIncomeNonSS,qualifiedIncome,itemizedDeductions,federalTaxDue,stateTaxDue"
   )
-  testCases.foreach { case tc @ TestCaseInputs(regime, year, bd, fs, ds, ss, oi, qi, itm) =>
+  testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, ds, ss, oi, qi, itm) =>
     val federalTaxDue = TaxCalculator.federalTaxDue(
       year = year,
       birthDate = bd,
@@ -28,7 +28,7 @@ object MakeTestDataAsCsv extends App:
       oi + qi
     )
     println(
-      s"${regime.show},${year.getValue},${bd.toString},${fs.show},$ds,$ss,$oi,$qi,$itm,$federalTaxDue,$stateTaxDue"
+      s"${year.getValue},${bd.toString},${fs.show},$ds,$ss,$oi,$qi,$itm,$federalTaxDue,$stateTaxDue"
     )
   }
 

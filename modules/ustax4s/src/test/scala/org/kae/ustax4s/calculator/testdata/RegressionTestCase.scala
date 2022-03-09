@@ -11,7 +11,6 @@ import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome, TaxPayable}
 import scala.io.Source
 
 final case class RegressionTestCase(
-  regime: Regime,
   year: Year,
   birthDate: LocalDate,
   filingStatus: FilingStatus,
@@ -87,21 +86,19 @@ object RegressionTestCase:
 
   private def parseFromCsvLine(s: String): RegressionTestCase =
     val fields               = s.split(',')
-    val regime: Regime       = Regime.unsafeParse(fields(0))
-    val year: Year           = Year.of(Integer.parseInt(fields(1)))
-    val birthDate: LocalDate = LocalDate.parse(fields(2))
-    val filingStatus         = FilingStatus.valueOf(fields(3))
-    val dependents           = Integer.parseInt(fields(4))
-    val socSec               = Income.unsafeParse(fields(5))
-    val ordinaryIncomeNonSS  = Income.unsafeParse(fields(6))
-    val qualifiedIncome      = TaxableIncome.unsafeParse(fields(7))
-    val itemizedDeductions   = Deduction.unsafeParse(fields(8))
+    val year: Year           = Year.of(Integer.parseInt(fields(0)))
+    val birthDate: LocalDate = LocalDate.parse(fields(1))
+    val filingStatus         = FilingStatus.valueOf(fields(2))
+    val dependents           = Integer.parseInt(fields(3))
+    val socSec               = Income.unsafeParse(fields(4))
+    val ordinaryIncomeNonSS  = Income.unsafeParse(fields(5))
+    val qualifiedIncome      = TaxableIncome.unsafeParse(fields(6))
+    val itemizedDeductions   = Deduction.unsafeParse(fields(7))
 
-    val federalTaxDue = TaxPayable.unsafeParse(fields(9))
-    val stateTaxDue   = TaxPayable.unsafeParse(fields(10))
+    val federalTaxDue = TaxPayable.unsafeParse(fields(8))
+    val stateTaxDue   = TaxPayable.unsafeParse(fields(9))
 
     RegressionTestCase(
-      regime,
       year,
       birthDate,
       filingStatus,

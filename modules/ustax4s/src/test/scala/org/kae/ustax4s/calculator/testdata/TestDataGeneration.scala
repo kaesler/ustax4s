@@ -10,13 +10,12 @@ import org.scalacheck.Gen
 object TestDataGeneration:
   import org.kae.ustax4s.money.MoneyConversions.given
 
-  private val count = 5000
+  private val count = 6000
 
   // For now held constant.
   private val TheBirthDate = LocalDate.of(1955, 10, 2)
 
   final case class TestCaseInputs(
-    regime: Regime,
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
@@ -31,18 +30,14 @@ object TestDataGeneration:
 
   private val genTestCase: Gen[TestCaseInputs] =
     for
-      regime <- Gen.oneOf(PreTrump, Trump)
-      yearNum <-
-        if regime == PreTrump then Gen.const(2017)
-        else Gen.chooseNum(2018, 2022)
+      yearNum             <- Gen.chooseNum(2016, 2022)
       fs                  <- Gen.oneOf(FilingStatus.values.toSeq)
       dependents          <- Gen.oneOf(0, 4)
       ss                  <- Gen.chooseNum(0, 50000)
-      ordinaryIncomeNonSS <- Gen.chooseNum(0, 50000)
-      qualifiedIncome     <- Gen.chooseNum(0, 50000)
-      itemizedDeductions  <- Gen.chooseNum(0, 15000)
+      ordinaryIncomeNonSS <- Gen.chooseNum(0, 150000)
+      qualifiedIncome     <- Gen.chooseNum(0, 100000)
+      itemizedDeductions  <- Gen.chooseNum(0, 30000)
     yield TestCaseInputs(
-      regime = regime,
       year = Year.of(yearNum),
       birthDate = TheBirthDate,
       filingStatus = fs,
