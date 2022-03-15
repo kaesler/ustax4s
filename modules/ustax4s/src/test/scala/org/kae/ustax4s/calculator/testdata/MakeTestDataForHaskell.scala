@@ -1,6 +1,5 @@
 package org.kae.ustax4s.calculator.testdata
 
-import cats.implicits.*
 import org.kae.ustax4s.calculator.TaxCalculator
 
 object MakeTestDataForHaskell extends App:

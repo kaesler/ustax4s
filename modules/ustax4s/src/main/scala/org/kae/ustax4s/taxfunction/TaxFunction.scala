@@ -1,6 +1,5 @@
 package org.kae.ustax4s.taxfunction
 
-import cats.Monoid
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
 import org.kae.ustax4s.federal.Brackets

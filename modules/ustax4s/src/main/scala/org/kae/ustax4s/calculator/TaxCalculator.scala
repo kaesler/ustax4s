@@ -1,6 +1,5 @@
 package org.kae.ustax4s.calculator
 
-import cats.Show
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.*

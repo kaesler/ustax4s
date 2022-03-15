@@ -1,6 +1,5 @@
 package org.kae.ustax4s.calculator.testdata
 
-import cats.implicits.*
 import java.time.LocalDate
 import org.kae.ustax4s.calculator.TaxCalculator
 

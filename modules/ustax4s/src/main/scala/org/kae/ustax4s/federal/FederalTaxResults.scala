@@ -2,6 +2,7 @@ package org.kae.ustax4s.federal
 
 import cats.Show
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
+import scala.collection.mutable
 
 final case class FederalTaxResults(
   ssRelevantOtherIncome: Income,
@@ -20,7 +21,7 @@ final case class FederalTaxResults(
 
 object FederalTaxResults:
   given Show[FederalTaxResults] = (r: FederalTaxResults) =>
-    val b = StringBuilder()
+    val b = mutable.StringBuilder()
     b.append("Outputs\n")
     import r.*
     b.append(s"  ssRelevantOtherIncome: $ssRelevantOtherIncome\n")

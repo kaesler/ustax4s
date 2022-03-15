@@ -1,6 +1,5 @@
 package org.kae.ustax4s.state_ma
 
-import cats.kernel.Order
 import org.kae.ustax4s.TaxRate
 import scala.math.BigDecimal.RoundingMode
 

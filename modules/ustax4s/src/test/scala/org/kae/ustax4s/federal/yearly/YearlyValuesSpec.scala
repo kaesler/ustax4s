@@ -2,7 +2,6 @@ package org.kae.ustax4s.federal
 package yearly
 
 import cats.implicits.*
-import cats.syntax.*
 import munit.{Assertions, FunSuite}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*

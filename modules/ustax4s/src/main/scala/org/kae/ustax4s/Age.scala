@@ -1,6 +1,5 @@
 package org.kae.ustax4s
 
-import cats.implicits.*
 import java.time.{LocalDate, Month, Year}
 
 object Age:

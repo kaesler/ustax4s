@@ -1,6 +1,5 @@
 package org.kae.ustax4s.calculator.testdata
 
-import cats.Show
 import cats.implicits.*
 import java.time.{LocalDate, Year}
 import munit.Assertions.*
