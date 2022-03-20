@@ -3,6 +3,7 @@ package org.kae.ustax4s.money
 import cats.Monoid
 import cats.implicits.*
 import org.kae.ustax4s.TaxRate
+import scala.annotation.targetName
 
 export Moneys.Deduction
 export Moneys.Income
@@ -43,7 +44,10 @@ private[money] object Moneys:
       infix def applyDeductions(deductions: Deduction*): TaxableIncome =
         Money.monus(left, deductions.combineAll)
 
-      infix def div(right: Income): Double   = Money.divide(left, right)
+      infix def div(right: Income): Double = Money.divide(left, right)
+
+      infix def divInt(right: Int): Income = Money.divide(left, right)
+
       infix def inflateBy(d: Double): Income = Money.multiply(left, d)
 
       infix def isBelow(threshold: IncomeThreshold): Boolean =
@@ -157,7 +161,9 @@ private[money] object Moneys:
 
     given Monoid[TaxCredit] = summonAdditionMonoid
 
-    extension (left: TaxCredit) def +(right: TaxCredit): TaxCredit = left.combine(right)
+    extension (left: TaxCredit)
+      @targetName("combine")
+      def +(right: TaxCredit): TaxCredit = left.combine(right)
   end TaxCredit
 
   // Note: must be outside the object scopes above.
