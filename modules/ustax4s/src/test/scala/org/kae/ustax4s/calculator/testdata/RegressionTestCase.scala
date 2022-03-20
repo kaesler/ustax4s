@@ -1,12 +1,13 @@
 package org.kae.ustax4s.calculator.testdata
 
 import cats.implicits.*
+import cats.Show
 import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
-import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 
 final case class RegressionTestCase(
@@ -25,37 +26,8 @@ final case class RegressionTestCase(
   def massachusettsGrossIncome: Income = ordinaryIncomeNonSS + qualifiedIncome
 
   def run(): Unit =
-    if federalTaxDue != TaxCalculator.federalTaxDue(
-        year,
-        birthDate,
-        filingStatus,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
-      )
-    then {
-      println(this)
-      val results = BoundRegime
-        .forKnownYear(
-          year,
-          birthDate,
-          filingStatus,
-          personalExemptions
-        )
-        .calculator
-        .federalTaxResults(
-          socSec,
-          ordinaryIncomeNonSS,
-          qualifiedIncome,
-          itemizedDeductions
-        )
-      println(results.show)
-    }
     assertEquals(
       TaxCalculator.federalTaxDue(
-        // regime,
         year,
         birthDate,
         filingStatus,
@@ -66,7 +38,19 @@ final case class RegressionTestCase(
         itemizedDeductions
       ),
       federalTaxDue,
-      this.toString
+      this.show ++
+        "\n" ++
+        TaxCalculator.federalTaxResults(
+          year,
+          birthDate,
+          filingStatus,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
+          .show
     )
     assertEquals(
       TaxCalculator.stateTaxDue(
@@ -82,6 +66,25 @@ final case class RegressionTestCase(
 end RegressionTestCase
 
 object RegressionTestCase:
+
+  given show: Show[RegressionTestCase] = new Show[RegressionTestCase] {
+    override def show(tc: RegressionTestCase): String =
+      import tc.*
+      s"""
+         |RegressionTestCase(
+         |  year                = $year,
+         |  birthDate           = $birthDate,
+         |  filingStatus        = ${filingStatus.show},
+         |  dependents          = $dependents,
+         |  socSec              = $socSec,
+         |  ordinaryIncomeNonSS = $ordinaryIncomeNonSS,
+         |  qualifiedIncome     = $qualifiedIncome,
+         |  itemizedDeductions  = $itemizedDeductions,
+         |  federalTaxDue       = $federalTaxDue,
+         |  stateTaxDue         = $stateTaxDue
+         |}  
+         |""".stripMargin
+  }
 
   private def parseFromCsvLine(s: String): RegressionTestCase =
     val fields               = s.split(',')
