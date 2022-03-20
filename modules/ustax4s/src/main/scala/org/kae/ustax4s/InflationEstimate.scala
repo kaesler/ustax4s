@@ -1,6 +1,8 @@
 package org.kae.ustax4s
 
 import java.time.Year
+import org.kae.ustax4s.federal.yearly.YearlyValues
+import scala.math.Ordered.orderingToOrdered
 
 // Used to estimate future tax brackets, exemptions, deductions etc.
 final case class InflationEstimate(
@@ -8,7 +10,7 @@ final case class InflationEstimate(
   // E.g. 0.02 for 2%
   annualGrowthFraction: Double
 ):
-  require(targetFutureYear.getValue > 2017)
+  require(targetFutureYear > YearlyValues.last.year)
   require(annualGrowthFraction >= 0)
 
   // Compute the inflation factor for the target year, from a base year.
