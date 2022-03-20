@@ -4,56 +4,39 @@ import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
+import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Income, IncomeThreshold}
 
 object TaxableSocialSecurity:
 
-  private def bases(filingStatus: FilingStatus): (IncomeThreshold, IncomeThreshold) =
+  // 3 brackets for combined income:
+  //   - low: no SS taxed
+  //   - middle: up to half
+  private def thresholds(filingStatus: FilingStatus): (IncomeThreshold, IncomeThreshold) =
     filingStatus match
       case Single | HeadOfHousehold =>
         (IncomeThreshold(25000), IncomeThreshold(34000))
       case Married =>
         (IncomeThreshold(32000), IncomeThreshold(44000))
 
-  // Adjusted to model the fact that the bases are not adjusted annually
-  // as tax brackets are. So we just estimate: amount rises 3% per year
-  // but does not exceed 85%.
-  def taxableSocialSecurityBenefitsAdjusted(
-    filingStatus: FilingStatus,
-    socialSecurityBenefits: Income,
-    ssRelevantOtherIncome: Income,
-    year: Year
-  ): Income =
-    val unadjusted = taxableSocialSecurityBenefits(
-      filingStatus = filingStatus,
-      socialSecurityBenefits = socialSecurityBenefits,
-      ssRelevantOtherIncome = ssRelevantOtherIncome
-    )
-    if year.isBefore(Year.of(2022)) then unadjusted
-    else
-      val adjustmentFactor = 1.0 + ((year.getValue - 2021) * 0.03)
-      val adjusted         = unadjusted inflateBy adjustmentFactor
-      List(
-        adjusted,
-        socialSecurityBenefits mul 0.85
-      ).min
-
+  // Current year, current dollars.
   def taxableSocialSecurityBenefits(
     filingStatus: FilingStatus,
     socialSecurityBenefits: Income,
     ssRelevantOtherIncome: Income
   ): Income =
-    val (lowBase, highBase) = bases(filingStatus)
+    val (lowThreshold, highThreshold) = thresholds(filingStatus)
 
+    val middleBracketWidth     = highThreshold.absoluteDifference(lowThreshold)
     val combinedIncome: Income = ssRelevantOtherIncome + (socialSecurityBenefits mul 0.5)
 
-    if combinedIncome isBelow lowBase then Income.zero
-    else if combinedIncome isBelow highBase then
+    if combinedIncome isBelow lowThreshold then Income.zero
+    else if combinedIncome isBelow highThreshold then
       val fractionTaxable  = 0.5
       val maxSocSecTaxable = socialSecurityBenefits mul fractionTaxable
       // Half of the amount in this bracket, but no more than 50%
       List(
-        (combinedIncome amountAbove lowBase) mul fractionTaxable,
+        (combinedIncome amountAbove lowThreshold) mul fractionTaxable,
         maxSocSecTaxable
       ).min
     else
@@ -63,6 +46,71 @@ object TaxableSocialSecurity:
       List(
         // Half in previous bracket and .85 in this bracket,
         // but no more than 0.85 of SS benes.
-        Income(4500) + ((combinedIncome amountAbove highBase) mul fractionTaxable),
+        (middleBracketWidth divInt 2) +
+          ((combinedIncome amountAbove highThreshold) mul fractionTaxable),
         maxSocSecTaxable
       ).min
+
+  // The thresholds used in this computation are not adjusted each year for
+  // inflation, as tax brackets are. Social security payments are adjusted.
+  // What to do?
+  //   - expand the money values by the estimate for net inflation
+  //   - compute the taxable amount
+  //   - express as a fraction of the inflated SS benefits
+  //   - apply it to the current dollar benefit amount
+
+  private def taxableSocialSecurityBenefitsInflated(
+    filingStatus: FilingStatus,
+    socialSecurityBenefits: Income,
+    ssRelevantOtherIncome: Income,
+    netInflationFactor: Double
+  ): Income =
+    require(netInflationFactor >= 1.0)
+    val inflatedSocialSecurityBenefits = socialSecurityBenefits mul netInflationFactor
+    val inflatedSsRelevantOtherIncome  = ssRelevantOtherIncome mul netInflationFactor
+    val inflatedTaxableAmount = taxableSocialSecurityBenefits(
+      filingStatus,
+      inflatedSocialSecurityBenefits,
+      inflatedSsRelevantOtherIncome
+    )
+    val fractionTaxable             = inflatedTaxableAmount div inflatedSocialSecurityBenefits
+    val amountTaxableInCurrentMoney = socialSecurityBenefits mul fractionTaxable
+    amountTaxableInCurrentMoney
+
+  // Helpfully named alias for taxableSocialSecurityBenefits.
+  // Inflated income applied to the unchanging thresholds.
+  def taxableSocialSecurityBenefitsFutureYearFutureDollars(
+    filingStatus: FilingStatus,
+    socialSecurityBenefits: Income,
+    ssRelevantOtherIncome: Income
+  ): Income = taxableSocialSecurityBenefits(
+    filingStatus,
+    socialSecurityBenefits,
+    ssRelevantOtherIncome
+  )
+
+  // Future year, benefits as of today.
+  def taxableSocialSecurityBenefitsFutureYearCurrentDollars(
+    filingStatus: FilingStatus,
+    socialSecurityBenefits: Income,
+    ssRelevantOtherIncome: Income,
+    futureYear: Year,
+    estimatedAnnualInflation: Double
+  ): Income =
+    import math.Ordered.orderingToOrdered
+    require(futureYear > YearlyValues.last.year)
+    require(estimatedAnnualInflation >= 0.0)
+
+    val baseYear = YearlyValues.last.year
+
+    val netInflationFactor = math.pow(
+      1.0 + estimatedAnnualInflation,
+      (futureYear.getValue - baseYear.getValue).toDouble
+    )
+
+    taxableSocialSecurityBenefitsInflated(
+      filingStatus,
+      socialSecurityBenefits,
+      ssRelevantOtherIncome,
+      netInflationFactor
+    )
