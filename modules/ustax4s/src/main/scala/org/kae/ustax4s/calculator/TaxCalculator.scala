@@ -2,6 +2,7 @@ package org.kae.ustax4s.calculator
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.InflationEstimate
 import org.kae.ustax4s.federal.*
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.yearly.YearlyValues
@@ -12,8 +13,9 @@ import org.kae.ustax4s.state_ma.StateMATaxCalculator
   */
 object TaxCalculator:
 
-  def federalTaxDue(
-    year: Year,
+  def federalTaxDueForFutureYear(
+    regime: Regime,
+    inflationEstimate: InflationEstimate,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     // Self plus dependents
@@ -23,6 +25,35 @@ object TaxCalculator:
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
   ): TaxPayable =
+    BoundRegime
+      .forFutureYear(
+        regime,
+        inflationEstimate,
+        birthDate,
+        filingStatus,
+        personalExemptions
+      )
+      .calculator
+      .federalTaxResults(
+        socSec,
+        ordinaryIncomeNonSS,
+        qualifiedIncome,
+        itemizedDeductions
+      )
+      .taxDue
+      .rounded
+
+  def federalTaxResults(
+    year: Year,
+    birthDate: LocalDate,
+    filingStatus: FilingStatus,
+    // Self plus dependents
+    personalExemptions: Int,
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedIncome: TaxableIncome,
+    itemizedDeductions: Deduction
+  ): FederalTaxResults =
     BoundRegime
       .forKnownYear(
         year,
@@ -37,6 +68,28 @@ object TaxCalculator:
         qualifiedIncome,
         itemizedDeductions
       )
+
+  def federalTaxDue(
+    year: Year,
+    birthDate: LocalDate,
+    filingStatus: FilingStatus,
+    // Self plus dependents
+    personalExemptions: Int,
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedIncome: TaxableIncome,
+    itemizedDeductions: Deduction
+  ): TaxPayable =
+    federalTaxResults(
+      year,
+      birthDate,
+      filingStatus,
+      personalExemptions,
+      socSec,
+      ordinaryIncomeNonSS,
+      qualifiedIncome,
+      itemizedDeductions
+    )
       .taxDue
       .rounded
 
