@@ -83,8 +83,7 @@ private[money] object Moneys:
     val zero: IncomeThreshold          = Money.zero
     def apply(i: Int): IncomeThreshold = Money(i)
 
-    given Monoid[IncomeThreshold]   = summonAdditionMonoid
-    given Ordering[IncomeThreshold] = summonOrdering
+    given Monoid[IncomeThreshold] = summonAdditionMonoid
 
     extension (left: IncomeThreshold)
       infix def asIncome: Income = left
