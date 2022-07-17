@@ -90,11 +90,11 @@ class YearlyValuesSpec extends FunSuite:
         year.ordinaryBrackets(Married).thresholds.toList.combineAll
 
       massert(
-        summon[Ordering[IncomeThreshold]]
+        summon[Ordering[Income]]
           .lt(sumOfSingleThresholds, sumOfHohThresholds)
       )
       massert(
-        summon[Ordering[IncomeThreshold]]
+        summon[Ordering[Income]]
           .lt(sumOfHohThresholds, sumOfMarriedThresholds)
       )
     }
@@ -152,4 +152,26 @@ class YearlyValuesSpec extends FunSuite:
       list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
   }
 
+  test("expected congruencies hold") {
+    for
+      left  <- preTrumpYears
+      right <- preTrumpYears
+    do massert(left.hasCongruentOrdinaryBrackets(right))
+
+    for
+      left  <- trumpYears
+      right <- trumpYears
+    do massert(left.hasCongruentOrdinaryBrackets(right))
+
+    for
+      left  <- trumpYears ++ preTrumpYears
+      right <- trumpYears ++ preTrumpYears
+    do massert(left.hasCongruentQualifiedBrackets(right))
+  }
+
+  test("averageThresholdChangeOverPrevious is > 1 when present") {
+    allYears.tail.foreach { values =>
+      massert(YearlyValues.averageThresholdChangeOverPrevious(values.year).get > 1.0)
+    }
+  }
 end YearlyValuesSpec

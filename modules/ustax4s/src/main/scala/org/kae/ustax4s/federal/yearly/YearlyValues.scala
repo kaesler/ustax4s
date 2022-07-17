@@ -4,7 +4,7 @@ package yearly
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
-import org.kae.ustax4s.money.Deduction
+import org.kae.ustax4s.money.{Deduction, IncomeThreshold}
 
 final case class YearlyValues(
   year: Year,
@@ -15,12 +15,40 @@ final case class YearlyValues(
   adjustmentWhenOver65AndSingle: Deduction,
   ordinaryBrackets: Map[FilingStatus, OrdinaryBrackets],
   qualifiedBrackets: Map[FilingStatus, QualifiedBrackets]
-)
+) {
+  def previous: Option[YearlyValues] =
+    YearlyValues.of(year.minusYears(1L))
+
+  def ordinaryNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] = (
+    for
+      fs                <- FilingStatus.values
+      brackets          <- ordinaryBrackets.get(fs).toList
+      (threshold, rate) <- brackets.bracketsAscending
+      if threshold != IncomeThreshold.zero
+    yield (fs, rate) -> threshold
+  ).toMap
+
+  def qualifiedNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] =
+    (
+      for
+        fs                <- FilingStatus.values
+        brackets          <- qualifiedBrackets.get(fs).toList
+        (threshold, rate) <- brackets.bracketsAscending
+        if threshold != IncomeThreshold.zero
+      yield (fs, rate) -> threshold
+    ).toMap
+
+  def hasCongruentOrdinaryBrackets(that: YearlyValues): Boolean =
+    this.ordinaryNonZeroThresholdsMap.keySet == that.ordinaryNonZeroThresholdsMap.keySet
+  def hasCongruentQualifiedBrackets(that: YearlyValues): Boolean =
+    this.qualifiedNonZeroThresholdsMap.keySet == that.qualifiedNonZeroThresholdsMap.keySet
+}
 
 object YearlyValues:
   def of(year: Year): Option[YearlyValues] = m.get(year.getValue)
 
-  def last: YearlyValues = m.values.toList.max
+  def first: YearlyValues = m.values.toList.min
+  def last: YearlyValues  = m.values.toList.max
 
   def lastFor(regime: Regime): YearlyValues = m.values
     .filter(_.regime == regime)
@@ -39,5 +67,24 @@ object YearlyValues:
     2021 -> Year2021.values,
     2022 -> Year2022.values
   )
+
+  def averageThresholdChangeOverPrevious(year: Year): Option[Double] =
+    for {
+      values         <- YearlyValues.of(year)
+      previousValues <- values.previous
+    } yield averageThresholdChange(previousValues, values)
+
+  private def averageThresholdChange(
+    left: YearlyValues,
+    right: YearlyValues
+  ): Double =
+    val pairs: List[(IncomeThreshold, IncomeThreshold)] =
+      (if left.hasCongruentOrdinaryBrackets(right) then
+         left.ordinaryNonZeroThresholdsMap.values.toList.sorted
+           .zip(right.ordinaryNonZeroThresholdsMap.values.toList.sorted)
+       else List.empty) ++
+        left.qualifiedNonZeroThresholdsMap.values.toList.sorted
+          .zip(right.qualifiedNonZeroThresholdsMap.values.toList.sorted)
+    pairs.map((earlier, later) => later div earlier).sum / pairs.length
 
 end YearlyValues
