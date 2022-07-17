@@ -10,4 +10,9 @@ enum FilingStatus(val isSingle: Boolean):
 object FilingStatus:
   given Show[FilingStatus] with
     def show(fs: FilingStatus): String = fs.productPrefix
+
+  given Ordering[FilingStatus] with
+    def compare(x: FilingStatus, y: FilingStatus): Int =
+      x.ordinal.compare(y.ordinal)
+
 end FilingStatus
