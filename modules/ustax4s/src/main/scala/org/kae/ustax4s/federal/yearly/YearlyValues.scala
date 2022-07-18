@@ -58,16 +58,6 @@ object YearlyValues:
 
   given Ordering[YearlyValues] = Ordering.by(_.year)
 
-  private val m: Map[Int, YearlyValues] = Map(
-    2016 -> Year2016.values,
-    2017 -> Year2017.values,
-    2018 -> Year2018.values,
-    2019 -> Year2019.values,
-    2020 -> Year2020.values,
-    2021 -> Year2021.values,
-    2022 -> Year2022.values
-  )
-
   def averageThresholdChangeOverPrevious(year: Year): Option[Double] =
     for {
       values         <- YearlyValues.of(year)
@@ -86,5 +76,15 @@ object YearlyValues:
         left.qualifiedNonZeroThresholdsMap.values.toList.sorted
           .zip(right.qualifiedNonZeroThresholdsMap.values.toList.sorted)
     pairs.map((earlier, later) => later div earlier).sum / pairs.length
+
+  private lazy val m: Map[Int, YearlyValues] = Map(
+    2016 -> Year2016.values,
+    2017 -> Year2017.values,
+    2018 -> Year2018.values,
+    2019 -> Year2019.values,
+    2020 -> Year2020.values,
+    2021 -> Year2021.values,
+    2022 -> Year2022.values
+  )
 
 end YearlyValues

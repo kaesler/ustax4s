@@ -2,6 +2,7 @@ package org.kae.ustax4s.federal
 package yearly
 
 import cats.implicits.*
+import java.time.Year
 import munit.{Assertions, FunSuite}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
@@ -173,6 +174,21 @@ class YearlyValuesSpec extends FunSuite:
     allYears.tail.foreach { values =>
       massert(YearlyValues.averageThresholdChangeOverPrevious(values.year).get > 1.0)
       massert(YearlyValues.averageThresholdChangeOverPrevious(values.year).get < 1.09)
+    }
+  }
+  test("averageThresholdChangeOverPrevious matches results from spreadsheet") {
+    List(
+      2018 -> 1.75,
+      2019 -> 2.02,
+      2020 -> 1.63,
+      2021 -> 0.95,
+      2022 -> 3.13
+    ).foreach { (year, expectedPercentage) =>
+      val change = YearlyValues.averageThresholdChangeOverPrevious(
+        Year.of(year)
+      ).get
+      val percentage = ((change - 1.0) * 10000).round / 100.0
+      massert(percentage == expectedPercentage)
     }
   }
 end YearlyValuesSpec
