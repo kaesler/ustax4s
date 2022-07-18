@@ -176,7 +176,8 @@ class YearlyValuesSpec extends FunSuite:
       massert(YearlyValues.averageThresholdChangeOverPrevious(values.year).get < 1.09)
     }
   }
-  test("averageThresholdChangeOverPrevious matches results from spreadsheet") {
+  test("averageThresholdChangeOverPrevious mateches results from spreadsheet") {
+    // https://docs.google.com/spreadsheets/d/1Y_-LOViktEYW5hT-lY7XsU6vsPmCyg7s5sNkPxTKykI/edit#gid=0
     List(
       2018 -> 1.75,
       2019 -> 2.02,
