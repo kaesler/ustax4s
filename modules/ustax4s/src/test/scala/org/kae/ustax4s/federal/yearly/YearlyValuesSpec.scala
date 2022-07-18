@@ -169,9 +169,10 @@ class YearlyValuesSpec extends FunSuite:
     do massert(left.hasCongruentQualifiedBrackets(right))
   }
 
-  test("averageThresholdChangeOverPrevious is > 1 when present") {
+  test("averageThresholdChangeOverPrevious is reasonable when present") {
     allYears.tail.foreach { values =>
       massert(YearlyValues.averageThresholdChangeOverPrevious(values.year).get > 1.0)
+      massert(YearlyValues.averageThresholdChangeOverPrevious(values.year).get < 1.09)
     }
   }
 end YearlyValuesSpec
