@@ -42,13 +42,15 @@ final case class YearlyValues(
     this.ordinaryNonZeroThresholdsMap.keySet == that.ordinaryNonZeroThresholdsMap.keySet
   def hasCongruentQualifiedBrackets(that: YearlyValues): Boolean =
     this.qualifiedNonZeroThresholdsMap.keySet == that.qualifiedNonZeroThresholdsMap.keySet
+
+  lazy val averageThresholdChangeOverPrevious: Option[Double] =
+    previous.map(YearlyValues.averageThresholdChange(_, this))
 }
 
 object YearlyValues:
   def of(year: Year): Option[YearlyValues] = m.get(year.getValue)
 
-  def first: YearlyValues = m.values.toList.min
-  def last: YearlyValues  = m.values.toList.max
+  def last: YearlyValues = m.values.toList.max
 
   def lastFor(regime: Regime): YearlyValues = m.values
     .filter(_.regime == regime)
@@ -59,10 +61,10 @@ object YearlyValues:
   given Ordering[YearlyValues] = Ordering.by(_.year)
 
   def averageThresholdChangeOverPrevious(year: Year): Option[Double] =
-    for {
-      values         <- YearlyValues.of(year)
-      previousValues <- values.previous
-    } yield averageThresholdChange(previousValues, values)
+    for
+      values <- YearlyValues.of(year)
+      change <- values.averageThresholdChangeOverPrevious
+    yield change
 
   private def averageThresholdChange(
     left: YearlyValues,

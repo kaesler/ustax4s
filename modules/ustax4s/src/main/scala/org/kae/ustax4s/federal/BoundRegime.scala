@@ -188,10 +188,10 @@ object BoundRegime:
     val yearsWithInflation = (baseYear + 1).to(year.getValue).map(Year.of)
     val inflationFactors = yearsWithInflation
       .map { year =>
-        YearlyValues.averageThresholdChangeOverPrevious(year) match {
+        YearlyValues.averageThresholdChangeOverPrevious(year) match
           case Some(knownFactor) => knownFactor
           case _                 => estimatedAnnualInflationFactor
-        }
+
       }
     val netInflationFactor = inflationFactors.product
     forKnownYear(baseValues.year, birthDate, filingStatus, personalExemptions)
