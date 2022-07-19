@@ -17,7 +17,8 @@ object TaxCalculator:
   @unused
   def federalTaxDueForFutureYear(
     regime: Regime,
-    inflationEstimate: InflationEstimate,
+    targetFutureYear: Year,
+    estimatedAnnualInflationFactor: Double,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     // Self plus dependents
@@ -30,7 +31,8 @@ object TaxCalculator:
     BoundRegime
       .forFutureYear(
         regime,
-        inflationEstimate,
+        targetFutureYear,
+        estimatedAnnualInflationFactor,
         birthDate,
         filingStatus,
         personalExemptions

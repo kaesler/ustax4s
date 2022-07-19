@@ -134,21 +134,68 @@ trait BoundRegime(
         base.qualifiedBrackets.inflatedBy(estimate.factor(base.year))
     }
 
+  def withEstimatedNetInflationFactor(
+    targetFutureYear: Year,
+    netInflationFactor: Double
+  ): BoundRegime =
+    val base = this
+    new BoundRegime(
+      regime,
+      targetFutureYear,
+      filingStatus,
+      birthDate,
+      personalExemptions
+    ) {
+      require(targetFutureYear > YearlyValues.last.year)
+
+      override val name =
+        s"${base.name}-estimatedFor-${targetFutureYear.getValue}"
+
+      override def unadjustedStandardDeduction: Deduction =
+        base.unadjustedStandardDeduction inflateBy netInflationFactor
+
+      override def adjustmentWhenOver65: Deduction =
+        base.adjustmentWhenOver65 inflateBy netInflationFactor
+
+      override def adjustmentWhenOver65AndSingle: Deduction =
+        base.adjustmentWhenOver65AndSingle inflateBy netInflationFactor
+
+      override val perPersonExemption: Deduction =
+        base.perPersonExemption inflateBy netInflationFactor
+
+      override val ordinaryBrackets: OrdinaryBrackets =
+        base.ordinaryBrackets.inflatedBy(netInflationFactor)
+
+      override val qualifiedBrackets: QualifiedBrackets =
+        base.qualifiedBrackets.inflatedBy(netInflationFactor)
+    }
+
 end BoundRegime
 
 object BoundRegime:
 
   def forFutureYear(
     regime: Regime,
-    inflationEstimate: InflationEstimate,
+    year: Year,
+    estimatedAnnualInflationFactor: Double,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
     personalExemptions: Int
   ): BoundRegime =
-    require(inflationEstimate.targetFutureYear > YearlyValues.last.year)
-    val baseValues = YearlyValues.lastFor(regime)
+    require(year > YearlyValues.last.year)
+    val baseValues         = YearlyValues.lastFor(regime)
+    val baseYear           = baseValues.year.getValue
+    val yearsWithInflation = (baseYear + 1).to(year.getValue).map(Year.of)
+    val inflationFactors = yearsWithInflation
+      .map { year =>
+        YearlyValues.averageThresholdChangeOverPrevious(year) match {
+          case Some(knownFactor) => knownFactor
+          case _                 => estimatedAnnualInflationFactor
+        }
+      }
+    val netInflationFactor = inflationFactors.product
     forKnownYear(baseValues.year, birthDate, filingStatus, personalExemptions)
-      .futureEstimated(inflationEstimate)
+      .withEstimatedNetInflationFactor(year, netInflationFactor)
 
   def forKnownYear(
     year: Year,

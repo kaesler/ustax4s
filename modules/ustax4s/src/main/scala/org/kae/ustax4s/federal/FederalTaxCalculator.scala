@@ -11,7 +11,7 @@ trait FederalTaxCalculator:
   // but it is more ergonomic to allow named arguments.
 
   // Compute tax results for the given inputs.
-  // By default, un-inflated tax brackets, deductions and so ond are used.
+  // By default, un-inflated tax brackets, deductions and so on are used.
   def federalTaxResults(
     socSec: Income,
     ordinaryIncomeNonSS: Income,
