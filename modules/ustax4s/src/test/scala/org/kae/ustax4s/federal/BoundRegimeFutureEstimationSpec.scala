@@ -5,13 +5,13 @@ import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.InflationEstimate
 
-class RegimeFutureEstimationSpec extends FunSuite:
+class BoundRegimeFutureEstimationSpec extends FunSuite:
   import math.Ordering.Implicits.infixOrderingOps
   import org.kae.ustax4s.money.MoneyConversions.given
 
   private val birthDate: LocalDate = LocalDate.of(1955, 10, 2)
 
-  test("BoundRegime.futureEstimated should work as expected") {
+  test("BoundRegime.futureEstimated should behave monotonically") {
     val baseYear = Year.of(2017)
     val before = BoundRegime.forKnownYear(
       baseYear,
@@ -32,4 +32,4 @@ class RegimeFutureEstimationSpec extends FunSuite:
       after.perPersonExemption == (before.perPersonExemption inflateBy estimate.factor(baseYear))
     )
   }
-end RegimeFutureEstimationSpec
+end BoundRegimeFutureEstimationSpec
