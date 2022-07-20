@@ -1,9 +1,8 @@
-package org.kae.ustax4s.calculator.testdata
+package org.kae.ustax4s.calculator.testdata.knownyears
 
-import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.calculator.TaxCalculator
 
-object MakeTestDataForTypeScript extends App:
+object MakeTestDataForHaskell extends App:
 
   import TestDataGeneration.*
 
@@ -25,15 +24,13 @@ object MakeTestDataForTypeScript extends App:
       dependents = deps,
       massachusettsGrossIncome = oi + qi
     )
-    val status = fs match
-      case HeadOfHousehold => "FilingStatus.HOH"
-      case Married         => "Married"
-      case Single          => "FilingStatus.Single"
+    val bdString = s"fromGregorian ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth}"
     println(
-      s"  { year = ${year.getValue}, birthDate: $bd, " +
-        s"dependents: $deps, filingStatus: $status, socSec: $ss, " +
-        s"ordinaryIncomeNonSS: $oi, qualifiedIncome: $qi, " +
-        s"itemizedDeductions: $itm, " +
-        s"federalTaxDue: $federalTaxDue, stateTaxDue: $stateTaxDue },"
+      s"  TestCase { year = ${year.getValue}, birthDate = $bdString, dependents = $deps, filingStatus = $fs, socSec = makeFromInt $ss, " +
+        s"ordinaryIncomeNonSS = makeFromInt $oi, qualifiedIncome = makeFromInt $qi, " +
+        s"itemizedDeductions = makeFromInt $itm, " +
+        s"expectedFederalTax = makeFromInt $federalTaxDue, expectedStateTax = makeFromInt $stateTaxDue },"
     )
   }
+
+end MakeTestDataForHaskell

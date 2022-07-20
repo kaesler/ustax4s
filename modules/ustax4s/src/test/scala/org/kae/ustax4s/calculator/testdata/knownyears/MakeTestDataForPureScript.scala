@@ -1,12 +1,12 @@
-package org.kae.ustax4s.calculator.testdata
+package org.kae.ustax4s.calculator.testdata.knownyears
 
-import java.time.LocalDate
 import org.kae.ustax4s.calculator.TaxCalculator
 
 object MakeTestDataForPureScript extends App:
   import TestDataGeneration.*
 
-  testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, qi, itm) =>
+  testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, 
+  qi, itm) =>
     val federalTaxDue = TaxCalculator.federalTaxDue(
       year = year,
       birthDate = bd,
@@ -24,13 +24,16 @@ object MakeTestDataForPureScript extends App:
       dependents = deps,
       massachusettsGrossIncome = oi + qi
     )
-    val bdRep   = s"(unsafeMakeDate ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth})"
+    val bdRep   = s"(unsafeMakeDate ${bd.getYear} ${bd.getMonthValue} ${bd
+      .getDayOfMonth})"
     val yearRep = s"(unsafeMakeYear ${year.getValue})"
     println(
       s"  TestCase { year: $yearRep, birthDate: $bdRep, " +
         s"personalExemptions: ${tc.personalExemptions}, filingStatus: $fs, " +
-        s"socSec: makeFromInt $ss, ordinaryIncomeNonSS: makeFromInt $oi, qualifiedIncome: makeFromInt $qi, " +
+        s"socSec: makeFromInt $ss, ordinaryIncomeNonSS: makeFromInt $oi, " +
+        s"qualifiedIncome: makeFromInt $qi, " +
         s"itemizedDeductions: makeFromInt $itm, " +
-        s"federalTaxDue: makeFromInt $federalTaxDue, stateTaxDue: makeFromInt $stateTaxDue },"
+        s"federalTaxDue: makeFromInt $federalTaxDue, stateTaxDue: makeFromInt" +
+        s" $stateTaxDue },"
     )
   }

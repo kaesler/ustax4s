@@ -1,4 +1,4 @@
-package org.kae.ustax4s.calculator.testdata
+package org.kae.ustax4s.calculator.testdata.knownyears
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus

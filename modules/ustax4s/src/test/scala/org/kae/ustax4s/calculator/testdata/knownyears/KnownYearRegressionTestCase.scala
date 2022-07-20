@@ -1,7 +1,7 @@
-package org.kae.ustax4s.calculator.testdata
+package org.kae.ustax4s.calculator.testdata.knownyears
 
-import cats.implicits.*
 import cats.Show
+import cats.implicits.*
 import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
@@ -10,7 +10,7 @@ import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 
-final case class RegressionTestCase(
+final case class KnownYearRegressionTestCase(
   year: Year,
   birthDate: LocalDate,
   filingStatus: FilingStatus,
@@ -63,12 +63,12 @@ final case class RegressionTestCase(
       stateTaxDue,
       this.toString
     )
-end RegressionTestCase
+end KnownYearRegressionTestCase
 
-object RegressionTestCase:
+object KnownYearRegressionTestCase:
 
-  given show: Show[RegressionTestCase] = new Show[RegressionTestCase] {
-    override def show(tc: RegressionTestCase): String =
+  given show: Show[KnownYearRegressionTestCase] = new Show[KnownYearRegressionTestCase] {
+    override def show(tc: KnownYearRegressionTestCase): String =
       import tc.*
       s"""
          |RegressionTestCase(
@@ -82,11 +82,11 @@ object RegressionTestCase:
          |  itemizedDeductions  = $itemizedDeductions,
          |  federalTaxDue       = $federalTaxDue,
          |  stateTaxDue         = $stateTaxDue
-         |}  
+         |}
          |""".stripMargin
   }
 
-  private def parseFromCsvLine(s: String): RegressionTestCase =
+  private def parseFromCsvLine(s: String): KnownYearRegressionTestCase =
     val fields               = s.split(',')
     val year: Year           = Year.of(Integer.parseInt(fields(0)))
     val birthDate: LocalDate = LocalDate.parse(fields(1))
@@ -100,7 +100,7 @@ object RegressionTestCase:
     val federalTaxDue = TaxPayable.unsafeParse(fields(8))
     val stateTaxDue   = TaxPayable.unsafeParse(fields(9))
 
-    RegressionTestCase(
+    KnownYearRegressionTestCase(
       year,
       birthDate,
       filingStatus,
@@ -113,11 +113,11 @@ object RegressionTestCase:
       stateTaxDue
     )
 
-  def all: List[RegressionTestCase] =
+  def all: List[KnownYearRegressionTestCase] =
     Source
       .fromResource("regressionTestCases.csv")
       .getLines()
       .drop(1)
       .toList
       .map(parseFromCsvLine)
-end RegressionTestCase
+end KnownYearRegressionTestCase
