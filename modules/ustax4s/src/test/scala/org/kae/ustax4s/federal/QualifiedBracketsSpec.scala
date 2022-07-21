@@ -15,7 +15,6 @@ class QualifiedBracketsSpec
     with QualifiedBracketsGeneration
     with MoneyGeneration:
 
-  // import math.Ordered.orderingToOrdered
   import TaxFunctions.*
   import math.Ordering.Implicits.infixOrderingOps
 
