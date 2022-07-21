@@ -61,10 +61,7 @@ object YearlyValues:
   given Ordering[YearlyValues] = Ordering.by(_.year)
 
   def averageThresholdChangeOverPrevious(year: Year): Option[Double] =
-    for
-      values <- YearlyValues.of(year)
-      change <- values.averageThresholdChangeOverPrevious
-    yield change
+    memoizedAverageThresholdChanges.get(year)
 
   private def averageThresholdChange(
     left: YearlyValues,
@@ -88,5 +85,11 @@ object YearlyValues:
     2021 -> Year2021.values,
     2022 -> Year2022.values
   )
+
+  private lazy val memoizedAverageThresholdChanges: Map[Year, Double] =
+    (for
+      values <- m.values.toList
+      change <- values.averageThresholdChangeOverPrevious.toList
+    yield values.year -> change).toMap
 
 end YearlyValues
