@@ -6,7 +6,7 @@ object Dependencies {
 
   object Cats {
     val core: ModuleID   = "org.typelevel" %% "cats-core"   % "2.8.0"
-    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.3.13"
+    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.3.14"
   }
 
   object MUnit {
