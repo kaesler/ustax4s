@@ -1,5 +1,6 @@
 package org.kae.ustax4s.federal
 
+import cats.Show
 import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.federal.yearly.YearlyValues
@@ -9,11 +10,11 @@ import org.kae.ustax4s.{Age, FilingStatus, InflationEstimate}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 trait BoundRegime(
-  regime: Regime,
+  val regime: Regime,
   val year: Year,
-  filingStatus: FilingStatus,
-  birthDate: LocalDate,
-  personalExemptions: Int
+  val filingStatus: FilingStatus,
+  val birthDate: LocalDate,
+  val personalExemptions: Int
 ):
   def unadjustedStandardDeduction: Deduction
   def adjustmentWhenOver65: Deduction
@@ -99,45 +100,11 @@ trait BoundRegime(
       )
     }
 
-  // Create a new BoundRegime that behaves like the original but with
-  // appropriate adjustments for inflation estimate.
-  def futureEstimated(estimate: InflationEstimate): BoundRegime =
-    val base = this
-    new BoundRegime(
-      regime,
-      estimate.targetFutureYear,
-      filingStatus,
-      birthDate,
-      personalExemptions
-    ) {
-      require(estimate.targetFutureYear > YearlyValues.last.year)
-
-      override val name =
-        s"${base.name}-estimatedFor-${estimate.targetFutureYear.getValue}"
-
-      override def unadjustedStandardDeduction: Deduction =
-        base.unadjustedStandardDeduction inflateBy estimate.factor(base.year)
-
-      override def adjustmentWhenOver65: Deduction =
-        base.adjustmentWhenOver65 inflateBy estimate.factor(base.year)
-
-      override def adjustmentWhenOver65AndSingle: Deduction =
-        base.adjustmentWhenOver65AndSingle inflateBy estimate.factor(base.year)
-
-      override val perPersonExemption: Deduction =
-        base.perPersonExemption inflateBy estimate.factor(base.year)
-
-      override val ordinaryBrackets: OrdinaryBrackets =
-        base.ordinaryBrackets.inflatedBy(estimate.factor(base.year))
-
-      override val qualifiedBrackets: QualifiedBrackets =
-        base.qualifiedBrackets.inflatedBy(estimate.factor(base.year))
-    }
-
   def withEstimatedNetInflationFactor(
     targetFutureYear: Year,
     netInflationFactor: Double
   ): BoundRegime =
+    require(netInflationFactor >= 1)
     val base = this
     new BoundRegime(
       regime,
@@ -152,7 +119,7 @@ trait BoundRegime(
         s"${base.name}-estimatedFor-${targetFutureYear.getValue}"
 
       override def unadjustedStandardDeduction: Deduction =
-        base.unadjustedStandardDeduction inflateBy netInflationFactor
+        base.unadjustedStandardDeduction.inflateBy(netInflationFactor)
 
       override def adjustmentWhenOver65: Deduction =
         base.adjustmentWhenOver65 inflateBy netInflationFactor
@@ -173,6 +140,21 @@ trait BoundRegime(
 end BoundRegime
 
 object BoundRegime:
+
+  given Show[BoundRegime] with
+    def show(r: BoundRegime): String =
+      "BoundRegime:\n" ++
+        s"  regime: ${r.regime.show}\n" ++
+        s"  year: ${r.year}\n" ++
+        s"  filingStatus: ${r.filingStatus.show}\n" ++
+        s"  birthDate: ${r.birthDate}\n" ++
+        s"  personalExemptions: ${r.personalExemptions}\n" ++
+        s"  unadjustedStandardDeduction: ${r.unadjustedStandardDeduction}\n" ++
+        s"  adjustmentWhenOver65: ${r.adjustmentWhenOver65}\n" ++
+        s"  adjustmentWhenOver65AnSingle: ${r.adjustmentWhenOver65AndSingle}\n" ++
+        s"  standardDeduction: ${r.standardDeduction}\n" ++
+        s"  ordinaryBrackets: ${r.ordinaryBrackets.show}\n" ++
+        s"  qualifiedBrackets: ${r.qualifiedBrackets.show}\n"
 
   def forFutureYear(
     regime: Regime,
@@ -210,7 +192,7 @@ object BoundRegime:
     new BoundRegime(yv.regime, year, filingStatus, birthDate, personalExemptions) {
 
       override def unadjustedStandardDeduction: Deduction =
-        yv.unadjustedStandardDeduction(filingStatus)
+        yv.unadjustedStandardDeduction(this.filingStatus)
 
       override def adjustmentWhenOver65: Deduction = yv.adjustmentWhenOver65
 
@@ -220,8 +202,8 @@ object BoundRegime:
       override val perPersonExemption: Deduction = yv.perPersonExemption
 
       override def ordinaryBrackets: OrdinaryBrackets =
-        yv.ordinaryBrackets(filingStatus)
+        yv.ordinaryBrackets(this.filingStatus)
 
       override def qualifiedBrackets: QualifiedBrackets =
-        yv.qualifiedBrackets(filingStatus)
+        yv.qualifiedBrackets(this.filingStatus)
     }
