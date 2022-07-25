@@ -1,4 +1,4 @@
-package org.kae.ustax4s.calculator.testdata.knownyears
+package org.kae.ustax4s.calculator.testdata.futureyears
 
 import cats.Show
 import cats.implicits.*
@@ -6,12 +6,15 @@ import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
+import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 
-final case class KnownYearRegressionTestCase(
-  year: Year,
+final case class FutureYearRegressionTestCase(
+  regime: Regime,
+  futureYear: Year,
+  estimatedAnnualInflationFactor: Double,
   birthDate: LocalDate,
   filingStatus: FilingStatus,
   dependents: Int,
@@ -22,13 +25,17 @@ final case class KnownYearRegressionTestCase(
   federalTaxDue: TaxPayable,
   stateTaxDue: TaxPayable
 ):
+  require(futureYear.getValue > YearlyValues.last.year.getValue)
+
   def personalExemptions: Int          = dependents + 1
   def massachusettsGrossIncome: Income = ordinaryIncomeNonSS + qualifiedIncome
 
   def run(): Unit =
     assertEquals(
-      TaxCalculator.federalTaxDue(
-        year,
+      TaxCalculator.federalTaxDueForFutureYear(
+        regime,
+        futureYear,
+        estimatedAnnualInflationFactor,
         birthDate,
         filingStatus,
         personalExemptions,
@@ -40,8 +47,10 @@ final case class KnownYearRegressionTestCase(
       federalTaxDue,
       this.show ++
         "\n" ++
-        TaxCalculator.federalTaxResults(
-          year,
+        TaxCalculator.federalTaxResultsForFutureYear(
+          regime,
+          futureYear,
+          estimatedAnnualInflationFactor,
           birthDate,
           filingStatus,
           personalExemptions,
@@ -54,7 +63,7 @@ final case class KnownYearRegressionTestCase(
     )
     assertEquals(
       TaxCalculator.stateTaxDue(
-        year,
+        futureYear,
         birthDate,
         filingStatus,
         dependents,
@@ -63,16 +72,18 @@ final case class KnownYearRegressionTestCase(
       stateTaxDue,
       this.toString
     )
-end KnownYearRegressionTestCase
+end FutureYearRegressionTestCase
 
-object KnownYearRegressionTestCase:
+object FutureYearRegressionTestCase:
 
-  given show: Show[KnownYearRegressionTestCase] = new Show[KnownYearRegressionTestCase] {
-    override def show(tc: KnownYearRegressionTestCase): String =
+  given show: Show[FutureYearRegressionTestCase] = new Show[FutureYearRegressionTestCase] {
+    override def show(tc: FutureYearRegressionTestCase): String =
       import tc.*
       s"""
-         |RegressionTestCase(
-         |  year                = $year,
+         |FutureYearRegressionTestCase(
+         |  regime              = $regime,
+         |  year                = $futureYear,
+         |  estimatedInflation  = $estimatedAnnualInflationFactor,
          |  birthDate           = $birthDate,
          |  filingStatus        = ${filingStatus.show},
          |  dependents          = $dependents,
@@ -86,22 +97,26 @@ object KnownYearRegressionTestCase:
          |""".stripMargin
   }
 
-  private def parseFromCsvLine(s: String): KnownYearRegressionTestCase =
+  private def parseFromCsvLine(s: String): FutureYearRegressionTestCase =
     val fields               = s.split(',')
-    val year: Year           = Year.of(Integer.parseInt(fields(0)))
-    val birthDate: LocalDate = LocalDate.parse(fields(1))
-    val filingStatus         = FilingStatus.valueOf(fields(2))
-    val dependents           = Integer.parseInt(fields(3))
-    val socSec               = Income.unsafeParse(fields(4))
-    val ordinaryIncomeNonSS  = Income.unsafeParse(fields(5))
-    val qualifiedIncome      = TaxableIncome.unsafeParse(fields(6))
-    val itemizedDeductions   = Deduction.unsafeParse(fields(7))
+    val regime               = Regime.parse(fields(0)).get
+    val year: Year           = Year.of(Integer.parseInt(fields(1)))
+    val estimate: Double     = java.lang.Double.parseDouble(fields(2))
+    val birthDate: LocalDate = LocalDate.parse(fields(3))
+    val filingStatus         = FilingStatus.valueOf(fields(4))
+    val dependents           = Integer.parseInt(fields(5))
+    val socSec               = Income.unsafeParse(fields(6))
+    val ordinaryIncomeNonSS  = Income.unsafeParse(fields(7))
+    val qualifiedIncome      = TaxableIncome.unsafeParse(fields(8))
+    val itemizedDeductions   = Deduction.unsafeParse(fields(9))
 
-    val federalTaxDue = TaxPayable.unsafeParse(fields(8))
-    val stateTaxDue   = TaxPayable.unsafeParse(fields(9))
+    val federalTaxDue = TaxPayable.unsafeParse(fields(10))
+    val stateTaxDue   = TaxPayable.unsafeParse(fields(11))
 
-    KnownYearRegressionTestCase(
+    FutureYearRegressionTestCase(
+      regime,
       year,
+      estimate,
       birthDate,
       filingStatus,
       dependents,
@@ -113,11 +128,11 @@ object KnownYearRegressionTestCase:
       stateTaxDue
     )
 
-  def all: List[KnownYearRegressionTestCase] =
+  def all: List[FutureYearRegressionTestCase] =
     Source
-      .fromResource("knownYearRegressionTestCases.csv")
+      .fromResource("futureYearRegressionTestCases.csv")
       .getLines()
       .drop(1)
       .toList
       .map(parseFromCsvLine)
-end KnownYearRegressionTestCase
+end FutureYearRegressionTestCase

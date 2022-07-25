@@ -86,7 +86,10 @@ object StateMATaxCalculator:
         case (2016, HeadOfHousehold) => 6800
         case (2016, Single)          => 4400
 
-        case _ => throw NotYetImplemented(year)
+        // TODO: for now don't inflate state exemptions.
+        case (_, Married)         => 8800
+        case (_, HeadOfHousehold) => 6800
+        case (_, Single)          => 4400
     ).pipe(Deduction.apply)
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Deduction =
