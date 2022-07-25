@@ -52,7 +52,7 @@ object YearlyValues:
 
   def last: YearlyValues = m.values.toList.max
 
-  def lastFor(regime: Regime): YearlyValues = m.values
+  def mostRecentFor(regime: Regime): YearlyValues = m.values
     .filter(_.regime == regime)
     .toList
     .sorted

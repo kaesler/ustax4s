@@ -21,7 +21,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     forAll { (tc: TestCase2) =>
 
       val before = BoundRegime.forKnownYear(
-        YearlyValues.lastFor(tc.regime).year,
+        YearlyValues.mostRecentFor(tc.regime).year,
         birthDate,
         tc.filingStatus,
         tc.personalExemptions
@@ -61,7 +61,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     forAll { (tc: TestCase2) =>
 
       val before = BoundRegime.forKnownYear(
-        YearlyValues.lastFor(tc.regime).year,
+        YearlyValues.mostRecentFor(tc.regime).year,
         birthDate,
         tc.filingStatus,
         tc.personalExemptions

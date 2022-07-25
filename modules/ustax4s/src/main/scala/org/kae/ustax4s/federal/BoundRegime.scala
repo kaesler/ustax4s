@@ -165,7 +165,7 @@ object BoundRegime:
     personalExemptions: Int
   ): BoundRegime =
     require(year > YearlyValues.last.year)
-    val baseValues         = YearlyValues.lastFor(regime)
+    val baseValues         = YearlyValues.mostRecentFor(regime)
     val baseYear           = baseValues.year.getValue
     val yearsWithInflation = (baseYear + 1).to(year.getValue).map(Year.of)
     val inflationFactors = yearsWithInflation
