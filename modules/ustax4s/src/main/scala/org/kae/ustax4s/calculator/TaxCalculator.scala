@@ -19,8 +19,8 @@ object TaxCalculator:
     regime: Regime,
     futureYear: Year,
     estimatedAnnualInflationFactor: Double,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -49,8 +49,8 @@ object TaxCalculator:
 
   def federalTaxResults(
     year: Year,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -77,8 +77,8 @@ object TaxCalculator:
     regime: Regime,
     year: Year,
     estimatedAnnualInflationFactor: Double,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -105,8 +105,8 @@ object TaxCalculator:
 
   def federalTaxDue(
     year: Year,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -116,8 +116,8 @@ object TaxCalculator:
   ): TaxPayable =
     federalTaxResults(
       year,
-      birthDate,
       filingStatus,
+      birthDate,
       personalExemptions,
       socSec,
       ordinaryIncomeNonSS,

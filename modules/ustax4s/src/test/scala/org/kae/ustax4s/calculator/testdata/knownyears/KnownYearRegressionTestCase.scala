@@ -29,8 +29,8 @@ final case class KnownYearRegressionTestCase(
     assertEquals(
       TaxCalculator.federalTaxDue(
         year,
-        birthDate,
         filingStatus,
+        birthDate,
         personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
@@ -42,8 +42,8 @@ final case class KnownYearRegressionTestCase(
         "\n" ++
         TaxCalculator.federalTaxResults(
           year,
-          birthDate,
           filingStatus,
+          birthDate,
           personalExemptions,
           socSec,
           ordinaryIncomeNonSS,
