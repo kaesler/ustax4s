@@ -13,6 +13,8 @@ trait FederalTaxCalculator:
   // Compute tax results for the given inputs.
   // By default, un-inflated tax brackets, deductions and so on are used.
   def federalTaxResults(
+    birthDate: LocalDate,
+    personalExemptions: Int,
     socSec: Income,
     ordinaryIncomeNonSS: Income,
     qualifiedIncome: TaxableIncome,

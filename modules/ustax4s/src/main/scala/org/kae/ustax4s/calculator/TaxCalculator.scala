@@ -33,12 +33,12 @@ object TaxCalculator:
         regime,
         futureYear,
         estimatedAnnualInflationFactor,
-        birthDate,
-        filingStatus,
-        personalExemptions
+        filingStatus
       )
       .calculator
       .federalTaxResults(
+        birthDate,
+        personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
@@ -61,12 +61,12 @@ object TaxCalculator:
     BoundRegime
       .forKnownYear(
         year,
-        birthDate,
-        filingStatus,
-        personalExemptions
+        filingStatus
       )
       .calculator
       .federalTaxResults(
+        birthDate,
+        personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
@@ -91,12 +91,12 @@ object TaxCalculator:
         regime,
         year,
         estimatedAnnualInflationFactor,
-        birthDate,
-        filingStatus,
-        personalExemptions
+        filingStatus
       )
       .calculator
       .federalTaxResults(
+        birthDate,
+        personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
@@ -139,9 +139,7 @@ object TaxCalculator:
   ): TaxPayable =
     val boundRegime = BoundRegime.forKnownYear(
       year,
-      birthDate,
-      filingStatus,
-      personalExemptions = 2
+      filingStatus
     )
 
     val form = Form1040(
@@ -149,7 +147,7 @@ object TaxCalculator:
       taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
-      standardDeduction = boundRegime.standardDeduction,
+      standardDeduction = boundRegime.standardDeduction(birthDate),
       schedule1 = None,
       schedule3 = None,
       schedule4 = None,
