@@ -11,9 +11,9 @@ object StateMATaxCalculator:
 
   def taxDue(
     year: Year,
+    filingStatus: FilingStatus,
     birthDate: LocalDate,
-    dependents: Int,
-    filingStatus: FilingStatus
+    dependents: Int
   )(
     // Excludes SocSec. So it is
     //  - earned wages

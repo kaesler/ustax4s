@@ -55,8 +55,8 @@ final case class KnownYearRegressionTestCase(
     assertEquals(
       TaxCalculator.stateTaxDue(
         year,
-        birthDate,
         filingStatus,
+        birthDate,
         dependents,
         massachusettsGrossIncome
       ),

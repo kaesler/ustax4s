@@ -173,8 +173,8 @@ object TaxCalculator:
 
   def stateTaxDue(
     year: Year,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     dependents: Int,
     // Excludes SocSec. So it is
     //  - earned wages
@@ -186,8 +186,8 @@ object TaxCalculator:
     StateMATaxCalculator
       .taxDue(
         year,
+        filingStatus,
         birthDate,
-        dependents,
-        filingStatus
+        dependents
       )(massachusettsGrossIncome)
       .rounded
