@@ -7,7 +7,7 @@ import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.yearly.YearlyValues
-import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
+import org.kae.ustax4s.federal.{BoundRegime, Regime, TCJA}
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 

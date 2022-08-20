@@ -21,8 +21,8 @@ class YearlyValuesSpec extends FunSuite:
     Year2022.values
   ).sortBy(_.year)
 
-  private val preTrumpYears = allYears.filter(_.regime == PreTrump)
-  private val trumpYears    = allYears.filter(_.regime == Trump)
+  private val preTCJAYears = allYears.filter(_.regime == PreTCJA)
+  private val trumpYears    = allYears.filter(_.regime == TCJA)
 
   private def massert(
     b: Boolean,
@@ -41,7 +41,7 @@ class YearlyValuesSpec extends FunSuite:
       trumpYears.forall(_.perPersonExemption == Deduction.zero)
     )
     massert(
-      preTrumpYears.forall(_.perPersonExemption != Deduction.zero)
+      preTCJAYears.forall(_.perPersonExemption != Deduction.zero)
     )
   }
 
@@ -62,7 +62,7 @@ class YearlyValuesSpec extends FunSuite:
     "Pre trump means 2016-2017"
   ) {
     assertEquals(
-      preTrumpYears.map(_.year.getValue).toSet,
+      preTCJAYears.map(_.year.getValue).toSet,
       Set(2016, 2017)
     )
   }
@@ -104,7 +104,7 @@ class YearlyValuesSpec extends FunSuite:
   test("ordinaryBrackets are monotonically non-decreasing year over year") {
     for
       fs    <- FilingStatus.values
-      years <- List(preTrumpYears, trumpYears)
+      years <- List(preTCJAYears, trumpYears)
     do
       val list = years.map(_.ordinaryBrackets(fs))
       list.zip(list.tail).foreach { (l, r) =>
@@ -115,7 +115,7 @@ class YearlyValuesSpec extends FunSuite:
   test("qualifiedBrackets are monotonically non-decreasing year over year") {
     for
       fs    <- FilingStatus.values
-      years <- List(preTrumpYears, trumpYears)
+      years <- List(preTCJAYears, trumpYears)
     do
       val list = years.map(_.qualifiedBrackets(fs))
       list.zip(list.tail).foreach { (l, r) =>
@@ -126,28 +126,28 @@ class YearlyValuesSpec extends FunSuite:
   test("unadjustedStandardDeduction is monotonic year over year") {
     for
       fs    <- FilingStatus.values
-      years <- List(preTrumpYears, trumpYears)
+      years <- List(preTCJAYears, trumpYears)
     do
       val list = years.map(_.unadjustedStandardDeduction(fs))
       list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
   }
 
   test("perPersonExemption is monotonic year over year") {
-    for years <- List(preTrumpYears, trumpYears)
+    for years <- List(preTCJAYears, trumpYears)
     do
       val list = years.map(_.perPersonExemption)
       list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
   }
 
   test("adjustmentWhenOver65 is monotonic year over year") {
-    for years <- List(preTrumpYears, trumpYears)
+    for years <- List(preTCJAYears, trumpYears)
     do
       val list = years.map(_.adjustmentWhenOver65)
       list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
   }
 
   test("adjustmentWhenOver65ndSingle is monotonic year over year") {
-    for years <- List(preTrumpYears, trumpYears)
+    for years <- List(preTCJAYears, trumpYears)
     do
       val list = years.map(_.adjustmentWhenOver65AndSingle)
       list.zip(list.tail).foreach { (l, r) => massert(l <= r) }
@@ -155,8 +155,8 @@ class YearlyValuesSpec extends FunSuite:
 
   test("expected congruencies hold") {
     for
-      left  <- preTrumpYears
-      right <- preTrumpYears
+      left  <- preTCJAYears
+      right <- preTCJAYears
     do massert(left.hasCongruentOrdinaryBrackets(right))
 
     for
@@ -165,8 +165,8 @@ class YearlyValuesSpec extends FunSuite:
     do massert(left.hasCongruentOrdinaryBrackets(right))
 
     for
-      left  <- trumpYears ++ preTrumpYears
-      right <- trumpYears ++ preTrumpYears
+      left  <- trumpYears ++ preTCJAYears
+      right <- trumpYears ++ preTCJAYears
     do massert(left.hasCongruentQualifiedBrackets(right))
   }
 
