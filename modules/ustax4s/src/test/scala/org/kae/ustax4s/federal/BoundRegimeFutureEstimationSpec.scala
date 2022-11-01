@@ -168,8 +168,8 @@ object BoundRegimeFutureEstimationSpec:
 
   private given Arbitrary[TestCase1] = Arbitrary(
     for {
-      baseYear                <- Gen.choose(2017, 2022).map(Year.of)
-      futureYear              <- Gen.choose(2023, 2055).map(Year.of)
+      baseYear                <- Gen.choose(2017, 2023).map(Year.of)
+      futureYear              <- Gen.choose(2024, 2055).map(Year.of)
       inflationFactorEstimate <- Gen.choose(1.005, 1.10)
       filingStatus            <- Gen.oneOf(FilingStatus.values.toList)
       personalExemptions      <- Gen.choose(0, 4)
@@ -205,7 +205,7 @@ object BoundRegimeFutureEstimationSpec:
   private given Arbitrary[TestCase2] = Arbitrary(
     for {
       regime                  <- Gen.oneOf(Regime.values.toList)
-      futureYear              <- Gen.choose(2023, 2055).map(Year.of)
+      futureYear              <- Gen.choose(2024, 2055).map(Year.of)
       inflationFactorEstimate <- Gen.choose(1.005, 1.10)
       filingStatus            <- Gen.oneOf(FilingStatus.values.toList)
       personalExemptions      <- Gen.choose(0, 4)

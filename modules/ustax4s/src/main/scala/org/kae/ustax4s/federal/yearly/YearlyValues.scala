@@ -51,7 +51,8 @@ final case class YearlyValues(
 object YearlyValues:
   def of(year: Year): Option[YearlyValues] = m.get(year.getValue)
 
-  def last: YearlyValues = m.values.toList.max
+  def first: YearlyValues = m.values.toList.min
+  def last: YearlyValues  = m.values.toList.max
 
   def mostRecentFor(regime: Regime): YearlyValues = m.values
     .filter(_.regime == regime)
@@ -84,7 +85,8 @@ object YearlyValues:
     2019 -> Year2019.values,
     2020 -> Year2020.values,
     2021 -> Year2021.values,
-    2022 -> Year2022.values
+    2022 -> Year2022.values,
+    2023 -> Year2023.values
   )
 
   private lazy val memoizedAverageThresholdChanges: Map[Year, Double] =
