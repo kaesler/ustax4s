@@ -12,9 +12,10 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 trait BoundRegime(
   val regime: Regime,
   val year: Year,
-  val filingStatus: FilingStatus,
-  val birthDate: LocalDate,
-  val personalExemptions: Int
+  val filingStatus: FilingStatus
+
+  // val birthDate: BirthDate
+  // val personalExemptions: Int
 ):
   def unadjustedStandardDeduction: Deduction
   def adjustmentWhenOver65: Deduction
@@ -27,7 +28,7 @@ trait BoundRegime(
   def name: String = regime.show
 
   // TODO: needs property spec
-  final def standardDeduction: Deduction =
+  final def standardDeduction(birthDate: LocalDate): Deduction =
     unadjustedStandardDeduction +
       (
         if Age.isAge65OrOlder(birthDate, year) then
@@ -40,21 +41,27 @@ trait BoundRegime(
       )
 
   // TODO: needs property spec
-  final def personalExemptionDeduction: Deduction =
+  private final def personalExemptionDeduction(personalExemptions: Int): Deduction =
     perPersonExemption mul personalExemptions
 
   // TODO: needs property spec
   // netDed >= all of ped, stdDm, item
-  final def netDeduction(itemizedDeductions: Deduction): Deduction =
-    personalExemptionDeduction +
+  final def netDeduction(
+    birthDate: LocalDate,
+    personalExemptions: Int,
+    itemizedDeductions: Deduction
+  ): Deduction =
+    personalExemptionDeduction(personalExemptions) +
       List(
-        standardDeduction,
+        standardDeduction(birthDate),
         itemizedDeductions
       ).max
 
   // TODO: needs property spec
   def calculator: FederalTaxCalculator =
     (
+      birthDate: LocalDate,
+      personalExemptions: Int,
       socSec: Income,
       ordinaryIncomeNonSS: Income,
       qualifiedIncome: TaxableIncome,
@@ -75,7 +82,7 @@ trait BoundRegime(
       val taxableOrdinaryIncome =
         List(taxableSocialSecurity, ordinaryIncomeNonSS)
           .combineAll
-          .applyDeductions(netDeduction(itemizedDeductions))
+          .applyDeductions(netDeduction(birthDate, personalExemptions, itemizedDeductions))
 
       val taxOnOrdinaryIncome =
         TaxFunctions.taxDueOnOrdinaryIncome(ordinaryBrackets)(taxableOrdinaryIncome)
@@ -88,12 +95,12 @@ trait BoundRegime(
       FederalTaxResults(
         ssRelevantOtherIncome,
         taxableSocialSecurity,
-        personalExemptionDeduction,
+        personalExemptionDeduction(personalExemptions),
         unadjustedStandardDeduction,
         adjustmentWhenOver65,
         adjustmentWhenOver65AndSingle,
-        standardDeduction,
-        netDeduction(itemizedDeductions),
+        standardDeduction(birthDate),
+        netDeduction(birthDate, personalExemptions, itemizedDeductions),
         taxableOrdinaryIncome,
         taxOnOrdinaryIncome,
         taxOnQualifiedIncome
@@ -109,9 +116,7 @@ trait BoundRegime(
     new BoundRegime(
       regime,
       targetFutureYear,
-      filingStatus,
-      birthDate,
-      personalExemptions
+      filingStatus
     ) {
       require(targetFutureYear > YearlyValues.last.year)
 
@@ -147,12 +152,9 @@ object BoundRegime:
         s"  regime: ${r.regime.show}\n" ++
         s"  year: ${r.year}\n" ++
         s"  filingStatus: ${r.filingStatus.show}\n" ++
-        s"  birthDate: ${r.birthDate}\n" ++
-        s"  personalExemptions: ${r.personalExemptions}\n" ++
         s"  unadjustedStandardDeduction: ${r.unadjustedStandardDeduction}\n" ++
         s"  adjustmentWhenOver65: ${r.adjustmentWhenOver65}\n" ++
         s"  adjustmentWhenOver65AnSingle: ${r.adjustmentWhenOver65AndSingle}\n" ++
-        s"  standardDeduction: ${r.standardDeduction}\n" ++
         s"  ordinaryBrackets: ${r.ordinaryBrackets.show}\n" ++
         s"  qualifiedBrackets: ${r.qualifiedBrackets.show}\n"
 
@@ -160,9 +162,7 @@ object BoundRegime:
     regime: Regime,
     year: Year,
     estimatedAnnualInflationFactor: Double,
-    birthDate: LocalDate,
-    filingStatus: FilingStatus,
-    personalExemptions: Int
+    filingStatus: FilingStatus
   ): BoundRegime =
     require(year > YearlyValues.last.year)
     val baseValues         = YearlyValues.mostRecentFor(regime)
@@ -178,18 +178,16 @@ object BoundRegime:
 
       }
     val netInflationFactor = inflationFactors.product
-    forKnownYear(baseValues.year, birthDate, filingStatus, personalExemptions)
+    forKnownYear(baseValues.year, filingStatus)
       .withEstimatedNetInflationFactor(year, netInflationFactor)
 
   def forKnownYear(
     year: Year,
-    birthDate: LocalDate,
-    filingStatus: FilingStatus,
-    personalExemptions: Int
+    filingStatus: FilingStatus
   ): BoundRegime =
     val yv = YearlyValues.of(year).get
 
-    new BoundRegime(yv.regime, year, filingStatus, birthDate, personalExemptions) {
+    new BoundRegime(yv.regime, year, filingStatus) {
 
       override def unadjustedStandardDeduction: Deduction =
         yv.unadjustedStandardDeduction(this.filingStatus)

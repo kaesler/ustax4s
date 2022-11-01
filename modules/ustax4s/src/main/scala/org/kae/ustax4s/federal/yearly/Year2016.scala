@@ -9,7 +9,7 @@ import org.kae.ustax4s.money.Deduction
 object Year2016:
   val values: YearlyValues = YearlyValues(
     year = Year.of(2016),
-    regime = PreTrump,
+    regime = PreTCJA,
     perPersonExemption = Deduction(4050),
     unadjustedStandardDeduction = Map(
       Married         -> 12600,

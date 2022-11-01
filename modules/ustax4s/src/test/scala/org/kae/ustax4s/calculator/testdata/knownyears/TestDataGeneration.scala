@@ -3,7 +3,7 @@ package org.kae.ustax4s.calculator.testdata.knownyears
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.yearly.YearlyValues
-import org.kae.ustax4s.federal.{PreTrump, Regime, Trump}
+import org.kae.ustax4s.federal.{PreTCJA, Regime, TCJA}
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 import org.scalacheck.Gen
 
@@ -29,12 +29,9 @@ object TestDataGeneration:
     def personalExemptions: Int = dependents + 1
   end TestCaseInputs
 
-  private val earliestYear = YearlyValues.first.year.getValue
-  private val latestYear = YearlyValues.last.year.getValue
-
   private val genTestCase: Gen[TestCaseInputs] =
     for
-      yearNum             <- Gen.chooseNum(earliestYear, latestYear)
+      yearNum             <- Gen.chooseNum(2016, 2022)
       fs                  <- Gen.oneOf(FilingStatus.values.toSeq)
       dependents          <- Gen.oneOf(0, 4)
       ss                  <- Gen.chooseNum(0, 50000)

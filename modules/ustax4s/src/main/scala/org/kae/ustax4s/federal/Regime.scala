@@ -3,12 +3,12 @@ package org.kae.ustax4s.federal
 import cats.Show
 import scala.util.Try
 
-export Regime.Trump
-export Regime.PreTrump
+export Regime.TCJA
+export Regime.PreTCJA
 
 enum Regime:
-  case Trump    extends Regime
-  case PreTrump extends Regime
+  case TCJA    extends Regime
+  case PreTCJA extends Regime
 end Regime
 
 object Regime:

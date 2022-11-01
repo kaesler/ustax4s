@@ -19,8 +19,8 @@ object TaxCalculator:
     regime: Regime,
     futureYear: Year,
     estimatedAnnualInflationFactor: Double,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -33,12 +33,12 @@ object TaxCalculator:
         regime,
         futureYear,
         estimatedAnnualInflationFactor,
-        birthDate,
-        filingStatus,
-        personalExemptions
+        filingStatus
       )
       .calculator
       .federalTaxResults(
+        birthDate,
+        personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
@@ -49,8 +49,8 @@ object TaxCalculator:
 
   def federalTaxResults(
     year: Year,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -61,12 +61,12 @@ object TaxCalculator:
     BoundRegime
       .forKnownYear(
         year,
-        birthDate,
-        filingStatus,
-        personalExemptions
+        filingStatus
       )
       .calculator
       .federalTaxResults(
+        birthDate,
+        personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
@@ -77,8 +77,8 @@ object TaxCalculator:
     regime: Regime,
     year: Year,
     estimatedAnnualInflationFactor: Double,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -91,12 +91,12 @@ object TaxCalculator:
         regime,
         year,
         estimatedAnnualInflationFactor,
-        birthDate,
-        filingStatus,
-        personalExemptions
+        filingStatus
       )
       .calculator
       .federalTaxResults(
+        birthDate,
+        personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
         qualifiedIncome,
@@ -105,8 +105,8 @@ object TaxCalculator:
 
   def federalTaxDue(
     year: Year,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     // Self plus dependents
     personalExemptions: Int,
     socSec: Income,
@@ -116,8 +116,8 @@ object TaxCalculator:
   ): TaxPayable =
     federalTaxResults(
       year,
-      birthDate,
       filingStatus,
+      birthDate,
       personalExemptions,
       socSec,
       ordinaryIncomeNonSS,
@@ -139,9 +139,7 @@ object TaxCalculator:
   ): TaxPayable =
     val boundRegime = BoundRegime.forKnownYear(
       year,
-      birthDate,
-      filingStatus,
-      personalExemptions = 2
+      filingStatus
     )
 
     val form = Form1040(
@@ -149,7 +147,7 @@ object TaxCalculator:
       taxableIraDistributions = ordinaryIncomeNonSS,
       socialSecurityBenefits = socSec,
       // The rest not applicable in retirement.
-      standardDeduction = boundRegime.standardDeduction,
+      standardDeduction = boundRegime.standardDeduction(birthDate),
       schedule1 = None,
       schedule3 = None,
       schedule4 = None,
@@ -175,8 +173,8 @@ object TaxCalculator:
 
   def stateTaxDue(
     year: Year,
-    birthDate: LocalDate,
     filingStatus: FilingStatus,
+    birthDate: LocalDate,
     dependents: Int,
     // Excludes SocSec. So it is
     //  - earned wages
@@ -188,8 +186,8 @@ object TaxCalculator:
     StateMATaxCalculator
       .taxDue(
         year,
+        filingStatus,
         birthDate,
-        dependents,
-        filingStatus
+        dependents
       )(massachusettsGrossIncome)
       .rounded

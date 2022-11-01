@@ -7,7 +7,7 @@ import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.yearly.YearlyValues
-import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
+import org.kae.ustax4s.federal.{BoundRegime, Regime, TCJA}
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 
@@ -36,8 +36,8 @@ final case class FutureYearRegressionTestCase(
         regime,
         futureYear,
         estimatedAnnualInflationFactor,
-        birthDate,
         filingStatus,
+        birthDate,
         personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
@@ -51,8 +51,8 @@ final case class FutureYearRegressionTestCase(
           regime,
           futureYear,
           estimatedAnnualInflationFactor,
-          birthDate,
           filingStatus,
+          birthDate,
           personalExemptions,
           socSec,
           ordinaryIncomeNonSS,
@@ -64,8 +64,8 @@ final case class FutureYearRegressionTestCase(
     assertEquals(
       TaxCalculator.stateTaxDue(
         futureYear,
-        birthDate,
         filingStatus,
+        birthDate,
         dependents,
         massachusettsGrossIncome
       ),

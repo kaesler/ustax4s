@@ -6,7 +6,7 @@ import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.calculator.TaxCalculator
-import org.kae.ustax4s.federal.{BoundRegime, Regime, Trump}
+import org.kae.ustax4s.federal.{BoundRegime, Regime, TCJA}
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 
@@ -29,8 +29,8 @@ final case class KnownYearRegressionTestCase(
     assertEquals(
       TaxCalculator.federalTaxDue(
         year,
-        birthDate,
         filingStatus,
+        birthDate,
         personalExemptions,
         socSec,
         ordinaryIncomeNonSS,
@@ -42,8 +42,8 @@ final case class KnownYearRegressionTestCase(
         "\n" ++
         TaxCalculator.federalTaxResults(
           year,
-          birthDate,
           filingStatus,
+          birthDate,
           personalExemptions,
           socSec,
           ordinaryIncomeNonSS,
@@ -55,8 +55,8 @@ final case class KnownYearRegressionTestCase(
     assertEquals(
       TaxCalculator.stateTaxDue(
         year,
-        birthDate,
         filingStatus,
+        birthDate,
         dependents,
         massachusettsGrossIncome
       ),

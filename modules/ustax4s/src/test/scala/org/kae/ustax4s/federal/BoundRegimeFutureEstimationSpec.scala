@@ -22,27 +22,27 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
 
       val before = BoundRegime.forKnownYear(
         YearlyValues.mostRecentFor(tc.regime).year,
-        birthDate,
-        tc.filingStatus,
-        tc.personalExemptions
+        tc.filingStatus
       ).calculator
 
       val after = BoundRegime.forFutureYear(
         tc.regime,
         tc.futureYear,
         tc.inflationFactorEstimate,
-        birthDate,
-        tc.filingStatus,
-        tc.personalExemptions
+        tc.filingStatus
       ).calculator
 
       val taxResultsBefore = before.federalTaxResults(
+        birthDate,
+        tc.personalExemptions,
         tc.ss,
         tc.ordinaryIncomeNonSS,
         tc.qualifiedIncome,
         tc.itemizedDeductions
       )
       val taxResultsAfter = after.federalTaxResults(
+        birthDate,
+        tc.personalExemptions,
         tc.ss,
         tc.ordinaryIncomeNonSS,
         tc.qualifiedIncome,
@@ -62,25 +62,21 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
 
       val before = BoundRegime.forKnownYear(
         YearlyValues.mostRecentFor(tc.regime).year,
-        birthDate,
-        tc.filingStatus,
-        tc.personalExemptions
+        tc.filingStatus
       )
 
       val after = BoundRegime.forFutureYear(
         tc.regime,
         tc.futureYear,
         tc.inflationFactorEstimate,
-        birthDate,
-        tc.filingStatus,
-        tc.personalExemptions
+        tc.filingStatus
       )
 
       val res =
-        (before.standardDeduction <= after.standardDeduction) &&
-          (before.netDeduction(0) <= after.netDeduction(0)) &&
-          (before.ordinaryBrackets <= after.ordinaryBrackets) &&
-          (before.qualifiedBrackets <= after.qualifiedBrackets)
+        before.standardDeduction(birthDate) <= after.standardDeduction(birthDate) &&
+          before.netDeduction(birthDate, tc.personalExemptions, 0) <= after.netDeduction(birthDate, tc.personalExemptions, 0) &&
+          before.ordinaryBrackets <= after.ordinaryBrackets &&
+          before.qualifiedBrackets <= after.qualifiedBrackets
       if !res then {
         println(before.show)
         println(after.show)
@@ -93,9 +89,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     forAll { (tc: TestCase1) =>
       val before = BoundRegime.forKnownYear(
         tc.baseYear,
-        birthDate,
-        tc.filingStatus,
-        tc.personalExemptions
+        tc.filingStatus
       )
 
       val after = before.withEstimatedNetInflationFactor(
@@ -103,12 +97,16 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.inflationFactorEstimate
       )
       val taxResultsBefore = before.calculator.federalTaxResults(
+        birthDate,
+        tc.personalExemptions,
         tc.ss,
         tc.ordinaryIncomeNonSS,
         tc.qualifiedIncome,
         tc.itemizedDeductions
       )
       val taxResultsAfter = after.calculator.federalTaxResults(
+        birthDate,
+        tc.personalExemptions,
         tc.ss,
         tc.ordinaryIncomeNonSS,
         tc.qualifiedIncome,
@@ -127,9 +125,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     forAll { (tc: TestCase1) =>
       val before = BoundRegime.forKnownYear(
         tc.baseYear,
-        birthDate,
-        tc.filingStatus,
-        tc.personalExemptions
+        tc.filingStatus
       )
 
       val after = before.withEstimatedNetInflationFactor(
@@ -137,8 +133,9 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.inflationFactorEstimate
       )
       val res =
-        (before.standardDeduction <= after.standardDeduction) &&
-          (before.netDeduction(0) <= after.netDeduction(0)) &&
+        (before.standardDeduction(birthDate) <= after.standardDeduction(birthDate)) &&
+          (before.netDeduction(birthDate, tc.personalExemptions, 0) <=
+            after.netDeduction(birthDate, tc.personalExemptions, 0)) &&
           (before.ordinaryBrackets <= after.ordinaryBrackets) &&
           (before.qualifiedBrackets <= after.qualifiedBrackets)
       if !res then {
