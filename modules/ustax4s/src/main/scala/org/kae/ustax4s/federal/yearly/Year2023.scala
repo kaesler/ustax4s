@@ -9,7 +9,7 @@ import org.kae.ustax4s.money.Deduction
 object Year2023:
   val values: YearlyValues = YearlyValues(
     year = Year.of(2023),
-    regime = Trump,
+    regime = TCJA,
     perPersonExemption = Deduction.zero,
     unadjustedStandardDeduction = Map(
       Married         -> 27700,
