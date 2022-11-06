@@ -176,14 +176,15 @@ class YearlyValuesSpec extends FunSuite:
       massert(YearlyValues.averageThresholdChangeOverPrevious(values.year).get < 1.09)
     }
   }
-  test("averageThresholdChangeOverPrevious mateches results from spreadsheet") {
+  test("averageThresholdChangeOverPrevious matches results from spreadsheet") {
     // https://docs.google.com/spreadsheets/d/1Y_-LOViktEYW5hT-lY7XsU6vsPmCyg7s5sNkPxTKykI/edit#gid=0
     List(
       2018 -> 1.75,
       2019 -> 2.02,
       2020 -> 1.63,
       2021 -> 0.95,
-      2022 -> 3.13
+      2022 -> 3.13,
+      2023 -> 7.08
     ).foreach { (year, expectedPercentage) =>
       val change = YearlyValues.averageThresholdChangeOverPrevious(
         Year.of(year)

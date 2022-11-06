@@ -30,8 +30,10 @@ object TestDataGeneration:
   end TestCaseInputs
 
   private val genTestCase: Gen[TestCaseInputs] =
+    val earliestYear = YearlyValues.first.year.getValue
+    val latestYear = YearlyValues.last.year.getValue
     for
-      yearNum             <- Gen.chooseNum(2016, 2022)
+      yearNum             <- Gen.chooseNum(earliestYear, latestYear)
       fs                  <- Gen.oneOf(FilingStatus.values.toSeq)
       dependents          <- Gen.oneOf(0, 4)
       ss                  <- Gen.chooseNum(0, 50000)
