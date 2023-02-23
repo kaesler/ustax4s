@@ -9,6 +9,7 @@ import org.kae.ustax4s.money.*
 import org.kae.ustax4s.{FilingStatus, InflationEstimate}
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Arbitrary, Gen}
+import scala.language.implicitConversions
 
 class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
   import BoundRegimeFutureEstimationSpec.*

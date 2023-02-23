@@ -6,3 +6,6 @@ src_managed/
 .idea/
 .idea_modules/
 generatedEdits/
+out/
+.,/
+*.iml

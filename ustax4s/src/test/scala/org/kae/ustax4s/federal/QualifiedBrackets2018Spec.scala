@@ -6,6 +6,7 @@ import org.kae.ustax4s.FilingStatus.HeadOfHousehold
 import org.kae.ustax4s.federal.QualifiedBrackets
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.TaxPayable
+import scala.language.implicitConversions
 
 class QualifiedBrackets2018Spec extends FunSuite:
   import org.kae.ustax4s.money.MoneyConversions.given

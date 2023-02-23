@@ -6,6 +6,7 @@ import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.federal.{PreTCJA, Regime, TCJA}
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 import org.scalacheck.Gen
+import scala.language.implicitConversions
 
 // Create test data for the other implementations(TypeScript, Haskell, Purescript)
 object TestDataGeneration:
