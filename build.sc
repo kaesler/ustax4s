@@ -1,7 +1,8 @@
 import mill._
 import mill.scalalib._
+import scalafmt._
 
-object ustax4s extends SbtModule {
+object ustax4s extends SbtModule with ScalafmtModule {
   def scalaVersion = "3.2.2"
   
   def scalacOptions = Seq(
