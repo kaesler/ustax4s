@@ -1,6 +1,6 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.TaxRate
+import org.kae.ustax4s.money.TaxRate
 
 opaque type FederalTaxRate = Double
 

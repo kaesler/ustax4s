@@ -1,9 +1,8 @@
 package org.kae.ustax4s.taxfunction
 
 import cats.implicits.*
-import org.kae.ustax4s.TaxRate
 import org.kae.ustax4s.federal.Brackets
-import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
+import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxRate, TaxableIncome}
 
 // Note: function type here gives us a natural Monoid[Tax].
 type TaxFunction = TaxableIncome => TaxPayable

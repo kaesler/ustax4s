@@ -2,8 +2,7 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import cats.{Eq, PartialOrder}
-import org.kae.ustax4s.TaxRate
-import org.kae.ustax4s.money.{Income, IncomeThreshold}
+import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxRate}
 import scala.math.Ordered.orderingToOrdered
 
 export Brackets.Brackets
