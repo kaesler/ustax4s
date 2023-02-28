@@ -6,7 +6,7 @@ object ustax4s extends Module  {
 
   def scalaJSVersion = "1.13.0"
 
-  object jvm extends ScalaModule {
+  object jvm extends ScalaModule with ScalafmtModule {
     def debug = T { millSourcePath.toString }
     override def scalaVersion = "3.2.2"
 
