@@ -18,7 +18,8 @@ trait CommonSettings extends ScalaModule {
   
   override def ivyDeps = Agg(
     ivy"org.typelevel::cats-core:2.9.0",
-    ivy"org.typelevel::cats-effect:3.4.8"
+    ivy"org.typelevel::cats-effect:3.4.8",
+    ivy"io.github.cquiroz::scala-java-time:2.5.0"
   )
 
   val testDeps = List(
