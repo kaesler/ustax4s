@@ -1,1 +1,1 @@
-mill mill.scalalib.GenIdea.idea
+mill mill.scalalib.GenIdea/idea
