@@ -5,7 +5,7 @@ import mill.scalajslib.api._
 import scalafmt._
 
 trait CommonSettings extends ScalaModule {
-  override def scalaVersion: T[String] = T {"3.2.2"}
+  override def scalaVersion: T[String] = T {"3.2.1"}
   override def scalacOptions = Seq(
     "-deprecation",
     "-explain-types",
@@ -30,6 +30,11 @@ trait CommonSettings extends ScalaModule {
 
 object ustax4s extends Module  {
 
+  object jsfacade extends ScalaJSModule with CommonSettings {
+    override def moduleDeps = List(ustax4s.js)
+    override def scalaJSVersion = "1.13.0"
+  }
+  
   object js extends ScalaJSModule with CommonSettings {
     override def scalaJSVersion = "1.13.0"
     override def millSourcePath = super.millSourcePath / os.up
