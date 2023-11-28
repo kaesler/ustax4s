@@ -5,7 +5,7 @@ import mill.scalajslib.api._
 import scalafmt._
 
 trait CommonSettings extends ScalaModule {
-  override def scalaVersion: T[String] = T {"3.2.1"}
+  override def scalaVersion: T[String] = T {"3.3.1"}
   override def scalacOptions = Seq(
     "-deprecation",
     "-explain-types",
@@ -17,8 +17,8 @@ trait CommonSettings extends ScalaModule {
   )
   
   override def ivyDeps = Agg(
-    ivy"org.typelevel::cats-core:2.9.0",
-    ivy"org.typelevel::cats-effect:3.4.8",
+    ivy"org.typelevel::cats-core:2.10.0",
+    ivy"org.typelevel::cats-effect:3.5.2",
     ivy"io.github.cquiroz::scala-java-time:2.5.0"
   )
 
@@ -32,18 +32,18 @@ object ustax4s extends Module  {
 
   object jsfacade extends ScalaJSModule with CommonSettings {
     override def moduleDeps = List(ustax4s.js)
-    override def scalaJSVersion = "1.13.0"
+    override def scalaJSVersion = "1.14.0"
   }
   
   object js extends ScalaJSModule with CommonSettings {
-    override def scalaJSVersion = "1.13.0"
+    override def scalaJSVersion = "1.14.0"
     override def millSourcePath = super.millSourcePath / os.up
 
     override def ivyDeps = Agg(
-      ivy"org.typelevel::cats-core:2.9.0",
-      ivy"org.typelevel::cats-effect:3.4.8"
+      ivy"org.typelevel::cats-core:2.10.0",
+      ivy"org.typelevel::cats-effect:3.5.2"
     )
-    object test extends Tests with TestModule.Munit {
+    object test extends ScalaJSTests with TestModule.Munit {
       override def ivyDeps = Agg(testDeps:_*)
     }
   }
@@ -55,7 +55,7 @@ object ustax4s extends Module  {
     // This is expected to contain a "src" sub dir.
     override def millSourcePath = super.millSourcePath / os.up
 
-    object test extends Tests with TestModule.Munit {
+    object test extends ScalaTests with TestModule.Munit {
       override def ivyDeps = Agg(testDeps:_*)
     }
   }
