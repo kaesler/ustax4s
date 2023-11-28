@@ -12,7 +12,7 @@ object TaxFunction:
 
   /** Return a function to apply a rate to all income over a specified threshold.
     */
-  def makeThresholdTax[R: TaxRate](
+  private def makeThresholdTax[R: TaxRate](
     threshold: IncomeThreshold,
     rate: R
   ): TaxFunction =
@@ -42,8 +42,7 @@ object TaxFunction:
       .combineAll
 
   private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): Vector[(IncomeThreshold, R)] =
-    brackets
-      .thresholdsAscending
+    brackets.thresholdsAscending
       .zip(rateDeltas(brackets))
 
   private def rateDeltas[R: TaxRate](brackets: Brackets[R]): List[R] =

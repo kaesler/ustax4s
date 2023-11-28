@@ -6,7 +6,6 @@ import munit.{FunSuite, ScalaCheckSuite}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
-import org.kae.ustax4s.{FilingStatus, InflationEstimate}
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -165,8 +164,8 @@ object BoundRegimeFutureEstimationSpec:
 
   private given Arbitrary[TestCase1] = Arbitrary(
     for {
-      baseYear                <- Gen.choose(2017, 2023).map(Year.of)
-      futureYear              <- Gen.choose(2024, 2055).map(Year.of)
+      baseYear                <- Gen.choose(2017, 2024).map(Year.of)
+      futureYear              <- Gen.choose(2025, 2055).map(Year.of)
       inflationFactorEstimate <- Gen.choose(1.005, 1.10)
       filingStatus            <- Gen.oneOf(FilingStatus.values.toList)
       personalExemptions      <- Gen.choose(0, 4)
@@ -202,7 +201,7 @@ object BoundRegimeFutureEstimationSpec:
   private given Arbitrary[TestCase2] = Arbitrary(
     for {
       regime                  <- Gen.oneOf(Regime.values.toList)
-      futureYear              <- Gen.choose(2024, 2055).map(Year.of)
+      futureYear              <- Gen.choose(2025, 2055).map(Year.of)
       inflationFactorEstimate <- Gen.choose(1.005, 1.10)
       filingStatus            <- Gen.oneOf(FilingStatus.values.toList)
       personalExemptions      <- Gen.choose(0, 4)

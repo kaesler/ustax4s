@@ -80,8 +80,7 @@ trait BoundRegime(
         )
 
       val taxableOrdinaryIncome =
-        List(taxableSocialSecurity, ordinaryIncomeNonSS)
-          .combineAll
+        List(taxableSocialSecurity, ordinaryIncomeNonSS).combineAll
           .applyDeductions(netDeduction(birthDate, personalExemptions, itemizedDeductions))
 
       val taxOnOrdinaryIncome =
