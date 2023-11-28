@@ -100,6 +100,7 @@ private[money] object Moneys:
   object TaxableIncome:
     val zero: TaxableIncome                   = Money.zero
     def apply(i: Int): TaxableIncome          = Money(i)
+    def apply(d: Double): TaxableIncome       = Money(d)
     def unsafeParse(s: String): TaxableIncome = Money.unsafeParse(s)
 
     given Monoid[TaxableIncome] = summonAdditionMonoid
