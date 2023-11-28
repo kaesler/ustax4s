@@ -5,8 +5,8 @@ import sbt._
 object Dependencies {
 
   object Cats {
-    val core: ModuleID   = "org.typelevel" %% "cats-core"   % "2.9.0"
-    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.4.8"
+    val core: ModuleID   = "org.typelevel" %% "cats-core"   % "2.10.0"
+    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.5.2"
   }
 
   object MUnit {
