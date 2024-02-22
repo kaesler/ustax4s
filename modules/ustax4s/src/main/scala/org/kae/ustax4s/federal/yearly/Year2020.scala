@@ -12,14 +12,15 @@ object Year2020:
     regime = TCJA,
     perPersonExemption = Deduction.zero,
     unadjustedStandardDeduction = Map(
-      Married         -> 24800,
+      MarriedJoint    -> 24800,
       HeadOfHousehold -> 18650,
       Single          -> 12400
-    ).view.mapValues(Deduction.apply),
+    ).view
+      .mapValues(Deduction.apply),
     adjustmentWhenOver65 = Deduction(1300),
     adjustmentWhenOver65AndSingle = Deduction(350),
     ordinaryBrackets = Map(
-      Married -> Map(
+      MarriedJoint -> Map(
         0      -> 10,
         19750  -> 12,
         80250  -> 22,
@@ -48,7 +49,7 @@ object Year2020:
       ).view.mapValues(_.toDouble).toMap
     ).view.mapValues(OrdinaryBrackets.of).toMap,
     qualifiedBrackets = Map(
-      Married -> Map(
+      MarriedJoint -> Map(
         0      -> 0,
         80000  -> 15,
         496600 -> 20

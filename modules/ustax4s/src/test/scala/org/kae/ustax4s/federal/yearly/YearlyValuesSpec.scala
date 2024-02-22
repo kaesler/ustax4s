@@ -76,7 +76,7 @@ class YearlyValuesSpec extends FunSuite:
 
       massert(
         year.unadjustedStandardDeduction(HeadOfHousehold) <=
-          year.unadjustedStandardDeduction(Married)
+          year.unadjustedStandardDeduction(MarriedJoint)
       )
 
       // Note: we'd like to assert that Single thresholds all start lower
@@ -88,7 +88,7 @@ class YearlyValuesSpec extends FunSuite:
       val sumOfHohThresholds =
         year.ordinaryBrackets(HeadOfHousehold).thresholds.toList.combineAll
       val sumOfMarriedThresholds =
-        year.ordinaryBrackets(Married).thresholds.toList.combineAll
+        year.ordinaryBrackets(MarriedJoint).thresholds.toList.combineAll
 
       massert(
         summon[Ordering[Income]]
