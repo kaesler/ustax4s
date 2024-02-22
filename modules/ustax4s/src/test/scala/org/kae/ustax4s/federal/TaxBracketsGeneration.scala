@@ -2,7 +2,7 @@ package org.kae.ustax4s.federal
 
 import org.kae.ustax4s.SetGeneration
 import org.scalacheck.Gen
-import Ordering.Double.TotalOrdering
+import scala.math.Ordering.Double.TotalOrdering
 
 trait TaxBracketsGeneration extends SetGeneration with TaxRateGeneration:
 

@@ -6,7 +6,7 @@ import java.time.Year
 import munit.{Assertions, FunSuite}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
-import org.kae.ustax4s.money.{Deduction, Income, IncomeThreshold}
+import org.kae.ustax4s.money.{Deduction, Income}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 // Tests that the static data encoding yearly values is correctly entered.

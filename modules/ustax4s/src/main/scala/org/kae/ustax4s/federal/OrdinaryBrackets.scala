@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
-import cats.{PartialOrder, Show}
 import cats.implicits.*
+import cats.{PartialOrder, Show}
 import java.time.Year
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}

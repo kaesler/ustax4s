@@ -5,8 +5,7 @@ import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
-import org.kae.ustax4s.taxfunction.TaxFunction
-import org.kae.ustax4s.{Age, FilingStatus, InflationEstimate}
+import org.kae.ustax4s.{Age, FilingStatus}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 trait BoundRegime(
