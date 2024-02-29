@@ -23,14 +23,22 @@ lazy val ustax4s = (project in file("modules/ustax4s"))
       MUnit.scalacheck % Test withSources ()
     ),
     scalacOptions := Seq(
+      "-Wnonunit-statement",
+      "-Wunused:explicits",
+      "-Wunused:implicits",
+      "-Wunused:imports",
+      "-Wunused:locals",
+      "-Wunused:params",
+      "-Wunused:privates",
+      "-Wvalue-discard",
+      "-Xfatal-warnings",
+      "-Xmigration",
       "-deprecation",
       "-explain-types",
       "-feature",
       "-language:implicitConversions",
       "-source:future",
-      "-unchecked",
-      "-Xfatal-warnings",
-      "-Xmigration"
+      "-unchecked"
     ),
     testFrameworks += new TestFramework("munit.Framework"),
     Test / parallelExecution := false

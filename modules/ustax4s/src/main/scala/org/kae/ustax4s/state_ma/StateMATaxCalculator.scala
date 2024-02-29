@@ -4,7 +4,7 @@ import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
-import org.kae.ustax4s.{Age, FilingStatus, NotYetImplemented}
+import org.kae.ustax4s.{Age, FilingStatus}
 import scala.util.chaining.*
 
 object StateMATaxCalculator:

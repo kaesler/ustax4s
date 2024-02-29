@@ -1,7 +1,6 @@
 package org.kae.ustax4s.state_ma
 
 import org.kae.ustax4s.TaxRate
-import scala.math.BigDecimal.RoundingMode
 
 opaque type StateMATaxRate = Double
 

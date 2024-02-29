@@ -2,12 +2,7 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import cats.{PartialOrder, Show}
-import java.time.Year
-import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable, TaxableIncome}
-import org.kae.ustax4s.taxfunction.TaxFunction
-import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
-import scala.annotation.tailrec
+import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 // Note: contain a Brackets[FederalTaxRate] rather than opaque type

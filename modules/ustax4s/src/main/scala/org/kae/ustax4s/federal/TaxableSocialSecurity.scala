@@ -1,6 +1,5 @@
 package org.kae.ustax4s.federal
 
-import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
