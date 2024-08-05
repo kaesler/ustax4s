@@ -1,6 +1,6 @@
 package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.money.*
+import org.kae.ustax4s.money.Moneys.TaxableIncome
 
 final case class ScheduleD(
   // Line 8b

@@ -1,4 +1,4 @@
-import org.kae.Dependencies._
+import org.kae.Dependencies.*
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"

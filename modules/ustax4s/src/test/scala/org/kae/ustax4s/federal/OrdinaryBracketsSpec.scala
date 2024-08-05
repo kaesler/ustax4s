@@ -10,11 +10,11 @@ import org.kae.ustax4s.money.{Income, MoneyGeneration, TaxPayable, TaxableIncome
 import org.kae.ustax4s.taxfunction.TaxFunction
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 class OrdinaryBracketsSpec extends ScalaCheckSuite with TaxBracketsGeneration with MoneyGeneration:
 
   // import math.Ordered.orderingToOrdered
-  import math.Ordering.Implicits.infixOrderingOps
 
   given Arbitrary[OrdinaryBrackets] = Arbitrary(genTaxBrackets)
 

@@ -15,7 +15,6 @@ final case class InflationEstimate(
 
   // Compute the inflation factor for the target year, from a base year.
   def factor(baseYear: Year): Double =
-    import math.Ordered.orderingToOrdered
     require(targetFutureYear >= baseYear)
     math.pow(
       1 + annualGrowthFraction,

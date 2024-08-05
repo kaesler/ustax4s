@@ -5,6 +5,7 @@ import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Income, IncomeThreshold}
+import scala.math.Ordering.Implicits.infixOrderingOps
 
 object TaxableSocialSecurity:
 
@@ -96,7 +97,6 @@ object TaxableSocialSecurity:
     futureYear: Year,
     estimatedAnnualInflation: Double
   ): Income =
-    import math.Ordered.orderingToOrdered
     require(futureYear > YearlyValues.last.year)
     require(estimatedAnnualInflation >= 0.0)
 

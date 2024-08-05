@@ -19,7 +19,7 @@ export Moneys.TaxPayable
   * applyDeductions: (Income, List[Deduction]) -> TaxableIncome TaxFunction: TaxableIncome ->
   * TaxPayable applyCredits: (TaxPayable, List[TaxCredit]) -> TaxPayable
   */
-private[money] object Moneys:
+object Moneys:
 
   opaque type Income = Money
   object Income:
