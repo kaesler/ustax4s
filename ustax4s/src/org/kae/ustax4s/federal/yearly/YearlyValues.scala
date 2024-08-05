@@ -5,7 +5,6 @@ import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.{Deduction, IncomeThreshold}
-import math.Ordered.orderingToOrdered
 
 final case class YearlyValues(
   year: Year,
@@ -86,7 +85,8 @@ object YearlyValues:
     2020 -> Year2020.values,
     2021 -> Year2021.values,
     2022 -> Year2022.values,
-    2023 -> Year2023.values
+    2023 -> Year2023.values,
+    2024 -> Year2024.values
   )
 
   private lazy val memoizedAverageThresholdChanges: Map[Year, Double] =

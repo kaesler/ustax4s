@@ -6,63 +6,63 @@ import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Deduction
 
-object Year2023:
+object Year2024:
   val values: YearlyValues = YearlyValues(
-    year = Year.of(2023),
+    year = Year.of(2024),
     regime = TCJA,
     perPersonExemption = Deduction.zero,
     unadjustedStandardDeduction = Map(
-      MarriedJoint    -> 27700,
-      HeadOfHousehold -> 20800,
-      Single          -> 13850
+      MarriedJoint    -> 29200,
+      HeadOfHousehold -> 21900,
+      Single          -> 14600
     ).view
       .mapValues(Deduction.apply),
-    adjustmentWhenOver65 = Deduction(1500),
-    adjustmentWhenOver65AndSingle = Deduction(350),
+    adjustmentWhenOver65 = Deduction(1550),
+    adjustmentWhenOver65AndSingle = Deduction(400),
     ordinaryBrackets = Map(
       MarriedJoint -> Map(
         0      -> 10,
-        22000  -> 12,
-        89450  -> 22,
-        190750 -> 24,
-        364200 -> 32,
-        462500 -> 35,
-        693750 -> 37
+        23200  -> 12,
+        94300  -> 22,
+        201050 -> 24,
+        383900 -> 32,
+        487450 -> 35,
+        731200 -> 37
       ).view.mapValues(_.toDouble).toMap,
       HeadOfHousehold -> Map(
         0      -> 10,
-        15700  -> 12,
-        59850  -> 22,
-        95350  -> 24,
-        182100 -> 32,
-        231250 -> 35,
-        578100 -> 37
+        16550  -> 12,
+        63100  -> 22,
+        100500 -> 24,
+        191950 -> 32,
+        243700 -> 35,
+        609350 -> 37
       ).view.mapValues(_.toDouble).toMap,
       Single -> Map(
         0      -> 10,
-        11000  -> 12,
-        44725  -> 22,
-        95375  -> 24,
-        182100 -> 32,
-        231250 -> 35,
-        578125 -> 37
+        11600  -> 12,
+        47150  -> 22,
+        100525 -> 24,
+        191950 -> 32,
+        243725 -> 35,
+        609350 -> 37
       ).view.mapValues(_.toDouble).toMap
     ).view.mapValues(OrdinaryBrackets.of).toMap,
     qualifiedBrackets = Map(
       MarriedJoint -> Map(
         0      -> 0,
-        89250  -> 15,
-        553850 -> 20
+        94050  -> 15,
+        583750 -> 20
       ),
       HeadOfHousehold -> Map(
         0      -> 0,
-        59750  -> 15,
-        523050 -> 20
+        63000  -> 15,
+        551350 -> 20
       ),
       Single -> Map(
         0      -> 0,
-        44625  -> 15,
-        492300 -> 20
+        47025  -> 15,
+        518900 -> 20
       )
     ).view.mapValues(QualifiedBrackets.of).toMap
   )

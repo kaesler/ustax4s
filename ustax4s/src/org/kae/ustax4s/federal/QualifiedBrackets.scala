@@ -1,13 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.{PartialOrder, Show}
-import java.time.Year
-import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxPayable}
-import org.kae.ustax4s.taxfunction.TaxFunction
-import org.kae.ustax4s.{FilingStatus, NotYetImplemented}
-import scala.annotation.tailrec
-import scala.math.Ordering.Implicits.infixOrderingOps
+import org.kae.ustax4s.money.IncomeThreshold
 
 // Note: contain a Brackets[FederalTaxRate] rather than opaque type
 // so we can precompute and store val properties.

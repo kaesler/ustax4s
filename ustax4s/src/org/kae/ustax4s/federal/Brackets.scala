@@ -1,8 +1,8 @@
 package org.kae.ustax4s.federal
 
+import cats.PartialOrder
 import cats.implicits.*
-import cats.{Eq, PartialOrder}
-import org.kae.ustax4s.money.{Income, IncomeThreshold, TaxRate}
+import org.kae.ustax4s.money.{Income, IncomeThreshold}
 import scala.math.Ordered.orderingToOrdered
 
 export Brackets.Brackets
@@ -24,7 +24,9 @@ object Brackets:
     def ratesAscending: Vector[R]                    = bracketsAscending.map(_._2)
     def thresholdsAscending: Vector[IncomeThreshold] = bracketsAscending.map(_._1)
 
-    def isProgressive(using Ordering[R]): Boolean =
+    def isProgressive(
+      using Ordering[R]
+    ): Boolean =
       val rates = ratesAscending
       rates.zip(rates.tail).forall(_ < _)
 

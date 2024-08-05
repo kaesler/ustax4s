@@ -2,14 +2,8 @@ package org.kae.ustax4s.federal.forms
 
 import cats.implicits.*
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.federal.{
-  OrdinaryBrackets,
-  QualifiedBrackets,
-  TaxFunctions,
-  TaxableSocialSecurity
-}
+import org.kae.ustax4s.federal.{OrdinaryBrackets, QualifiedBrackets, TaxFunctions, TaxableSocialSecurity}
 import org.kae.ustax4s.money.*
-import org.kae.ustax4s.taxfunction.TaxFunction
 
 final case class Form1040(
   filingStatus: FilingStatus,
@@ -73,7 +67,7 @@ final case class Form1040(
   def scheduleD: Option[ScheduleD] = schedule1.flatMap(_.scheduleD)
 
   // Line 7b:
-  def totalIncome: Income =
+  private def totalIncome: Income =
     List[Income](
       // Line 1
       wages,

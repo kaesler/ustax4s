@@ -6,7 +6,7 @@ import java.time.Year
 import munit.{Assertions, FunSuite}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
-import org.kae.ustax4s.money.{Deduction, Income, IncomeThreshold}
+import org.kae.ustax4s.money.{Deduction, Income}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 // Tests that the static data encoding yearly values is correctly entered.
@@ -76,7 +76,7 @@ class YearlyValuesSpec extends FunSuite:
 
       massert(
         year.unadjustedStandardDeduction(HeadOfHousehold) <=
-          year.unadjustedStandardDeduction(Married)
+          year.unadjustedStandardDeduction(MarriedJoint)
       )
 
       // Note: we'd like to assert that Single thresholds all start lower
@@ -88,7 +88,7 @@ class YearlyValuesSpec extends FunSuite:
       val sumOfHohThresholds =
         year.ordinaryBrackets(HeadOfHousehold).thresholds.toList.combineAll
       val sumOfMarriedThresholds =
-        year.ordinaryBrackets(Married).thresholds.toList.combineAll
+        year.ordinaryBrackets(MarriedJoint).thresholds.toList.combineAll
 
       massert(
         summon[Ordering[Income]]

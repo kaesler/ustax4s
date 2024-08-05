@@ -1,6 +1,5 @@
 package org.kae.ustax4s.federal
 
-import cats.implicits.*
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.*
@@ -16,7 +15,7 @@ object TaxableSocialSecurity:
     filingStatus match
       case Single | HeadOfHousehold =>
         (IncomeThreshold(25000), IncomeThreshold(34000))
-      case Married =>
+      case MarriedJoint =>
         (IncomeThreshold(32000), IncomeThreshold(44000))
 
   // Current year, current dollars.

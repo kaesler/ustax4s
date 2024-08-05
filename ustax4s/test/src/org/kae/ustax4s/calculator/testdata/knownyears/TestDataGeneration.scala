@@ -3,7 +3,6 @@ package org.kae.ustax4s.calculator.testdata.knownyears
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.yearly.YearlyValues
-import org.kae.ustax4s.federal.{PreTCJA, Regime, TCJA}
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 import org.scalacheck.Gen
 import scala.language.implicitConversions

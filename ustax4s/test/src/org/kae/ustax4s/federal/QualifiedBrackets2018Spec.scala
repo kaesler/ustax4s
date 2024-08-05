@@ -3,7 +3,6 @@ package org.kae.ustax4s.federal
 import java.time.Year
 import munit.FunSuite
 import org.kae.ustax4s.FilingStatus.HeadOfHousehold
-import org.kae.ustax4s.federal.QualifiedBrackets
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.TaxPayable
 import scala.language.implicitConversions

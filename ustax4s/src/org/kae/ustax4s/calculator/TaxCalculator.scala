@@ -2,7 +2,6 @@ package org.kae.ustax4s.calculator
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.InflationEstimate
 import org.kae.ustax4s.federal.*
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.yearly.YearlyValues
@@ -123,9 +122,7 @@ object TaxCalculator:
       ordinaryIncomeNonSS,
       qualifiedIncome,
       itemizedDeductions
-    )
-      .taxDue
-      .rounded
+    ).taxDue.rounded
 
   // Note: for tests only
   def federalTaxDueUsingForm1040(

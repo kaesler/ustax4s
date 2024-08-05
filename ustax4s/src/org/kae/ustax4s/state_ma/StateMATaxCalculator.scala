@@ -4,7 +4,7 @@ import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
-import org.kae.ustax4s.{Age, FilingStatus, NotYetImplemented}
+import org.kae.ustax4s.{Age, FilingStatus}
 import scala.util.chaining.*
 
 object StateMATaxCalculator:
@@ -58,36 +58,36 @@ object StateMATaxCalculator:
   ): Deduction =
     (
       (year.getValue, filingStatus) match
-        case (2022, Married)         => 8800
+        case (2022, MarriedJoint)    => 8800
         case (2022, HeadOfHousehold) => 6800
         case (2022, Single)          => 4400
 
-        case (2021, Married)         => 8800
+        case (2021, MarriedJoint)    => 8800
         case (2021, HeadOfHousehold) => 6800
         case (2021, Single)          => 4400
 
-        case (2020, Married)         => 8800
+        case (2020, MarriedJoint)    => 8800
         case (2020, HeadOfHousehold) => 6800
         case (2020, Single)          => 4400
 
-        case (2019, Married)         => 8800
+        case (2019, MarriedJoint)    => 8800
         case (2019, HeadOfHousehold) => 6800
         case (2019, Single)          => 4400
 
-        case (2018, Married)         => 8800
+        case (2018, MarriedJoint)    => 8800
         case (2018, HeadOfHousehold) => 6800
         case (2018, Single)          => 4400
 
-        case (2017, Married)         => 8800
+        case (2017, MarriedJoint)    => 8800
         case (2017, HeadOfHousehold) => 6800
         case (2017, Single)          => 4400
 
-        case (2016, Married)         => 8800
+        case (2016, MarriedJoint)    => 8800
         case (2016, HeadOfHousehold) => 6800
         case (2016, Single)          => 4400
 
         // TODO: for now don't inflate state exemptions.
-        case (_, Married)         => 8800
+        case (_, MarriedJoint)    => 8800
         case (_, HeadOfHousehold) => 6800
         case (_, Single)          => 4400
     ).pipe(Deduction.apply)
