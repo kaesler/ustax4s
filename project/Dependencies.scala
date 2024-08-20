@@ -10,7 +10,7 @@ object Dependencies {
   }
 
   object MUnit {
-    val munit: ModuleID      = "org.scalameta" %% "munit"            % "1.0.0"
+    val munit: ModuleID      = "org.scalameta" %% "munit"            % "1.0.1"
     val scalacheck: ModuleID = "org.scalameta" %% "munit-scalacheck" % "1.0.0"
   }
 
