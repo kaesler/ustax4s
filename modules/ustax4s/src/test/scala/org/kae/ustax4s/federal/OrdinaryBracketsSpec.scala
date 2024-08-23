@@ -4,7 +4,6 @@ import java.time.Year
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.federal.OrdinaryBrackets
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Income, MoneyGeneration, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction

@@ -1,7 +1,6 @@
 package org.kae.ustax4s.federal
 
 import cats.PartialOrder
-import cats.implicits.*
 import org.kae.ustax4s.money.{Income, IncomeThreshold}
 import scala.math.Ordered.orderingToOrdered
 
