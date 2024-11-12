@@ -86,7 +86,8 @@ object YearlyValues:
     2021 -> Year2021.values,
     2022 -> Year2022.values,
     2023 -> Year2023.values,
-    2024 -> Year2024.values
+    2024 -> Year2024.values,
+    2025 -> Year2025.values
   )
 
   private lazy val memoizedAverageThresholdChanges: Map[Year, Double] =
