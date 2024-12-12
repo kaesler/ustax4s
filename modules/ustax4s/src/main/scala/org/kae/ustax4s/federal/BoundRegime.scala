@@ -144,7 +144,7 @@ end BoundRegime
 
 object BoundRegime:
 
-  given Show[BoundRegime] with
+  given Show[BoundRegime]:
     def show(r: BoundRegime): String =
       "BoundRegime:\n" ++
         s"  regime: ${r.regime.show}\n" ++

@@ -71,11 +71,11 @@ end OrdinaryBrackets
 
 object OrdinaryBrackets:
 
-  given Show[OrdinaryBrackets] with
+  given Show[OrdinaryBrackets]:
     def show(b: OrdinaryBrackets): String =
       b.bracketsAscending.mkString("\n")
 
-  given [R]: PartialOrder[OrdinaryBrackets] = PartialOrder.by(_.brackets)
+  given PartialOrder[OrdinaryBrackets] = PartialOrder.by(_.brackets)
 
   def of(pairs: Iterable[(Int, Double)]): OrdinaryBrackets =
     OrdinaryBrackets(

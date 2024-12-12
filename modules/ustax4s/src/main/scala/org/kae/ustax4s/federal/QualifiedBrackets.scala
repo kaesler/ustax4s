@@ -38,10 +38,10 @@ object QualifiedBrackets:
       )
     )
 
-  given Show[QualifiedBrackets] with
+  given Show[QualifiedBrackets]:
     def show(b: QualifiedBrackets): String =
       b.bracketsAscending.mkString("\n")
 
-  given [R]: PartialOrder[QualifiedBrackets] = PartialOrder.by(_.brackets)
+  given PartialOrder[QualifiedBrackets] = PartialOrder.by(_.brackets)
 
 end QualifiedBrackets

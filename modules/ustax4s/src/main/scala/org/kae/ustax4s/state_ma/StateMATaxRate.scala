@@ -11,7 +11,7 @@ object StateMATaxRate:
     require(d <= 0.10)
     d
 
-  given tr: TaxRate[StateMATaxRate] with
+  given tr: TaxRate[StateMATaxRate]:
     override def absoluteDifference(
       left: StateMATaxRate,
       right: StateMATaxRate

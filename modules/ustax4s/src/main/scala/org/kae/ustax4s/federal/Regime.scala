@@ -15,6 +15,6 @@ object Regime:
   def parse(s: String): Option[Regime] = Try(Regime.valueOf(s)).toOption
   def unsafeParse(s: String): Regime   = valueOf(s)
 
-  given Show[Regime] with
+  given Show[Regime]:
     def show(r: Regime): String = r.productPrefix
 end Regime

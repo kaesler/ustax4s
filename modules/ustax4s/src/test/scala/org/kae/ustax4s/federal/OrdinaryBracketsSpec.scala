@@ -98,7 +98,7 @@ class OrdinaryBracketsSpec extends ScalaCheckSuite with TaxBracketsGeneration wi
 
   property("tax rises monotonically with income") {
     forAll { (brackets: OrdinaryBrackets, income1: TaxableIncome, income2: TaxableIncome) =>
-      given Ordering[TaxableIncome] with
+      given Ordering[TaxableIncome]:
         def compare(x: TaxableIncome, y: TaxableIncome): Int =
           summon[Ordering[Income]].compare(x, y)
       val tax = TaxFunction.fromBrackets(brackets.brackets)

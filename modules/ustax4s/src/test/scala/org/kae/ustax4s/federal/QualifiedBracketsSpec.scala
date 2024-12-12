@@ -63,7 +63,7 @@ class QualifiedBracketsSpec
   ) {
     forAll { (brackets: QualifiedBrackets, gains1: TaxableIncome, gains2: TaxableIncome) =>
       {
-        given Ordering[TaxableIncome] with
+        given Ordering[TaxableIncome]:
           def compare(x: TaxableIncome, y: TaxableIncome): Int =
             summon[Ordering[Income]].compare(x, y)
         val ordinaryIncome = brackets.startOfNonZeroQualifiedRateBracket
@@ -83,9 +83,10 @@ class QualifiedBracketsSpec
         income1: TaxableIncome,
         income2: TaxableIncome
       ) =>
-        given Ordering[TaxableIncome] with
+        given Ordering[TaxableIncome]:
           def compare(x: TaxableIncome, y: TaxableIncome): Int =
             summon[Ordering[Income]].compare(x, y)
+            
         val f = taxDueOnQualifiedIncome(brackets)
         val res = {
           if income1 < income2 then f(income1, gains) <= f(income1, gains)

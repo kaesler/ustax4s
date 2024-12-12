@@ -37,7 +37,7 @@ object Brackets:
         (start.increaseBy(factor).rounded, rate)
       }.toMap
 
-  given [R]: PartialOrder[Brackets[R]] with
+  given [R] => PartialOrder[Brackets[R]]:
     def partialCompare(left: Brackets[R], right: Brackets[R]): Double =
       if areComparable(left, right) then
         val pairs = left.thresholdsAscending

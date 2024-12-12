@@ -11,7 +11,7 @@ object FederalTaxRate:
     require(d <= 0.40)
     d
 
-  given tr: TaxRate[FederalTaxRate] with
+  given TaxRate[FederalTaxRate]:
     override def absoluteDifference(
       left: FederalTaxRate,
       right: FederalTaxRate
