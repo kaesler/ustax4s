@@ -6,11 +6,11 @@ object Dependencies {
 
   object Cats {
     val core: ModuleID   = "org.typelevel" %% "cats-core"   % "2.12.0"
-    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.5.5"
+    val effect: ModuleID = "org.typelevel" %% "cats-effect" % "3.5.7"
   }
 
   object MUnit {
-    val munit: ModuleID      = "org.scalameta" %% "munit"            % "1.0.2"
+    val munit: ModuleID      = "org.scalameta" %% "munit"            % "1.0.4"
     val scalacheck: ModuleID = "org.scalameta" %% "munit-scalacheck" % "1.0.0"
   }
 
