@@ -20,14 +20,14 @@ object CMM extends CMMOps:
   //   mempty - x = mempty
 
   // The natural Monus on functions returning B, when B has a Monus.
-  given [A, B : { CMM as mb }] => CMM[A => B]:
+  given [A, B: { CMM as mb }] => CMM[A => B]:
     type F = A => B
     def empty: F               = { _ => mb.empty }
     def combine(f: F, g: F): F = { a => f(a).combine(g(a)) }
     def monus(f: F, g: F): F   = { a => f(a).monus(g(a)) }
 
   // Provides a CMM for many types via Cats.
-  given [A: { Group as group, Ordering as ordering}] => CMM[A]:
+  given [A: { Group as group, Ordering as ordering }] => CMM[A]:
     def empty: A                      = group.empty
     def combine(left: A, right: A): A = group.combine(left, right)
     def monus(left: A, right: A): A =
