@@ -2,7 +2,7 @@ import org.kae.Dependencies.*
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"
-ThisBuild / scalaVersion := "3.6.2"
+ThisBuild / scalaVersion := "3.6.3"
 
 lazy val root = project
   .in(file("."))
