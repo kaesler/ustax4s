@@ -14,7 +14,7 @@ lazy val root = project
   )
 
 lazy val gsheetfacade = (project in file("modules/gsheetfacade"))
-  .dependsOn(ustax4s.jvm)
+  .dependsOn(ustax4s.js)
   .settings(
     name := "gsheetfacade",
     scalacOptions := Seq(
