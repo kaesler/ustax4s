@@ -1,6 +1,5 @@
 package org.kae.ustax4s.federal
 
-import cats.implicits.*
 import cats.{PartialOrder, Show}
 import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
 import scala.math.Ordering.Implicits.infixOrderingOps

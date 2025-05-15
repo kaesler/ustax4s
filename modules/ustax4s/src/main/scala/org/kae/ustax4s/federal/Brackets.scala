@@ -34,7 +34,7 @@ object Brackets:
     def inflatedBy(factor: Double): Brackets[R] =
       require(factor >= 1.0)
       bs.iterator.map { (start, rate) =>
-        (start.increaseBy(factor).rounded, rate)
+        (start.increaseBy(factor).rounded1, rate)
       }.toMap
 
   given [R] => PartialOrder[Brackets[R]]:

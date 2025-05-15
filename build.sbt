@@ -2,7 +2,7 @@ import org.kae.Dependencies.*
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"
-ThisBuild / scalaVersion := "3.6.4"
+ThisBuild / scalaVersion := "3.7.0"
 
 lazy val root = project
   .in(file("."))
@@ -44,9 +44,11 @@ lazy val ustax4s = crossProject(JSPlatform, JVMPlatform)
     name := "ustax4s",
     libraryDependencies ++= Seq(
       Cats.core withSources (),
-      Cats.effect withSources (),
       MUnit.munit      % Test withSources (),
       MUnit.scalacheck % Test withSources ()
+    ),
+    excludeDependencies ++= Seq(
+      ExclusionRule("scala-lang.org")
     ),
     scalacOptions := Seq(
       "-Wnonunit-statement",

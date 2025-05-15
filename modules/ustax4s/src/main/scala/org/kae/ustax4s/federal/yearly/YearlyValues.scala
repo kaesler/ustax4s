@@ -3,7 +3,6 @@ package yearly
 
 import java.time.Year
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.{Deduction, IncomeThreshold}
 
 final case class YearlyValues(

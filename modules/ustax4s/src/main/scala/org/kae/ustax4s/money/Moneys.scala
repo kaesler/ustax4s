@@ -89,7 +89,7 @@ object Moneys:
       infix def absoluteDifference(right: IncomeThreshold): TaxableIncome =
         Money.absoluteDifference(left, right)
 
-      def rounded: IncomeThreshold = Money.rounded(left)
+      def rounded1: IncomeThreshold = Money.rounded(left)
 
       infix def increaseBy(factor: Double): IncomeThreshold =
         require(factor > 1.0)
