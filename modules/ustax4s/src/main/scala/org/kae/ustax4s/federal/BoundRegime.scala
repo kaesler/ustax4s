@@ -12,9 +12,6 @@ trait BoundRegime(
   val regime: Regime,
   val year: Year,
   val filingStatus: FilingStatus
-
-  // val birthDate: BirthDate
-  // val personalExemptions: Int
 ):
   def unadjustedStandardDeduction: Deduction
   def adjustmentWhenOver65: Deduction
@@ -65,7 +62,7 @@ trait BoundRegime(
       ordinaryIncomeNonSS: Income,
       qualifiedIncome: TaxableIncome,
       itemizedDeductions: Deduction
-    ) => {
+    ) =>
 
       val ssRelevantOtherIncome =
         List(ordinaryIncomeNonSS, qualifiedIncome).combineAll
@@ -103,7 +100,7 @@ trait BoundRegime(
         taxOnOrdinaryIncome,
         taxOnQualifiedIncome
       )
-    }
+  end calculator
 
   def withEstimatedNetInflationFactor(
     targetFutureYear: Year,
@@ -115,7 +112,7 @@ trait BoundRegime(
       regime,
       targetFutureYear,
       filingStatus
-    ) {
+    ):
       require(targetFutureYear > YearlyValues.last.year)
 
       override val name =
@@ -138,7 +135,7 @@ trait BoundRegime(
 
       override val qualifiedBrackets: QualifiedBrackets =
         base.qualifiedBrackets.inflatedBy(netInflationFactor)
-    }
+    end new
 
 end BoundRegime
 
@@ -155,6 +152,7 @@ object BoundRegime:
         s"  adjustmentWhenOver65AnSingle: ${r.adjustmentWhenOver65AndSingle}\n" ++
         s"  ordinaryBrackets: ${r.ordinaryBrackets.show}\n" ++
         s"  qualifiedBrackets: ${r.qualifiedBrackets.show}\n"
+  end given
 
   def forFutureYear(
     regime: Regime,
@@ -178,6 +176,7 @@ object BoundRegime:
     val netInflationFactor = inflationFactors.product
     forKnownYear(baseValues.year, filingStatus)
       .withEstimatedNetInflationFactor(year, netInflationFactor)
+  end forFutureYear
 
   def forKnownYear(
     year: Year,
@@ -185,7 +184,7 @@ object BoundRegime:
   ): BoundRegime =
     val yv = YearlyValues.of(year).get
 
-    new BoundRegime(yv.regime, year, filingStatus) {
+    new BoundRegime(yv.regime, year, filingStatus):
 
       override def unadjustedStandardDeduction: Deduction =
         yv.unadjustedStandardDeduction(this.filingStatus)
@@ -202,4 +201,5 @@ object BoundRegime:
 
       override def qualifiedBrackets: QualifiedBrackets =
         yv.qualifiedBrackets(this.filingStatus)
-    }
+    end new
+  end forKnownYear

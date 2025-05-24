@@ -5,7 +5,7 @@ import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 
 trait FederalTaxCalculator:
 
-  // Note: We could have just used cyrrying, i.e.
+  // Note: We could have just used currying, i.e.
   //   trait FederalTaxCalculator extends ((Money .. Money) => FederalTaxResults
   // but it is more ergonomic to allow named arguments.
 
