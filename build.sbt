@@ -13,7 +13,9 @@ lazy val root = project
     publish / skip := true
   )
 
-lazy val gsheetfacade = (project in file("modules/gsheetfacade"))
+lazy val gsheetfacade = project
+  .in(file("modules/gsheetfacade"))
+  .enablePlugins(ScalaJSPlugin)
   .dependsOn(ustax4s.js)
   .settings(
     name := "gsheetfacade",
