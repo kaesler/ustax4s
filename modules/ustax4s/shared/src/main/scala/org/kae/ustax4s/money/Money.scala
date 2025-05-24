@@ -49,6 +49,8 @@ object Money:
 
   given CMM[Money]      = summonMonus
   given Ordering[Money] = summonOrdering
+
+  extension (m: Money) def asDouble: Double = m.doubleValue()
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.
