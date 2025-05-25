@@ -71,7 +71,7 @@ object Moneys:
     given Ordering[Deduction] = summonOrdering
 
     extension (left: Deduction)
-      inline def asDouble: Double = left.doubleValue()
+      inline def asDouble: Double = left.toDouble
       def +(right: Deduction): Deduction        = left.combine(right)
       infix def inflateBy(d: Double): Deduction = Money.multiply(left, d)
       infix def mul(i: Int): Deduction          = Money.multiply(left, i)

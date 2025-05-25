@@ -8,7 +8,6 @@ enum FilingStatus(val isSingle: Boolean):
   case MarriedJoint    extends FilingStatus(false)
 
 object FilingStatus:
-  def parse(s: String): FilingStatus = valueOf(s)
 
   given Show[FilingStatus]:
     def show(fs: FilingStatus): String = fs.productPrefix

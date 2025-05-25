@@ -11,7 +11,7 @@ object Conversions:
   given Conversion[GYear, Year] =
     (gYear: GYear) => Year.of(gYear.toInt)
 
-  given Conversion[GFilingStatus, FilingStatus] = FilingStatus.parse
+  given Conversion[GFilingStatus, FilingStatus] = FilingStatus.valueOf
 
   given Conversion[GLocalDate, LocalDate] = (gDate: GLocalDate) =>
     LocalDate.of(
