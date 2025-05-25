@@ -2,9 +2,10 @@ package org.kae.ustax4s.money
 
 import cats.implicits.*
 import org.kae.ustax4s.money.cmm.{CMM, CMMOps}
-import scala.math.BigDecimal.RoundingMode
 
-private[money] type Money = BigDecimal
+private[money] type Money = Double
+extension (m: Money) def rounded: Money = math.round(m).toDouble
+
 object Money:
 
   given monusOps: CMMOps = new CMMOps {}
@@ -13,16 +14,16 @@ object Money:
 
   def apply(i: Int): Money =
     require(i >= 0, s"attempt to create negative Money from $i")
-    BigDecimal(i)
+    i.toDouble
 
   def apply(d: Double): Money =
     require(d >= 0, s"attempt to create negative Money from $d")
-    BigDecimal(d)
+    d
 
   def unsafeParse(s: String): Money =
-    val i = Integer.parseInt(s)
-    require(i >= 0)
-    BigDecimal(i)
+    val d = java.lang.Double.valueOf(s)
+    require(d >= 0.0)
+    d
 
   def absoluteDifference(left: Money, right: Money): Money = (left - right).abs
 
@@ -31,11 +32,11 @@ object Money:
 
   def divide(m: Money, i: Int): Money =
     require(i > 0, s"division by non-positive: $i")
-    m.toDouble / i.toDouble
+    m / i.toDouble
 
   def divide(left: Money, right: Money): Double =
     require(right > 0, s"division by non-positive: $right")
-    left.toDouble / right.toDouble
+    left / right
 
   def isZero(m: Money): Boolean = m == 0
 
@@ -43,7 +44,7 @@ object Money:
     require(d >= 0, s"multiplication by negative: $d")
     m * d
 
-  def rounded(m: Money): Money = m.setScale(0, RoundingMode.HALF_UP)
+  def round(m: Money): Money = math.round(m).toDouble
 
   def monus(left: Money, right: Money): Money = left monus right
 
@@ -53,5 +54,5 @@ object Money:
 end Money
 
 // Avoid infinite recursion by placing outside the Money object.
-private def summonMonus    = summon[CMM[BigDecimal]]
-private def summonOrdering = summon[Ordering[BigDecimal]]
+private def summonMonus    = summon[CMM[Double]]
+private def summonOrdering = summon[Ordering[Double]]

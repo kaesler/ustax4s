@@ -90,7 +90,7 @@ object Moneys:
       infix def absoluteDifference(right: IncomeThreshold): TaxableIncome =
         Money.absoluteDifference(left, right)
 
-      def rounded1: IncomeThreshold = Money.rounded(left)
+      def rounded1: IncomeThreshold = Money.round(left)
 
       infix def increaseBy(factor: Double): IncomeThreshold =
         require(factor > 1.0)
@@ -146,7 +146,7 @@ object Moneys:
         Money.areClose(left, right, tolerance)
 
       def nonZero: Boolean    = !isZero
-      def rounded: TaxPayable = Money.rounded(left)
+      def rounded: TaxPayable = Money.round(left)
 
       infix def reduceBy(right: TaxPayable): TaxPayable =
         Money.monus(left, right)
