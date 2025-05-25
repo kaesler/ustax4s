@@ -1,8 +1,19 @@
 import org.kae.Dependencies.*
+import org.scalajs.linker.interface.ESVersion
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"
 ThisBuild / scalaVersion := "3.7.0"
+
+val fastCompileRenderer = taskKey[File]("Return main file")
+
+lazy val fastCompileCreateFunctions =
+  taskKey[Unit]("Fast compile, and adds to the compiled file the created functions")
+
+val fullCompileRenderer = taskKey[File]("Return full optimized main file")
+
+lazy val fullCompileCreateFunctions =
+  taskKey[Unit]("Full compile, and adds to the compiled file the created functions")
 
 lazy val commonScalacOptions = Seq(
       "-Wnonunit-statement",
@@ -40,7 +51,37 @@ lazy val gsheetfacade = project
     name := "gsheetfacade",
     scalacOptions := commonScalacOptions ++ Seq(
       "-scalajs"
-    )
+    ),
+    publish / skip := true,
+    scalaJSLinkerConfig ~= {
+      _.withESFeatures(
+        _.withESVersion(
+          // Note: Anything later results in linked output
+          // which uses the "||=" operator, which fails to
+          // parse in the Google AppScript (V8) interpreter.
+          ESVersion.ES2020
+        )
+      )
+    },
+    fastCompileRenderer := {
+      (Compile / fastOptJS).value.data
+    },
+    fullCompileRenderer := {
+      (Compile / fullOptJS).value.data
+    },
+    fastCompileCreateFunctions := {
+      GSheetFunctions.createGoogleFunctions(
+        fastCompileRenderer.value,
+        baseDirectory.value
+      )
+    },
+    fullCompileCreateFunctions := {
+      GSheetFunctions.createGoogleFunctions(
+        fullCompileRenderer.value,
+        baseDirectory.value
+      )
+    }
+
   )
 
 lazy val ustax4s = crossProject(JSPlatform, JVMPlatform)
