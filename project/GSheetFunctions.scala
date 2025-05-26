@@ -10,9 +10,12 @@ object GSheetFunctions {
   ): Unit = {
     // Ignoring files listed in file "google-export-ignore".
     val ignoredFiles: List[String] =
-      Files.readAllLines(
-        baseDirectory.toPath.resolve("google-export-ignore")
-      ).asScala.toList
+      Files
+        .readAllLines(
+          baseDirectory.toPath.resolve("google-export-ignore")
+        )
+        .asScala
+        .toList
         .map(_.trim)
         .filter(_.nonEmpty)
         .filterNot(_.startsWith("//"))
@@ -31,7 +34,6 @@ object GSheetFunctions {
 
     Files.write(
       linkerOutputJsFile.toPath.getParent.resolve("google.js"),
-      //(IO.readLines(linkerOutputJsFile) ++ functions).asJava,
       (Files.readAllLines(linkerOutputJsFile.toPath).asScala ++ functions).asJava,
       StandardOpenOption.WRITE,
       StandardOpenOption.TRUNCATE_EXISTING,
@@ -39,11 +41,9 @@ object GSheetFunctions {
     )
   }
 
-  /** Returns a list of stuff to add at the end of compiled file for adding Google
-    * functions.
+  /** Returns a list of stuff to add at the end of compiled file for adding Google functions.
     *
-    * The file already f so we may assume comments, parenthesis and stuff are
-    * balanced.
+    * The file already f so we may assume comments, parenthesis and stuff are balanced.
     */
   private def exploreFileForFunctions(scalaSourceFile: File): List[String] = {
 
@@ -71,13 +71,13 @@ object GSheetFunctions {
           comments.dropRight(1) ++ (
             if (lastCommentLine.dropRight(2).trim.isEmpty)
               List(
-                "   * @customfunction",
+                "    * @customfunction",
                 lastCommentLine
               )
             else
               List(
                 lastCommentLine.dropRight(2),
-                "   * @customfunction",
+                "    * @customfunction",
                 "   */"
               )
           )
