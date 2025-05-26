@@ -33,53 +33,41 @@ object Facade:
     regime.standardDeduction(birthDate)
   end tir_std_deduction
 
-//  // JavaScript shim for Purescript code for Taxes In Retirement library.
-//  // Note: This file must be loaded AFTER the code compiled from Purescript.
-//
-//  // TODO: validate params in the shim and provide better error messages when invalid.
-//  // TODO: provide a way to return the results record.
-//
-//  /**
-//   * Standard deduction for a known year.
-//   * Example: TIR_STD_DEDUCTION(2022, "HeadOfHousehold", 1955-10-02)
-//   *
-//   * @param {number} year the tax regime to use, one of "TCJA", "PreTCJA"
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {object} birthDate tax payer's date of birth
-//   * @returns {number} The standard deduction
-//   * @customfunction
-//   */
-//  function TIR_STD_DEDUCTION (year, filingStatus, birthDate) {
-//    const br = bindRegimeForKnownYear(year, filingStatus);
-//    const psBirthDate = toPurescriptDate(birthDate);
-//
-//    return standardDeduction(br)(psBirthDate);
-//  }
-//
-//  /**
-//   * Standard deduction for a future year.
-//   * Example: TIR_FUTURE_STD_DEDUCTION("TCJA", 3%, 2030, "HeadOfHousehold", 1955-10-02)
-//   *
-//   * @param {string} regime  the tax regime to use, one of "TCJA", "PreTCJA"
-//   * @param {number} year a year in the future, after the current year
-//   * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {object} birthDate tax payer's date of birth
-//   * @returns {number} The standard deduction
-//   * @customfunction
-//   */
-//  function TIR_FUTURE_STD_DEDUCTION
-//    (regime, year, bracketInflationRate, filingStatus, birthDate) {
-//      const br = bindRegimeForFutureYear(
-//        regime,
-//        year,
-//        bracketInflationRate,
-//        filingStatus);
-//      const psBirthDate = toPurescriptDate(birthDate);
-//
-//      return standardDeduction(br)(psBirthDate);
-//    }
-//
+  /** Standard deduction for a future year. Example: TIR_FUTURE_STD_DEDUCTION("TCJA", 3%, 2030,
+    * "HeadOfHousehold", 1955-10-02)
+    *
+    * @param {string}
+    *   regime the tax regime to use, one of "TCJA", "PreTCJA"
+    * @param {number}
+    *   year a year in the future, after the current year
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @returns
+    *   {number} The standard deduction
+    */
+  @JSExportTopLevel("tir_future_std_deduction")
+  @unused
+  def tir_future_std_deduction(
+    regime: GRegime,
+    year: GYear,
+    bracketInflationRate: Double,
+    filingStatus: GFilingStatus,
+    birthDate: GLocalDate
+  ): GDeduction =
+    BoundRegime
+      .forFutureYear(
+        regime,
+        year,
+        bracketInflationRate,
+        filingStatus
+      )
+      .standardDeduction(birthDate)
+  end tir_future_std_deduction
+
 //  /**
 //   * Width of an ordinary income tax bracket for a known year.
 //   * Example: TIR_ORDINARY_BRACKET_WIDTH(2022, "Single", 10)
