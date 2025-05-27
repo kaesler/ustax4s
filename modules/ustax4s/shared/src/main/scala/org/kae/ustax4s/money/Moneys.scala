@@ -72,7 +72,7 @@ object Moneys:
     given Ordering[Deduction] = summonOrdering
 
     extension (left: Deduction)
-      inline def asDouble: Double = left.toDouble
+      inline def asDouble: Double               = left.toDouble
       def +(right: Deduction): Deduction        = left.combine(right)
       infix def inflateBy(d: Double): Deduction = Money.multiply(left, d)
       infix def mul(i: Int): Deduction          = Money.multiply(left, i)
@@ -94,7 +94,7 @@ object Moneys:
       def rounded1: IncomeThreshold = Money.rounded(left)
 
       infix def increaseBy(factor: Double): IncomeThreshold =
-        require(factor > 1.0, SourceLoc.loc)
+        require(factor > 1.0, SourceLoc())
         Money.multiply(left, factor).rounded
   end IncomeThreshold
 

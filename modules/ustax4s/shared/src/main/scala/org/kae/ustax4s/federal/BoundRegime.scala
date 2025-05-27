@@ -106,14 +106,14 @@ trait BoundRegime(
     targetFutureYear: Year,
     netInflationFactor: Double
   ): BoundRegime =
-    require(netInflationFactor >= 1, SourceLoc.loc)
+    require(netInflationFactor >= 1, SourceLoc())
     val base = this
     new BoundRegime(
       regime,
       targetFutureYear,
       filingStatus
     ):
-      require(targetFutureYear > YearlyValues.last.year, SourceLoc.loc)
+      require(targetFutureYear > YearlyValues.last.year, SourceLoc())
 
       override val name =
         s"${base.name}-estimatedFor-${targetFutureYear.getValue}"
@@ -160,7 +160,7 @@ object BoundRegime:
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus
   ): BoundRegime =
-    require(year > YearlyValues.last.year, SourceLoc.loc)
+    require(year > YearlyValues.last.year, SourceLoc())
     val baseValues         = YearlyValues.mostRecentFor(regime)
     val baseYear           = baseValues.year.getValue
     val yearsWithInflation = (baseYear + 1).to(year.getValue).map(Year.of)

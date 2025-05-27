@@ -33,7 +33,7 @@ object Brackets:
     // Adjust the bracket starts for inflation.
     // E.g. for 2% inflation: inflated(1.02)
     def inflatedBy(factor: Double): Brackets[R] =
-      require(factor >= 1.0, SourceLoc.loc)
+      require(factor >= 1.0, SourceLoc())
       bs.iterator.map { (start, rate) =>
         (start.increaseBy(factor).rounded1, rate)
       }.toMap

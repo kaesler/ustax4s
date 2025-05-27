@@ -13,16 +13,16 @@ object Money:
   val zero: Money = 0
 
   def apply(i: Int): Money =
-    require(i >= 0, s"attempt to create negative Money from $i, at " + SourceLoc.loc)
+    require(i >= 0, s"attempt to create negative Money from $i, at " + SourceLoc())
     BigDecimal(i)
 
   def apply(d: Double): Money =
-    require(d >= 0, s"attempt to create negative Money from $d, at " + SourceLoc.loc)
+    require(d >= 0, s"attempt to create negative Money from $d, at " + SourceLoc())
     BigDecimal(d)
 
   def unsafeParse(s: String): Money =
     val i = Integer.parseInt(s)
-    require(i >= 0, SourceLoc.loc)
+    require(i >= 0, SourceLoc())
     BigDecimal(i)
 
   def absoluteDifference(left: Money, right: Money): Money = (left - right).abs
@@ -31,17 +31,17 @@ object Money:
     (left - right).abs <= tolerance
 
   def divide(m: Money, i: Int): Money =
-    require(i > 0, s"division by non-positive: $i, at " + SourceLoc.loc)
+    require(i > 0, s"division by non-positive: $i, at " + SourceLoc())
     m.toDouble / i.toDouble
 
   def divide(left: Money, right: Money): Double =
-    require(right > 0, s"division by non-positive: $right, at " + SourceLoc.loc)
+    require(right > 0, s"division by non-positive: $right, at " + SourceLoc())
     left.toDouble / right.toDouble
 
   def isZero(m: Money): Boolean = m == 0
 
   def multiply(m: Money, d: Double): Money =
-    require(d >= 0, s"multiplication by negative: $d, at " + SourceLoc.loc)
+    require(d >= 0, s"multiplication by negative: $d, at " + SourceLoc())
     m * d
 
   def rounded(m: Money): Money = m.setScale(0, RoundingMode.HALF_UP)

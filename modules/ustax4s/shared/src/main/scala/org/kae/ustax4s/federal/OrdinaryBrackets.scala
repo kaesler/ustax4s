@@ -10,21 +10,21 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 final case class OrdinaryBrackets(
   brackets: Brackets[FederalTaxRate]
 ):
-  require(brackets.isProgressive, SourceLoc.loc)
-  require(brackets.contains(IncomeThreshold.zero), SourceLoc.loc)
+  require(brackets.isProgressive, SourceLoc())
+  require(brackets.contains(IncomeThreshold.zero), SourceLoc())
 
-  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+  lazy val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
     brackets.bracketsAscending
 
-  private val thresholdsDescending = bracketsAscending.reverse
+  private lazy val thresholdsDescending = bracketsAscending.reverse
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
   def inflatedBy(factor: Double): OrdinaryBrackets =
     OrdinaryBrackets(brackets.inflatedBy(factor))
 
-  def thresholds: Set[IncomeThreshold] = brackets.thresholds
-  def rates: Set[FederalTaxRate]       = brackets.rates
+  lazy val thresholds: Set[IncomeThreshold] = brackets.thresholds
+  lazy val rates: Set[FederalTaxRate]       = brackets.rates
 
   def taxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): TaxableIncome =
     bracketsAscending
@@ -41,7 +41,7 @@ final case class OrdinaryBrackets(
       )
 
   def taxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
-    require(bracketExists(bracketRate), SourceLoc.loc)
+    require(bracketExists(bracketRate), SourceLoc())
 
     val taxes = bracketsAscending
       .sliding(2)
@@ -58,14 +58,27 @@ final case class OrdinaryBrackets(
 
     taxes.foldLeft(TaxPayable.zero)(_ + _)
 
-  def ratesForBoundedBrackets: Vector[FederalTaxRate] =
+  lazy val ratesForBoundedBrackets: Vector[FederalTaxRate] =
     thresholdsDescending
       .drop(1)
       .reverse
       .map(_._2)
 
+  private lazy val bracketWidths: Map[FederalTaxRate, TaxableIncome] =
+    bracketsAscending
+      .zip(bracketsAscending.tail)
+      .map: (bracket, successorBracket) =>
+        val (lowerThreshold, rate) = bracket
+        val upperThreshold         = successorBracket._1
+        (rate, upperThreshold.absoluteDifference(lowerThreshold))
+      .toMap
+
+  // TODO: Unit test
+  def bracketWidth(bracketRate: FederalTaxRate): Option[TaxableIncome] =
+    bracketWidths.get(bracketRate)
+
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
-    bracketsAscending.exists { (_, rate) => rate == bracketRate }
+    bracketsAscending.exists(_._2 == bracketRate)
 
 end OrdinaryBrackets
 
@@ -81,7 +94,7 @@ object OrdinaryBrackets:
     OrdinaryBrackets(
       Brackets.of(
         pairs.map { (bracketStart, ratePercentage) =>
-          require(ratePercentage < 100.0d, SourceLoc.loc)
+          require(ratePercentage < 100.0d, SourceLoc())
           IncomeThreshold(bracketStart) ->
             FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
         }

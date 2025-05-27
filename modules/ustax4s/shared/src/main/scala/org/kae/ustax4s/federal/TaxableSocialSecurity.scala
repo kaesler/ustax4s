@@ -65,7 +65,7 @@ object TaxableSocialSecurity:
     ssRelevantOtherIncome: Income,
     netInflationFactor: Double
   ): Income =
-    require(netInflationFactor >= 1.0, SourceLoc.loc)
+    require(netInflationFactor >= 1.0, SourceLoc())
     val inflatedSocialSecurityBenefits = socialSecurityBenefits mul netInflationFactor
     val inflatedSsRelevantOtherIncome  = ssRelevantOtherIncome mul netInflationFactor
     val inflatedTaxableAmount = taxableSocialSecurityBenefits(
@@ -97,8 +97,8 @@ object TaxableSocialSecurity:
     futureYear: Year,
     estimatedAnnualInflation: Double
   ): Income =
-    require(futureYear > YearlyValues.last.year, SourceLoc.loc)
-    require(estimatedAnnualInflation >= 0.0, SourceLoc.loc)
+    require(futureYear > YearlyValues.last.year, SourceLoc())
+    require(estimatedAnnualInflation >= 0.0, SourceLoc())
 
     val baseYear = YearlyValues.last.year
 

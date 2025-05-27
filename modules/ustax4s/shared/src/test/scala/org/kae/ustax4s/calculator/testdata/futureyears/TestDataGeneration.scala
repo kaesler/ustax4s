@@ -29,8 +29,8 @@ object TestDataGeneration:
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
   ):
-    require(futureYear.getValue > YearlyValues.last.year.getValue, SourceLoc.loc)
-    require(estimatedAnnualInflationFactor > 1.0, SourceLoc.loc)
+    require(futureYear.getValue > YearlyValues.last.year.getValue, SourceLoc())
+    require(estimatedAnnualInflationFactor > 1.0, SourceLoc())
     def personalExemptions: Int = dependents + 1
   end TestCaseInputs
 

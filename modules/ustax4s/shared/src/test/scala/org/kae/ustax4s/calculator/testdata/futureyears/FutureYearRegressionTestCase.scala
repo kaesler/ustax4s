@@ -25,7 +25,7 @@ final case class FutureYearRegressionTestCase(
   federalTaxDue: TaxPayable,
   stateTaxDue: TaxPayable
 ):
-  require(futureYear.getValue > YearlyValues.last.year.getValue, SourceLoc.loc)
+  require(futureYear.getValue > YearlyValues.last.year.getValue, SourceLoc())
 
   def personalExemptions: Int          = dependents + 1
   def massachusettsGrossIncome: Income = ordinaryIncomeNonSS + qualifiedIncome
