@@ -1,6 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.PartialOrder
+import org.kae.ustax4s.SourceLoc
 import org.kae.ustax4s.money.{Income, IncomeThreshold}
 import scala.math.Ordered.orderingToOrdered
 
@@ -32,7 +33,7 @@ object Brackets:
     // Adjust the bracket starts for inflation.
     // E.g. for 2% inflation: inflated(1.02)
     def inflatedBy(factor: Double): Brackets[R] =
-      require(factor >= 1.0)
+      require(factor >= 1.0, SourceLoc.loc)
       bs.iterator.map { (start, rate) =>
         (start.increaseBy(factor).rounded1, rate)
       }.toMap

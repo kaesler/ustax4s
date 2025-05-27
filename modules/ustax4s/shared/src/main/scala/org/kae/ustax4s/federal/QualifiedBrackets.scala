@@ -1,6 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.{PartialOrder, Show}
+import org.kae.ustax4s.SourceLoc
 import org.kae.ustax4s.money.IncomeThreshold
 
 // Note: contain a Brackets[FederalTaxRate] rather than opaque type
@@ -8,13 +9,16 @@ import org.kae.ustax4s.money.IncomeThreshold
 final case class QualifiedBrackets(
   brackets: Brackets[FederalTaxRate]
 ):
-  require(brackets.isProgressive, brackets.toString)
-  require(brackets.contains(IncomeThreshold.zero))
-  require(brackets.size >= 2)
+  require(brackets.isProgressive, brackets.toString + ", at " + SourceLoc.loc)
+  require(brackets.contains(IncomeThreshold.zero), SourceLoc.loc)
+  require(brackets.size >= 2, SourceLoc.loc)
 
   val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
     brackets.bracketsAscending
-  require(bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)))
+  require(
+    bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)),
+    SourceLoc.loc
+  )
 
   // Adjust the thresholds for inflation.
   // E.g. for 2% inflation: inflated(1.02)
@@ -31,7 +35,7 @@ object QualifiedBrackets:
     apply(
       Brackets.of(
         pairs.map { (bracketStart, ratePercentage) =>
-          require(ratePercentage < 100)
+          require(ratePercentage < 100, SourceLoc.loc)
           IncomeThreshold(bracketStart) ->
             FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
         }

@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import java.time.Year
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, SourceLoc}
 import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Income, IncomeThreshold}
@@ -65,7 +65,7 @@ object TaxableSocialSecurity:
     ssRelevantOtherIncome: Income,
     netInflationFactor: Double
   ): Income =
-    require(netInflationFactor >= 1.0)
+    require(netInflationFactor >= 1.0, SourceLoc.loc)
     val inflatedSocialSecurityBenefits = socialSecurityBenefits mul netInflationFactor
     val inflatedSsRelevantOtherIncome  = ssRelevantOtherIncome mul netInflationFactor
     val inflatedTaxableAmount = taxableSocialSecurityBenefits(
@@ -97,8 +97,8 @@ object TaxableSocialSecurity:
     futureYear: Year,
     estimatedAnnualInflation: Double
   ): Income =
-    require(futureYear > YearlyValues.last.year)
-    require(estimatedAnnualInflation >= 0.0)
+    require(futureYear > YearlyValues.last.year, SourceLoc.loc)
+    require(estimatedAnnualInflation >= 0.0, SourceLoc.loc)
 
     val baseYear = YearlyValues.last.year
 

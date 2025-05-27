@@ -10,13 +10,12 @@ final case class InflationEstimate(
   // E.g. 0.02 for 2%
   annualGrowthFraction: Double
 ):
-  require(targetFutureYear > YearlyValues.last.year)
-  require(annualGrowthFraction >= 0)
+  require(targetFutureYear > YearlyValues.last.year, SourceLoc.loc)
+  require(annualGrowthFraction >= 0, SourceLoc.loc)
 
   // Compute the inflation factor for the target year, from a base year.
   def factor(baseYear: Year): Double =
-    // TODO: capture source locations for all these.
-    require(targetFutureYear >= baseYear)
+    require(targetFutureYear >= baseYear, SourceLoc.loc)
     math.pow(
       1 + annualGrowthFraction,
       targetFutureYear.getValue - baseYear.getValue

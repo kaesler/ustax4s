@@ -1,7 +1,7 @@
 package org.kae.ustax4s.calculator.testdata.futureyears
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, SourceLoc}
 import org.kae.ustax4s.federal.Regime
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
@@ -29,8 +29,8 @@ object TestDataGeneration:
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
   ):
-    require(futureYear.getValue > YearlyValues.last.year.getValue)
-    require(estimatedAnnualInflationFactor > 1.0)
+    require(futureYear.getValue > YearlyValues.last.year.getValue, SourceLoc.loc)
+    require(estimatedAnnualInflationFactor > 1.0, SourceLoc.loc)
     def personalExemptions: Int = dependents + 1
   end TestCaseInputs
 

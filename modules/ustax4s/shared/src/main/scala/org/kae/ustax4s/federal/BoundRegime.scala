@@ -5,7 +5,7 @@ import cats.implicits.*
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
-import org.kae.ustax4s.{Age, FilingStatus}
+import org.kae.ustax4s.{Age, FilingStatus, SourceLoc}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 trait BoundRegime(
@@ -106,14 +106,14 @@ trait BoundRegime(
     targetFutureYear: Year,
     netInflationFactor: Double
   ): BoundRegime =
-    require(netInflationFactor >= 1)
+    require(netInflationFactor >= 1, SourceLoc.loc)
     val base = this
     new BoundRegime(
       regime,
       targetFutureYear,
       filingStatus
     ):
-      require(targetFutureYear > YearlyValues.last.year)
+      require(targetFutureYear > YearlyValues.last.year, SourceLoc.loc)
 
       override val name =
         s"${base.name}-estimatedFor-${targetFutureYear.getValue}"
@@ -160,7 +160,7 @@ object BoundRegime:
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus
   ): BoundRegime =
-    require(year > YearlyValues.last.year)
+    require(year > YearlyValues.last.year, SourceLoc.loc)
     val baseValues         = YearlyValues.mostRecentFor(regime)
     val baseYear           = baseValues.year.getValue
     val yearsWithInflation = (baseYear + 1).to(year.getValue).map(Year.of)

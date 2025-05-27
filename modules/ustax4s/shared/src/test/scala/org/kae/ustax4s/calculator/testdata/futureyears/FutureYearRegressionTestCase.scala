@@ -4,7 +4,7 @@ import cats.Show
 import cats.implicits.*
 import java.time.{LocalDate, Year}
 import munit.Assertions.*
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, SourceLoc as SourceLoc}
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.federal.Regime
 import org.kae.ustax4s.federal.yearly.YearlyValues
@@ -25,7 +25,7 @@ final case class FutureYearRegressionTestCase(
   federalTaxDue: TaxPayable,
   stateTaxDue: TaxPayable
 ):
-  require(futureYear.getValue > YearlyValues.last.year.getValue)
+  require(futureYear.getValue > YearlyValues.last.year.getValue, SourceLoc.loc)
 
   def personalExemptions: Int          = dependents + 1
   def massachusettsGrossIncome: Income = ordinaryIncomeNonSS + qualifiedIncome

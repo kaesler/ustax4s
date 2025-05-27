@@ -2,6 +2,7 @@ package org.kae.ustax4s.money
 
 import cats.Monoid
 import cats.implicits.*
+import org.kae.ustax4s.SourceLoc
 import scala.annotation.targetName
 
 export Moneys.Deduction
@@ -93,7 +94,7 @@ object Moneys:
       def rounded1: IncomeThreshold = Money.rounded(left)
 
       infix def increaseBy(factor: Double): IncomeThreshold =
-        require(factor > 1.0)
+        require(factor > 1.0, SourceLoc.loc)
         Money.multiply(left, factor).rounded
   end IncomeThreshold
 

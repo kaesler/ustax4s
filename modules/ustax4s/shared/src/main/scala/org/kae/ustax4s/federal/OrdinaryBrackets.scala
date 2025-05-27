@@ -1,6 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.{PartialOrder, Show}
+import org.kae.ustax4s.SourceLoc
 import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
@@ -9,8 +10,8 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 final case class OrdinaryBrackets(
   brackets: Brackets[FederalTaxRate]
 ):
-  require(brackets.isProgressive)
-  require(brackets.contains(IncomeThreshold.zero))
+  require(brackets.isProgressive, SourceLoc.loc)
+  require(brackets.contains(IncomeThreshold.zero), SourceLoc.loc)
 
   val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
     brackets.bracketsAscending
@@ -40,7 +41,7 @@ final case class OrdinaryBrackets(
       )
 
   def taxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
-    require(bracketExists(bracketRate))
+    require(bracketExists(bracketRate), SourceLoc.loc)
 
     val taxes = bracketsAscending
       .sliding(2)
@@ -80,7 +81,7 @@ object OrdinaryBrackets:
     OrdinaryBrackets(
       Brackets.of(
         pairs.map { (bracketStart, ratePercentage) =>
-          require(ratePercentage < 100.0d)
+          require(ratePercentage < 100.0d, SourceLoc.loc)
           IncomeThreshold(bracketStart) ->
             FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
         }
