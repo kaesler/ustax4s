@@ -18,3 +18,7 @@ Taxable Social Security:
 TBS
 ### Using future dollars
 TBS
+
+### Build for GSHeet
+sbt fullCompileCreateFunctions
+

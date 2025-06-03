@@ -29,8 +29,9 @@ object Facade:
     filingStatus: GFilingStatus,
     birthDate: GLocalDate
   ): GDeduction =
-    val regime = BoundRegime.forKnownYear(year, filingStatus)
-    regime.standardDeduction(birthDate)
+    BoundRegime
+      .forKnownYear(year, filingStatus)
+      .standardDeduction(birthDate)
   end tir_std_deduction
 
   /** Standard deduction for a future year. Example: TIR_FUTURE_STD_DEDUCTION("TCJA", 3%, 2030,
@@ -68,24 +69,32 @@ object Facade:
       .standardDeduction(birthDate)
   end tir_future_std_deduction
 
-//  /**
-//   * Width of an ordinary income tax bracket for a known year.
-//   * Example: TIR_ORDINARY_BRACKET_WIDTH(2022, "Single", 10)
-//   *
-//   * @param {number} year a year between 2016 and the current year
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {number} ordinaryRatePercentage rate for a tax bracket e.g. 22
-//   * @returns {number} The width of the specified ordinary income tax bracket.
-//   * @customfunction
-//   */
-//  function TIR_ORDINARY_BRACKET_WIDTH
-//    (year, filingStatus, ordinaryRatePercentage) {
-//      const br = bindRegimeForKnownYear(year, filingStatus);
-//      const rate = ordinaryRatePercentage / 100.0;
-//
-//      return ordinaryIncomeBracketWidth(br.ordinaryBrackets)(rate);
-//    }
-//
+  /** Width of an ordinary income tax bracket for a known year. Example:
+    * TIR_ORDINARY_BRACKET_WIDTH(2022, "Single", 10)
+    *
+    * @param {number}
+    *   year a year between 2016 and the current year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number}
+    *   ordinaryRatePercentage rate for a tax bracket e.g. 22
+    * @returns
+    *   {number} The width of the specified ordinary income tax bracket.
+    */
+  @JSExportTopLevel("tir_ordinary_bracket_width")
+  @unused
+  def tir_ordinary_bracket_width(
+    year: GYear,
+    filingStatus: GFilingStatus,
+    bracketRatePercentage: GFederalTaxRate
+  ): GTaxableIncome =
+    BoundRegime
+      .forKnownYear(year, filingStatus)
+      .ordinaryBrackets
+      .bracketWidth(bracketRatePercentage / 100)
+      .getOrElse(throw Exception(s"No such bracket rate: $bracketRatePercentage"))
+  end tir_ordinary_bracket_width
+
 //  /**
 //   * End of an ordinary income tax bracket for a known year.
 //   * Example: TIR_ORDINARY_BRACKET_END(2022, "Single", 10)

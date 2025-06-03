@@ -4,10 +4,12 @@ import scala.scalajs.js
 
 object TypeAliases:
 
-  type GDeduction    = Double
-  type GFilingStatus = String
-  type GLocalDate    = js.Date
-  type GRegime       = String
-  type GYear         = Double
+  type GDeduction      = Double
+  type GFederalTaxRate = Double
+  type GFilingStatus   = String
+  type GLocalDate      = js.Date
+  type GRegime         = String
+  type GTaxableIncome  = Double
+  type GYear           = Double
 
 end TypeAliases

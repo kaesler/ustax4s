@@ -107,6 +107,7 @@ object Moneys:
     given Monoid[TaxableIncome] = summonAdditionMonoid
 
     extension (left: TaxableIncome)
+      def asDouble: Double                       = left.toDouble
       def +(right: TaxableIncome): TaxableIncome = left.combine(right)
 
       infix def amountAbove(threshold: IncomeThreshold): TaxableIncome =
