@@ -213,32 +213,34 @@ object Facade:
       .startOfNonZeroQualifiedRateBracket
   end tir_ltcg_tax_start
 
-//  function TIR_LTCG_TAX_START (year, filingStatus) {
-//    const br = bindRegimeForKnownYear(year, filingStatus);
-//    return startOfNonZeroQualifiedRateBracket(br.qualifiedBrackets);
-//  }
-//
-//  /**
-//   * Threshold above which long term capital gains are taxed, for a future year
-//   * Example: TIR_FUTURE_LTCG_TAX_START("PreTCJA", 2027, 3.4%, "HeadOfHousehold")
-//   *
-//   * @param {string} regime the tax regime to use, one of "TCJA", "PreTCJA"
-//   * @param {number} year a year in the future, after the current year
-//   * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @returns {number} the end of the zero tax rate on qualified investment income
-//   * @customfunction
-//   */
-//  function TIR_FUTURE_LTCG_TAX_START
-//    (regime, year, bracketInflationRate, filingStatus) {
-//      const br = bindRegimeForFutureYear(
-//        regime,
-//        year,
-//        bracketInflationRate,
-//        filingStatus);
-//      return startOfNonZeroQualifiedRateBracket(br.qualifiedBrackets);
-//    }
-//
+  /** Threshold above which long term capital gains are taxed, for a future year Example:
+    * TIR_FUTURE_LTCG_TAX_START("PreTCJA", 2027, 3.4%, "HeadOfHousehold")
+    *
+    * @param {string}
+    *   regime the tax regime to use, one of "TCJA", "PreTCJA"
+    * @param {number}
+    *   year a year in the future, after the current year
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @returns
+    *   {number} the end of the zero tax rate on qualified investment income
+    */
+  @JSExportTopLevel("tir_future_ltcg_tax_start")
+  @unused
+  def tir_future_ltcg_tax_start(
+    regime: GRegime,
+    bracketInflationRate: Double,
+    year: GYear,
+    filingStatus: GFilingStatus
+  ): GIncomeThreshold =
+    BoundRegime
+      .forFutureYear(regime, year, bracketInflationRate, filingStatus)
+      .qualifiedBrackets
+      .startOfNonZeroQualifiedRateBracket
+  end tir_future_ltcg_tax_start
+
 //  /**
 //   * The RMD fraction for a given age.
 //   * Example: TIR_RMD_FRACTION_FOR_AGE(76)
