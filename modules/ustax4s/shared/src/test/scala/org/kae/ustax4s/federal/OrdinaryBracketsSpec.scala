@@ -28,27 +28,27 @@ class OrdinaryBracketsSpec extends ScalaCheckSuite with TaxBracketsGeneration wi
     val brackets = bracketsFor(TheYear, HeadOfHousehold)
 
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
       TaxPayable(1420)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
       TaxPayable(6220)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
       TaxPayable(13293)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
       TaxPayable(32145)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
       TaxPayable(46385)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
       TaxPayable(156355)
     )
   }
@@ -56,27 +56,27 @@ class OrdinaryBracketsSpec extends ScalaCheckSuite with TaxBracketsGeneration wi
   test("taxToEndOfBracket should be correct for 2021 Single") {
     val brackets = bracketsFor(TheYear, Single)
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
       TaxPayable(995)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
       TaxPayable(4664)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
       TaxPayable(14751)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
       TaxPayable(33603)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
       TaxPayable(47843)
     )
     assertEquals(
-      brackets.taxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
+      brackets.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
       TaxPayable(157804)
     )
   }
@@ -127,8 +127,8 @@ class OrdinaryBracketsSpec extends ScalaCheckSuite with TaxBracketsGeneration wi
       brackets = bracketsFor(TheYear, filingStatus)
       rate <- brackets.ratesForBoundedBrackets
     do
-      val taxableIncome = brackets.taxableIncomeToEndOfBracket(rate)
-      val expectedTax   = brackets.taxToEndOfBracket(rate)
+      val taxableIncome = brackets.unsafeTaxableIncomeToEndOfBracket(rate)
+      val expectedTax   = brackets.unsafeTaxToEndOfBracket(rate)
 
       assertEquals(
         TaxFunction.fromBrackets(brackets.brackets)(taxableIncome).rounded,

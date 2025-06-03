@@ -91,27 +91,34 @@ object Facade:
     BoundRegime
       .forKnownYear(year, filingStatus)
       .ordinaryBrackets
-      .bracketWidth(bracketRatePercentage / 100)
-      .getOrElse(throw Exception(s"No such bracket rate: $bracketRatePercentage"))
+      .unsafeBracketWidth(bracketRatePercentage / 100)
   end tir_ordinary_bracket_width
 
-//  /**
-//   * End of an ordinary income tax bracket for a known year.
-//   * Example: TIR_ORDINARY_BRACKET_END(2022, "Single", 10)
-//   *
-//   * @param {number} year a year between 2016 and the current year
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {number} ordinaryRatePercentage rate for a tax bracket e.g. 22
-//   * @returns {number} The end of the specified ordinary bracket
-//   * @customfunction
-//   */
-//  function TIR_ORDINARY_BRACKET_END
-//    (year, filingStatus, ordinaryRatePercentage) {
-//      const br = bindRegimeForKnownYear(year, filingStatus);
-//      const rate = ordinaryRatePercentage / 100.0;
-//
-//      return taxableIncomeToEndOfOrdinaryBracket(br.ordinaryBrackets)(rate);
-//    }
+  /** End of an ordinary income tax bracket for a known year. Example:
+    * TIR_ORDINARY_BRACKET_END(2022, "Single", 10)
+    *
+    * @param {number}
+    *   year a year between 2016 and the current year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number}
+    *   ordinaryRatePercentage rate for a tax bracket e.g. 22
+    * @returns
+    *   {number} The end of the specified ordinary bracket
+    */
+  @JSExportTopLevel("tir_ordinary_bracket_end")
+  @unused
+  def tir_ordinary_bracket_end(
+    year: GYear,
+    filingStatus: GFilingStatus,
+    bracketRatePercentage: GFederalTaxRate
+  ): GTaxableIncome =
+    BoundRegime
+      .forKnownYear(year, filingStatus)
+      .ordinaryBrackets
+      .unsafeTaxableIncomeToEndOfBracket(bracketRatePercentage / 100)
+  end tir_ordinary_bracket_end
+
 //
 //  /**
 //   * Width of an ordinary income tax bracket for a future year.
