@@ -1,6 +1,6 @@
 package org.kae.ustax4s.gsheetfacade
 
-import org.kae.ustax4s.federal.BoundRegime
+import org.kae.ustax4s.federal.{BoundRegime, RMDs}
 import scala.annotation.unused
 import scala.scalajs.js.annotation.JSExportTopLevel
 
@@ -241,18 +241,20 @@ object Facade:
       .startOfNonZeroQualifiedRateBracket
   end tir_future_ltcg_tax_start
 
-//  /**
-//   * The RMD fraction for a given age.
-//   * Example: TIR_RMD_FRACTION_FOR_AGE(76)
-//   *
-//   * @param {number} age age of the taxpayer
-//   * @returns {number} the RMD fraction
-//   * @customfunction
-//   */
-//  function TIR_RMD_FRACTION_FOR_AGE (age) {
-//    return rmdFractionForAge(age);
-//  }
-//
+  /** The RMD fraction for a given age. Example: TIR_RMD_FRACTION_FOR_AGE(76)
+    *
+    * @param {number}
+    *   age age of the taxpayer
+    * @returns
+    *   {number} the RMD fraction
+    */
+  @JSExportTopLevel("tir_rmd_fraction_for_age")
+  @unused
+  def tir_rmd_fraction_for_age(
+    age: Int
+  ): Double =
+    RMDs.fractionForAge(age)
+
 //  /**
 //   * The Federal tax due for a known year.
 //   * Example: TIR_FEDERAL_TAX_DUE(2022, "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
