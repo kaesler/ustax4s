@@ -40,9 +40,9 @@ object Facade:
     * @param {string}
     *   regime the tax regime to use, one of "TCJA", "PreTCJA"
     * @param {number}
-    *   year a year in the future, after the current year
-    * @param {number}
     *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year a year in the future, after the current year
     * @param {string}
     *   filingStatus one of "Single", "HeadOfHousehold", "Married"
     * @param {object}
@@ -54,8 +54,8 @@ object Facade:
   @unused
   def tir_future_std_deduction(
     regime: GRegime,
-    year: GYear,
     bracketInflationRate: Double,
+    year: GYear,
     filingStatus: GFilingStatus,
     birthDate: GLocalDate
   ): GDeduction =
@@ -119,57 +119,78 @@ object Facade:
       .unsafeTaxableIncomeToEndOfBracket(bracketRatePercentage / 100)
   end tir_ordinary_bracket_end
 
-//
-//  /**
-//   * Width of an ordinary income tax bracket for a future year.
-//   * Example: TIR_FUTURE_ORDINARY_BRACKET_WIDTH("PreTCJA", 2030, "HeadOfHousehold", 10)
-//   *
-//   * @param {string} regime the tax regime to use, one of "TCJA", "PreTCJA"
-//   * @param {number} year a year in the future, after the current year
-//   * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {number} ordinaryRatePercentage rate for a tax bracket e.g. 22
-//   * @returns {number} The width of the specified ordinary income bracket.
-//   * @customfunction
-//   */
-//  function TIR_FUTURE_ORDINARY_BRACKET_WIDTH
-//    (regime, year, bracketInflationRate, filingStatus, ordinaryRatePercentage) {
-//      const br = bindRegimeForFutureYear(
-//        regime,
-//        year,
-//        bracketInflationRate,
-//        filingStatus);
-//      const rate = ordinaryRatePercentage / 100.0;
-//
-//      return ordinaryIncomeBracketWidth(br.ordinaryBrackets)(rate);
-//    }
-//
-//  // TODO: expose taxableIncomeToEndOfOrdinaryBracket
-//
-//  /**
-//   * End of an ordinary income tax bracket for a future year.
-//   * Example: TIR_FUTURE_ORDINARY_BRACKET_END("PreTCJA", 2030, "HeadOfHousehold", 10)
-//   *
-//   * @param {string} regime the tax regime to use, one of "TCJA", "PreTCJA"
-//   * @param {number} year a year in the future, after the current year
-//   * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {number} ordinaryRatePercentage rate for a tax bracket e.g. 22
-//   * @returns {number} The end of the specified ordinary income bracket.
-//   * @customfunction
-//   */
-//  function TIR_FUTURE_ORDINARY_BRACKET_END
-//    (regime, year, bracketInflationRate, filingStatus, ordinaryRatePercentage) {
-//      const br = bindRegimeForFutureYear(
-//        regime,
-//        year,
-//        bracketInflationRate,
-//        filingStatus);
-//      const rate = ordinaryRatePercentage / 100.0;
-//
-//      return taxableIncomeToEndOfOrdinaryBracket(br.ordinaryBrackets)(rate);
-//    }
-//
+  /** Width of an ordinary income tax bracket for a future year. Example:
+    * TIR_FUTURE_ORDINARY_BRACKET_WIDTH("PreTCJA", 2030, "HeadOfHousehold", 10)
+    *
+    * @param {string}
+    *   regime the tax regime to use, one of "TCJA", "PreTCJA"
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year a year in the future, after the current year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number}
+    *   ordinaryRatePercentage rate for a tax bracket e.g. 22
+    * @returns
+    *   {number} The width of the specified ordinary income bracket.
+    */
+  @JSExportTopLevel("tir_future_ordinary_bracket_width")
+  @unused
+  def tir_future_ordinary_bracket_width(
+    regime: GRegime,
+    bracketInflationRate: Double,
+    year: GYear,
+    filingStatus: GFilingStatus,
+    bracketRatePercentage: GFederalTaxRate
+  ): GTaxableIncome =
+    BoundRegime
+      .forFutureYear(
+        regime,
+        year,
+        bracketInflationRate,
+        filingStatus
+      )
+      .ordinaryBrackets
+      .unsafeBracketWidth(bracketRatePercentage / 100)
+  end tir_future_ordinary_bracket_width
+
+  /** End of an ordinary income tax bracket for a future year. Example:
+    * TIR_FUTURE_ORDINARY_BRACKET_END("PreTCJA", 2030, "HeadOfHousehold", 10)
+    *
+    * @param {string}
+    *   regime the tax regime to use, one of "TCJA", "PreTCJA"
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year a year in the future, after the current year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number}
+    *   ordinaryRatePercentage rate for a tax bracket e.g. 22
+    * @returns
+    *   {number} The end of the specified ordinary income bracket.
+    */
+  @JSExportTopLevel("tir_future_ordinary_bracket_end")
+  @unused
+  def tir_future_ordinary_bracket_end(
+    regime: GRegime,
+    bracketInflationRate: Double,
+    year: GYear,
+    filingStatus: GFilingStatus,
+    bracketRatePercentage: GFederalTaxRate
+  ): GTaxableIncome =
+    BoundRegime
+      .forFutureYear(
+        regime,
+        year,
+        bracketInflationRate,
+        filingStatus
+      )
+      .ordinaryBrackets
+      .unsafeTaxableIncomeToEndOfBracket(bracketRatePercentage / 100)
+  end tir_future_ordinary_bracket_end
+
 //  /**
 //   * Threshold above which long term capital gains are taxed, for a known year.
 //   * Example: TIR_LTCG_TAX_START(2022, "HeadOfHousehold")
