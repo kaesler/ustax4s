@@ -7,8 +7,8 @@ import scala.scalajs.js.annotation.JSExportTopLevel
 // To remove warning.
 @unused
 object Facade:
-  import TypeAliases.*
   import Conversions.given
+  import TypeAliases.*
 
   /** Standard deduction for a known year. Example: TIR_STD_DEDUCTION(2022, "HeadOfHousehold",
     * 1955-10-02)
@@ -191,15 +191,28 @@ object Facade:
       .unsafeTaxableIncomeToEndOfBracket(bracketRatePercentage / 100)
   end tir_future_ordinary_bracket_end
 
-//  /**
-//   * Threshold above which long term capital gains are taxed, for a known year.
-//   * Example: TIR_LTCG_TAX_START(2022, "HeadOfHousehold")
-//   *
-//   * @param {number} year a year between 2016 and the current year
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @returns {number} the end of the zero tax rate on qualified investment income
-//   * @customfunction
-//   */
+  /** Threshold above which long term capital gains are taxed, for a known year. Example:
+    * TIR_LTCG_TAX_START(2022, "HeadOfHousehold")
+    *
+    * @param {number}
+    *   year a year between 2016 and the current year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @returns
+    *   {number} the end of the zero tax rate on qualified investment income
+    */
+  @JSExportTopLevel("tir_ltcg_tax_start")
+  @unused
+  def tir_ltcg_tax_start(
+    year: GYear,
+    filingStatus: GFilingStatus
+  ): GIncomeThreshold =
+    BoundRegime
+      .forKnownYear(year, filingStatus)
+      .qualifiedBrackets
+      .startOfNonZeroQualifiedRateBracket
+  end tir_ltcg_tax_start
+
 //  function TIR_LTCG_TAX_START (year, filingStatus) {
 //    const br = bindRegimeForKnownYear(year, filingStatus);
 //    return startOfNonZeroQualifiedRateBracket(br.qualifiedBrackets);

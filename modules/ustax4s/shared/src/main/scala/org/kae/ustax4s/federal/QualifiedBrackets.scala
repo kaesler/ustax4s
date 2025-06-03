@@ -25,7 +25,7 @@ final case class QualifiedBrackets(
   def inflatedBy(factor: Double): QualifiedBrackets =
     QualifiedBrackets(brackets.inflatedBy(factor))
 
-  def startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketsAscending(1)._1
+  lazy val startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketsAscending(1)._1
 
 end QualifiedBrackets
 

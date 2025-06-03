@@ -26,7 +26,8 @@ object Conversions:
     (gYear: GYear) => Year.of(gYear.toInt)
 
   // Output result conversions:
-  given Conversion[Deduction, GDeduction] = _.asDouble
-  given Conversion[TaxableIncome, GTaxableIncome] = _.asDouble
+  given Conversion[Deduction, GDeduction]             = _.asDouble
+  given Conversion[TaxableIncome, GTaxableIncome]     = _.asDouble
+  given Conversion[IncomeThreshold, GIncomeThreshold] = _.asDouble
 
 end Conversions
