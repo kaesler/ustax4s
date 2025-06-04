@@ -101,6 +101,7 @@ object Moneys:
   opaque type TaxableIncome <: Income = Money
   object TaxableIncome:
     val zero: TaxableIncome                   = Money.zero
+    def apply(d: Double): TaxableIncome       = Money(d)
     def apply(i: Int): TaxableIncome          = Money(i)
     def unsafeParse(s: String): TaxableIncome = Money.unsafeParse(s)
 
@@ -133,6 +134,7 @@ object Moneys:
     given Ordering[TaxPayable] = summonOrdering
 
     extension (left: TaxPayable)
+      def asDouble: Double                 = left.toDouble
       def +(right: TaxPayable): TaxPayable = left.combine(right)
 
       infix def absoluteDifference(right: TaxPayable): TaxPayable =

@@ -4,13 +4,13 @@ object RMDs:
 
   def fractionForAge(
     age: Int
-  ): Double =  
+  ): Double =
     if age < 72 then 0.0
     else
       val divisor = divisors.getOrElse(age, 1.0)
       1.0 / divisor
   end fractionForAge
-      
+
   private val divisors: Map[Int, Double] =
     List(
       72  -> 27.4,

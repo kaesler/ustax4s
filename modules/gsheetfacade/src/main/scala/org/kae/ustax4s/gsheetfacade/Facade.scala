@@ -23,7 +23,6 @@ object Facade:
     *   {number} The standard deduction
     */
   @JSExportTopLevel("tir_std_deduction")
-  @unused
   def tir_std_deduction(
     year: GYear,
     filingStatus: GFilingStatus,
@@ -51,7 +50,6 @@ object Facade:
     *   {number} The standard deduction
     */
   @JSExportTopLevel("tir_future_std_deduction")
-  @unused
   def tir_future_std_deduction(
     regime: GRegime,
     bracketInflationRate: Double,
@@ -82,7 +80,6 @@ object Facade:
     *   {number} The width of the specified ordinary income tax bracket.
     */
   @JSExportTopLevel("tir_ordinary_bracket_width")
-  @unused
   def tir_ordinary_bracket_width(
     year: GYear,
     filingStatus: GFilingStatus,
@@ -107,7 +104,6 @@ object Facade:
     *   {number} The end of the specified ordinary bracket
     */
   @JSExportTopLevel("tir_ordinary_bracket_end")
-  @unused
   def tir_ordinary_bracket_end(
     year: GYear,
     filingStatus: GFilingStatus,
@@ -136,7 +132,6 @@ object Facade:
     *   {number} The width of the specified ordinary income bracket.
     */
   @JSExportTopLevel("tir_future_ordinary_bracket_width")
-  @unused
   def tir_future_ordinary_bracket_width(
     regime: GRegime,
     bracketInflationRate: Double,
@@ -172,7 +167,6 @@ object Facade:
     *   {number} The end of the specified ordinary income bracket.
     */
   @JSExportTopLevel("tir_future_ordinary_bracket_end")
-  @unused
   def tir_future_ordinary_bracket_end(
     regime: GRegime,
     bracketInflationRate: Double,
@@ -202,7 +196,6 @@ object Facade:
     *   {number} the end of the zero tax rate on qualified investment income
     */
   @JSExportTopLevel("tir_ltcg_tax_start")
-  @unused
   def tir_ltcg_tax_start(
     year: GYear,
     filingStatus: GFilingStatus
@@ -228,7 +221,6 @@ object Facade:
     *   {number} the end of the zero tax rate on qualified investment income
     */
   @JSExportTopLevel("tir_future_ltcg_tax_start")
-  @unused
   def tir_future_ltcg_tax_start(
     regime: GRegime,
     bracketInflationRate: Double,
@@ -249,52 +241,58 @@ object Facade:
     *   {number} the RMD fraction
     */
   @JSExportTopLevel("tir_rmd_fraction_for_age")
-  @unused
   def tir_rmd_fraction_for_age(
     age: Int
   ): Double =
     RMDs.fractionForAge(age)
 
-//  /**
-//   * The Federal tax due for a known year.
-//   * Example: TIR_FEDERAL_TAX_DUE(2022, "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
-//   *
-//   * @param {number} year a year between 2016 and the current year
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {object} birthDate tax payer's date of birth
-//   * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-//   * @param {number} socSec Social Security benefits received
-//   * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-//   * @param {number} qualifiedIncome qualified dividends and long term capital gains
-//   * @param {number} itemizedDeductions total of any itemized deductions
-//   * @returns {number} the Federal tax due
-//   * @customfunction
-//   */
-//  function TIR_FEDERAL_TAX_DUE (
-//    year,
-//    filingStatus,
-//    birthDate,
-//    personalExemptions,
-//    socSec,
-//    ordinaryIncomeNonSS,
-//    qualifiedIncome,
-//    itemizedDeductions
-//  ) {
-//    const psYear = unsafeMakeYear(year);
-//    const psFilingStatus = unsafeReadFilingStatus(filingStatus);
-//    const psBirthDate = toPurescriptDate(birthDate);
-//
-//    return taxDueForKnownYear(
-//      psYear)(
-//      psFilingStatus)(
-//      psBirthDate)(
-//      personalExemptions)(
-//      socSec)(
-//      ordinaryIncomeNonSS)(
-//      qualifiedIncome)(
-//      itemizedDeductions);
-//  }
-//
+  /** The Federal tax due for a known year. Example: TIR_FEDERAL_TAX_DUE(2022, "Single", 1955-10-02,
+    * 0, 10000, 40000, 5000, 0)
+    *
+    * @param {number}
+    *   year a year between 2016 and the current year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the Federal tax due
+    */
+  @JSExportTopLevel("tir_federal_tax_due")
+  def tir_federal_tax_due(
+    year: GYear,
+    filingStatus: GFilingStatus,
+    birthDate: GLocalDate,
+    personalExemptions: Int,
+    socSec: GIncome,
+    ordinaryIncomeNonSS: GIncome,
+    qualifiedIncome: GTaxableIncome,
+    itemizedDeductions: GDeduction
+  ): GTaxPayable =
+    BoundRegime
+      .forKnownYear(year, filingStatus)
+      .calculator
+      .federalTaxResults(
+        birthDate,
+        personalExemptions,
+        socSec,
+        ordinaryIncomeNonSS,
+        qualifiedIncome,
+        itemizedDeductions
+      )
+      .taxDue
+  end tir_federal_tax_due
+
 //  function TIR_FEDERAL_TAX_RESULTS (
 //    year,
 //    filingStatus,

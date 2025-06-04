@@ -11,7 +11,11 @@ object Conversions:
   // Input argument conversions:
   given Conversion[GFederalTaxRate, FederalTaxRate] = FederalTaxRate.unsafeFrom
 
+  given Conversion[GDeduction, Deduction] = Deduction.apply
+
   given Conversion[GFilingStatus, FilingStatus] = FilingStatus.valueOf
+
+  given Conversion[GIncome, Income] = Income.apply
 
   given Conversion[GLocalDate, LocalDate] = (gDate: GLocalDate) =>
     LocalDate.of(
@@ -22,12 +26,15 @@ object Conversions:
 
   given Conversion[GRegime, Regime] = Regime.valueOf
 
+  given Conversion[GTaxableIncome, TaxableIncome] = TaxableIncome.apply
+
   given Conversion[GYear, Year] =
     (gYear: GYear) => Year.of(gYear.toInt)
 
   // Output result conversions:
   given Conversion[Deduction, GDeduction]             = _.asDouble
-  given Conversion[TaxableIncome, GTaxableIncome]     = _.asDouble
   given Conversion[IncomeThreshold, GIncomeThreshold] = _.asDouble
+  given Conversion[TaxableIncome, GTaxableIncome]     = _.asDouble
+  given Conversion[TaxPayable, GTaxPayable]           = _.asDouble
 
 end Conversions
