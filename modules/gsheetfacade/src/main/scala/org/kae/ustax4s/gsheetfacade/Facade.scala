@@ -298,7 +298,7 @@ object Facade:
     * @param {number} ordinaryIncomeDelta the change to ordinaryIncomeNonSS with which to calculate a slope
     * @returns {number} the marginal tax rate as a percentage.
     */
-  @JSExportTopLevel("tir_federal_tax_due")
+  @JSExportTopLevel("tir_federal_tax_slope")
   def tir_federal_tax_slope(
     year: GYear,
     filingStatus: GFilingStatus,
@@ -352,7 +352,7 @@ object Facade:
     * @param {number} ordinaryIncomeDelta the change to ordinaryIncomeNonSS with which to calculate a slope
     * @returns {number} the marginal tax rate as a percentage.
     */
-  @JSExportTopLevel("tir_future_federal_tax_due")
+  @JSExportTopLevel("tir_future_federal_tax_slope")
   def tir_future_federal_tax_slope(
     regime: GRegime,
     bracketInflationRate: Double,
