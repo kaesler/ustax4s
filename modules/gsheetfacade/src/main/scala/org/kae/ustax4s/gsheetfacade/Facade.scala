@@ -1,11 +1,9 @@
 package org.kae.ustax4s.gsheetfacade
 
 import org.kae.ustax4s.federal.{BoundRegime, RMDs}
-import scala.annotation.unused
+
 import scala.scalajs.js.annotation.JSExportTopLevel
 
-// To remove warning.
-@unused
 object Facade:
   import Conversions.given
   import TypeAliases.*
@@ -16,7 +14,7 @@ object Facade:
     * @param {number} year the tax regime to use, one of "TCJA", "PreTCJA"
     * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
     * @param {object} birthDate tax payer's date of birth
-    * @returns {number} The standard deduction
+    * @returns  {number} The standard deduction
     */
   @JSExportTopLevel("tir_std_deduction")
   def tir_std_deduction(
