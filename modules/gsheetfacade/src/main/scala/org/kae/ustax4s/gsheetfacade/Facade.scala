@@ -45,11 +45,12 @@ object Facade:
     filingStatus: GFilingStatus,
     birthDate: GLocalDate
   ): GDeduction =
+    val bracketInflationFactor = 1.0 + bracketInflationRate
     BoundRegime
       .forFutureYear(
         regime,
         year,
-        bracketInflationRate,
+        bracketInflationFactor,
         filingStatus
       )
       .standardDeduction(birthDate)
@@ -113,11 +114,12 @@ object Facade:
     filingStatus: GFilingStatus,
     bracketRatePercentage: GFederalTaxRate
   ): GTaxableIncome =
+    val bracketInflationFactor = 1.0 + bracketInflationRate
     BoundRegime
       .forFutureYear(
         regime,
         year,
-        bracketInflationRate,
+        bracketInflationFactor,
         filingStatus
       )
       .ordinaryBrackets
@@ -142,11 +144,12 @@ object Facade:
     filingStatus: GFilingStatus,
     bracketRatePercentage: GFederalTaxRate
   ): GTaxableIncome =
+    val bracketInflationFactor = 1.0 + bracketInflationRate
     BoundRegime
       .forFutureYear(
         regime,
         year,
-        bracketInflationRate,
+        bracketInflationFactor,
         filingStatus
       )
       .ordinaryBrackets
@@ -187,8 +190,9 @@ object Facade:
     year: GYear,
     filingStatus: GFilingStatus
   ): GIncomeThreshold =
+    val bracketInflationFactor = 1.0 + bracketInflationRate
     BoundRegime
-      .forFutureYear(regime, year, bracketInflationRate, filingStatus)
+      .forFutureYear(regime, year, bracketInflationFactor, filingStatus)
       .qualifiedBrackets
       .startOfNonZeroQualifiedRateBracket
   end tir_future_ltcg_tax_start
@@ -269,9 +273,10 @@ object Facade:
     ordinaryIncomeNonSS: GIncome,
     qualifiedIncome: GTaxableIncome,
     itemizedDeductions: GDeduction
-  ): GTaxPayable =
+  ): GTaxPayable = {
+    val bracketInflationFactor = 1.0 + bracketInflationRate
     BoundRegime
-      .forFutureYear(regime, year, bracketInflationRate, filingStatus)
+      .forFutureYear(regime, year, bracketInflationFactor, filingStatus)
       .calculator
       .federalTaxResults(
         birthDate,
@@ -282,6 +287,7 @@ object Facade:
         itemizedDeductions
       )
       .taxDue
+  }
   end tir_future_federal_tax_due
 
   /** The marginal tax rate on ordinary income for a known year. Example:
