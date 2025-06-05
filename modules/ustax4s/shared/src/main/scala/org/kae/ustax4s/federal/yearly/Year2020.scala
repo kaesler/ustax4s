@@ -65,3 +65,4 @@ object Year2020:
       )
     ).view.mapValues(QualifiedBrackets.of).toMap
   )
+end Year2020

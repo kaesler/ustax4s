@@ -38,3 +38,4 @@ object FederalTaxResults:
     b.append(s"  taxDue: $taxDue\n")
 
     b.result
+end FederalTaxResults

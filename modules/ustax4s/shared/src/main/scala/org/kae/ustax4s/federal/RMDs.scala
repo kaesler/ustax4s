@@ -63,5 +63,6 @@ object RMDs:
       119 -> 2.3,
       120 -> 2.0
     ).toMap
+  end divisors
 
 end RMDs

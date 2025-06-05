@@ -22,9 +22,9 @@ object CMM extends CMMOps:
   // The natural Monus on functions returning B, when B has a Monus.
   given [A, B: {CMM as mb}] => CMM[A => B]:
     type F = A => B
-    def empty: F               = { _ => mb.empty }
-    def combine(f: F, g: F): F = { a => f(a).combine(g(a)) }
-    def monus(f: F, g: F): F   = { a => f(a).monus(g(a)) }
+    def empty: F               = _ => mb.empty
+    def combine(f: F, g: F): F = a => f(a).combine(g(a))
+    def monus(f: F, g: F): F   = a => f(a).monus(g(a))
 
   // Provides a CMM for many types via Cats.
   given [A: {Group as group, Ordering as ordering}] => CMM[A]:

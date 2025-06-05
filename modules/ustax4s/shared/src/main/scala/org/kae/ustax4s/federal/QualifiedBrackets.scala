@@ -10,7 +10,7 @@ final case class QualifiedBrackets(
   brackets: Brackets[FederalTaxRate]
 ):
   require(brackets.isProgressive, brackets.toString + ", at " + SourceLoc())
-  require(brackets.contains(IncomeThreshold.zero), SourceLoc())
+  require(brackets.has(IncomeThreshold.zero), SourceLoc())
   require(brackets.size >= 2, SourceLoc())
 
   val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
@@ -34,13 +34,13 @@ object QualifiedBrackets:
   def of(pairs: Iterable[(Int, Int)]): QualifiedBrackets =
     apply(
       Brackets.of(
-        pairs.map { (bracketStart, ratePercentage) =>
+        pairs.map: (bracketStart, ratePercentage) =>
           require(ratePercentage < 100, SourceLoc())
           IncomeThreshold(bracketStart) ->
             FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
-        }
       )
     )
+  end of
 
   given Show[QualifiedBrackets]:
     def show(b: QualifiedBrackets): String =

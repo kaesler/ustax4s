@@ -13,7 +13,7 @@ final case class OrdinaryBrackets(
   import OrdinaryBrackets.*
 
   require(brackets.isProgressive, SourceLoc())
-  require(brackets.contains(IncomeThreshold.zero), SourceLoc())
+  require(brackets.has(IncomeThreshold.zero), SourceLoc())
 
   lazy val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
     brackets.bracketsAscending
@@ -123,3 +123,4 @@ object OrdinaryBrackets:
       )
     )
   end of
+end OrdinaryBrackets

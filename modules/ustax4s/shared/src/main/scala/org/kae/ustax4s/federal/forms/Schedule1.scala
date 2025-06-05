@@ -18,3 +18,4 @@ final case class Schedule1(
 
   def adjustmentsToIncome: Deduction =
     healthSavingsAccountDeduction + deductiblePartOfSelfEmploymentTax
+end Schedule1

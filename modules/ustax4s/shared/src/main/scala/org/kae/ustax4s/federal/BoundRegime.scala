@@ -35,6 +35,7 @@ trait BoundRegime(
             )
         else Deduction.zero
       )
+  end standardDeduction
 
   // TODO: needs property spec
   private final def personalExemptionDeduction(personalExemptions: Int): Deduction =
@@ -52,6 +53,7 @@ trait BoundRegime(
         standardDeduction(birthDate),
         itemizedDeductions
       ).max
+  end netDeduction
 
   // TODO: needs property spec
   def calculator: FederalTaxCalculator =
@@ -137,6 +139,8 @@ trait BoundRegime(
         base.qualifiedBrackets.inflatedBy(netInflationFactor)
     end new
 
+  end withEstimatedNetInflationFactor
+
 end BoundRegime
 
 object BoundRegime:
@@ -165,14 +169,13 @@ object BoundRegime:
     val baseYear           = baseValues.year.getValue
     val yearsWithInflation = (baseYear + 1).to(year.getValue).map(Year.of)
     val inflationFactors = yearsWithInflation
-      .map { year =>
+      .map: year =>
         YearlyValues.averageThresholdChangeOverPrevious(year) match
           // Use known inflation for each year where we have it...
           case Some(knownFactor) => knownFactor
           // ...otherwise use estimate.
           case _ => estimatedAnnualInflationFactor
 
-      }
     val netInflationFactor = inflationFactors.product
     forKnownYear(baseValues.year, filingStatus)
       .withEstimatedNetInflationFactor(year, netInflationFactor)
@@ -203,3 +206,4 @@ object BoundRegime:
         yv.qualifiedBrackets(this.filingStatus)
     end new
   end forKnownYear
+end BoundRegime

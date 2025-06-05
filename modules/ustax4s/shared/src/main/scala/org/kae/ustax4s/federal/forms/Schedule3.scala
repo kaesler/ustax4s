@@ -7,3 +7,4 @@ final case class Schedule3(
   foreignTaxCredit: TaxCredit
 ):
   def nonRefundableCredits: TaxCredit = foreignTaxCredit
+end Schedule3

@@ -63,6 +63,7 @@ final case class Form1040(
         schedule1.map(_.additionalIncome).getOrElse(Income.zero)
       ).combineAll
     )
+  end taxableSocialSecurityBenefits
 
   def scheduleD: Option[ScheduleD] = schedule1.flatMap(_.scheduleD)
 
@@ -81,6 +82,7 @@ final case class Form1040(
       // Line 5b:
       taxableSocialSecurityBenefits
     ).combineAll
+  end totalIncome
 
   // Line 7:
   def adjustedGrossIncome: Income =
@@ -105,6 +107,7 @@ final case class Form1040(
        |taxableIncome: $taxableIncome
        |taxableOrdinaryIncome: $taxableOrdinaryIncome
        |""".stripMargin
+  end showValues
 
 end Form1040
 
@@ -126,6 +129,7 @@ object Form1040:
         form.schedule3
           .map(_.nonRefundableCredits)
           .getOrElse(TaxCredit.zero))
+  end totalFederalTax
 
   // Line 11:
   def taxDueBeforeCredits(
@@ -139,5 +143,6 @@ object Form1040:
         ordinaryIncome,
         qualifiedIncome
       )
+  end taxDueBeforeCredits
 
 end Form1040

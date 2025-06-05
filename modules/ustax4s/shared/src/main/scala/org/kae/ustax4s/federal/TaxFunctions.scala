@@ -21,4 +21,6 @@ object TaxFunctions:
     val taxFunction = TaxFunction.fromBrackets(brackets.brackets)
     taxFunction(taxableOrdinaryIncome + qualifiedIncome)
       .reduceBy(taxFunction(taxableOrdinaryIncome))
+  end taxDueOnQualifiedIncome
+
 end TaxFunctions

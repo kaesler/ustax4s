@@ -13,15 +13,15 @@ object Brackets:
     pairs.toMap
 
   extension [R](bs: Brackets[R])
-    def thresholds: Set[IncomeThreshold]              = bs.keySet
-    def rates: Set[R]                                 = bs.values.toSet
-    def size: Int                                     = bs.iterator.size
-    def contains(threshold: IncomeThreshold): Boolean = bs.contains(threshold)
+    def thresholds: Set[IncomeThreshold]         = bs.keySet
+    def rates: Set[R]                            = bs.values.toSet
+    def size: Int                                = bs.iterator.size
+    def has(threshold: IncomeThreshold): Boolean = bs.contains(threshold)
 
     def bracketsAscending: Vector[(IncomeThreshold, R)] =
       bs.iterator.toVector.sortBy(_._1: Income)
 
-    def ratesAscending: Vector[R]                    = bracketsAscending.map(_._2)
+    private def ratesAscending: Vector[R]            = bracketsAscending.map(_._2)
     def thresholdsAscending: Vector[IncomeThreshold] = bracketsAscending.map(_._1)
 
     def isProgressive(
@@ -34,9 +34,10 @@ object Brackets:
     // E.g. for 2% inflation: inflated(1.02)
     def inflatedBy(factor: Double): Brackets[R] =
       require(factor >= 1.0, SourceLoc())
-      bs.iterator.map { (start, rate) =>
-        (start.increaseBy(factor).rounded1, rate)
-      }.toMap
+      bs.iterator
+        .map: (start, rate) =>
+          (start.increaseBy(factor).rounded1, rate)
+        .toMap
 
   given [R] => PartialOrder[Brackets[R]]:
     def partialCompare(left: Brackets[R], right: Brackets[R]): Double =
@@ -55,7 +56,7 @@ object Brackets:
         else Double.NaN
       else Double.NaN
 
-  def areComparable[R](left: Brackets[R], right: Brackets[R]): Boolean =
+  private def areComparable[R](left: Brackets[R], right: Brackets[R]): Boolean =
     left.size == right.size && left.rates == right.rates
 
 end Brackets

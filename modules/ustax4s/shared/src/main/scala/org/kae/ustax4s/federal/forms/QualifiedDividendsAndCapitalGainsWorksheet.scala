@@ -17,6 +17,7 @@ final case class QualifiedDividendsAndCapitalGainsWorksheet(
       form1040.scheduleD
         .map(_.netLongTermCapitalGains)
         .getOrElse(TaxableIncome.zero)
+  end preferentiallyTaxedGains
 
   def taxOnPTGains: TaxPayable = ???
 

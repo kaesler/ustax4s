@@ -14,18 +14,20 @@ final case class YearlyValues(
   adjustmentWhenOver65AndSingle: Deduction,
   ordinaryBrackets: Map[FilingStatus, OrdinaryBrackets],
   qualifiedBrackets: Map[FilingStatus, QualifiedBrackets]
-) {
+):
   def previous: Option[YearlyValues] =
     YearlyValues.of(year.minusYears(1L))
 
-  def ordinaryNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] = (
-    for
-      fs                <- FilingStatus.values
-      brackets          <- ordinaryBrackets.get(fs).toList
-      (threshold, rate) <- brackets.bracketsAscending
-      if threshold != IncomeThreshold.zero
-    yield (fs, rate) -> threshold
-  ).toMap
+  def ordinaryNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] =
+    (
+      for
+        fs                <- FilingStatus.values
+        brackets          <- ordinaryBrackets.get(fs).toList
+        (threshold, rate) <- brackets.bracketsAscending
+        if threshold != IncomeThreshold.zero
+      yield (fs, rate) -> threshold
+    ).toMap
+  end ordinaryNonZeroThresholdsMap
 
   def qualifiedNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] =
     (
@@ -36,15 +38,18 @@ final case class YearlyValues(
         if threshold != IncomeThreshold.zero
       yield (fs, rate) -> threshold
     ).toMap
+  end qualifiedNonZeroThresholdsMap
 
   def hasCongruentOrdinaryBrackets(that: YearlyValues): Boolean =
     this.ordinaryNonZeroThresholdsMap.keySet == that.ordinaryNonZeroThresholdsMap.keySet
+
   def hasCongruentQualifiedBrackets(that: YearlyValues): Boolean =
     this.qualifiedNonZeroThresholdsMap.keySet == that.qualifiedNonZeroThresholdsMap.keySet
 
   lazy val averageThresholdChangeOverPrevious: Option[Double] =
     previous.map(YearlyValues.averageThresholdChange(_, this))
-}
+
+end YearlyValues
 
 object YearlyValues:
   def of(year: Year): Option[YearlyValues] = m.get(year.getValue)
@@ -75,6 +80,7 @@ object YearlyValues:
         left.qualifiedNonZeroThresholdsMap.values.toList.sorted
           .zip(right.qualifiedNonZeroThresholdsMap.values.toList.sorted)
     pairs.map((earlier, later) => later div earlier).sum / pairs.length
+  end averageThresholdChange
 
   private lazy val m: Map[Int, YearlyValues] = Map(
     2016 -> Year2016.values,

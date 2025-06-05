@@ -6,6 +6,7 @@ enum FilingStatus(val isSingle: Boolean):
   case Single          extends FilingStatus(true)
   case HeadOfHousehold extends FilingStatus(true)
   case MarriedJoint    extends FilingStatus(false)
+end FilingStatus
 
 object FilingStatus:
 

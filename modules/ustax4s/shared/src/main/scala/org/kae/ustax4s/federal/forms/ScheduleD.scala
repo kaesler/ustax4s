@@ -10,3 +10,4 @@ final case class ScheduleD(
 ):
   def netLongTermCapitalGains: TaxableIncome =
     longTermCapitalGains + capitalGainsDistributions
+end ScheduleD

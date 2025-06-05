@@ -39,18 +39,20 @@ object TaxFunction:
       .map(makeThresholdTax[R].tupled)
       // Note: Tax has a natural Monoid because TaxPayable has one.
       .combineAll
+  end fromBrackets
 
   private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): Vector[(IncomeThreshold, R)] =
     brackets.thresholdsAscending
       .zip(rateDeltas(brackets))
+  end asRateDeltas
 
   private def rateDeltas[R: TaxRate](brackets: Brackets[R]): List[R] =
     val ratesWithZeroAtFront =
       summon[TaxRate[R]].zero :: brackets.rates.toList.sorted
     ratesWithZeroAtFront
       .zip(ratesWithZeroAtFront.tail)
-      .map { (previousRate, currentRate) =>
+      .map: (previousRate, currentRate) =>
         currentRate delta previousRate
-      }
+  end rateDeltas
 
 end TaxFunction

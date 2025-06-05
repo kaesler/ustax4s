@@ -45,6 +45,7 @@ object TaxCalculator:
       )
       .taxDue
       .rounded
+  end federalTaxDueForFutureYear
 
   def federalTaxResults(
     year: Year,
@@ -71,6 +72,7 @@ object TaxCalculator:
         qualifiedIncome,
         itemizedDeductions
       )
+  end federalTaxResults
 
   def federalTaxResultsForFutureYear(
     regime: Regime,
@@ -101,6 +103,7 @@ object TaxCalculator:
         qualifiedIncome,
         itemizedDeductions
       )
+  end federalTaxResultsForFutureYear
 
   def federalTaxDue(
     year: Year,
@@ -123,6 +126,7 @@ object TaxCalculator:
       qualifiedIncome,
       itemizedDeductions
     ).taxDue.rounded
+  end federalTaxDue
 
   // Note: for tests only
   def federalTaxDueUsingForm1040(
@@ -188,3 +192,6 @@ object TaxCalculator:
         dependents
       )(massachusettsGrossIncome)
       .rounded
+  end stateTaxDue
+
+end TaxCalculator

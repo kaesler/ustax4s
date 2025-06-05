@@ -6,3 +6,4 @@ case class Schedule4(
   selfEmploymentTax: TaxPayable
 ):
   def totalOtherTaxes: TaxPayable = selfEmploymentTax
+end Schedule4

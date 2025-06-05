@@ -18,6 +18,7 @@ object TaxableSocialSecurity:
         (IncomeThreshold(25000), IncomeThreshold(34000))
       case MarriedJoint =>
         (IncomeThreshold(32000), IncomeThreshold(44000))
+  end thresholds
 
   // Current year, current dollars.
   def taxableSocialSecurityBenefits(
@@ -50,6 +51,7 @@ object TaxableSocialSecurity:
           ((combinedIncome amountAbove highThreshold) mul fractionTaxable),
         maxSocSecTaxable
       ).min
+  end taxableSocialSecurityBenefits
 
   // The thresholds used in this computation are not adjusted each year for
   // inflation, as tax brackets are. Social security payments are adjusted.
@@ -76,6 +78,7 @@ object TaxableSocialSecurity:
     val fractionTaxable             = inflatedTaxableAmount div inflatedSocialSecurityBenefits
     val amountTaxableInCurrentMoney = socialSecurityBenefits mul fractionTaxable
     amountTaxableInCurrentMoney
+  end taxableSocialSecurityBenefitsInflated
 
   // Helpfully named alias for taxableSocialSecurityBenefits.
   // Inflated income applied to the unchanging thresholds.
@@ -83,11 +86,13 @@ object TaxableSocialSecurity:
     filingStatus: FilingStatus,
     socialSecurityBenefits: Income,
     ssRelevantOtherIncome: Income
-  ): Income = taxableSocialSecurityBenefits(
-    filingStatus,
-    socialSecurityBenefits,
-    ssRelevantOtherIncome
-  )
+  ): Income =
+    taxableSocialSecurityBenefits(
+      filingStatus,
+      socialSecurityBenefits,
+      ssRelevantOtherIncome
+    )
+  end taxableSocialSecurityBenefitsFutureYearFutureDollars
 
   // Future year, benefits as of today.
   def taxableSocialSecurityBenefitsFutureYearCurrentDollars(
@@ -113,3 +118,5 @@ object TaxableSocialSecurity:
       ssRelevantOtherIncome,
       netInflationFactor
     )
+  end taxableSocialSecurityBenefitsFutureYearCurrentDollars
+end TaxableSocialSecurity

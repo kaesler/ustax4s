@@ -12,3 +12,5 @@ object Age:
         .of(taxYear.getValue + 1, Month.JANUARY.getValue, 1)
         .minusYears(65)
     )
+
+end Age

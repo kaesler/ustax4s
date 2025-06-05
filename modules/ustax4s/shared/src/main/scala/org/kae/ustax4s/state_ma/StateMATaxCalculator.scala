@@ -29,6 +29,7 @@ object StateMATaxCalculator:
           totalExemptions(year, filingStatus, birthDate, dependents)
         )
     )
+  end taxDue
 
   private def totalExemptions(
     year: Year,
@@ -41,6 +42,7 @@ object StateMATaxCalculator:
       age65OrOlderExemption(year, birthDate),
       dependentExceptions(dependents)
     ).combineAll
+  end totalExemptions
 
   // Note: Social Security is not taxed.
   private def rateFor(year: Year): StateMATaxRate =
@@ -51,6 +53,7 @@ object StateMATaxCalculator:
       case x if x > 2020 => 0.05
       case x if x < 2018 => 0.051
     StateMATaxRate.unsafeFrom(r)
+  end rateFor
 
   private def personalExemption(
     year: Year,
@@ -91,12 +94,16 @@ object StateMATaxCalculator:
         case (_, HeadOfHousehold) => 6800
         case (_, Single)          => 4400
     ).pipe(Deduction.apply)
+  end personalExemption
 
   private def age65OrOlderExemption(year: Year, birthDate: LocalDate): Deduction =
     Deduction(
       if Age.isAge65OrOlder(birthDate, year) then 700
       else 0
     )
+  end age65OrOlderExemption
 
   private def dependentExceptions(dependents: Int): Deduction =
     Deduction(1000) mul dependents
+
+end StateMATaxCalculator
