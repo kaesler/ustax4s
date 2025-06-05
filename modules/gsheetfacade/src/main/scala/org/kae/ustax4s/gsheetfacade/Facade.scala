@@ -298,6 +298,42 @@ object Facade:
     * @param {number} ordinaryIncomeDelta the change to ordinaryIncomeNonSS with which to calculate a slope
     * @returns {number} the marginal tax rate as a percentage.
     */
+  @JSExportTopLevel("tir_federal_tax_due")
+  def tir_federal_tax_slope(
+    year: GYear,
+    filingStatus: GFilingStatus,
+    birthDate: GLocalDate,
+    personalExemptions: Int,
+    socSec: GIncome,
+    ordinaryIncomeNonSS: GIncome,
+    qualifiedIncome: GTaxableIncome,
+    itemizedDeductions: GDeduction,
+    ordinaryIncomeNonSSDelta: GIncome
+  ): Double =
+    val start = math.min(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
+    val end   = math.max(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
+    val taxDueAtStart = tir_federal_tax_due(
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions,
+      socSec,
+      start,
+      qualifiedIncome,
+      itemizedDeductions
+    )
+    val taxDueAtEnd = tir_federal_tax_due(
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions,
+      socSec,
+      end,
+      qualifiedIncome,
+      itemizedDeductions
+    )
+    (taxDueAtEnd - taxDueAtStart) / math.abs(ordinaryIncomeNonSSDelta)
+  end tir_federal_tax_slope
 
   /** The marginal tax rate on ordinary income for a future year. Example:
     * TIR_FUTURE_FEDERAL_TAX_SLOPE("TCJA", 2023, 0.034, "Single", 1955-10-02, 0, 10000, 40000, 5000,
@@ -316,6 +352,49 @@ object Facade:
     * @param {number} ordinaryIncomeDelta the change to ordinaryIncomeNonSS with which to calculate a slope
     * @returns {number} the marginal tax rate as a percentage.
     */
+  @JSExportTopLevel("tir_future_federal_tax_due")
+  def tir_future_federal_tax_slope(
+    regime: GRegime,
+    bracketInflationRate: Double,
+    year: GYear,
+    filingStatus: GFilingStatus,
+    birthDate: GLocalDate,
+    personalExemptions: Int,
+    socSec: GIncome,
+    ordinaryIncomeNonSS: GIncome,
+    qualifiedIncome: GTaxableIncome,
+    itemizedDeductions: GDeduction,
+    ordinaryIncomeNonSSDelta: GIncome
+  ) =
+    val start = math.min(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
+    val end   = math.max(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
+    val taxDueAtStart = tir_future_federal_tax_due(
+      regime,
+      bracketInflationRate,
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions,
+      socSec,
+      start,
+      qualifiedIncome,
+      itemizedDeductions
+    )
+    val taxDueAtEnd = tir_future_federal_tax_due(
+      regime,
+      bracketInflationRate,
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions,
+      socSec,
+      end,
+      qualifiedIncome,
+      itemizedDeductions
+    )
+    (taxDueAtEnd - taxDueAtStart) / math.abs(ordinaryIncomeNonSSDelta)
+  end tir_future_federal_tax_slope
+
 //  /**
 //   * The amount of Social Security income that is taxable.
 //   * Example: TIR_TAXABLE_SOCIAL_SECURITY("HeadOfHousehold", 20000, 52000)
@@ -362,71 +441,6 @@ object Facade:
 //      psBirthDate)(
 //      dependents)(
 //      massachusettsGrossIncome);
-//  }
-//
-//  function bindRegimeForKnownYear (yearAsNumber, filingStatusName) {
-//    const psFilingStatus = unsafeReadFilingStatus(filingStatusName);
-//    const psYear = unsafeMakeYear(yearAsNumber);
-//
-//    return boundRegimeForKnownYear(psYear)(psFilingStatus);
-//  }
-//
-//  function bindRegimeForFutureYear
-//    (regimeName, yearAsNumber, bracketInflationRate, filingStatusName) {
-//      const psRegime = unsafeReadRegime(regimeName);
-//      const psYear = unsafeMakeYear(yearAsNumber);
-//      const inflationFactorEstimate = 1.0 + bracketInflationRate;
-//      const psFilingStatus = unsafeReadFilingStatus(filingStatusName);
-//
-//      return boundRegimeForFutureYear(psRegime)(psYear)(inflationFactorEstimate)(
-//        psFilingStatus);
-//    }
-//
-//  function toPurescriptDate (dateObject) {
-//    if (typeof(dateObject) != "object")
-//      throw "Date object required";
-//    if (!dateObject instanceof Date)
-//      throw "Date object required";
-//    const year = 1900 + dateObject.getYear();
-//    const month = 1 + dateObject.getMonth();
-//    const dayOfMonth = dateObject.getDate();
-//    return unsafeMakeDate(year)(month)(dayOfMonth);
-//  }
-//
-//  /**
-//   * Runs when the add-on is installed.
-//   */
-//  function onInstall () {
-//    onOpen();
-//  }
-//
-//  /**
-//   * Runs when the document is opened, creating the add-on's menu. Custom function
-//   * add-ons need at least one menu item, since the add-on is only enabled in the
-//   * current spreadsheet when a function is run.
-//   */
-//  function onOpen () {
-//    SpreadsheetApp.getUi().createAddonMenu()
-//      .addItem('Use in this spreadsheet
-//    ', 'use
-//    ')
-//  .addToUi();
-//  }
-//
-//  /**
-//   * Enables the add-on on for the current spreadsheet (simply by running) and
-//   * shows a popup informing the user of the new functions that are available.
-//   */
-//  function use () {
-//    var title = 'Tax In Retirement Functions
-//    ';
-//    var message = 'The Tax In Retirement functions are now available in
-//    '+'this spreadsheet
-//  .More information is available in the function help
-//    '+'box that appears when you start using them in a formula.
-//    ';
-//    var ui = SpreadsheetApp.getUi();
-//    ui.alert(title, message, ui.ButtonSet.OK);
 //  }
 
 end Facade
