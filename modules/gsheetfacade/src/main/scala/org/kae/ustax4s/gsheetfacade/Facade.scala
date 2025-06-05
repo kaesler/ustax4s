@@ -1,7 +1,6 @@
 package org.kae.ustax4s.gsheetfacade
 
-import org.kae.ustax4s.federal.{BoundRegime, RMDs}
-
+import org.kae.ustax4s.federal.{BoundRegime, RMDs, TaxableSocialSecurity}
 import scala.scalajs.js.annotation.JSExportTopLevel
 
 object Facade:
@@ -365,7 +364,7 @@ object Facade:
     qualifiedIncome: GTaxableIncome,
     itemizedDeductions: GDeduction,
     ordinaryIncomeNonSSDelta: GIncome
-  ) =
+  ): Double =
     val start = math.min(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
     val end   = math.max(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
     val taxDueAtStart = tir_future_federal_tax_due(
@@ -395,23 +394,27 @@ object Facade:
     (taxDueAtEnd - taxDueAtStart) / math.abs(ordinaryIncomeNonSSDelta)
   end tir_future_federal_tax_slope
 
-//  /**
-//   * The amount of Social Security income that is taxable.
-//   * Example: TIR_TAXABLE_SOCIAL_SECURITY("HeadOfHousehold", 20000, 52000)
-//   *
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {number} ssRelevantOtherIncome all income apart from Social Security
-//   * @param {number} socSec Social Security benefits received
-//   * @returns {number} the amount of Social Security income that is taxable
-//   * @customfunction
-//   */
-//  function TIR_TAXABLE_SOCIAL_SECURITY
-//    (filingStatus, ssRelevantOtherIncome, socSec) {
-//      const psFilingStatus = unsafeReadFilingStatus(filingStatus);
-//
-//      return amountTaxable(psFilingStatus)(socSec)(ssRelevantOtherIncome);
-//    }
-//
+  /** The amount of Social Security income that is taxable.
+    * Example: TIR_TAXABLE_SOCIAL_SECURITY("HeadOfHousehold", 20000, 52000)
+    *
+    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number} ssRelevantOtherIncome all income apart from Social Security
+    * @param {number} socSec Social Security benefits received
+    * @returns {number} the amount of Social Security income that is taxable
+    */
+  @JSExportTopLevel("tir_taxable_social_security")
+  def tir_taxable_social_security(
+    filingStatus: GFilingStatus,
+    ssRelevantOtherIncome: GIncome,
+    socSec: GIncome
+  ): GIncome =
+    TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      filingStatus,
+      socSec,
+      ssRelevantOtherIncome
+    )
+  end tir_taxable_social_security
+
 //  /** *
 //   * The MA state income tax due.
 //   * Example: TIR_MA_STATE_TAX_DUE(2022, "Married", 1955-10-02, 0, 130000)

@@ -33,6 +33,7 @@ object Moneys:
     given Ordering[Income] = summonOrdering
 
     extension (left: Income)
+      def asDouble: Double         = left.toDouble
       def +(right: Income): Income = left.combine(right)
 
       infix def amountAbove(threshold: IncomeThreshold): Income =

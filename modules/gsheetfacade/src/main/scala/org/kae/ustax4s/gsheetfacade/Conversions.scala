@@ -35,6 +35,7 @@ object Conversions:
   given Conversion[Deduction, GDeduction]             = _.asDouble
   given Conversion[IncomeThreshold, GIncomeThreshold] = _.asDouble
   given Conversion[TaxableIncome, GTaxableIncome]     = _.asDouble
+  given Conversion[Income, GIncome]                   = _.asDouble
   given Conversion[TaxPayable, GTaxPayable]           = _.asDouble
 
 end Conversions
