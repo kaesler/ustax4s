@@ -293,83 +293,59 @@ object Facade:
       .taxDue
   end tir_federal_tax_due
 
-//  function TIR_FEDERAL_TAX_RESULTS (
-//    year,
-//    filingStatus,
-//    birthDate,
-//    personalExemptions,
-//    socSec,
-//    ordinaryIncomeNonSS,
-//    qualifiedIncome,
-//    itemizedDeductions
-//  ) {
-//    const psYear = unsafeMakeYear(year);
-//    const psFilingStatus = unsafeReadFilingStatus(filingStatus);
-//    const psBirthDate = toPurescriptDate(birthDate);
-//
-//    const res = taxResultsForKnownYearAsTable(
-//      psYear)(
-//      psFilingStatus)(
-//      psBirthDate)(
-//      personalExemptions)(
-//      socSec)(
-//      ordinaryIncomeNonSS)(
-//      qualifiedIncome)(
-//      itemizedDeductions);
-//
-//    return res;
-//  }
-//
-//
-//  /**
-//   * The Federal tax due for a future year.
-//   * Example: TIR_FUTURE_FEDERAL_TAX_DUE("TCJA", 2023, 0.034, "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
-//   *
-//   * @param {string} regime the tax regime to use, one of "TCJA", "PreTCJA"
-//   * @param {number} year a year in the future, after the current year
-//   * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {object} birthDate tax payer's date of birth
-//   * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-//   * @param {number} socSec Social Security benefits received
-//   * @param {number} ordinaryIncomeNonSS  ordinary income excluding Social Security
-//   * @param {number} qualifiedIncome qualified dividends and long term capital gains
-//   * @param {number} itemizedDeductions total of any itemized deductions
-//   * @returns {number} the Federal tax due
-//   * @customfunction
-//   */
-//  function TIR_FUTURE_FEDERAL_TAX_DUE (
-//    regime,
-//    year,
-//    bracketInflationRate,
-//    filingStatus,
-//    birthDate,
-//    personalExemptions,
-//    socSec,
-//    ordinaryIncomeNonSS,
-//    qualifiedIncome,
-//    itemizedDeductions
-//  ) {
-//    const psRegime = unsafeReadRegime(regime);
-//    const psYear = unsafeMakeYear(year);
-//    const inflationFactorEstimate = 1.0 + bracketInflationRate;
-//    const psFilingStatus = unsafeReadFilingStatus(filingStatus);
-//    const psBirthDate = toPurescriptDate(birthDate);
-//
-//    return taxDueForFutureYear(
-//      psRegime)(
-//      psYear)(
-//      inflationFactorEstimate)(
-//      psFilingStatus)(
-//      psBirthDate)(
-//      personalExemptions)(
-//      socSec)(
-//      ordinaryIncomeNonSS)(
-//      qualifiedIncome)(
-//      itemizedDeductions);
-//  }
-//
-//
+  /** The Federal tax due for a future year. Example: TIR_FUTURE_FEDERAL_TAX_DUE("TCJA", 2023,
+    * 0.034, "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
+    *
+    * @param {string}
+    *   regime the tax regime to use, one of "TCJA", "PreTCJA"
+    * @param {number}
+    *   year a year in the future, after the current year
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the Federal tax due
+    */
+  @JSExportTopLevel("tir_future_federal_tax_due")
+  def tir_future_federal_tax_due(
+    regime: GRegime,
+    bracketInflationRate: Double,
+    year: GYear,
+    filingStatus: GFilingStatus,
+    birthDate: GLocalDate,
+    personalExemptions: Int,
+    socSec: GIncome,
+    ordinaryIncomeNonSS: GIncome,
+    qualifiedIncome: GTaxableIncome,
+    itemizedDeductions: GDeduction
+  ): GTaxPayable =
+    BoundRegime
+      .forFutureYear(regime, year, bracketInflationRate, filingStatus)
+      .calculator
+      .federalTaxResults(
+        birthDate,
+        personalExemptions,
+        socSec,
+        ordinaryIncomeNonSS,
+        qualifiedIncome,
+        itemizedDeductions
+      )
+      .taxDue
+  end tir_future_federal_tax_due
+
 //  /**
 //   * The marginal tax rate on ordinary income for a known year.
 //   * Example: TIR_FEDERAL_TAX_SLOPE(2022, "Single", 1955-10-02, 0, 10000, 40000, 5000, 0, 1000)
