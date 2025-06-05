@@ -1,6 +1,7 @@
 package org.kae.ustax4s.gsheetfacade
 
 import org.kae.ustax4s.federal.{BoundRegime, RMDs, TaxableSocialSecurity}
+import org.kae.ustax4s.state_ma.StateMATaxCalculator
 import scala.scalajs.js.annotation.JSExportTopLevel
 
 object Facade:
@@ -415,35 +416,27 @@ object Facade:
     )
   end tir_taxable_social_security
 
-//  /** *
-//   * The MA state income tax due.
-//   * Example: TIR_MA_STATE_TAX_DUE(2022, "Married", 1955-10-02, 0, 130000)
-//   *
-//   * @param {number} year a year between 2016 and the current year
-//   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-//   * @param {object} birthDate tax payer's date of birth
-//   * @param {number} dependents
-//   * @param {number} massachusettsGrossIncome
-//   * @returns {number} the MA state income tax due.
-//   * @customfunction
-//   */
-//  function TIR_MA_STATE_TAX_DUE (
-//    year,
-//    filingStatus,
-//    birthDate,
-//    dependents,
-//    massachusettsGrossIncome
-//  ) {
-//    const psYear = unsafeMakeYear(year);
-//    const psFilingStatus = unsafeReadFilingStatus(filingStatus);
-//    const psBirthDate = toPurescriptDate(birthDate);
-//
-//    return maStateTaxDue(
-//      psYear)(
-//      psFilingStatus)(
-//      psBirthDate)(
-//      dependents)(
-//      massachusettsGrossIncome);
-//  }
+  /** The MA state income tax due.
+    * Example: TIR_MA_STATE_TAX_DUE(2022, "Married", 1955-10-02, 0, 130000)
+    *
+    * @param {number} year a year between 2016 and the current year
+    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object} birthDate tax payer's date of birth
+    * @param {number} dependents
+    * @param {number} massachusettsGrossIncome
+    * @returns {number} the MA state income tax due.
+    */
+  @JSExportTopLevel("tir_ma_state_tax_due")
+  def tir_ma_state_tax_due(
+    year: GYear,
+    filingStatus: GFilingStatus,
+    birthDate: GLocalDate,
+    dependents: Int,
+    massachusettsGrossIncome: GIncome
+  ): GTaxPayable =
+    StateMATaxCalculator.taxDue(year, filingStatus, birthDate, dependents)(
+      massachusettsGrossIncome
+    )
+  end tir_ma_state_tax_due
 
 end Facade
