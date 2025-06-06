@@ -3,7 +3,7 @@ import org.scalajs.linker.interface.ESVersion
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"
-ThisBuild / scalaVersion := "3.7.0"
+ThisBuild / scalaVersion := "3.7.1"
 
 val fastCompileRenderer = taskKey[File]("Return main file")
 
