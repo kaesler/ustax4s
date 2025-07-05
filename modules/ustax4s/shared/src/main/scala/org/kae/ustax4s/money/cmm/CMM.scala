@@ -30,7 +30,7 @@ object CMM extends CMMOps:
   given [A: {Group as group, Ordering as ordering}] => CMM[A]:
     def empty: A                      = group.empty
     def combine(left: A, right: A): A = group.combine(left, right)
-    def monus(left: A, right: A): A =
+    def monus(left: A, right: A): A   =
       if ordering.lt(right, left) then group.remove(left, right)
       else empty
 end CMM

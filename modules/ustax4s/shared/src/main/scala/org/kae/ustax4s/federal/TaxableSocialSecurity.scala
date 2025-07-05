@@ -70,7 +70,7 @@ object TaxableSocialSecurity:
     require(netInflationFactor >= 1.0, SourceLoc())
     val inflatedSocialSecurityBenefits = socialSecurityBenefits mul netInflationFactor
     val inflatedSsRelevantOtherIncome  = ssRelevantOtherIncome mul netInflationFactor
-    val inflatedTaxableAmount = taxableSocialSecurityBenefits(
+    val inflatedTaxableAmount          = taxableSocialSecurityBenefits(
       filingStatus,
       inflatedSocialSecurityBenefits,
       inflatedSsRelevantOtherIncome

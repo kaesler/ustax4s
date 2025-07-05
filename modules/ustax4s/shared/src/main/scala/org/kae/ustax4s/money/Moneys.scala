@@ -88,7 +88,7 @@ object Moneys:
     given Monoid[IncomeThreshold] = summonAdditionMonoid
 
     extension (left: IncomeThreshold)
-      infix def asIncome: Income = left
+      infix def asIncome: Income                                          = left
       infix def absoluteDifference(right: IncomeThreshold): TaxableIncome =
         Money.absoluteDifference(left, right)
 
