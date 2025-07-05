@@ -66,7 +66,7 @@ end KnownYearRegressionTestCase
 
 object KnownYearRegressionTestCase:
 
-  given show: Show[KnownYearRegressionTestCase] = new Show[KnownYearRegressionTestCase] {
+  given show: Show[KnownYearRegressionTestCase] = new Show[KnownYearRegressionTestCase]:
     override def show(tc: KnownYearRegressionTestCase): String =
       import tc.*
       s"""
@@ -83,7 +83,7 @@ object KnownYearRegressionTestCase:
          |  stateTaxDue         = $stateTaxDue
          |}
          |""".stripMargin
-  }
+  end show
 
   private def parseFromCsvLine(s: String): KnownYearRegressionTestCase =
     val fields               = s.split(',')
