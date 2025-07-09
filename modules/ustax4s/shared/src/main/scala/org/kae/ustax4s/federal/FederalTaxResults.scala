@@ -14,10 +14,12 @@ final case class FederalTaxResults(
   standardDeduction: Deduction,
   netDeduction: Deduction,
   taxableOrdinaryIncome: TaxableIncome,
+  //
   taxOnOrdinaryIncome: TaxPayable,
   taxOnQualifiedIncome: TaxPayable
 ):
   def taxDue: TaxPayable = taxOnOrdinaryIncome + taxOnQualifiedIncome
+end FederalTaxResults
 
 object FederalTaxResults:
   given Show[FederalTaxResults] = (r: FederalTaxResults) =>

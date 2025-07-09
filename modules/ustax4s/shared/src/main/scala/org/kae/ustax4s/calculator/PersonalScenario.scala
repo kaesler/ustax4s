@@ -1,0 +1,37 @@
+package org.kae.ustax4s.calculator
+
+import cats.syntax.all.*
+import java.time.LocalDate
+import org.kae.ustax4s.federal.{BoundRegime, FederalTaxResults}
+import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxableIncome}
+
+final case class PersonalScenario(
+  boundRegime: BoundRegime,
+  birthDate: LocalDate,
+  // Self plus dependents
+  personalExemptions: Int,
+  socSec: Income,
+  ordinaryIncomeNonSS: Income,
+  qualifiedIncome: TaxableIncome,
+  itemizedDeductions: Deduction
+):
+  import PersonalScenario.*
+
+  lazy val ssRelevantOtherIncome: Income =
+    List(ordinaryIncomeNonSS, qualifiedIncome).combineAll
+
+  lazy val results: FederalTaxResults =
+    boundRegime.calculator.federalTaxResults.tupled(thisAsTuple.drop(1))
+
+  private lazy val thisAsTuple: ScenarioTuple = Tuple.fromProductTyped(this)
+end PersonalScenario
+
+object PersonalScenario:
+  type ScenarioTuple = NamedTuple.From[PersonalScenario]
+
+  def forKnownYear  = ???
+  def forFutureYear = ???
+
+  // def forYear() using inflation factor, regime etc
+
+end PersonalScenario

@@ -7,13 +7,11 @@ import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
-import scala.annotation.unused
 
 /** Simplified interface to 1040 calculations. Assume: No deductions credits or other complications.
   */
 object TaxCalculator:
 
-  @unused
   def federalTaxDueForFutureYear(
     regime: Regime,
     futureYear: Year,
