@@ -16,12 +16,39 @@ trait BoundRegime(
   def unadjustedStandardDeduction: Deduction
   def adjustmentWhenOver65: Deduction
   def adjustmentWhenOver65AndSingle: Deduction
-
   def perPersonExemption: Deduction
   def ordinaryBrackets: OrdinaryBrackets
   def qualifiedBrackets: QualifiedBrackets
 
   def name: String = regime.show
+
+  def meansTestedSeniorDeduction(
+    agi: Income,
+    birthDate: LocalDate
+  ): Deduction =
+    // Note: this deduction is temporary for 4 years and
+    // only applies to those over 65.
+    if (2025 to 2028).contains(year.getValue) &&
+      Age.isAge65OrOlder(birthDate, year)
+    then
+      val fullAmount    = 6000.0
+      val phaseOutStart = if filingStatus.isSingle then 75000.0 else 150000.0
+      val phaseOutRange = 100000.0
+      val phaseOutEnd   = phaseOutStart + phaseOutRange
+      val phaseOutRate  = fullAmount / phaseOutRange
+
+      if agi <= Income(phaseOutStart) then Deduction(fullAmount)
+      else if agi >= Income(phaseOutEnd) then Deduction.zero
+      else
+        Deduction(
+          fullAmount -
+            agi
+              .reduceBy(Income(phaseOutStart))
+              .mul(phaseOutRate)
+              .asDouble
+        )
+    else Deduction.zero
+  end meansTestedSeniorDeduction
 
   // TODO: needs property spec
   final def standardDeduction(birthDate: LocalDate): Deduction =
@@ -38,12 +65,13 @@ trait BoundRegime(
   end standardDeduction
 
   // TODO: needs property spec
-  private final def personalExemptionDeduction(personalExemptions: Int): Deduction =
+  final def personalExemptionDeduction(personalExemptions: Int): Deduction =
     perPersonExemption mul personalExemptions
 
   // TODO: needs property spec
   // netDed >= all of ped, stdDm, item
   final def netDeduction(
+    agi: Income,
     birthDate: LocalDate,
     personalExemptions: Int,
     itemizedDeductions: Deduction
@@ -52,72 +80,12 @@ trait BoundRegime(
       List(
         standardDeduction(birthDate),
         itemizedDeductions
-      ).max
+      ).max +
+      meansTestedSeniorDeduction(agi, birthDate)
   end netDeduction
 
   // TODO: needs property spec
-  final def calculator: FederalTaxCalculator =
-    (
-      birthDate: LocalDate,
-      personalExemptions: Int,
-      socSec: Income,
-      ordinaryIncomeNonSS: Income,
-      qualifiedIncome: TaxableIncome,
-      itemizedDeductions: Deduction
-    ) =>
-      new FederalTaxResults:
-        private val br: BoundRegime       = BoundRegime.this
-        private val ssRelevantOtherIncome =
-          List(ordinaryIncomeNonSS, qualifiedIncome).combineAll
-
-        // Note: this does not currently get adjusted for inflation.
-        override lazy val taxableSocialSecurity: Income =
-          TaxableSocialSecurity.taxableSocialSecurityBenefits(
-            filingStatus = filingStatus,
-            socialSecurityBenefits = socSec,
-            ssRelevantOtherIncome
-          )
-
-        override lazy val agi: Income = List(
-          ordinaryIncomeNonSS,
-          qualifiedIncome,
-          taxableSocialSecurity
-        ).combineAll
-
-        override lazy val taxableOrdinaryIncome: TaxableIncome =
-          List(taxableSocialSecurity, ordinaryIncomeNonSS).combineAll
-            .applyDeductions(netDeduction)
-
-        override lazy val taxOnOrdinaryIncome: TaxPayable =
-          TaxFunctions.taxDueOnOrdinaryIncome(ordinaryBrackets)(taxableOrdinaryIncome)
-
-        override lazy val taxOnQualifiedIncome: TaxPayable =
-          TaxFunctions.taxDueOnQualifiedIncome(qualifiedBrackets)(
-            taxableOrdinaryIncome,
-            qualifiedIncome
-          )
-
-        override lazy val personalExemptionDeduction: Deduction =
-          br.personalExemptionDeduction(personalExemptions)
-
-        override def standardDeduction: Deduction =
-          br.netDeduction(birthDate, personalExemptions, itemizedDeductions)
-
-        // TODO: Implement this.
-        // TODO: Include into netDeduction.
-        override def meansTestedSeniorDeduction: Deduction = Deduction.zero
-
-        override lazy val netDeduction: Deduction =
-          br.netDeduction(birthDate, personalExemptions, itemizedDeductions)
-
-        // TODO: maybe center the delta over the tax due?
-        override def taxSlopeForOrdinaryIncome(delta: Income): Double = ???
-
-        // TODO: maybe center the delta over the tax due?
-        override def taxSlopeForQualifiedIncome(delta: TaxableIncome): Double = ???
-      end new
-
-  end calculator
+  final def calculator: FederalTaxCalculator = FederalTaxCalculator.from(this)
 
   def withEstimatedNetInflationFactor(
     targetFutureYear: Year,

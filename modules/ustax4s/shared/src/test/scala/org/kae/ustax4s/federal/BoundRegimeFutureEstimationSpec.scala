@@ -32,7 +32,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.filingStatus
       ).calculator
 
-      val taxResultsBefore = before.federalTaxResults(
+      val taxResultsBefore = before.results(
         birthDate,
         tc.personalExemptions,
         tc.ss,
@@ -40,7 +40,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.qualifiedIncome,
         tc.itemizedDeductions
       )
-      val taxResultsAfter = after.federalTaxResults(
+      val taxResultsAfter = after.results(
         birthDate,
         tc.personalExemptions,
         tc.ss,
@@ -72,9 +72,11 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.filingStatus
       )
 
+      val closeEnoughToAgi = tc.ordinaryIncomeNonSS + tc.qualifiedIncome
       val res =
         before.standardDeduction(birthDate) <= after.standardDeduction(birthDate) &&
-          before.netDeduction(birthDate, tc.personalExemptions, 0) <= after.netDeduction(birthDate, tc.personalExemptions, 0) &&
+          before.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) <= 
+            after.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) &&
           before.ordinaryBrackets <= after.ordinaryBrackets &&
           before.qualifiedBrackets <= after.qualifiedBrackets
       if !res then {
@@ -96,7 +98,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.futureYear,
         tc.inflationFactorEstimate
       )
-      val taxResultsBefore = before.calculator.federalTaxResults(
+      val taxResultsBefore = before.calculator.results(
         birthDate,
         tc.personalExemptions,
         tc.ss,
@@ -104,7 +106,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.qualifiedIncome,
         tc.itemizedDeductions
       )
-      val taxResultsAfter = after.calculator.federalTaxResults(
+      val taxResultsAfter = after.calculator.results(
         birthDate,
         tc.personalExemptions,
         tc.ss,
@@ -132,10 +134,11 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.futureYear,
         tc.inflationFactorEstimate
       )
+      val closeEnoughToAgi = tc.ordinaryIncomeNonSS + tc.qualifiedIncome
       val res =
         (before.standardDeduction(birthDate) <= after.standardDeduction(birthDate)) &&
-          (before.netDeduction(birthDate, tc.personalExemptions, 0) <=
-            after.netDeduction(birthDate, tc.personalExemptions, 0)) &&
+          (before.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) <=
+            after.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0)) &&
           (before.ordinaryBrackets <= after.ordinaryBrackets) &&
           (before.qualifiedBrackets <= after.qualifiedBrackets)
       if !res then {

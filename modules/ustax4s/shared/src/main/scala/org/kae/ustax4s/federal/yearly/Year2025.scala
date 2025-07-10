@@ -11,9 +11,9 @@ object Year2025:
     regime = TCJA,
     perPersonExemption = Deduction.zero,
     unadjustedStandardDeduction = Map(
-      MarriedJoint    -> 30000,
-      HeadOfHousehold -> 22500,
-      Single          -> 15000
+      MarriedJoint    -> 31500,
+      HeadOfHousehold -> 23625,
+      Single          -> 15750
     ).view
       .mapValues(Deduction.apply),
     adjustmentWhenOver65 = Deduction(1600),

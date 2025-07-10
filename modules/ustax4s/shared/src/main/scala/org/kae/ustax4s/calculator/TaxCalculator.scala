@@ -33,7 +33,7 @@ object TaxCalculator:
         filingStatus
       )
       .calculator
-      .federalTaxResults(
+      .results(
         birthDate,
         personalExemptions,
         socSec,
@@ -55,14 +55,14 @@ object TaxCalculator:
     ordinaryIncomeNonSS: Income,
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
-  ): FederalTaxResults =
+  ): FederalCalcResults =
     BoundRegime
       .forKnownYear(
         year,
         filingStatus
       )
       .calculator
-      .federalTaxResults(
+      .results(
         birthDate,
         personalExemptions,
         socSec,
@@ -84,7 +84,7 @@ object TaxCalculator:
     ordinaryIncomeNonSS: Income,
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
-  ): FederalTaxResults =
+  ): FederalCalcResults =
     BoundRegime
       .forFutureYear(
         regime,
@@ -93,7 +93,7 @@ object TaxCalculator:
         filingStatus
       )
       .calculator
-      .federalTaxResults(
+      .results(
         birthDate,
         personalExemptions,
         socSec,

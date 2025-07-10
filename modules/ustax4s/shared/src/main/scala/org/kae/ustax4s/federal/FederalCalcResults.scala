@@ -4,7 +4,7 @@ import cats.Show
 import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.collection.mutable
 
-trait FederalTaxResults:
+trait FederalCalcResults:
 
   def taxableSocialSecurity: Income
   def agi: Income
@@ -15,14 +15,15 @@ trait FederalTaxResults:
   def taxableOrdinaryIncome: TaxableIncome
   def taxOnOrdinaryIncome: TaxPayable
   def taxOnQualifiedIncome: TaxPayable
-  def taxSlopeForOrdinaryIncome(delta: Income): Double
-  def taxSlopeForQualifiedIncome(delta: TaxableIncome): Double
+  def taxSlopeForOrdinaryIncome: Double
+  def taxSlopeForQualifiedIncome: Double
+  def taxSlopeForSocSec: Double
 
   def taxDue: TaxPayable = taxOnOrdinaryIncome + taxOnQualifiedIncome
-end FederalTaxResults
+end FederalCalcResults
 
-object FederalTaxResults:
-  given Show[FederalTaxResults] = (r: FederalTaxResults) =>
+object FederalCalcResults:
+  given Show[FederalCalcResults] = (r: FederalCalcResults) =>
     val b = mutable.StringBuilder()
     b.append("Outputs\n")
     import r.*
@@ -40,4 +41,4 @@ object FederalTaxResults:
     b.append(s"  taxDue: $taxDue\n")
 
     b.result
-end FederalTaxResults
+end FederalCalcResults

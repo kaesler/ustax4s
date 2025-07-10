@@ -235,7 +235,7 @@ object Facade:
     BoundRegime
       .forKnownYear(year, filingStatus)
       .calculator
-      .federalTaxResults(
+      .results(
         birthDate,
         personalExemptions,
         socSec,
@@ -278,7 +278,7 @@ object Facade:
     BoundRegime
       .forFutureYear(regime, year, bracketInflationFactor, filingStatus)
       .calculator
-      .federalTaxResults(
+      .results(
         birthDate,
         personalExemptions,
         socSec,
