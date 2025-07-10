@@ -3,11 +3,9 @@ package org.kae.ustax4s.federal
 import cats.Show
 import cats.implicits.*
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.calculator.FedTaxResults2
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.{Age, FilingStatus, SourceLoc}
-import scala.annotation.unused
 import scala.math.Ordering.Implicits.infixOrderingOps
 
 trait BoundRegime(
@@ -59,115 +57,66 @@ trait BoundRegime(
 
   // TODO: needs property spec
   final def calculator: FederalTaxCalculator =
-    new FederalTaxCalculator:
-      @unused
-      def fedResults2(
-        birthDate: LocalDate,
-        personalExemptions: Int,
-        socSec: Income,
-        ordinaryIncomeNonSS: Income,
-        qualifiedIncome: TaxableIncome,
-        itemizedDeductions: Deduction
-      ): FedTaxResults2 =
-        new FedTaxResults2 {
-          private val br: BoundRegime       = BoundRegime.this
-          private val ssRelevantOtherIncome =
-            List(ordinaryIncomeNonSS, qualifiedIncome).combineAll
-
-          // Note: this does not currently get adjusted for inflation.
-          override lazy val taxableSocialSecurity: Income =
-            TaxableSocialSecurity.taxableSocialSecurityBenefits(
-              filingStatus = filingStatus,
-              socialSecurityBenefits = socSec,
-              ssRelevantOtherIncome
-            )
-
-          override lazy val agi: Income = List(
-            ordinaryIncomeNonSS,
-            qualifiedIncome,
-            taxableSocialSecurity
-          ).combineAll
-
-          override lazy val taxableOrdinaryIncome: TaxableIncome =
-            List(taxableSocialSecurity, ordinaryIncomeNonSS).combineAll
-              .applyDeductions(netDeduction)
-
-          override lazy val taxOnOrdinaryIncome: TaxPayable =
-            TaxFunctions.taxDueOnOrdinaryIncome(ordinaryBrackets)(taxableOrdinaryIncome)
-
-          override lazy val taxOnQualifiedIncome: TaxPayable =
-            TaxFunctions.taxDueOnQualifiedIncome(qualifiedBrackets)(
-              taxableOrdinaryIncome,
-              qualifiedIncome
-            )
-
-          override lazy val personalExemptionDeduction: Deduction =
-            br.personalExemptionDeduction(personalExemptions)
-
-          override def standardDeduction: Deduction =
-            br.netDeduction(birthDate, personalExemptions, itemizedDeductions)
-
-          // TODO: Implement this.
-          // TODO: Include into netDeduction.
-          override def meansTestedSeniorDeduction: Deduction = Deduction.zero
-
-          override lazy val netDeduction: Deduction =
-            br.netDeduction(birthDate, personalExemptions, itemizedDeductions)
-
-          // TODO: maybe center the delta over the tax due?
-          override def taxSlopeForOrdinaryIncome(delta: Income): Double = ???
-
-          // TODO: maybe center the delta over the tax due?
-          override def taxSlopeForQualifiedIncome(delta: TaxableIncome): Double = ???
-        }
-
-      override def federalTaxResults(
-        birthDate: LocalDate,
-        personalExemptions: Int,
-        socSec: Income,
-        ordinaryIncomeNonSS: Income,
-        qualifiedIncome: TaxableIncome,
-        itemizedDeductions: Deduction
-      ): FederalTaxResults =
-
-        // Computed from inputs
-        val ssRelevantOtherIncome =
+    (
+      birthDate: LocalDate,
+      personalExemptions: Int,
+      socSec: Income,
+      ordinaryIncomeNonSS: Income,
+      qualifiedIncome: TaxableIncome,
+      itemizedDeductions: Deduction
+    ) =>
+      new FederalTaxResults:
+        private val br: BoundRegime       = BoundRegime.this
+        private val ssRelevantOtherIncome =
           List(ordinaryIncomeNonSS, qualifiedIncome).combineAll
 
         // Note: this does not currently get adjusted for inflation.
-        val taxableSocialSecurity: Income =
+        override lazy val taxableSocialSecurity: Income =
           TaxableSocialSecurity.taxableSocialSecurityBenefits(
             filingStatus = filingStatus,
             socialSecurityBenefits = socSec,
             ssRelevantOtherIncome
           )
 
-        val taxableOrdinaryIncome: TaxableIncome =
-          List(taxableSocialSecurity, ordinaryIncomeNonSS).combineAll
-            .applyDeductions(netDeduction(birthDate, personalExemptions, itemizedDeductions))
+        override lazy val agi: Income = List(
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          taxableSocialSecurity
+        ).combineAll
 
-        val taxOnOrdinaryIncome: TaxPayable =
+        override lazy val taxableOrdinaryIncome: TaxableIncome =
+          List(taxableSocialSecurity, ordinaryIncomeNonSS).combineAll
+            .applyDeductions(netDeduction)
+
+        override lazy val taxOnOrdinaryIncome: TaxPayable =
           TaxFunctions.taxDueOnOrdinaryIncome(ordinaryBrackets)(taxableOrdinaryIncome)
 
-        val taxOnQualifiedIncome =
+        override lazy val taxOnQualifiedIncome: TaxPayable =
           TaxFunctions.taxDueOnQualifiedIncome(qualifiedBrackets)(
             taxableOrdinaryIncome,
             qualifiedIncome
           )
-        FederalTaxResults(
-          ssRelevantOtherIncome,
-          taxableSocialSecurity,
-          personalExemptionDeduction(personalExemptions),
-          unadjustedStandardDeduction,
-          adjustmentWhenOver65,
-          adjustmentWhenOver65AndSingle,
-          standardDeduction(birthDate),
-          netDeduction(birthDate, personalExemptions, itemizedDeductions),
-          taxableOrdinaryIncome,
-          taxOnOrdinaryIncome,
-          taxOnQualifiedIncome
-        )
-    end new
+
+        override lazy val personalExemptionDeduction: Deduction =
+          br.personalExemptionDeduction(personalExemptions)
+
+        override def standardDeduction: Deduction =
+          br.netDeduction(birthDate, personalExemptions, itemizedDeductions)
+
+        // TODO: Implement this.
+        // TODO: Include into netDeduction.
+        override def meansTestedSeniorDeduction: Deduction = Deduction.zero
+
+        override lazy val netDeduction: Deduction =
+          br.netDeduction(birthDate, personalExemptions, itemizedDeductions)
+
+        // TODO: maybe center the delta over the tax due?
+        override def taxSlopeForOrdinaryIncome(delta: Income): Double = ???
+
+        // TODO: maybe center the delta over the tax due?
+        override def taxSlopeForQualifiedIncome(delta: TaxableIncome): Double = ???
+      end new
+
   end calculator
 
   def withEstimatedNetInflationFactor(
