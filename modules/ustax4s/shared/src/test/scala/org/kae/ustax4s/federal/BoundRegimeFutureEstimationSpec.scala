@@ -15,22 +15,30 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
   import math.Ordering.Implicits.infixOrderingOps
   import org.kae.ustax4s.money.MoneyConversions.given
 
-  private val birthDate: LocalDate = LocalDate.of(1955, 10, 2)
 
-  property("BoundRegime.forFutureYear affects tax due monotonically decreasing") {
+  private val birthDateUnder65: LocalDate = LocalDate.now().minusYears(50)
+
+  // Note: the 2025 Trump senior tax deduction is temporary (2026-8) so it breaks monotonicity.
+
+  property("BoundRegime.forFutureYear affects tax due monotonically decreasing for under 65") {
+    val birthDate = birthDateUnder65
     forAll { (tc: TestCase2) =>
 
-      val before = BoundRegime.forKnownYear(
-        YearlyValues.mostRecentFor(tc.regime).year,
-        tc.filingStatus
-      ).calculator
+      val before = BoundRegime
+        .forKnownYear(
+          YearlyValues.mostRecentFor(tc.regime).year,
+          tc.filingStatus
+        )
+        .calculator
 
-      val after = BoundRegime.forFutureYear(
-        tc.regime,
-        tc.futureYear,
-        tc.inflationFactorEstimate,
-        tc.filingStatus
-      ).calculator
+      val after = BoundRegime
+        .forFutureYear(
+          tc.regime,
+          tc.futureYear,
+          tc.inflationFactorEstimate,
+          tc.filingStatus
+        )
+        .calculator
 
       val taxResultsBefore = before.results(
         birthDate,
@@ -57,7 +65,8 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     }
   }
 
-  property("BoundRegime.forFutureYear affects BoundRegime fields monotonically") {
+  property("BoundRegime.forFutureYear affects BoundRegime fields monotonically for under 65") {
+    val birthDate = birthDateUnder65
     forAll { (tc: TestCase2) =>
 
       val before = BoundRegime.forKnownYear(
@@ -73,10 +82,10 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
       )
 
       val closeEnoughToAgi = tc.ordinaryIncomeNonSS + tc.qualifiedIncome
-      val res =
+      val res              =
         before.standardDeduction(birthDate) <= after.standardDeduction(birthDate) &&
-          before.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) <= 
-            after.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) &&
+          before.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) <=
+          after.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) &&
           before.ordinaryBrackets <= after.ordinaryBrackets &&
           before.qualifiedBrackets <= after.qualifiedBrackets
       if !res then {
@@ -87,7 +96,10 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     }
   }
 
-  property("BoundRegime.withEstimatedNetInflationFactor affects tax due monotonically") {
+  property(
+    "BoundRegime.withEstimatedNetInflationFactor affects tax due monotonically for under 65"
+  ) {
+    val birthDate = birthDateUnder65
     forAll { (tc: TestCase1) =>
       val before = BoundRegime.forKnownYear(
         tc.baseYear,
@@ -123,7 +135,10 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     }
   }
 
-  property("BoundRegime.withEstimatedNetInflationFactor affects fields monotonically") {
+  property(
+    "BoundRegime.withEstimatedNetInflationFactor affects fields monotonically for under 65"
+  ) {
+    val birthDate = birthDateUnder65
     forAll { (tc: TestCase1) =>
       val before = BoundRegime.forKnownYear(
         tc.baseYear,
@@ -135,7 +150,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.inflationFactorEstimate
       )
       val closeEnoughToAgi = tc.ordinaryIncomeNonSS + tc.qualifiedIncome
-      val res =
+      val res              =
         (before.standardDeduction(birthDate) <= after.standardDeduction(birthDate)) &&
           (before.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) <=
             after.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0)) &&
@@ -153,8 +168,8 @@ end BoundRegimeFutureEstimationSpec
 
 object BoundRegimeFutureEstimationSpec:
   import org.kae.ustax4s.money.MoneyConversions.given
-  
-  private val lastKnownYear = YearlyValues.last.year.getValue
+
+  private val lastKnownYear   = YearlyValues.last.year.getValue
   private val firstFutureYear = lastKnownYear + 1
 
   private final case class TestCase1(
