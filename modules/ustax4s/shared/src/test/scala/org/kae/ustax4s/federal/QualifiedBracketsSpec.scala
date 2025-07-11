@@ -22,7 +22,7 @@ class QualifiedBracketsSpec
   )
   private given Arbitrary[TaxableIncome] = Arbitrary(genTaxableIncome)
 
-  test("InvestmentIncomeTaxBrackets should be progressive") {
+  test("QualifiedTaxBrackets should be progressive") {
     def isProgressive(brackets: QualifiedBrackets): Boolean = {
       val rates = brackets.bracketsAscending.map(_._2)
       (rates zip rates.tail)
