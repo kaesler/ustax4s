@@ -6,8 +6,6 @@ import org.kae.ustax4s.money.Moneys.TaxPayable
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 
 trait FederalTaxCalculator() extends (FederalCalcInput => FederalCalcResults):
-  // Note: So we can cal the calculator from within the calculator.
-  protected lazy val calculator: FederalTaxCalculator = this
 
   final def results(
     birthDate: LocalDate,
@@ -34,6 +32,7 @@ object FederalTaxCalculator:
 
   def from(br: BoundRegime): FederalTaxCalculator =
     new FederalTaxCalculator():
+      private val thisCalculator = this
 
       override def apply(input: FederalCalcInput): FederalCalcResults =
         new FederalCalcResults:
@@ -87,24 +86,24 @@ object FederalTaxCalculator:
           override lazy val taxSlopeForOrdinaryIncome: Double =
             val deltaX    = Income(delta)
             val halfDelta = deltaX.divInt(2)
-            val highY     = calculator(input.withMoreOrdinaryIncome(halfDelta)).taxDue
-            val lowY      = calculator(input.withLessOrdinaryIncome(halfDelta)).taxDue
+            val highY     = thisCalculator(input.withMoreOrdinaryIncome(halfDelta)).taxDue
+            val lowY      = thisCalculator(input.withLessOrdinaryIncome(halfDelta)).taxDue
             highY.reduceBy(lowY).asDouble / deltaX.asDouble
           end taxSlopeForOrdinaryIncome
 
           override lazy val taxSlopeForQualifiedIncome: Double =
             val deltaX    = TaxableIncome(delta)
-            val halfDelta = TaxableIncome(delta/2)
-            val highY     = calculator(input.withMoreQualifiedIncome(halfDelta)).taxDue
-            val lowY      = calculator(input.withLessQualifiedIncome(halfDelta)).taxDue
+            val halfDelta = TaxableIncome(delta / 2)
+            val highY     = thisCalculator(input.withMoreQualifiedIncome(halfDelta)).taxDue
+            val lowY      = thisCalculator(input.withLessQualifiedIncome(halfDelta)).taxDue
             highY.reduceBy(lowY).asDouble / deltaX.asDouble
           end taxSlopeForQualifiedIncome
 
           override lazy val taxSlopeForSocSec: Double =
-            val deltaX = Income(delta)
+            val deltaX    = Income(delta)
             val halfDelta = deltaX.divInt(2)
-            val highY     = calculator(input.withMoreSocSec(halfDelta)).taxDue
-            val lowY      = calculator(input.withLessSocSec(halfDelta)).taxDue
+            val highY     = thisCalculator(input.withMoreSocSec(halfDelta)).taxDue
+            val lowY      = thisCalculator(input.withLessSocSec(halfDelta)).taxDue
             highY.reduceBy(lowY).asDouble / deltaX.asDouble
           end taxSlopeForSocSec
 
