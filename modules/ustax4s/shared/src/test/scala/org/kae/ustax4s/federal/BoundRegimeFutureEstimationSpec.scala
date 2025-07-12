@@ -185,7 +185,7 @@ object BoundRegimeFutureEstimationSpec:
   )
 
   private given Arbitrary[TestCase1] = Arbitrary(
-    for {
+    for
       baseYear                <- Gen.choose(2017, lastKnownYear).map(Year.of)
       futureYear              <- Gen.choose(firstFutureYear, 2055).map(Year.of)
       inflationFactorEstimate <- Gen.choose(1.005, 1.10)
@@ -195,7 +195,7 @@ object BoundRegimeFutureEstimationSpec:
       ordinaryIncomeNonSS     <- Gen.chooseNum(0, 150000)
       qualifiedIncome         <- Gen.chooseNum(0, 100000)
       itemizedDeductions      <- Gen.chooseNum(0, 30000)
-    } yield TestCase1(
+    yield TestCase1(
       baseYear,
       futureYear,
       inflationFactorEstimate,
@@ -221,7 +221,7 @@ object BoundRegimeFutureEstimationSpec:
   )
 
   private given Arbitrary[TestCase2] = Arbitrary(
-    for {
+    for
       regime                  <- Gen.oneOf(Regime.values.toList)
       futureYear              <- Gen.choose(firstFutureYear, 2055).map(Year.of)
       inflationFactorEstimate <- Gen.choose(1.005, 1.10)
@@ -231,7 +231,7 @@ object BoundRegimeFutureEstimationSpec:
       ordinaryIncomeNonSS     <- Gen.chooseNum(0, 150000)
       qualifiedIncome         <- Gen.chooseNum(0, 100000)
       itemizedDeductions      <- Gen.chooseNum(0, 30000)
-    } yield TestCase2(
+    yield TestCase2(
       regime,
       futureYear,
       inflationFactorEstimate,
