@@ -18,11 +18,14 @@ class YearlyValuesSpec extends FunSuite:
     Year2019.values,
     Year2020.values,
     Year2021.values,
-    Year2022.values
+    Year2022.values,
+    Year2023.values,
+    Year2024.values,
+    Year2025.values
   ).sortBy(_.year)
 
   private val preTCJAYears = allYears.filter(_.regime == PreTCJA)
-  private val trumpYears    = allYears.filter(_.regime == TCJA)
+  private val trumpYears   = allYears.filter(_.regime == TCJA)
 
   private def massert(
     b: Boolean,
@@ -186,9 +189,11 @@ class YearlyValuesSpec extends FunSuite:
       2022 -> 3.13,
       2023 -> 7.08
     ).foreach { (year, expectedPercentage) =>
-      val change = YearlyValues.averageThresholdChangeOverPrevious(
-        Year.of(year)
-      ).get
+      val change = YearlyValues
+        .averageThresholdChangeOverPrevious(
+          Year.of(year)
+        )
+        .get
       val percentage = ((change - 1.0) * 10000).round / 100.0
       massert(percentage == expectedPercentage)
     }
