@@ -141,6 +141,18 @@ object BoundRegime:
         s"  qualifiedBrackets: ${r.qualifiedBrackets.show}\n"
   end given
 
+  def forAnyYear(
+    year: Year,
+    estimatedAnnualInflationFactor: Double,
+    filingStatus: FilingStatus
+  ): BoundRegime =
+    YearlyValues
+      .of(year)
+      .fold(forFutureYear(TCJA, year, estimatedAnnualInflationFactor, filingStatus))(yv =>
+        forKnownYearlyValues(yv, filingStatus)
+      )
+  end forAnyYear
+
   def forFutureYear(
     regime: Regime,
     year: Year,
@@ -164,13 +176,12 @@ object BoundRegime:
       .withEstimatedNetInflationFactor(year, netInflationFactor)
   end forFutureYear
 
-  def forKnownYear(
-    year: Year,
+  def forKnownYearlyValues(
+    yv: YearlyValues,
     filingStatus: FilingStatus
   ): BoundRegime =
-    val yv = YearlyValues.of(year).get
 
-    new BoundRegime(yv.regime, year, filingStatus):
+    new BoundRegime(yv.regime, yv.year, filingStatus):
 
       override def unadjustedStandardDeduction: Deduction =
         yv.unadjustedStandardDeduction(this.filingStatus)
@@ -188,5 +199,12 @@ object BoundRegime:
       override def qualifiedBrackets: QualifiedBrackets =
         yv.qualifiedBrackets(this.filingStatus)
     end new
-  end forKnownYear
+  end forKnownYearlyValues
+
+  def forKnownYear(
+    year: Year,
+    filingStatus: FilingStatus
+  ): BoundRegime =
+    forKnownYearlyValues(YearlyValues.of(year).get, filingStatus)
+
 end BoundRegime

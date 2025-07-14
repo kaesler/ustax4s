@@ -45,6 +45,31 @@ object TaxCalculator:
       .rounded
   end federalTaxDueForFutureYear
 
+  def federalTaxResultsForAnyYear(
+    estimatedAnnualInflationFactor: Double,
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate,
+    // Self plus dependents
+    personalExemptions: Int,
+    socSec: Income,
+    ordinaryIncomeNonSS: Income,
+    qualifiedIncome: TaxableIncome,
+    itemizedDeductions: Deduction
+  ): FederalCalcResults =
+    BoundRegime
+      .forAnyYear(year, estimatedAnnualInflationFactor, filingStatus)
+      .calculator
+      .results(
+        birthDate,
+        personalExemptions,
+        socSec,
+        ordinaryIncomeNonSS,
+        qualifiedIncome,
+        itemizedDeductions
+      )
+  end federalTaxResultsForAnyYear
+
   def federalTaxResults(
     year: Year,
     filingStatus: FilingStatus,

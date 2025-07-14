@@ -5,7 +5,7 @@ import java.time.LocalDate
 import org.kae.ustax4s.money.Moneys.TaxPayable
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 
-trait FederalTaxCalculator() extends (FederalCalcInput => FederalCalcResults):
+trait FederalTaxCalculator() extends (RegimeCalcInput => FederalCalcResults):
 
   final def results(
     birthDate: LocalDate,
@@ -16,7 +16,7 @@ trait FederalTaxCalculator() extends (FederalCalcInput => FederalCalcResults):
     itemizedDeductions: Deduction
   ): FederalCalcResults =
     apply(
-      FederalCalcInput(
+      RegimeCalcInput(
         birthDate,
         personalExemptions,
         socSec,
@@ -34,7 +34,7 @@ object FederalTaxCalculator:
     new FederalTaxCalculator():
       private val thisCalculator = this
 
-      override def apply(input: FederalCalcInput): FederalCalcResults =
+      override def apply(input: RegimeCalcInput): FederalCalcResults =
         new FederalCalcResults:
           import input.*
 
