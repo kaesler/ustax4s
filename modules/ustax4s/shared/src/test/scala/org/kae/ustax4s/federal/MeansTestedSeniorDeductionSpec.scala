@@ -7,6 +7,7 @@ import org.kae.ustax4s.FilingStatus.{MarriedJoint, Single}
 import org.kae.ustax4s.{Age, FilingStatus}
 import org.kae.ustax4s.calculator.TaxCalculator
 import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxableIncome}
+import org.scalacheck.Test.Parameters
 import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck.{Arbitrary, Gen}
 import scala.math.Ordered.orderingToOrdered
@@ -14,16 +15,10 @@ import scala.math.Ordered.orderingToOrdered
 class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
   import MeansTestedSeniorDeductionSpec.{*, given}
 
-  // TODO:
-  //  zero unless
-  //    in the years in effect
-  //    over 65
-  //  amount is full below phaseout start
-  //  amount is zero above phaseout
-  //  amount is < 6k otherwise
+  implicit val params: Parameters = Parameters.default
+    .withMinSuccessfulTests(5000)
 
   property("meansTestedSeniorDeduction is only non-zero 2025-28") {
-    // val birthDate = birthDateUnder65
     forAll { (sc: Scenario) =>
       import sc.*
       val res = TaxCalculator.federalTaxResultsForAnyYear(
@@ -158,33 +153,33 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
     }
   }
 
-//  property("meansTestedSeniorDeduction allowed in part for singles") {
-//    val birthDateOver65 = LocalDate.of(1955, 10, 2)
-//    forAll { (scenario: Scenario) =>
-//      val sc = scenario.copy(
-//        year = Year.of(2028),
-//        birthDate = birthDateOver65,
-//        filingStatus = Single
-//      )
-//      import sc.*
-//      val res = TaxCalculator.federalTaxResultsForAnyYear(
-//        1.03,
-//        year,
-//        filingStatus,
-//        birthDate,
-//        personalExemptions,
-//        socSec,
-//        ordinaryIncomeNonSS,
-//        qualifiedIncome,
-//        itemizedDeductions
-//      )
-//
-//      println(res.show)
-//      val ded = res.meansTestedSeniorDeduction
-//      (ded > Deduction.zero && ded < Deduction(6000)) ==>
-//        res.agi > Income(75000) && res.agi < Income(175000)
-//    }
-//  }
+  property("meansTestedSeniorDeduction allowed in part for singles") {
+    val birthDateOver65 = LocalDate.of(1955, 10, 2)
+    forAll { (scenario: Scenario) =>
+      val sc = scenario.copy(
+        year = Year.of(2028),
+        birthDate = birthDateOver65,
+        filingStatus = Single
+      )
+      import sc.*
+      val res = TaxCalculator.federalTaxResultsForAnyYear(
+        1.03,
+        year,
+        filingStatus,
+        birthDate,
+        personalExemptions,
+        socSec,
+        ordinaryIncomeNonSS,
+        qualifiedIncome,
+        itemizedDeductions
+      )
+
+      println(res.show)
+      val ded = res.meansTestedSeniorDeduction
+      (ded > Deduction.zero && ded < Deduction(6000)) ||
+        res.agi < Income(75000) || res.agi > Income(175000)
+    }
+  }
 
 end MeansTestedSeniorDeductionSpec
 
