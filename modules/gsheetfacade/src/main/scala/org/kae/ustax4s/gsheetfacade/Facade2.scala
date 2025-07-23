@@ -14,9 +14,7 @@ object Facade2:
     * @returns {number} the RMD fraction
     */
   @JSExportTopLevel("tf_rmd_fraction_for_age")
-  def tf_rmd_fraction_for_age(
-    age: Int
-  ): Double =
+  def tf_rmd_fraction_for_age(age: Int): Double =
     RMDs.fractionForAge(age)
 
   /** The amount of Social Security income that is taxable.
@@ -137,7 +135,7 @@ object Facade2:
       .standardDeduction(birthDate)
   end tf_std_deduction
 
-  /** The Federal AGI. Example: TF_SENIOR_DEDUCTION(0.34, 2023,
+  /** The Federal AGI. Example: TF_AGI(0.34, 2023,
     * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
     *
     * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
@@ -162,7 +160,7 @@ object Facade2:
     ordinaryIncomeNonSS: GIncome,
     qualifiedIncome: GTaxableIncome,
     itemizedDeductions: GDeduction
-  ): GDeduction =
+  ): GIncome =
     val bracketInflationFactor = 1.0 + bracketInflationRate
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
@@ -260,7 +258,7 @@ object Facade2:
       .netDeduction
   end tf_net_deduction
 
-  /** The Federal tax due. Example: TF_FEDERAL_TAX_DUE(3%, 2023,
+  /** The Federal tax due. Example: TF_TAX_DUE(3%, 2023,
     * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
     *
     * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
