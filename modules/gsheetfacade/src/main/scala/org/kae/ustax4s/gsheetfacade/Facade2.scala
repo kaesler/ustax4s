@@ -343,6 +343,63 @@ object Facade2:
 
   end tf_tax_slope_ordinary
 
+  /** The marginal tax rate on ordinary income for a specified delta. Example:
+    * TF_TAX_SLOPE_ORDINARY_DELTA(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000,
+    * 0, -2000)
+    *
+    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number} year a year
+    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object} birthDate tax payer's date of birth
+    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number} socSec Social Security benefits received
+    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number} qualifiedIncome qualified dividends and long term capital gains
+    * @param {number} itemizedDeductions total of any itemized deductions
+    * @param {number} delta the delta to ordinary income
+    * @returns {number} the marginal tax rate as a factor
+    */
+  @JSExportTopLevel("tf_tax_slope_ordinary_delta")
+  def tf_tax_slope_ordinary_delta(
+    bracketInflationRate: Double,
+    year: GYear,
+    filingStatus: GFilingStatus,
+    birthDate: GLocalDate,
+    personalExemptions: Int,
+    socSec: GIncome,
+    ordinaryIncomeNonSS: GIncome,
+    qualifiedIncome: GTaxableIncome,
+    itemizedDeductions: GDeduction,
+    ordinaryIncomeNonSSDelta: GIncome
+  ): Double =
+    val start = math.min(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
+    val end   = math.max(ordinaryIncomeNonSS, ordinaryIncomeNonSS + ordinaryIncomeNonSSDelta)
+
+    val taxDueAtStart = tf_tax_due(
+      bracketInflationRate,
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions,
+      socSec,
+      start,
+      qualifiedIncome,
+      itemizedDeductions
+    )
+    val taxDueAtEnd = tf_tax_due(
+      bracketInflationRate,
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions,
+      socSec,
+      end,
+      qualifiedIncome,
+      itemizedDeductions
+    )
+    (taxDueAtEnd - taxDueAtStart) / math.abs(ordinaryIncomeNonSSDelta)
+  end tf_tax_slope_ordinary_delta
+
   /** The marginal tax rate on ordinary income. Example:
     * TF_TAX_SLOPE_QUALIFIED(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000,
     * 0)
