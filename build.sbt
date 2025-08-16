@@ -1,5 +1,7 @@
 import org.kae.Dependencies.*
 import org.scalajs.linker.interface.ESVersion
+import sbt.Keys.libraryDependencies
+import scala.collection.Seq
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"
@@ -80,8 +82,11 @@ lazy val gsheetfacade = project
         fullCompileRenderer.value,
         baseDirectory.value
       )
-    }
-
+    },
+    libraryDependencies ++=
+      Seq(
+        "org.kae" %%% "cells" % "0.1-SNAPSHOT"
+      )
   )
 
 lazy val ustax4s = crossProject(JSPlatform, JVMPlatform)

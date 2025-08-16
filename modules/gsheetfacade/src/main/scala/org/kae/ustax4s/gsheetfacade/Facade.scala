@@ -1,41 +1,46 @@
 package org.kae.ustax4s.gsheetfacade
 
+import gsheets.cells.GSheetGrid
+import gsheets.customfunctions.Input
+import gsheets.customfunctionsimpl.Syntax.*
+import java.time.{LocalDate, Year}
+import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.{BoundRegime, RMDs, TaxableSocialSecurity}
+import org.kae.ustax4s.money.Moneys.{Deduction, Income, IncomeThreshold, TaxableIncome}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 import scala.scalajs.js.annotation.JSExportTopLevel
 
 object Facade:
+  import Codecs.given
   import Conversions.given
   import TypeAliases.*
 
   /** The RMD fraction for a given age. Example: TIR_RMD_FRACTION_FOR_AGE(76)
-    *
-    * @param {number} age age of the taxpayer
-    * @returns {number} the RMD fraction
-    */
+   *
+   * @param {number} age age of the taxpayer
+   * @returns {number} the RMD fraction
+   */
   @JSExportTopLevel("tf_rmd_fraction_for_age")
-  def tf_rmd_fraction_for_age(age: Int): Double =
-    RMDs.fractionForAge(age)
+  def tf_rmd_fraction_for_age(age: Input): GSheetGrid =
+    RMDs.fractionForAge.asCustomFunction(age)
+  end tf_rmd_fraction_for_age
 
   /** The amount of Social Security income that is taxable.
-    * Example: TF_TAXABLE_SOCIAL_SECURITY("HeadOfHousehold", 20000, 52000)
-    *
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {number} ssRelevantOtherIncome all income apart from Social Security
-    * @param {number} socSec Social Security benefits received
-    * @returns {number} the amount of Social Security income that is taxable
-    */
+   * Example: TF_TAXABLE_SOCIAL_SECURITY("HeadOfHousehold", 20000, 52000)
+   *
+   * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
+   * @param {number} ssRelevantOtherIncome all income apart from Social Security
+   * @param {number} socSec Social Security benefits received
+   * @returns {number} the amount of Social Security income that is taxable
+   */
   @JSExportTopLevel("tf_taxable_social_security")
   def tf_taxable_social_security(
-    filingStatus: GFilingStatus,
-    ssRelevantOtherIncome: GIncome,
-    socSec: GIncome
-  ): GIncome =
-    TaxableSocialSecurity.taxableSocialSecurityBenefits(
-      filingStatus,
-      socSec,
-      ssRelevantOtherIncome
-    )
+    filingStatus: Input,
+    ssRelevantOtherIncome: Input,
+    socSec: Input
+  ): GSheetGrid =
+    TaxableSocialSecurity.taxableSocialSecurityBenefits
+      .asCustomFunction(filingStatus, socSec, ssRelevantOtherIncome)
   end tf_taxable_social_security
 
   /** End of an ordinary income tax bracket. Example:
@@ -49,16 +54,27 @@ object Facade:
     */
   @JSExportTopLevel("tf_ordinary_bracket_end")
   def tf_ordinary_bracket_end(
-    bracketInflationRate: Double,
-    year: GYear,
-    filingStatus: GFilingStatus,
-    bracketRatePercentage: GFederalTaxRate
-  ): GTaxableIncome =
-    val bracketInflationFactor = 1.0 + bracketInflationRate
-    BoundRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .ordinaryBrackets
-      .unsafeTaxableIncomeToEndOfBracket(bracketRatePercentage / 100)
+    bracketInflationRate: Input,
+    year: Input,
+    filingStatus: Input,
+    bracketRatePercentage: Input
+  ): GSheetGrid =
+    def f(
+      bracketInflationRate: Double,
+      year: GYear,
+      filingStatus: GFilingStatus,
+      bracketRatePercentage: GFederalTaxRate
+    ): TaxableIncome =
+      val bracketInflationFactor = 1.0 + bracketInflationRate
+      BoundRegime
+        .forAnyYear(year, bracketInflationFactor, filingStatus)
+        .ordinaryBrackets
+        .unsafeTaxableIncomeToEndOfBracket(bracketRatePercentage / 100)
+    end f
+
+    f.asCustomFunction(
+      bracketInflationRate, year, filingStatus, bracketRatePercentage
+    )
   end tf_ordinary_bracket_end
 
   /** Width of an ordinary income tax bracket. Example:
@@ -72,20 +88,33 @@ object Facade:
     */
   @JSExportTopLevel("tf_ordinary_bracket_width")
   def tf_ordinary_bracket_width(
-    bracketInflationRate: Double,
-    year: GYear,
-    filingStatus: GFilingStatus,
-    bracketRatePercentage: GFederalTaxRate
-  ): GTaxableIncome =
-    val bracketInflationFactor = 1.0 + bracketInflationRate
-    BoundRegime
-      .forAnyYear(
-        year,
-        bracketInflationFactor,
-        filingStatus
-      )
-      .ordinaryBrackets
-      .unsafeBracketWidth(bracketRatePercentage / 100)
+    bracketInflationRate: Input,
+    year: Input,
+    filingStatus: Input,
+    bracketRatePercentage: Input
+  ): GSheetGrid =
+    def f(
+      bracketInflationRate: Double,
+      year: Year,
+      filingStatus: FilingStatus,
+      bracketRatePercentage: Double
+    ): TaxableIncome =
+      val bracketInflationFactor = 1.0 + bracketInflationRate
+      BoundRegime
+        .forAnyYear(
+          year,
+          bracketInflationFactor,
+          filingStatus
+        )
+        .ordinaryBrackets
+        .unsafeBracketWidth(bracketRatePercentage / 100)
+    end f
+    f.asCustomFunction(
+      bracketInflationRate,
+      year,
+      filingStatus,
+      bracketRatePercentage
+    )
   end tf_ordinary_bracket_width
 
   /** Threshold above which long term capital gains are taxed. Example:
@@ -98,15 +127,23 @@ object Facade:
     */
   @JSExportTopLevel("tf_ltcg_tax_start")
   def tf_ltcg_tax_start(
-    bracketInflationRate: Double,
-    year: GYear,
-    filingStatus: GFilingStatus
-  ): GIncomeThreshold =
-    val bracketInflationFactor = 1.0 + bracketInflationRate
-    BoundRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .qualifiedBrackets
-      .startOfNonZeroQualifiedRateBracket
+    bracketInflationRate: Input,
+    year: Input,
+    filingStatus: Input
+  ): GSheetGrid =
+    def f(
+      bracketInflationRate: Double,
+      year: Year,
+      filingStatus: FilingStatus
+    ): IncomeThreshold =
+      val bracketInflationFactor = 1.0 + bracketInflationRate
+      BoundRegime
+        .forAnyYear(year, bracketInflationFactor, filingStatus)
+        .qualifiedBrackets
+        .startOfNonZeroQualifiedRateBracket
+    end f
+
+    f.asCustomFunction(bracketInflationRate, year, filingStatus)
   end tf_ltcg_tax_start
 
   /** Standard deduction. Example: TF_STD_DEDUCTION(3%, 2030,
@@ -120,19 +157,29 @@ object Facade:
     */
   @JSExportTopLevel("tf_std_deduction")
   def tf_std_deduction(
-    bracketInflationRate: Double,
-    year: GYear,
-    filingStatus: GFilingStatus,
-    birthDate: GLocalDate
-  ): GDeduction =
-    val bracketInflationFactor = 1.0 + bracketInflationRate
-    BoundRegime
-      .forAnyYear(
-        year,
-        bracketInflationFactor,
-        filingStatus
-      )
-      .standardDeduction(birthDate)
+    bracketInflationRate: Input,
+    year: Input,
+    filingStatus: Input,
+    birthDate: Input
+  ): GSheetGrid =
+    def f(
+      bracketInflationRate: Double,
+      year: Year,
+      filingStatus: FilingStatus,
+      birthDate: LocalDate
+    ): Deduction =
+      val bracketInflationFactor = 1.0 + bracketInflationRate
+      BoundRegime
+        .forAnyYear(
+          year,
+          bracketInflationFactor,
+          filingStatus
+        )
+        .standardDeduction(birthDate)
+    end f
+    f.asCustomFunction(
+      bracketInflationRate, year, filingStatus, birthDate
+    )
   end tf_std_deduction
 
   /** The Federal AGI. Example: TF_AGI(0.34, 2023,
@@ -151,29 +198,52 @@ object Facade:
     */
   @JSExportTopLevel("tf_agi")
   def tf_agi(
-    bracketInflationRate: Double,
-    year: GYear,
-    filingStatus: GFilingStatus,
-    birthDate: GLocalDate,
-    personalExemptions: Int,
-    socSec: GIncome,
-    ordinaryIncomeNonSS: GIncome,
-    qualifiedIncome: GTaxableIncome,
-    itemizedDeductions: GDeduction
-  ): GIncome =
-    val bracketInflationFactor = 1.0 + bracketInflationRate
-    BoundRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+    bracketInflationRate: Input,
+    year: Input,
+    filingStatus: Input,
+    birthDate: Input,
+    personalExemptions: Input,
+    socSec: Input,
+    ordinaryIncomeNonSS: Input,
+    qualifiedIncome: Input,
+    itemizedDeductions: Input
+  ): GSheetGrid =
+    def f(
+      bracketInflationRate: Double,
+      year: Year,
+      filingStatus: FilingStatus,
+      birthDate: LocalDate,
+      personalExemptions: Int,
+      socSec: Income,
+      ordinaryIncomeNonSS: Income,
+      qualifiedIncome: TaxableIncome,
+      itemizedDeductions: Deduction
+    ): Income = 
+      val bracketInflationFactor = 1.0 + bracketInflationRate
+      BoundRegime
+        .forAnyYear(year, bracketInflationFactor, filingStatus)
+        .calculator
+        .results(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
+        .agi
+    end f
+    f.asCustomFunction(
+      bracketInflationRate,
+      year,
+      filingStatus,
+      birthDate,
+      personalExemptions,
+      socSec,
+      ordinaryIncomeNonSS,
+      qualifiedIncome,
+      itemizedDeductions
       )
-      .agi
   end tf_agi
 
   /** The Federal means tested senior deduction. Example: TF_SENIOR_DEDUCTION(0.34, 2023,
