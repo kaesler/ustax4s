@@ -10,6 +10,8 @@ import scala.scalajs.js
 
 object Conversions:
 
+  // TODO: If we want to output a grid this will be
+  // GSheetCellValue | GSheetGrid
   type Output = GSheetCellValue
 
   // Input argument conversions:
