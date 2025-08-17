@@ -1,6 +1,6 @@
 package org.kae.ustax4s.gsheetfacade
 
-import gsheets.cells.GSheetCellValue
+import gsheets.cells.{GSheetCellValue, GSheetGrid, ScalaCellGrid}
 import gsheets.customfunctions.Input
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
@@ -12,27 +12,20 @@ object Conversions:
 
   // TODO: If we want to output a grid this will be
   // GSheetCellValue | GSheetGrid
-  type Output = GSheetCellValue
+  type Output = GSheetCellValue | GSheetGrid
 
-  // Input argument conversions:
+  // Conversions from Input
   given Conversion[Input, FederalTaxRate] =
     doubleInputConversion[FederalTaxRate](
       "FederalTaxRate",
       FederalTaxRate.unsafeFrom
     )
 
-  given Conversion[Input, Int] =
-    doubleInputConversion("Int", _.toInt)
-
-  given Conversion[Input, Double] =
-    doubleInputConversion("Double", identity)
-
-  given Conversion[Input, Deduction] =
-    doubleInputConversion("Deduction", Deduction.apply)
-
+  given Conversion[Input, Int]          = doubleInputConversion("Int", _.toInt)
+  given Conversion[Input, Double]       = doubleInputConversion("Double", identity)
+  given Conversion[Input, Deduction]    = doubleInputConversion("Deduction", Deduction.apply)
   given Conversion[Input, FilingStatus] =
     stringInputConversion("FilingStatus", FilingStatus.valueOf)
-
   given Conversion[Input, Income] =
     doubleInputConversion("Income", Income.apply)
 
@@ -46,6 +39,7 @@ object Conversions:
           jsd.getDate().toInt
         )
     )
+  end given
 
   given Conversion[Input, TaxableIncome] =
     doubleInputConversion("TaxableIncome", TaxableIncome.apply)
@@ -55,6 +49,15 @@ object Conversions:
       "Year",
       (d: Double) => Year.of(d.toInt)
     )
+  end given
+
+  given Conversion[Input, ScalaCellGrid] =
+    case g: GSheetGrid => ScalaCellGrid(g)
+    case badCellValue  =>
+      throw new IllegalArgumentException(
+        s"argument must be a range of cells: $badCellValue"
+      )
+  end given
 
   // Output result conversions:
   given Conversion[Deduction, Output]       = _.asDouble
@@ -62,6 +65,7 @@ object Conversions:
   given Conversion[TaxableIncome, Output]   = _.asDouble
   given Conversion[Income, Output]          = _.asDouble
   given Conversion[TaxPayable, Output]      = _.asDouble
+  given Conversion[ScalaCellGrid, Output]   = GSheetGrid.apply
 
   private def dateInputConversion[T](
     typeName: String,
