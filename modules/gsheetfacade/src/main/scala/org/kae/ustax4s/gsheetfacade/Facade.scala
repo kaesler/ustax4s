@@ -1,8 +1,10 @@
 package org.kae.ustax4s.gsheetfacade
 
+import gsheets.cells.Cell
 import gsheets.customfunctions.Input
 import org.kae.ustax4s.federal.{BoundRegime, RMDs, TaxableSocialSecurity}
 import org.kae.ustax4s.gsheetfacade.Conversions.Output
+import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 import scala.scalajs.js.annotation.JSExportTopLevel
 
@@ -302,6 +304,72 @@ object Facade:
       )
       .taxDue
   end tf_tax_due
+
+  /** The Federal tax results. Example: TF_TAX_RESULTS(3%, 2023,
+    * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
+    *
+    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number} year the tax year
+    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object} birthDate tax payer's date of birth
+    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number} socSec Social Security benefits received
+    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number} qualifiedIncome qualified dividends and long term capital gains
+    * @param {number} itemizedDeductions total of any itemized deductions
+    * @returns {grid} the Federal tax results
+    */
+  @JSExportTopLevel("tf_tax_results")
+  def tf_tax_results(
+    bracketInflationRate: Input,
+    year: Input,
+    filingStatus: Input,
+    birthDate: Input,
+    personalExemptions: Input,
+    socSec: Input,
+    ordinaryIncomeNonSS: Input,
+    qualifiedIncome: Input,
+    itemizedDeductions: Input
+  ): Output =
+    val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
+    val r                      = BoundRegime
+      .forAnyYear(year, bracketInflationFactor, filingStatus)
+      .calculator
+      .results(
+        birthDate,
+        personalExemptions,
+        socSec,
+        ordinaryIncomeNonSS,
+        qualifiedIncome,
+        itemizedDeductions
+      )
+
+    given Conversion[String, Cell]     = s => Cell(s)
+    given Conversion[Deduction, Cell]  = d => Cell(d.asDouble)
+    given Conversion[Double, Cell]     = Cell.apply
+    given Conversion[Income, Cell]     = i => Cell(i.asDouble)
+    given Conversion[TaxPayable, Cell] = t => Cell(t.asDouble)
+    type ConversionToCell[T] = Conversion[T, Cell]
+
+    def cp[T: ConversionToCell](s: String, t: T): Vector[Cell] =
+      Vector(s, t: Cell)
+
+    Vector(
+      cp("taxableSocialSecurity", r.taxableSocialSecurity),
+      cp("agi", r.agi),
+      cp("personalExemptionDeduction", r.personalExemptionDeduction),
+      cp("standardDeduction", r.standardDeduction),
+      cp("meansTestedSeniorDeduction", r.meansTestedSeniorDeduction),
+      cp("netDeduction", r.netDeduction),
+      cp("taxableOrdinaryIncome", r.taxableOrdinaryIncome),
+      cp("taxOnOrdinaryIncome", r.taxOnOrdinaryIncome),
+      cp("taxOnQualifiedIncome", r.taxOnQualifiedIncome),
+      cp("taxSlopeForOrdinaryIncome", r.taxSlopeForOrdinaryIncome),
+      cp("taxSlopeForQualifiedIncome", r.taxSlopeForQualifiedIncome),
+      cp("taxSlopeForSocSec", r.taxSlopeForSocSec),
+      cp("taxDue", r.taxDue)
+    )
+  end tf_tax_results
 
   /** The marginal tax rate on ordinary income. Example:
     * TF_TAX_SLOPE_ORDINARY(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000,
