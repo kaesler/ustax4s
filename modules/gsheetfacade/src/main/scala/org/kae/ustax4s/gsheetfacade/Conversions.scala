@@ -10,11 +10,9 @@ import scala.scalajs.js
 
 object Conversions:
 
-  // TODO: If we want to output a grid this will be
-  // GSheetCellValue | GSheetGrid
   type Output = GSheetCellValue | GSheetGrid
 
-  // Conversions from Input
+  // Conversions from Input.
   given Conversion[Input, FederalTaxRate] =
     doubleInputConversion[FederalTaxRate](
       "FederalTaxRate",
@@ -59,7 +57,7 @@ object Conversions:
       )
   end given
 
-  // Output result conversions:
+  // Conversions to Output.
   given Conversion[Deduction, Output]       = _.asDouble
   given Conversion[IncomeThreshold, Output] = _.asDouble
   given Conversion[TaxableIncome, Output]   = _.asDouble
