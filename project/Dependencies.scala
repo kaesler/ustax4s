@@ -13,9 +13,9 @@ object Dependencies {
 
   object MUnit {
     val munit: ModuleID =
-      "org.scalameta" %% "munit" % "1.1.1" exclude ("org.scala-lang", "scala3-library_3")
+      "org.scalameta" %% "munit" % "1.2.0" exclude ("org.scala-lang", "scala3-library_3")
     val scalacheck: ModuleID =
-      "org.scalameta" %% "munit-scalacheck" % "1.1.0" exclude ("org.scala-lang", "scala3-library_3")
+      "org.scalameta" %% "munit-scalacheck" % "1.2.0" exclude ("org.scala-lang", "scala3-library_3")
   }
 
   object Scalacheck {
