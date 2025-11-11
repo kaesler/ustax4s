@@ -2,6 +2,7 @@ package org.kae.ustax4s.federal
 
 import cats.implicits.*
 import munit.{Assertions, FunSuite}
+import org.kae.ustax4s.Brackets
 import org.kae.ustax4s.money.IncomeThreshold
 
 class BracketsSpec extends FunSuite:

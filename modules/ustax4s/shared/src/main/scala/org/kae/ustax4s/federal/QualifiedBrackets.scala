@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.{PartialOrder, Show}
-import org.kae.ustax4s.SourceLoc
+import org.kae.ustax4s.{Brackets, SourceLoc}
 import org.kae.ustax4s.money.IncomeThreshold
 
 // Note: contain a Brackets[FederalTaxRate] rather than opaque type

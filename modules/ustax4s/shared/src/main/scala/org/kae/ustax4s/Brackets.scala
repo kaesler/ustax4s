@@ -1,4 +1,4 @@
-package org.kae.ustax4s.federal
+package org.kae.ustax4s
 
 import cats.PartialOrder
 import org.kae.ustax4s.SourceLoc

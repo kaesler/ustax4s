@@ -1,4 +1,4 @@
-package org.kae.ustax4s.money
+package org.kae.ustax4s
 
 // Type class.
 trait TaxRate[T] extends Ordering[T]:

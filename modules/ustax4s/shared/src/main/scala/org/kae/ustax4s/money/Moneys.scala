@@ -2,7 +2,7 @@ package org.kae.ustax4s.money
 
 import cats.Monoid
 import cats.implicits.*
-import org.kae.ustax4s.SourceLoc
+import org.kae.ustax4s.{SourceLoc, TaxRate}
 import scala.annotation.targetName
 
 export Moneys.Deduction

@@ -1,7 +1,6 @@
 package org.kae.ustax4s.state_ma
 
-import org.kae.ustax4s.SourceLoc
-import org.kae.ustax4s.money.TaxRate
+import org.kae.ustax4s.{SourceLoc, TaxRate}
 
 opaque type StateMATaxRate = Double
 
