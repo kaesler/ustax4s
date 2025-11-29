@@ -10,7 +10,7 @@ case class FlatStateRegime(
   rate: StateTaxRate
 ) extends StateRegime
 
-case class ProgressStateRegime(
+case class ProgressiveStateRegime(
   brackets: Brackets[StateTaxRate]
 ) extends StateRegime
 
