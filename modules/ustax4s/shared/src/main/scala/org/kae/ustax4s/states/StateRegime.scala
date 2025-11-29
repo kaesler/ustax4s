@@ -20,7 +20,9 @@ object StateRegime:
     state match
       case AK | FL | NV | NH | SD | TN | TX | WA | WY => NilStateRegime
 
-      case CO => FlatStateRegime(StateTaxRate.unsafeFrom(4.4 / 100))
+      case CO =>
+        // From fed taxable income.
+        FlatStateRegime(StateTaxRate.unsafeFrom(4.4 / 100))
       case IL => FlatStateRegime(StateTaxRate.unsafeFrom(4.95 / 100))
       case IN => FlatStateRegime(StateTaxRate.unsafeFrom(3.05 / 100))
       case MI => FlatStateRegime(StateTaxRate.unsafeFrom(4.25 / 100))
