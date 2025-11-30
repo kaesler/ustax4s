@@ -3,33 +3,31 @@ package org.kae.ustax4s.states
 import org.kae.ustax4s.Brackets.Brackets
 import org.kae.ustax4s.federal.{FederalCalcInput, FederalCalcResults}
 import org.kae.ustax4s.money.Moneys.TaxPayable
+import scala.annotation.unused
 
 // Model this: https://docs.google.com/spreadsheets/d/1I_OuA6uuAs7YoZRc02atHCCxpXaGDn9N/edit?gid=201796956#gid=201796956
 
-sealed trait StateTaxCalculator:
-  // TODO: Should this be a "bind" operation to produce a bound calculator
-  def stateTaxDue(
-    federalInput: FederalCalcInput,
-    federalCalcResults: FederalCalcResults
-  ): TaxPayable
-  
-end StateTaxCalculator
+sealed trait HasStateTaxDue:
+  def stateTaxDue: TaxPayable
+end HasStateTaxDue
 
-object StateTaxCalculator:
+sealed trait StateTaxRegime
+
+object StateTaxRegime:
   import State.*
-  def of(state: State): StateTaxCalculator =
+  def of(state: State): StateTaxRegime =
     state match
-      case AK | FL | NV | NH | SD | TN | TX | WA | WY => NilStateTaxCalculator
+      case AK | FL | NV | NH | SD | TN | TX | WA | WY => NilStateTaxRegime
 
       case CO =>
         // From fed taxable income.
-        FlatStateTaxCalculator(StateTaxRate.unsafeFrom(4.4 / 100))
-      case IL => FlatStateTaxCalculator(StateTaxRate.unsafeFrom(4.95 / 100))
-      case IN => FlatStateTaxCalculator(StateTaxRate.unsafeFrom(3.05 / 100))
-      case MI => FlatStateTaxCalculator(StateTaxRate.unsafeFrom(4.25 / 100))
-      case NC => FlatStateTaxCalculator(StateTaxRate.unsafeFrom(4.25 / 100))
-      case PA => FlatStateTaxCalculator(StateTaxRate.unsafeFrom(3.07 / 100))
-      case UT => FlatStateTaxCalculator(StateTaxRate.unsafeFrom(4.85 / 100))
+        FlatStateTaxRegime(StateTaxRate.unsafeFrom(4.4 / 100))
+      case IL => FlatStateTaxRegime(StateTaxRate.unsafeFrom(4.95 / 100))
+      case IN => FlatStateTaxRegime(StateTaxRate.unsafeFrom(3.05 / 100))
+      case MI => FlatStateTaxRegime(StateTaxRate.unsafeFrom(4.25 / 100))
+      case NC => FlatStateTaxRegime(StateTaxRate.unsafeFrom(4.25 / 100))
+      case PA => FlatStateTaxRegime(StateTaxRate.unsafeFrom(3.07 / 100))
+      case UT => FlatStateTaxRegime(StateTaxRate.unsafeFrom(4.85 / 100))
 
       // Progressive: TODO
       case AL => ???
@@ -75,34 +73,36 @@ object StateTaxCalculator:
       case WI => ???
     end match
   end of
-end StateTaxCalculator
+end StateTaxRegime
 
-case object NilStateTaxCalculator extends StateTaxCalculator:
-
-  override def stateTaxDue(
+sealed trait HasStateTaxCalculator:
+  def calculator(
     federalInput: FederalCalcInput,
     federalCalcResults: FederalCalcResults
-  ): TaxPayable = TaxPayable.zero
-end NilStateTaxCalculator
+  ): HasStateTaxDue
 
-case class FlatStateTaxCalculator(
+case object NilStateTaxRegime extends StateTaxRegime, HasStateTaxDue:
+  override val stateTaxDue: TaxPayable = TaxPayable.zero
+end NilStateTaxRegime
+
+class FlatStateTaxRegime(
+  @unused
   rate: StateTaxRate
-) extends StateTaxCalculator:
-
-  override def stateTaxDue(
+) extends StateTaxRegime,
+      HasStateTaxCalculator:
+  override def calculator(
     federalInput: FederalCalcInput,
     federalCalcResults: FederalCalcResults
-  ): TaxPayable =
-    ???
-end FlatStateTaxCalculator
+  ): HasStateTaxDue = ???
+end FlatStateTaxRegime
 
-case class ProgressiveStateTaxCalculator(
+class ProgressiveStateTaxRegime(
+  @unused
   brackets: Brackets[StateTaxRate]
-) extends StateTaxCalculator:
-
-  override def stateTaxDue(
+) extends StateTaxRegime,
+      HasStateTaxCalculator:
+  override def calculator(
     federalInput: FederalCalcInput,
     federalCalcResults: FederalCalcResults
-  ): TaxPayable =
-    ???
-end ProgressiveStateTaxCalculator
+  ): HasStateTaxDue = ???
+end ProgressiveStateTaxRegime
