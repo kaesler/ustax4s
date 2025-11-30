@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import java.time.LocalDate
 import org.kae.ustax4s.money.Moneys.*
 
-final case class RegimeCalcInput(
+final case class FederalCalcInput(
   birthDate: LocalDate,
   personalExemptions: Int,
   socSec: Income,
@@ -11,22 +11,22 @@ final case class RegimeCalcInput(
   qualifiedIncome: TaxableIncome,
   itemizedDeductions: Deduction
 ):
-  def withMoreSocSec(inc: Income): RegimeCalcInput = copy(socSec = socSec + inc)
-  def withLessSocSec(dec: Income): RegimeCalcInput = copy(
+  def withMoreSocSec(inc: Income): FederalCalcInput = copy(socSec = socSec + inc)
+  def withLessSocSec(dec: Income): FederalCalcInput = copy(
     socSec = socSec.reduceBy(dec)
   )
 
-  def withMoreOrdinaryIncome(inc: Income): RegimeCalcInput = copy(
+  def withMoreOrdinaryIncome(inc: Income): FederalCalcInput = copy(
     ordinaryIncomeNonSS = ordinaryIncomeNonSS + inc
   )
-  def withLessOrdinaryIncome(dec: Income): RegimeCalcInput = copy(
+  def withLessOrdinaryIncome(dec: Income): FederalCalcInput = copy(
     ordinaryIncomeNonSS = ordinaryIncomeNonSS.reduceBy(dec)
   )
 
-  def withMoreQualifiedIncome(inc: TaxableIncome): RegimeCalcInput = copy(
+  def withMoreQualifiedIncome(inc: TaxableIncome): FederalCalcInput = copy(
     qualifiedIncome = qualifiedIncome + inc
   )
-  def withLessQualifiedIncome(dec: TaxableIncome): RegimeCalcInput = copy(
+  def withLessQualifiedIncome(dec: TaxableIncome): FederalCalcInput = copy(
     qualifiedIncome = qualifiedIncome.reduceBy(dec)
   )
-end RegimeCalcInput
+end FederalCalcInput
