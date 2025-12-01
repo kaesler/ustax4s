@@ -9,5 +9,3 @@ enum MaritalStatus:
   def of(filingStatus: FilingStatus): MaritalStatus =
     if filingStatus.isSingle then Unmarried else Married
 end MaritalStatus
-
-
