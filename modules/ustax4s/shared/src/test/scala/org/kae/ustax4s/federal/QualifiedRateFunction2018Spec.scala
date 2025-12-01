@@ -7,16 +7,16 @@ import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.TaxPayable
 import scala.language.implicitConversions
 
-class QualifiedBrackets2018Spec extends FunSuite:
+class QualifiedRateFunction2018Spec extends FunSuite:
   import org.kae.ustax4s.money.MoneyConversions.given
 
   test(
     "QualifiedIncomeTaxBrackets for HOH 2018 should match my actual return"
   ) {
-    val brackets = YearlyValues.of(Year.of(2018))
-      .get.qualifiedBrackets(HeadOfHousehold)
+    val qrf = YearlyValues.of(Year.of(2018))
+      .get.qualifiedRateFunctions(HeadOfHousehold)
     assertEquals(
-      TaxFunctions.taxDueOnQualifiedIncome(brackets)(
+      TaxFunctions.taxDueOnQualifiedIncome(qrf)(
         114547,
         14777
       ).rounded,

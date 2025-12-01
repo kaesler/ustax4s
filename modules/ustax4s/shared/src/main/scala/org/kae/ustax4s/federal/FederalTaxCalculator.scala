@@ -60,10 +60,10 @@ object FederalTaxCalculator:
               .applyDeductions(netDeduction)
 
           override lazy val taxOnOrdinaryIncome: TaxPayable =
-            TaxFunctions.taxDueOnOrdinaryIncome(br.ordinaryBrackets)(taxableOrdinaryIncome)
+            TaxFunctions.taxDueOnOrdinaryIncome(br.ordinaryRateFunction)(taxableOrdinaryIncome)
 
           override lazy val taxOnQualifiedIncome: TaxPayable =
-            TaxFunctions.taxDueOnQualifiedIncome(br.qualifiedBrackets)(
+            TaxFunctions.taxDueOnQualifiedIncome(br.qualifiedRateFunction)(
               taxableOrdinaryIncome,
               qualifiedIncome
             )

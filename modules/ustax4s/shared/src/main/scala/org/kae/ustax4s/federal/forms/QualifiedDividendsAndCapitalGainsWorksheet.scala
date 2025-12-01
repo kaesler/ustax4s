@@ -1,11 +1,11 @@
 package org.kae.ustax4s.federal.forms
 
-import org.kae.ustax4s.federal.{OrdinaryBrackets, QualifiedBrackets}
+import org.kae.ustax4s.federal.{OrdinaryRateFunction, QualifiedRateFunction}
 import org.kae.ustax4s.money.*
 
 final case class QualifiedDividendsAndCapitalGainsWorksheet(
-  ordinaryBrackets: OrdinaryBrackets,
-  qualifiedBrackets: QualifiedBrackets
+  ordinaryBrackets: OrdinaryRateFunction,
+  qualifiedBrackets: QualifiedRateFunction
 ):
   // TODO: how to express this in an LP model?
   //  - compute tax on regular and investments separately

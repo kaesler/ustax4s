@@ -5,14 +5,14 @@ import org.kae.ustax4s.SourceLoc
 import org.kae.ustax4s.money.{Income, IncomeThreshold}
 import scala.math.Ordered.orderingToOrdered
 
-export Brackets.Brackets
-object Brackets:
-  opaque type Brackets = [R] =>> Map[IncomeThreshold, R]
+export RateFunction.RateFunction
+object RateFunction:
+  opaque type RateFunction = [R] =>> Map[IncomeThreshold, R]
 
-  def of[R](pairs: Iterable[(IncomeThreshold, R)]): Brackets[R] =
+  def of[R](pairs: Iterable[(IncomeThreshold, R)]): RateFunction[R] =
     pairs.toMap
 
-  extension [R](bs: Brackets[R])
+  extension [R](bs: RateFunction[R])
     def thresholds: Set[IncomeThreshold]         = bs.keySet
     def rates: Set[R]                            = bs.values.toSet
     def size: Int                                = bs.iterator.size
@@ -32,15 +32,15 @@ object Brackets:
 
     // Adjust the bracket starts for inflation.
     // E.g. for 2% inflation: inflated(1.02)
-    def inflatedBy(factor: Double): Brackets[R] =
+    def inflatedBy(factor: Double): RateFunction[R] =
       require(factor >= 1.0, SourceLoc())
       bs.iterator
         .map: (start, rate) =>
           (start.increaseBy(factor).rounded1, rate)
         .toMap
 
-  given [R] => PartialOrder[Brackets[R]]:
-    def partialCompare(left: Brackets[R], right: Brackets[R]): Double =
+  given [R] => PartialOrder[RateFunction[R]]:
+    def partialCompare(left: RateFunction[R], right: RateFunction[R]): Double =
       if areComparable(left, right) then
         val pairs = left.thresholdsAscending
           .zip(right.thresholdsAscending)
@@ -56,7 +56,7 @@ object Brackets:
         else Double.NaN
       else Double.NaN
 
-  private def areComparable[R](left: Brackets[R], right: Brackets[R]): Boolean =
+  private def areComparable[R](left: RateFunction[R], right: RateFunction[R]): Boolean =
     left.size == right.size && left.rates == right.rates
 
-end Brackets
+end RateFunction

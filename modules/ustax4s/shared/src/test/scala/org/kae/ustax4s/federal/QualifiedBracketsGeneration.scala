@@ -12,14 +12,14 @@ trait QualifiedBracketsGeneration extends SetGeneration with TaxRateGeneration:
   // Notes:
   //   - lowest rate should always be zero% and start at zero.
   //   - at least one non-zero rate
-  val genQualifiedBrackets: Gen[QualifiedBrackets] =
+  val genQualifiedRateFunction: Gen[QualifiedRateFunction] =
     for
       bracketCount <- Gen.choose(2, 10)
       nonZeroRates <- genSet(bracketCount - 1, genNonZeroTaxRatePercentage)
       ratesSortedAscending = 0 :: nonZeroRates.toList.sorted
       bracketBorders <- genSet(bracketCount - 1, genNonZeroIncomeThresholdInt)
       bracketStarts = bracketBorders + 0
-    yield QualifiedBrackets.of(
+    yield QualifiedRateFunction.of(
       bracketStarts.toList.sorted
         .zip(ratesSortedAscending)
         .toMap

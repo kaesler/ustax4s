@@ -17,8 +17,8 @@ trait BoundRegime(
   def adjustmentWhenOver65: Deduction
   def adjustmentWhenOver65AndSingle: Deduction
   def perPersonExemption: Deduction
-  def ordinaryBrackets: OrdinaryBrackets
-  def qualifiedBrackets: QualifiedBrackets
+  def ordinaryRateFunction: OrdinaryRateFunction
+  def qualifiedRateFunction: QualifiedRateFunction
 
   def name: String = regime.show
 
@@ -115,11 +115,11 @@ trait BoundRegime(
       override val perPersonExemption: Deduction =
         base.perPersonExemption inflateBy netInflationFactor
 
-      override val ordinaryBrackets: OrdinaryBrackets =
-        base.ordinaryBrackets.inflatedBy(netInflationFactor)
+      override val ordinaryRateFunction: OrdinaryRateFunction =
+        base.ordinaryRateFunction.inflatedBy(netInflationFactor)
 
-      override val qualifiedBrackets: QualifiedBrackets =
-        base.qualifiedBrackets.inflatedBy(netInflationFactor)
+      override val qualifiedRateFunction: QualifiedRateFunction =
+        base.qualifiedRateFunction.inflatedBy(netInflationFactor)
     end new
 
   end withEstimatedNetInflationFactor
@@ -137,8 +137,8 @@ object BoundRegime:
         s"  unadjustedStandardDeduction: ${r.unadjustedStandardDeduction}\n" ++
         s"  adjustmentWhenOver65: ${r.adjustmentWhenOver65}\n" ++
         s"  adjustmentWhenOver65AnSingle: ${r.adjustmentWhenOver65AndSingle}\n" ++
-        s"  ordinaryBrackets: ${r.ordinaryBrackets.show}\n" ++
-        s"  qualifiedBrackets: ${r.qualifiedBrackets.show}\n"
+        s"  ordinaryBrackets: ${r.ordinaryRateFunction.show}\n" ++
+        s"  qualifiedBrackets: ${r.qualifiedRateFunction.show}\n"
   end given
 
   def forAnyYear(
@@ -193,11 +193,11 @@ object BoundRegime:
 
       override val perPersonExemption: Deduction = yv.perPersonExemption
 
-      override def ordinaryBrackets: OrdinaryBrackets =
-        yv.ordinaryBrackets(this.filingStatus)
+      override def ordinaryRateFunction: OrdinaryRateFunction =
+        yv.ordinaryRateFunctions(this.filingStatus)
 
-      override def qualifiedBrackets: QualifiedBrackets =
-        yv.qualifiedBrackets(this.filingStatus)
+      override def qualifiedRateFunction: QualifiedRateFunction =
+        yv.qualifiedRateFunctions(this.filingStatus)
     end new
   end forKnownYearlyValues
 

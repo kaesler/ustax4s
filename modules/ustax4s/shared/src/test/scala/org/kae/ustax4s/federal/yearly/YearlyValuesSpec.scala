@@ -54,7 +54,7 @@ class YearlyValuesSpec extends FunSuite:
   ) {
     allYears.foreach { year =>
       assertEquals(
-        year.ordinaryBrackets.values.map(_.rates).toList.distinct.size,
+        year.ordinaryRateFunctions.values.map(_.rates).toList.distinct.size,
         1,
         s"Year is $year"
       )
@@ -87,11 +87,11 @@ class YearlyValuesSpec extends FunSuite:
       // So we settle for this weaker metric.
 
       val sumOfSingleThresholds =
-        year.ordinaryBrackets(Single).thresholds.toList.combineAll
+        year.ordinaryRateFunctions(Single).thresholds.toList.combineAll
       val sumOfHohThresholds =
-        year.ordinaryBrackets(HeadOfHousehold).thresholds.toList.combineAll
+        year.ordinaryRateFunctions(HeadOfHousehold).thresholds.toList.combineAll
       val sumOfMarriedThresholds =
-        year.ordinaryBrackets(MarriedJoint).thresholds.toList.combineAll
+        year.ordinaryRateFunctions(MarriedJoint).thresholds.toList.combineAll
 
       massert(
         summon[Ordering[Income]]
@@ -109,7 +109,7 @@ class YearlyValuesSpec extends FunSuite:
       fs    <- FilingStatus.values
       years <- List(preTCJAYears, trumpYears)
     do
-      val list = years.map(_.ordinaryBrackets(fs))
+      val list = years.map(_.ordinaryRateFunctions(fs))
       list.zip(list.tail).foreach { (l, r) =>
         massert(l <= r, s"${fs.show}\n${l.show}\n${r.show}")
       }
@@ -120,7 +120,7 @@ class YearlyValuesSpec extends FunSuite:
       fs    <- FilingStatus.values
       years <- List(preTCJAYears, trumpYears)
     do
-      val list = years.map(_.qualifiedBrackets(fs))
+      val list = years.map(_.qualifiedRateFunctions(fs))
       list.zip(list.tail).foreach { (l, r) =>
         massert(l <= r, s"${fs.show}\n${l.show}\n${r.show}")
       }

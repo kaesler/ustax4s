@@ -189,8 +189,8 @@ object TaxCalculator:
     Form1040
       .totalFederalTax(
         form,
-        yv.ordinaryBrackets(filingStatus),
-        yv.qualifiedBrackets(filingStatus)
+        yv.ordinaryRateFunctions(filingStatus),
+        yv.qualifiedRateFunctions(filingStatus)
       )
       .rounded
   end federalTaxDueUsingForm1040

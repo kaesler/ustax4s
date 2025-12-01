@@ -1,32 +1,32 @@
 package org.kae.ustax4s.federal
 
 import cats.{PartialOrder, Show}
-import org.kae.ustax4s.{Brackets, SourceLoc}
+import org.kae.ustax4s.{RateFunction, SourceLoc}
 import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
-// Note: contain a Brackets[FederalTaxRate] rather than opaque type
+// Note: contain a RateFunction[FederalTaxRate] rather than opaque type
 // so we can precompute and store val properties.
-final case class OrdinaryBrackets(
-  brackets: Brackets[FederalTaxRate]
+final case class OrdinaryRateFunction(
+  rateFunction: RateFunction[FederalTaxRate]
 ):
-  import OrdinaryBrackets.*
+  import OrdinaryRateFunction.*
 
-  require(brackets.isProgressive, SourceLoc())
-  require(brackets.has(IncomeThreshold.zero), SourceLoc())
+  require(rateFunction.isProgressive, SourceLoc())
+  require(rateFunction.has(IncomeThreshold.zero), SourceLoc())
 
   lazy val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
-    brackets.bracketsAscending
+    rateFunction.bracketsAscending
 
   private lazy val thresholdsDescending = bracketsAscending.reverse
 
   // Adjust the bracket starts for inflation.
   // E.g. for 2% inflation: inflated(1.02)
-  def inflatedBy(factor: Double): OrdinaryBrackets =
-    OrdinaryBrackets(brackets.inflatedBy(factor))
+  def inflatedBy(factor: Double): OrdinaryRateFunction =
+    OrdinaryRateFunction(rateFunction.inflatedBy(factor))
 
-  lazy val thresholds: Set[IncomeThreshold] = brackets.thresholds
-  lazy val rates: Set[FederalTaxRate]       = brackets.rates
+  lazy val thresholds: Set[IncomeThreshold] = rateFunction.thresholds
+  lazy val rates: Set[FederalTaxRate]       = rateFunction.rates
 
   def unsafeTaxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): TaxableIncome =
     bracketsAscending
@@ -45,7 +45,7 @@ final case class OrdinaryBrackets(
       .toList
       .takeWhile:
         case Vector((_, rate), (_, _)) => rate <= bracketRate
-        case _                         => throw NoSuchBracket(bracketRate)
+        case _                         => throw NoSuchFederalTaxRate(bracketRate)
       .collect:
         case Vector((threshold, rate), (nextThreshold, _)) =>
           // Tax due on current bracket:
@@ -80,7 +80,7 @@ final case class OrdinaryBrackets(
     bracketWidths.get(bracketRate)
 
   private def errorForBadRate(bracketRate: FederalTaxRate) =
-    if !bracketExists(bracketRate) then NoSuchBracket(bracketRate)
+    if !bracketExists(bracketRate) then NoSuchFederalTaxRate(bracketRate)
     else if bracketIsTop(bracketRate) then BracketHasNoEnd(bracketRate)
     else RuntimeException(s"Unknown error for FederalTaxRate $bracketRate")
   end errorForBadRate
@@ -91,11 +91,11 @@ final case class OrdinaryBrackets(
   private def bracketIsTop(bracketRate: FederalTaxRate): Boolean =
     bracketRate == bracketsAscending.last._2
 
-end OrdinaryBrackets
+end OrdinaryRateFunction
 
-object OrdinaryBrackets:
+object OrdinaryRateFunction:
 
-  final case class NoSuchBracket(
+  final case class NoSuchFederalTaxRate(
     federalTaxRate: FederalTaxRate
   ) extends RuntimeException(
         s"No such ordinary income Federal tax rate: $federalTaxRate"
@@ -107,15 +107,15 @@ object OrdinaryBrackets:
         s"Ordinary income bracket for $federalTaxRate has no end"
       )
 
-  given Show[OrdinaryBrackets]:
-    def show(b: OrdinaryBrackets): String =
+  given Show[OrdinaryRateFunction]:
+    def show(b: OrdinaryRateFunction): String =
       b.bracketsAscending.mkString("\n")
 
-  given PartialOrder[OrdinaryBrackets] = PartialOrder.by(_.brackets)
+  given PartialOrder[OrdinaryRateFunction] = PartialOrder.by(_.rateFunction)
 
-  def of(pairs: Iterable[(Int, Double)]): OrdinaryBrackets =
-    OrdinaryBrackets(
-      Brackets.of(
+  def of(pairs: Iterable[(Int, Double)]): OrdinaryRateFunction =
+    OrdinaryRateFunction(
+      RateFunction.of(
         pairs.map: (bracketStart, ratePercentage) =>
           require(ratePercentage < 100.0d, SourceLoc())
           IncomeThreshold(bracketStart) ->
@@ -123,4 +123,4 @@ object OrdinaryBrackets:
       )
     )
   end of
-end OrdinaryBrackets
+end OrdinaryRateFunction

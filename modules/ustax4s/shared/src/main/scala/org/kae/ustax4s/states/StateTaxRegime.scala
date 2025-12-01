@@ -1,6 +1,6 @@
 package org.kae.ustax4s.states
 
-import org.kae.ustax4s.Brackets.Brackets
+import org.kae.ustax4s.RateFunction.RateFunction
 import org.kae.ustax4s.federal.{FederalCalcInput, FederalCalcResults}
 import org.kae.ustax4s.money.Moneys.{Deduction, TaxPayable}
 import scala.annotation.unused
@@ -144,11 +144,11 @@ object StateTaxRegime:
 
       case MA =>
         ProgressiveStateTaxRegime(
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
+          rateFunctions = ???,
+          standardDeductions = ???,
+          standardExemptions = ???,
+          perDependentExemption = ???,
+          exemptionsAreCredits = false
         )
       case MN => ProgressiveStateTaxRegime(???, ???, ???, ???, ???)
       case MS => ProgressiveStateTaxRegime(???, ???, ???, ???, ???)
@@ -208,7 +208,7 @@ end FlatStateTaxRegime
 
 class ProgressiveStateTaxRegime(
   @unused
-  brackets: Brackets[StateTaxRate],
+  rateFunctions: MaritalStatus => RateFunction[StateTaxRate],
   override val standardDeductions: MaritalStatus => Deduction,
   override val standardExemptions: MaritalStatus => Deduction,
   override val perDependentExemption: Deduction,

@@ -18,7 +18,7 @@ object Year2024:
       .mapValues(Deduction.apply),
     adjustmentWhenOver65 = Deduction(1550),
     adjustmentWhenOver65AndSingle = Deduction(400),
-    ordinaryBrackets = Map(
+    ordinaryRateFunctions = Map(
       MarriedJoint -> Map(
         0      -> 10,
         23200  -> 12,
@@ -46,8 +46,8 @@ object Year2024:
         243725 -> 35,
         609350 -> 37
       ).view.mapValues(_.toDouble).toMap
-    ).view.mapValues(OrdinaryBrackets.of).toMap,
-    qualifiedBrackets = Map(
+    ).view.mapValues(OrdinaryRateFunction.of).toMap,
+    qualifiedRateFunctions = Map(
       MarriedJoint -> Map(
         0      -> 0,
         94050  -> 15,
@@ -63,6 +63,6 @@ object Year2024:
         47025  -> 15,
         518900 -> 20
       )
-    ).view.mapValues(QualifiedBrackets.of).toMap
+    ).view.mapValues(QualifiedRateFunction.of).toMap
   )
 end Year2024

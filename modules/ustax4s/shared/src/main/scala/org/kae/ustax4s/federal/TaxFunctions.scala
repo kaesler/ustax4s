@@ -4,12 +4,12 @@ import org.kae.ustax4s.money.{TaxPayable, TaxableIncome}
 import org.kae.ustax4s.taxfunction.TaxFunction
 
 object TaxFunctions:
-  def taxDueOnOrdinaryIncome(brackets: OrdinaryBrackets)(
+  def taxDueOnOrdinaryIncome(ordinaryRateFunction: OrdinaryRateFunction)(
     taxableOrdinaryIncome: TaxableIncome
   ): TaxPayable =
-    TaxFunction.fromBrackets(brackets.brackets)(taxableOrdinaryIncome)
+    TaxFunction.fromRateFunction(ordinaryRateFunction.rateFunction)(taxableOrdinaryIncome)
 
-  def taxDueOnQualifiedIncome(brackets: QualifiedBrackets)(
+  def taxDueOnQualifiedIncome(qualifiedRateFunction: QualifiedRateFunction)(
     taxableOrdinaryIncome: TaxableIncome,
     qualifiedIncome: TaxableIncome
   ): TaxPayable =
@@ -18,7 +18,7 @@ object TaxFunctions:
     // and then subtract the tax it computed on ordinary
     // income because it is taxed using the (steeper) brackets for
     // ordinary income.
-    val taxFunction = TaxFunction.fromBrackets(brackets.brackets)
+    val taxFunction = TaxFunction.fromRateFunction(qualifiedRateFunction.function)
     taxFunction(taxableOrdinaryIncome + qualifiedIncome)
       .reduceBy(taxFunction(taxableOrdinaryIncome))
   end taxDueOnQualifiedIncome

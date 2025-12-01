@@ -1,7 +1,7 @@
 package org.kae.ustax4s.taxfunction
 
 import cats.implicits.*
-import org.kae.ustax4s.{Brackets, TaxRate}
+import org.kae.ustax4s.{RateFunction, TaxRate}
 import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
 
 // Note: function type here gives us a natural Monoid[Tax].
@@ -24,7 +24,7 @@ object TaxFunction:
 
   /** Return a function to apply a set of progressive tax brackets.
     */
-  def fromBrackets[R: TaxRate](brackets: Brackets[R]): TaxFunction =
+  def fromRateFunction[R: TaxRate](brackets: RateFunction[R]): TaxFunction =
     // How this works:
     // Because taxes are progressive, with higher rates applying
     // in higher brackets, for each bracket threshold we pre-compute the
@@ -39,14 +39,14 @@ object TaxFunction:
       .map(makeThresholdTax[R].tupled)
       // Note: Tax has a natural Monoid because TaxPayable has one.
       .combineAll
-  end fromBrackets
+  end fromRateFunction
 
-  private def asRateDeltas[R: TaxRate](brackets: Brackets[R]): Vector[(IncomeThreshold, R)] =
+  private def asRateDeltas[R: TaxRate](brackets: RateFunction[R]): Vector[(IncomeThreshold, R)] =
     brackets.thresholdsAscending
       .zip(rateDeltas(brackets))
   end asRateDeltas
 
-  private def rateDeltas[R: TaxRate](brackets: Brackets[R]): List[R] =
+  private def rateDeltas[R: TaxRate](brackets: RateFunction[R]): List[R] =
     val ratesWithZeroAtFront =
       summon[TaxRate[R]].zero :: brackets.rates.toList.sorted
     ratesWithZeroAtFront

@@ -86,8 +86,8 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         before.standardDeduction(birthDate) <= after.standardDeduction(birthDate) &&
           before.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) <=
           after.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) &&
-          before.ordinaryBrackets <= after.ordinaryBrackets &&
-          before.qualifiedBrackets <= after.qualifiedBrackets
+          before.ordinaryRateFunction <= after.ordinaryRateFunction &&
+          before.qualifiedRateFunction <= after.qualifiedRateFunction
       if !res then {
         println(before.show)
         println(after.show)
@@ -154,8 +154,8 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         (before.standardDeduction(birthDate) <= after.standardDeduction(birthDate)) &&
           (before.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0) <=
             after.netDeduction(closeEnoughToAgi, birthDate, tc.personalExemptions, 0)) &&
-          (before.ordinaryBrackets <= after.ordinaryBrackets) &&
-          (before.qualifiedBrackets <= after.qualifiedBrackets)
+          (before.ordinaryRateFunction <= after.ordinaryRateFunction) &&
+          (before.qualifiedRateFunction <= after.qualifiedRateFunction)
       if !res then {
         println(before.show)
         println(after.show)

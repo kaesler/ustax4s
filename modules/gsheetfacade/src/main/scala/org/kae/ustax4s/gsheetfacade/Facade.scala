@@ -61,7 +61,7 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .ordinaryBrackets
+      .ordinaryRateFunction
       .unsafeTaxableIncomeToEndOfBracket(
         (bracketRatePercentage: Double) / 100
       )
@@ -90,7 +90,7 @@ object Facade:
         bracketInflationFactor,
         filingStatus
       )
-      .ordinaryBrackets
+      .ordinaryRateFunction
       .unsafeBracketWidth((bracketRatePercentage: Double) / 100)
   end tf_ordinary_bracket_width
 
@@ -111,7 +111,7 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .qualifiedBrackets
+      .qualifiedRateFunction
       .startOfNonZeroQualifiedRateBracket
   end tf_ltcg_tax_start
 
