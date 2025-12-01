@@ -1,10 +1,10 @@
-package org.kae.ustax4s.taxfunction
+package org.kae.ustax4s
 
 import cats.implicits.*
-import org.kae.ustax4s.{RateFunction, TaxRate}
 import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
+import org.kae.ustax4s.{RateFunction, TaxRate}
 
-// Note: function type here gives us a natural Monoid[Tax].
+// Note: function type here gives us a natural Monoid[TaxFunction].
 type TaxFunction = TaxableIncome => TaxPayable
 
 object TaxFunction:
@@ -37,7 +37,7 @@ object TaxFunction:
 
     asRateDeltas(brackets)
       .map(makeThresholdTax[R].tupled)
-      // Note: Tax has a natural Monoid because TaxPayable has one.
+      // Note: TaxFunction has a natural Monoid because TaxPayable has one.
       .combineAll
   end fromRateFunction
 

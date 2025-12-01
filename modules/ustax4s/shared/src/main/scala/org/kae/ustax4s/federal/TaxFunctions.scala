@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
+import org.kae.ustax4s.TaxFunction
 import org.kae.ustax4s.money.{TaxPayable, TaxableIncome}
-import org.kae.ustax4s.taxfunction.TaxFunction
 
 object TaxFunctions:
   def taxDueOnOrdinaryIncome(ordinaryRateFunction: OrdinaryRateFunction)(
