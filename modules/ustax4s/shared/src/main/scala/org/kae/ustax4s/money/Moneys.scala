@@ -120,7 +120,7 @@ object Moneys:
       infix def reduceBy(right: TaxableIncome): TaxableIncome =
         Money.monus(left, right)
 
-      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.multiply(left, rate.asFraction)
+      infix def taxAt[T: TaxRate](rate: T): TaxPayable = Money.multiply(left, rate.asDouble)
     end extension
   end TaxableIncome
 
