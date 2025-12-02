@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.{PartialOrder, Show}
-import org.kae.ustax4s.{RateFunction, SourceLoc}
+import org.kae.ustax4s.{Bracket, RateFunction, SourceLoc}
 import org.kae.ustax4s.money.{IncomeThreshold, TaxPayable, TaxableIncome}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
@@ -15,7 +15,7 @@ final case class OrdinaryRateFunction(
   require(rateFunction.isProgressive, SourceLoc())
   require(rateFunction.has(IncomeThreshold.zero), SourceLoc())
 
-  lazy val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+  lazy val bracketsAscending: Vector[Bracket[FederalTaxRate]] =
     rateFunction.bracketsAscending
 
   private lazy val thresholdsDescending = bracketsAscending.reverse
@@ -57,7 +57,7 @@ final case class OrdinaryRateFunction(
     thresholdsDescending
       .drop(1)
       .reverse
-      .map(_._2)
+      .map(_.rate)
   end ratesForBoundedBrackets
 
   private lazy val bracketWidths: Map[FederalTaxRate, TaxableIncome] =
@@ -65,7 +65,7 @@ final case class OrdinaryRateFunction(
       .zip(bracketsAscending.tail)
       .map: (bracket, successorBracket) =>
         val (lowerThreshold, rate) = bracket
-        val upperThreshold         = successorBracket._1
+        val upperThreshold         = successorBracket.threshold
         (rate, upperThreshold.absoluteDifference(lowerThreshold))
       .toMap
   end bracketWidths
@@ -86,10 +86,10 @@ final case class OrdinaryRateFunction(
   end errorForBadRate
 
   private def bracketExists(bracketRate: FederalTaxRate): Boolean =
-    bracketsAscending.exists(_._2 == bracketRate)
+    bracketsAscending.exists(_.rate == bracketRate)
 
   private def bracketIsTop(bracketRate: FederalTaxRate): Boolean =
-    bracketRate == bracketsAscending.last._2
+    bracketRate == bracketsAscending.last.rate
 
 end OrdinaryRateFunction
 

@@ -24,7 +24,7 @@ class QualifiedRateFunctionSpec
 
   test("QualifiedTaxBrackets should be progressive") {
     def isProgressive(qrf: QualifiedRateFunction): Boolean = {
-      val rates = qrf.bracketsAscending.map(_._2)
+      val rates = qrf.bracketsAscending.map(_.rate)
       (rates zip rates.tail)
         .forall { pair =>
           val (left, right) = pair
@@ -114,7 +114,7 @@ class QualifiedRateFunctionSpec
 
   property("max tax rate is the max tax rate") {
     forAll { (qrf: QualifiedRateFunction, gains: TaxableIncome) =>
-      val maxTax = gains taxAt qrf.bracketsAscending.map(_._2).max
+      val maxTax = gains taxAt qrf.bracketsAscending.map(_.rate).max
       taxDueOnQualifiedIncome(qrf)(TaxableIncome.zero, gains) <= maxTax
     }
   }

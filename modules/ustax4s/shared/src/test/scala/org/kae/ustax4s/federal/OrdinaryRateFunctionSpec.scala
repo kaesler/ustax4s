@@ -118,7 +118,7 @@ class OrdinaryRateFunctionSpec
 
   property("max tax rate is the max tax rate") {
     forAll { (orf: OrdinaryRateFunction, income: TaxableIncome) =>
-      val maxTax = income taxAt orf.bracketsAscending.map(_._2).max
+      val maxTax = income taxAt orf.bracketsAscending.map(_.rate).max
       TaxFunction.fromRateFunction(orf.rateFunction)(income) <= maxTax
     }
   }

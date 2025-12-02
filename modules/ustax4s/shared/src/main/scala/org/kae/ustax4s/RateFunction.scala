@@ -2,7 +2,7 @@ package org.kae.ustax4s
 
 import cats.PartialOrder
 import org.kae.ustax4s.SourceLoc
-import org.kae.ustax4s.money.{Income, IncomeThreshold}
+import org.kae.ustax4s.money.IncomeThreshold
 import scala.math.Ordered.orderingToOrdered
 
 export RateFunction.RateFunction
@@ -18,11 +18,11 @@ object RateFunction:
     def size: Int                                = bs.iterator.size
     def has(threshold: IncomeThreshold): Boolean = bs.contains(threshold)
 
-    def bracketsAscending: Vector[(IncomeThreshold, R)] =
-      bs.iterator.toVector.sortBy(_._1: Income)
+    def bracketsAscending: Vector[Bracket[R]] =
+      bs.iterator.toVector.sortBy(_._1)
 
-    private def ratesAscending: Vector[R]            = bracketsAscending.map(_._2)
-    def thresholdsAscending: Vector[IncomeThreshold] = bracketsAscending.map(_._1)
+    private def ratesAscending: Vector[R]            = bracketsAscending.map(_.rate)
+    def thresholdsAscending: Vector[IncomeThreshold] = bracketsAscending.map(_.threshold)
 
     def isProgressive(
       using Ordering[R]

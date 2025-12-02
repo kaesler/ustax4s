@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.{PartialOrder, Show}
-import org.kae.ustax4s.{RateFunction, SourceLoc}
+import org.kae.ustax4s.{Bracket, RateFunction, SourceLoc}
 import org.kae.ustax4s.money.IncomeThreshold
 
 // Note: contain a RateFunction[FederalTaxRate] rather than opaque type
@@ -13,7 +13,7 @@ final case class QualifiedRateFunction(
   require(function.has(IncomeThreshold.zero), SourceLoc())
   require(function.size >= 2, SourceLoc())
 
-  val bracketsAscending: Vector[(IncomeThreshold, FederalTaxRate)] =
+  val bracketsAscending: Vector[Bracket[FederalTaxRate]] =
     function.bracketsAscending
   require(
     bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)),
@@ -25,7 +25,8 @@ final case class QualifiedRateFunction(
   def inflatedBy(factor: Double): QualifiedRateFunction =
     QualifiedRateFunction(function.inflatedBy(factor))
 
-  lazy val startOfNonZeroQualifiedRateBracket: IncomeThreshold = bracketsAscending(1)._1
+  lazy val startOfNonZeroQualifiedRateBracket: IncomeThreshold =
+    bracketsAscending(1).threshold
 
 end QualifiedRateFunction
 
