@@ -40,7 +40,7 @@ object StateMATaxCalculator:
     List(
       personalExemption(year, filingStatus),
       age65OrOlderExemption(year, birthDate),
-      dependentExceptions(dependents)
+      dependentExemptions(dependents)
     ).combineAll
   end totalExemptions
 
@@ -103,7 +103,7 @@ object StateMATaxCalculator:
     )
   end age65OrOlderExemption
 
-  private def dependentExceptions(dependents: Int): Deduction =
+  private def dependentExemptions(dependents: Int): Deduction =
     Deduction(1000) mul dependents
 
 end StateMATaxCalculator
