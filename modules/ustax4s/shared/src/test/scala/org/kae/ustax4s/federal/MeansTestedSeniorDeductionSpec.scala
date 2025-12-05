@@ -96,7 +96,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
         )
 
         val success = res.agi > Income(150000) ||
-          res.meansTestedSeniorDeduction == Deduction(6000)
+          res.meansTestedSeniorDeduction == Deduction(12000)
         if !success then println(res.show)
         success
       }
@@ -185,7 +185,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
           itemizedDeductions
         )
 
-        //println(res.show)
+        // println(res.show)
         val ded = res.meansTestedSeniorDeduction
         (ded > Deduction.zero && ded < Deduction(6000)) ||
         res.agi < Income(75000) || res.agi > Income(175000)
