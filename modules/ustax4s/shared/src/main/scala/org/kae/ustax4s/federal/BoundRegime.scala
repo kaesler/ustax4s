@@ -26,6 +26,15 @@ trait BoundRegime(
     agi: Income,
     birthDate: LocalDate
   ): Deduction =
+    meansTestedSeniorDeductionPerPerson(agi, birthDate) mul (
+      if filingStatus.isSingle then 1 else 2
+    )
+  end meansTestedSeniorDeduction
+
+  private def meansTestedSeniorDeductionPerPerson(
+    agi: Income,
+    birthDate: LocalDate
+  ): Deduction =
     // Note: this deduction is temporary for 4 years and
     // only applies to those over 65.
     if (2025 to 2028).contains(year.getValue) &&
@@ -48,7 +57,7 @@ trait BoundRegime(
               .asDouble
         )
     else Deduction.zero
-  end meansTestedSeniorDeduction
+  end meansTestedSeniorDeductionPerPerson
 
   // TODO: needs property spec
   final def standardDeduction(birthDate: LocalDate): Deduction =
