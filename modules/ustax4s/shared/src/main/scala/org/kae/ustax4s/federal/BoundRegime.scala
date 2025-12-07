@@ -26,22 +26,13 @@ trait BoundRegime(
     agi: Income,
     birthDate: LocalDate
   ): Deduction =
-    meansTestedSeniorDeductionPerPerson(agi, birthDate) mul (
-      if filingStatus.isSingle then 1 else 2
-    )
-  end meansTestedSeniorDeduction
-
-  private def meansTestedSeniorDeductionPerPerson(
-    agi: Income,
-    birthDate: LocalDate
-  ): Deduction =
     // Note: this deduction is temporary for 4 years and
     // only applies to those over 65.
     if (2025 to 2028).contains(year.getValue) &&
       Age.isAge65OrOlder(birthDate, year)
     then
-      val fullAmount    = 6000.0
-      val phaseOutStart = if filingStatus.isSingle then 75000.0 else 150000.0
+      val fullAmount    = 6000.0 * filingStatus.headCount
+      val phaseOutStart = 75000.0 * filingStatus.headCount
       val phaseOutRange = 100000.0
       val phaseOutEnd   = phaseOutStart + phaseOutRange
       val phaseOutRate  = fullAmount / phaseOutRange
@@ -57,7 +48,7 @@ trait BoundRegime(
               .asDouble
         )
     else Deduction.zero
-  end meansTestedSeniorDeductionPerPerson
+  end meansTestedSeniorDeduction
 
   // TODO: needs property spec
   final def standardDeduction(birthDate: LocalDate): Deduction =

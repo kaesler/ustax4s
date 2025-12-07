@@ -214,7 +214,7 @@ sealed trait HasStateTaxCalculator:
   def perDependentExemption: Deduction
   def oldAgeExemption: Int => Deduction
   def exemptionsAreCredits: Boolean
-  def standardDeductions: MaritalStatus => Deduction
+  def standardDeductions: FilingStatus => Deduction
 
   def calculator(
     federalInput: FederalCalcInput,
@@ -228,7 +228,7 @@ end NilStateTaxRegime
 class FlatStateTaxRegime(
   @unused
   rate: StateTaxRate,
-  override val standardDeductions: MaritalStatus => Deduction,
+  override val standardDeductions: FilingStatus => Deduction,
   override val personalExemptions: FilingStatus => Deduction,
   override val oldAgeExemption: Int => Deduction,
   override val perDependentExemption: Deduction,
@@ -248,7 +248,7 @@ class ProgressiveStateTaxRegime(
   override val personalExemptions: FilingStatus => Deduction,
   override val oldAgeExemption: Int => Deduction,
   // TODO: Should these be from FilingStatus?
-  override val standardDeductions: MaritalStatus => Deduction,
+  override val standardDeductions: FilingStatus => Deduction,
   override val perDependentExemption: Deduction,
   override val exemptionsAreCredits: Boolean
 ) extends StateTaxRegime,
