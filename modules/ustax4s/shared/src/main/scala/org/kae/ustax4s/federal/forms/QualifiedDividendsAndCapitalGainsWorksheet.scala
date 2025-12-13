@@ -7,10 +7,6 @@ final case class QualifiedDividendsAndCapitalGainsWorksheet(
   ordinaryBrackets: OrdinaryRateFunction,
   qualifiedBrackets: QualifiedRateFunction
 ):
-  // TODO: how to express this in an LP model?
-  //  - compute tax on regular and investments separately
-  //  - adjust brackets for non-investments by amount receiving preferential treatment?
-
   // Line 4
   def preferentiallyTaxedGains(form1040: Form1040): TaxableIncome =
     form1040.qualifiedDividends +
