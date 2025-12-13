@@ -247,7 +247,6 @@ class ProgressiveStateTaxRegime(
   rateFunctions: MaritalStatus => RateFunction[StateTaxRate],
   override val personalExemptions: FilingStatus => Deduction,
   override val oldAgeExemption: Int => Deduction,
-  // TODO: Should these be from FilingStatus?
   override val standardDeductions: FilingStatus => Deduction,
   override val perDependentExemption: Deduction,
   override val exemptionsAreCredits: Boolean
