@@ -13,7 +13,7 @@ object CMM extends CMMOps:
 
   // TODO: verify the laws are satisfied
   //   Monoid laws
-  //   Commmutativity: a <> b = b <> a
+  //   Commutativity: a <> b = b <> a
   //   x <> (y - x) = y <> (x - y)
   //   (x - y) - z = x - (y <> z)
   //   x - x = mempty
