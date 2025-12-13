@@ -89,7 +89,7 @@ object StateMATaxCalculator:
         case (2016, HeadOfHousehold) => 6800
         case (2016, Single)          => 4400
 
-        // TODO: for now don't inflate state exemptions.
+        // Note: for now at least these are not inflated.
         case (_, MarriedJoint)    => 8800
         case (_, HeadOfHousehold) => 6800
         case (_, Single)          => 4400
