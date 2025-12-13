@@ -9,7 +9,8 @@ final case class FederalCalcInput(
   socSec: Income,
   ordinaryIncomeNonSS: Income,
   qualifiedIncome: TaxableIncome,
-  itemizedDeductions: Deduction
+  itemizedDeductions: Deduction = Deduction.zero,
+  aotcEligibleTuition: Deduction = Deduction.zero
 ):
   def withMoreSocSec(inc: Income): FederalCalcInput = copy(socSec = socSec + inc)
   def withLessSocSec(dec: Income): FederalCalcInput = copy(

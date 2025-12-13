@@ -2,7 +2,7 @@ package org.kae.ustax4s.gsheetfacade
 
 import gsheets.cells.Cell
 import gsheets.customfunctions.Input
-import org.kae.ustax4s.federal.{BoundRegime, RMDs, TaxableSocialSecurity}
+import org.kae.ustax4s.federal.{BoundRegime, FederalCalcInput, RMDs, TaxableSocialSecurity}
 import org.kae.ustax4s.gsheetfacade.Conversions.Output
 import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
@@ -171,13 +171,15 @@ object Facade:
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .agi
   end tf_agi
@@ -212,13 +214,15 @@ object Facade:
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .meansTestedSeniorDeduction
   end tf_senior_deduction
@@ -253,13 +257,15 @@ object Facade:
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .netDeduction
   end tf_net_deduction
@@ -294,13 +300,15 @@ object Facade:
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .taxDue
   end tf_tax_due
@@ -335,13 +343,15 @@ object Facade:
     val r                      = BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
 
     given Conversion[String, Cell]     = s => Cell(s)
@@ -402,13 +412,15 @@ object Facade:
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .taxSlopeForOrdinaryIncome
 
@@ -510,13 +522,15 @@ object Facade:
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .taxSlopeForQualifiedIncome
   end tf_tax_slope_qualified
@@ -552,13 +566,15 @@ object Facade:
     BoundRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .taxSlopeForSocSec
   end tf_tax_slope_socsec

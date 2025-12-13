@@ -15,7 +15,6 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
   import math.Ordering.Implicits.infixOrderingOps
   import org.kae.ustax4s.money.MoneyConversions.given
 
-
   private val birthDateUnder65: LocalDate = LocalDate.now().minusYears(50)
 
   // Note: the 2025 Trump senior tax deduction is temporary (2026-8) so it breaks monotonicity.
@@ -40,21 +39,25 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         )
         .calculator
 
-      val taxResultsBefore = before.results(
-        birthDate,
-        tc.personalExemptions,
-        tc.ss,
-        tc.ordinaryIncomeNonSS,
-        tc.qualifiedIncome,
-        tc.itemizedDeductions
+      val taxResultsBefore = before.apply(
+        FederalCalcInput(
+          birthDate,
+          tc.personalExemptions,
+          tc.ss,
+          tc.ordinaryIncomeNonSS,
+          tc.qualifiedIncome,
+          tc.itemizedDeductions
+        )
       )
-      val taxResultsAfter = after.results(
-        birthDate,
-        tc.personalExemptions,
-        tc.ss,
-        tc.ordinaryIncomeNonSS,
-        tc.qualifiedIncome,
-        tc.itemizedDeductions
+      val taxResultsAfter = after.apply(
+        FederalCalcInput(
+          birthDate,
+          tc.personalExemptions,
+          tc.ss,
+          tc.ordinaryIncomeNonSS,
+          tc.qualifiedIncome,
+          tc.itemizedDeductions
+        )
       )
       val res = taxResultsBefore.taxDue >= taxResultsAfter.taxDue
       if !res then {
@@ -110,21 +113,25 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.futureYear,
         tc.inflationFactorEstimate
       )
-      val taxResultsBefore = before.calculator.results(
-        birthDate,
-        tc.personalExemptions,
-        tc.ss,
-        tc.ordinaryIncomeNonSS,
-        tc.qualifiedIncome,
-        tc.itemizedDeductions
+      val taxResultsBefore = before.calculator.apply(
+        FederalCalcInput(
+          birthDate,
+          tc.personalExemptions,
+          tc.ss,
+          tc.ordinaryIncomeNonSS,
+          tc.qualifiedIncome,
+          tc.itemizedDeductions
+        )
       )
-      val taxResultsAfter = after.calculator.results(
-        birthDate,
-        tc.personalExemptions,
-        tc.ss,
-        tc.ordinaryIncomeNonSS,
-        tc.qualifiedIncome,
-        tc.itemizedDeductions
+      val taxResultsAfter = after.calculator.apply(
+        FederalCalcInput(
+          birthDate,
+          tc.personalExemptions,
+          tc.ss,
+          tc.ordinaryIncomeNonSS,
+          tc.qualifiedIncome,
+          tc.itemizedDeductions
+        )
       )
       val res = taxResultsBefore.taxDue >= taxResultsAfter.taxDue
       if !res then {

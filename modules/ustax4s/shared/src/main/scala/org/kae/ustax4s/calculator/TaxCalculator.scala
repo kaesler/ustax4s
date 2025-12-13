@@ -33,13 +33,15 @@ object TaxCalculator:
         filingStatus
       )
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
       .taxDue
       .rounded
@@ -60,13 +62,15 @@ object TaxCalculator:
     BoundRegime
       .forAnyYear(year, estimatedAnnualInflationFactor, filingStatus)
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
   end federalTaxResultsForAnyYear
 
@@ -87,13 +91,15 @@ object TaxCalculator:
         filingStatus
       )
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
   end federalTaxResults
 
@@ -118,13 +124,15 @@ object TaxCalculator:
         filingStatus
       )
       .calculator
-      .results(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
+      .apply(
+        FederalCalcInput(
+          birthDate,
+          personalExemptions,
+          socSec,
+          ordinaryIncomeNonSS,
+          qualifiedIncome,
+          itemizedDeductions
+        )
       )
   end federalTaxResultsForFutureYear
 

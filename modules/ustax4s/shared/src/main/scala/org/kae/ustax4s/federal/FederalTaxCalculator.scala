@@ -1,32 +1,10 @@
 package org.kae.ustax4s.federal
 
 import cats.syntax.all.*
-import java.time.LocalDate
 import org.kae.ustax4s.money.Moneys.TaxPayable
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 
-trait FederalTaxCalculator() extends (FederalCalcInput => FederalCalcResults):
-
-  final def results(
-    birthDate: LocalDate,
-    personalExemptions: Int,
-    socSec: Income,
-    ordinaryIncomeNonSS: Income,
-    qualifiedIncome: TaxableIncome,
-    itemizedDeductions: Deduction
-  ): FederalCalcResults =
-    apply(
-      FederalCalcInput(
-        birthDate,
-        personalExemptions,
-        socSec,
-        ordinaryIncomeNonSS,
-        qualifiedIncome,
-        itemizedDeductions
-      )
-    )
-  end results
-end FederalTaxCalculator
+trait FederalTaxCalculator() extends (FederalCalcInput => FederalCalcResults)
 
 object FederalTaxCalculator:
 
@@ -67,6 +45,8 @@ object FederalTaxCalculator:
               taxableOrdinaryIncome,
               qualifiedIncome
             )
+
+          // TODO: compute the AOTC tax credit
 
           override lazy val personalExemptionDeduction: Deduction =
             br.personalExemptionDeduction(personalExemptions)

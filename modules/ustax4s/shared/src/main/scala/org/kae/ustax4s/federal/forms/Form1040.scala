@@ -124,7 +124,7 @@ object Form1040:
       ordinaryIncomeBrackets,
       qualifiedIncomeBrackets
     ) +
-      form.schedule4.map(_.totalOtherTaxes).getOrElse(TaxPayable.zero) applyCredits
+      form.schedule4.map(_.totalOtherTaxes).getOrElse(TaxPayable.zero) applyNonRefundableCredits
       (form.childTaxCredit +
         form.schedule3
           .map(_.nonRefundableCredits)

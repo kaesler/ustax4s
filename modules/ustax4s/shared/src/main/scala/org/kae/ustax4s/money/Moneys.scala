@@ -141,8 +141,14 @@ object Moneys:
       infix def absoluteDifference(right: TaxPayable): TaxPayable =
         Money.absoluteDifference(left, right)
 
-      infix def applyCredits(cs: TaxCredit*): TaxPayable =
+      infix def applyNonRefundableCredits(cs: TaxCredit*): TaxPayable =
         Money.monus(left, cs.combineAll)
+
+      infix def applyRefundableCredits(cs: RefundableTaxCredit*): TaxPayable = {
+        // Note: This allows TaxPayable to go negative meaning a
+        // refund.
+        left - cs.combineAll
+      }
 
       infix def div(i: Int): TaxPayable = Money.divide(left, i)
       def isZero: Boolean               = left == zero
@@ -169,6 +175,20 @@ object Moneys:
       @targetName("combine")
       def +(right: TaxCredit): TaxCredit = left.combine(right)
   end TaxCredit
+
+  opaque type RefundableTaxCredit = Money
+
+  object RefundableTaxCredit:
+    val zero: RefundableTaxCredit = Money.zero
+
+    def apply(i: Int): RefundableTaxCredit = Money(i)
+
+    given Monoid[RefundableTaxCredit] = summonAdditionMonoid
+
+    extension (left: RefundableTaxCredit)
+      @targetName("combine")
+      def +(right: RefundableTaxCredit): RefundableTaxCredit = left.combine(right)
+  end RefundableTaxCredit
 
   // Note: must be outside the object scopes above.
   private def summonAdditionMonoid = summon[Monoid[Money]]
