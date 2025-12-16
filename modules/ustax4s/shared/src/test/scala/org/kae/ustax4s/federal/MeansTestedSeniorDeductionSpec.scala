@@ -12,8 +12,6 @@ import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck.{Arbitrary, Gen}
 import scala.math.Ordered.orderingToOrdered
 
-// TODO: verify married gets twice single
-
 class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
   import MeansTestedSeniorDeductionSpec.{*, given}
 
