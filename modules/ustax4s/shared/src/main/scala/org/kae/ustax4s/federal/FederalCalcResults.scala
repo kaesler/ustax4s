@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.Show
-import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxPayable, TaxableIncome}
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.collection.mutable
 
 trait FederalCalcResults:

@@ -5,7 +5,7 @@ import gsheets.customfunctions.Input
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
 import org.kae.ustax4s.federal.FederalTaxRate
-import org.kae.ustax4s.money.*
+import org.kae.ustax4s.money.NonNegMoneys.*
 import scala.scalajs.js
 
 object Conversions:

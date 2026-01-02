@@ -1,8 +1,8 @@
 package org.kae.ustax4s.roth
 
+import org.kae.ustax4s.money.{Income, IncomeThreshold}
+
 import java.time.Year
-import org.kae.ustax4s.money.Moneys.IncomeThreshold
-import org.kae.ustax4s.money.Moneys.Income
 
 trait Scenario:
   def year: Year

@@ -1,15 +1,16 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.money.Moneys.{Deduction, TaxCredit, RefundableTaxCredit}
+import org.kae.ustax4s.money.NonNegMoneys.RefundableTaxCredit
+import org.kae.ustax4s.money.{Deduction, TaxCredit}
 
 object AOTC:
 
-  //Maximum Credit: Up to $2500 annually per eligible student.
+  // Maximum Credit: Up to $2500 annually per eligible student.
   // Calculation: It covers 100 % of the first  $2000 in qualified expenses
   // and  25 % of the next $2000 in expenses.
   // Refundability: Up to 40 % of the credit
   // (a maximum of $1, 000) may be refundable
-  //, meaning you can receive money back even
+  // , meaning you can receive money back even
   // if you owe no taxes
   // Phase out:
   // Income limitations apply: for 2025, the full credit is available
@@ -30,10 +31,9 @@ object AOTC:
   // TODO:
   //  is applied to totalTax
   //  produces netTax? which can be negative (i.e. a refund0
-  def apply(aotcEligibleTuition: Deduction):
-  (totalCredit: TaxCredit, refundable: RefundableTaxCredit) = {
+  def apply(
+    aotcEligibleTuition: Deduction
+  ): (totalCredit: TaxCredit, refundable: RefundableTaxCredit) = {
     ???
   }
 end AOTC
-
-

@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal
 
 import java.time.LocalDate
-import org.kae.ustax4s.money.Moneys.*
+import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 
 final case class FederalCalcInput(
   birthDate: LocalDate,

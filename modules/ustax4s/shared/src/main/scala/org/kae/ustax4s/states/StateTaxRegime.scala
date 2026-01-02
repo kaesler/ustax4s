@@ -1,10 +1,10 @@
 package org.kae.ustax4s.states
 
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.{FilingStatus, RateFunction}
 import org.kae.ustax4s.federal.{FederalCalcInput, FederalCalcResults}
-import org.kae.ustax4s.money.Moneys.{Deduction, IncomeThreshold, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, IncomeThreshold, TaxPayable}
 import org.kae.ustax4s.states.MaritalStatus.{Married, Unmarried}
+import org.kae.ustax4s.{FilingStatus, RateFunction}
 import scala.annotation.unused
 
 // Model this: https://docs.google.com/spreadsheets/d/1I_OuA6uuAs7YoZRc02atHCCxpXaGDn9N/edit?gid=201796956#gid=201796956

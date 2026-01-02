@@ -4,7 +4,7 @@ import gsheets.cells.Cell
 import gsheets.customfunctions.Input
 import org.kae.ustax4s.federal.{BoundRegime, FederalCalcInput, RMDs, TaxableSocialSecurity}
 import org.kae.ustax4s.gsheetfacade.Conversions.Output
-import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxPayable}
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 import scala.scalajs.js.annotation.JSExportTopLevel
 

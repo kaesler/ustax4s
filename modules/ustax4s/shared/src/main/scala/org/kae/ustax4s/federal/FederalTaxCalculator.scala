@@ -1,8 +1,7 @@
 package org.kae.ustax4s.federal
 
 import cats.syntax.all.*
-import org.kae.ustax4s.money.Moneys.TaxPayable
-import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
+import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 
 trait FederalTaxCalculator() extends (FederalCalcInput => FederalCalcResults)
 

@@ -4,11 +4,11 @@ import cats.syntax.all.*
 import java.time.{LocalDate, Year}
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{MarriedJoint, Single}
-import org.kae.ustax4s.{Age, FilingStatus}
 import org.kae.ustax4s.calculator.TaxCalculator
-import org.kae.ustax4s.money.Moneys.{Deduction, Income, TaxableIncome}
-import org.scalacheck.Test.Parameters
+import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
+import org.kae.ustax4s.{Age, FilingStatus}
 import org.scalacheck.Prop.{forAll, propBoolean}
+import org.scalacheck.Test.Parameters
 import org.scalacheck.{Arbitrary, Gen}
 import scala.math.Ordered.orderingToOrdered
 
