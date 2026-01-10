@@ -6,6 +6,8 @@ import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Deduction
 
 object Year2019:
+  import Syntax.*
+
   val values: YearlyValues = YearlyValues(
     year = Year.of(2019),
     regime = TCJA,
@@ -19,50 +21,50 @@ object Year2019:
     adjustmentWhenOver65 = Deduction(1300),
     adjustmentWhenOver65AndSingle = Deduction(350),
     ordinaryRateFunctions = Map(
-      MarriedJoint -> Map(
-        0      -> 10,
-        19400  -> 12,
-        78950  -> 22,
-        168400 -> 24,
-        321450 -> 32,
-        408200 -> 35,
-        612350 -> 37
-      ).view.mapValues(_.toDouble).toMap,
-      HeadOfHousehold -> Map(
-        0      -> 10,
-        13850  -> 12,
-        52850  -> 22,
-        84200  -> 24,
-        160700 -> 32,
-        204100 -> 35,
-        510300 -> 37
-      ).view.mapValues(_.toDouble).toMap,
-      Single -> Map(
-        0      -> 10,
-        9700   -> 12,
-        39475  -> 22,
-        84200  -> 24,
-        160725 -> 32,
-        204100 -> 35,
-        510300 -> 37
-      ).view.mapValues(_.toDouble).toMap
-    ).view.mapValues(OrdinaryRateFunction.of).toMap,
+      MarriedJoint -> List(
+        0      -> 10d,
+        19400  -> 12d,
+        78950  -> 22d,
+        168400 -> 24d,
+        321450 -> 32d,
+        408200 -> 35d,
+        612350 -> 37d
+      ).asOrdinaryRateFunction,
+      HeadOfHousehold -> List(
+        0      -> 10d,
+        13850  -> 12d,
+        52850  -> 22d,
+        84200  -> 24d,
+        160700 -> 32d,
+        204100 -> 35d,
+        510300 -> 37d
+      ).asOrdinaryRateFunction,
+      Single -> List(
+        0      -> 10d,
+        9700   -> 12d,
+        39475  -> 22d,
+        84200  -> 24d,
+        160725 -> 32d,
+        204100 -> 35d,
+        510300 -> 37d
+      ).asOrdinaryRateFunction
+    ),
     qualifiedRateFunctions = Map(
-      MarriedJoint -> Map(
-        0      -> 0,
-        78750  -> 15,
-        488850 -> 20
-      ),
-      HeadOfHousehold -> Map(
-        0      -> 0,
-        52750  -> 15,
-        461700 -> 20
-      ),
-      Single -> Map(
-        0      -> 0,
-        39375  -> 15,
-        434550 -> 20
-      )
-    ).view.mapValues(QualifiedRateFunction.of).toMap
+      MarriedJoint -> List(
+        0      -> 0d,
+        78750  -> 15d,
+        488850 -> 20d
+      ).asQualifiedRateFunction,
+      HeadOfHousehold -> List(
+        0      -> 0d,
+        52750  -> 15d,
+        461700 -> 20d
+      ).asQualifiedRateFunction,
+      Single -> List(
+        0      -> 0d,
+        39375  -> 15d,
+        434550 -> 20d
+      ).asQualifiedRateFunction
+    )
   )
 end Year2019

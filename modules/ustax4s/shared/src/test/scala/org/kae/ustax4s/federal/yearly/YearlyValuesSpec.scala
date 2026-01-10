@@ -51,15 +51,17 @@ class YearlyValuesSpec extends FunSuite:
   test(
     "In an given year the set of bracket rates is the same" +
       "for all filing statuses"
-  ) {
-    allYears.foreach { year =>
+  ):
+    allYears.foreach: year =>
       assertEquals(
-        year.ordinaryRateFunctions.values.map(_.rates).toList.distinct.size,
+        FilingStatus.values.toList
+          .map(year.ordinaryRateFunctions)
+          .map(_.rates)
+          .distinct
+          .size,
         1,
         s"Year is $year"
       )
-    }
-  }
 
   test(
     "Pre trump means 2016-2017"

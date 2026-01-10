@@ -6,6 +6,8 @@ import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Deduction
 
 object Year2017:
+  import Syntax.*
+
   val values: YearlyValues = YearlyValues(
     year = Year.of(2017),
     regime = PreTCJA,
@@ -19,7 +21,7 @@ object Year2017:
     adjustmentWhenOver65 = Deduction(1250),
     adjustmentWhenOver65AndSingle = Deduction(300),
     ordinaryRateFunctions = Map(
-      MarriedJoint -> Map(
+      MarriedJoint -> List(
         0      -> 10d,
         18650  -> 15d,
         75900  -> 25d,
@@ -27,8 +29,8 @@ object Year2017:
         233350 -> 33d,
         416700 -> 35d,
         470700 -> 39.6d
-      ),
-      HeadOfHousehold -> Map(
+      ).asOrdinaryRateFunction,
+      HeadOfHousehold -> List(
         0      -> 10d,
         13350  -> 15d,
         50800  -> 25d,  //
@@ -36,8 +38,8 @@ object Year2017:
         212500 -> 33d,
         416700 -> 35d,
         444550 -> 39.6d //
-      ),
-      Single -> Map(
+      ).asOrdinaryRateFunction,
+      Single -> List(
         0      -> 10d,
         9325   -> 15d,
         37950  -> 25d,
@@ -45,24 +47,24 @@ object Year2017:
         191650 -> 33d,
         416700 -> 35d,
         418400 -> 39.6d
-      )
-    ).view.mapValues(OrdinaryRateFunction.of).toMap,
+      ).asOrdinaryRateFunction
+    ),
     qualifiedRateFunctions = Map(
-      MarriedJoint -> Map(
-        0      -> 0,
-        75900  -> 15,
-        470700 -> 20
-      ),
-      HeadOfHousehold -> Map(
-        0      -> 0,
-        50800  -> 15,
-        444550 -> 20
-      ),
-      Single -> Map(
-        0      -> 0,
-        37950  -> 15,
-        418400 -> 20
-      )
-    ).view.mapValues(QualifiedRateFunction.of).toMap
+      MarriedJoint -> List(
+        0      -> 0d,
+        75900  -> 15d,
+        470700 -> 20d
+      ).asQualifiedRateFunction,
+      HeadOfHousehold -> List(
+        0      -> 0d,
+        50800  -> 15d,
+        444550 -> 20d
+      ).asQualifiedRateFunction,
+      Single -> List(
+        0      -> 0d,
+        37950  -> 15d,
+        418400 -> 20d
+      ).asQualifiedRateFunction
+    )
   )
 end Year2017

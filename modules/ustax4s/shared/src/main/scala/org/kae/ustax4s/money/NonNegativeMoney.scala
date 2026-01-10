@@ -2,17 +2,15 @@ package org.kae.ustax4s.money
 
 import org.kae.ustax4s.SourceLoc
 import org.kae.ustax4s.money.cmm.{CMM, CMMOps}
-import scala.math.BigDecimal.RoundingMode
 
+// Note: Opaque outside this file.
 private[money] opaque type NonNegativeMoney = Money
 
-private object NonNegativeMoney:
+private[money] object NonNegativeMoney:
   val zero: NonNegativeMoney = Money.zero
 
-  def isZero(m: NonNegativeMoney): Boolean  = Money.isZero(m)
-  def toDouble(n: NonNegativeMoney): Double = Money.toDouble(n)
-
-  // TODO: use refined types to check statically?
+  // TODO: use refined types to check statically.
+  // https://github.com/Iltotore/iron
   def apply(i: Int): NonNegativeMoney =
     require(i >= 0, s"attempt to create negative NonNegativeMoney from $i, at " + SourceLoc())
     Money(i)
@@ -29,21 +27,22 @@ private object NonNegativeMoney:
     Money(i)
   end unsafeParse
 
-  def rounded(m: NonNegativeMoney): NonNegativeMoney = m.setScale(0, RoundingMode.HALF_UP)
+  def isZero(m: NonNegativeMoney): Boolean           = Money.isZero(m)
+  def toDouble(n: NonNegativeMoney): Double          = Money.toDouble(n)
+  def rounded(m: NonNegativeMoney): NonNegativeMoney = Money.rounded(m)
 
   def multiply(m: NonNegativeMoney, d: Double): NonNegativeMoney =
     require(d >= 0, s"multiplication by negative: $d, at " + SourceLoc())
-    m * d
+    Money.multiply(m, d)
   end multiply
 
   def divide(m: NonNegativeMoney, i: Int): NonNegativeMoney =
     require(i > 0, s"division by non-positive: $i, at " + SourceLoc())
-    m.toDouble / i.toDouble
+    Money.divide(m, i)
   end divide
 
   def divide(left: NonNegativeMoney, right: NonNegativeMoney): Double =
-    require(right > 0, s"division by non-positive: $right, at " + SourceLoc())
-    left.toDouble / right.toDouble
+    Money.toDouble(left) / Money.toDouble(right)
   end divide
 
   def absoluteDifference(
@@ -52,7 +51,7 @@ private object NonNegativeMoney:
   ): NonNegativeMoney = Money.absoluteDifference(left, right)
 
   def areClose(left: NonNegativeMoney, right: NonNegativeMoney, tolerance: Int): Boolean =
-    (left - right).abs <= tolerance
+    Money.toDouble(Money.absoluteDifference(left, right)) <= tolerance
 
   def monus(left: NonNegativeMoney, right: NonNegativeMoney): NonNegativeMoney =
     left monus right

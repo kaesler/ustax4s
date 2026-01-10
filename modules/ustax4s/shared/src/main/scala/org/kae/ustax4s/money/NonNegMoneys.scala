@@ -5,19 +5,11 @@ import cats.implicits.*
 import org.kae.ustax4s.{SourceLoc, TaxRate}
 import scala.annotation.targetName
 
-export NonNegMoneys.Deduction
-export NonNegMoneys.Income
-export NonNegMoneys.IncomeThreshold
-export NonNegMoneys.RefundableTaxCredit
-export NonNegMoneys.TaxableIncome
-export NonNegMoneys.TaxCredit
-export NonNegMoneys.TaxPayable
-export NonNegMoneys.TaxRefundable
-
-/** Module for various types for money.
-  * They are all distinct opaque types over Money.
-  *  Money in turn is an opaque type over BigDecimal with a restricted repertoire
-  *  of operations.
+/** Module for various types for non-negative money.
+  * They are all distinct opaque types
+  *   - over NonNegativeMoney
+  *   - which is opaque over Money,
+  *   - which is opaque over BigDecimal.
   *
   * All have a Monoid which is the addition Monoid Cats provides for BigDecimal.
   *
@@ -29,18 +21,38 @@ export NonNegMoneys.TaxRefundable
   *      NonNegativeMoney
   *        Income
   *          TaxableIncome
+  *            - after Deductions are applied
+  *            - is a subtype so that we can consider that an instance
+  *              "is-an" Income.
   *            IncomeThreshold
-  *        TaxCredit
-  *        RefundableTaxCredit
+  *              - these appear in Bracket
   *        Deduction
+  *        TaxCredit
+  *          - not refundable, i.e. can only reduce tax payable to zero,
+  *            and cannot produce a refund.
+  *        RefundableTaxCredit
+  *          - can produce a refund
   *        TaxPayable
+  *          - amount of tax owed, if any
   *        TaxRefundable
+  *           - amount of tax to be refunded, if any
   * Some of the important functions defined:
   *   - applyAdjustments: (Income, List[Deduction]) -> Income
   *   - applyDeductions: (Income, List[Deduction]) -> TaxableIncome
   *   - TaxFunction: TaxableIncome -> TaxPayable
   *   - applyCredits: (TaxPayable, List[TaxCredit]) -> TaxPayable
+  *   - applyRefundableCredits:
+  *     (TaxPayable, List[RefundableTaxCredit]) -> TaxPayable | TaxRefundable
   */
+export NonNegMoneys.Deduction
+export NonNegMoneys.Income
+export NonNegMoneys.IncomeThreshold
+export NonNegMoneys.RefundableTaxCredit
+export NonNegMoneys.TaxableIncome
+export NonNegMoneys.TaxCredit
+export NonNegMoneys.TaxPayable
+export NonNegMoneys.TaxRefundable
+
 object NonNegMoneys:
 
   opaque type Income = NonNegativeMoney
@@ -55,7 +67,9 @@ object NonNegMoneys:
     given Ordering[Income] = summonOrdering
 
     extension (left: Income)
-      def asDouble: Double         = NonNegativeMoney.toDouble(left)
+      def isZero: Boolean  = NonNegativeMoney.isZero(left)
+      def asDouble: Double = NonNegativeMoney.toDouble(left)
+
       def +(right: Income): Income = left.combine(right)
 
       infix def amountAbove(threshold: IncomeThreshold): Income =
@@ -65,14 +79,12 @@ object NonNegMoneys:
       infix def applyDeductions(deductions: Deduction*): TaxableIncome =
         NonNegativeMoney.monus(left, deductions.combineAll)
 
-      infix def div(right: Income): Double   = NonNegativeMoney.divide(left, right)
-      infix def divInt(right: Int): Income   = NonNegativeMoney.divide(left, right)
-      infix def inflateBy(d: Double): Income = NonNegativeMoney.multiply(left, d)
+      infix def div(right: Income): Double = NonNegativeMoney.divide(left, right)
+      infix def divInt(right: Int): Income = NonNegativeMoney.divide(left, right)
 
       infix def isBelow(threshold: IncomeThreshold): Boolean =
         summon[Ordering[Income]].lt(left, threshold)
 
-      def isZero: Boolean                       = NonNegativeMoney.isZero(left)
       infix def mul(d: Double): Income          = NonNegativeMoney.multiply(left, d)
       infix def reduceBy(right: Income): Income = NonNegativeMoney.monus(left, right)
     end extension
@@ -80,7 +92,8 @@ object NonNegMoneys:
 
   opaque type Deduction = NonNegativeMoney
   object Deduction:
-    val zero: Deduction                   = NonNegativeMoney.zero
+    val zero: Deduction = NonNegativeMoney.zero
+
     def apply(i: Int): Deduction          = NonNegativeMoney(i)
     def apply(d: Double): Deduction       = NonNegativeMoney(d)
     def unsafeParse(s: String): Deduction = NonNegativeMoney.unsafeParse(s)
@@ -96,15 +109,17 @@ object NonNegMoneys:
     end extension
   end Deduction
 
+  // TODO: is this true?
+  // Note: the subtyping means these types can't be opaque at the file level.
+  // This is necessary so we can that a TaxableIncome "is-an" Income.
   opaque type TaxableIncome <: Income = NonNegativeMoney
 
   object TaxableIncome:
-    val zero: TaxableIncome                   = NonNegativeMoney.zero
+    val zero: TaxableIncome = NonNegativeMoney.zero
+
     def apply(d: Double): TaxableIncome       = NonNegativeMoney(d)
     def apply(i: Int): TaxableIncome          = NonNegativeMoney(i)
     def unsafeParse(s: String): TaxableIncome = NonNegativeMoney.unsafeParse(s)
-
-    given Monoid[TaxableIncome] = summonAdditionMonoid
 
     extension (left: TaxableIncome)
       def isZero: Boolean  = NonNegativeMoney.isZero(left)
@@ -120,16 +135,19 @@ object NonNegMoneys:
     end extension
   end TaxableIncome
 
+  // Note: the subtyping means these types can't be opaque at the file level.
+  // This is necessary so we can say that an IncomeThreshold "is-a" TaxableIncome.
   opaque type IncomeThreshold <: TaxableIncome = NonNegativeMoney
   object IncomeThreshold:
-    val zero: IncomeThreshold          = NonNegativeMoney.zero
+    val zero: IncomeThreshold = NonNegativeMoney.zero
+
     def apply(i: Int): IncomeThreshold = NonNegativeMoney(i)
 
+    // Note: Only used in tests.
     given Monoid[IncomeThreshold] = summonAdditionMonoid
 
     extension (left: IncomeThreshold)
-      infix def asIncome: Income    = left
-      def rounded1: IncomeThreshold = NonNegativeMoney.rounded(left)
+      def rounded: IncomeThreshold = NonNegativeMoney.rounded(left)
 
       infix def absoluteDifference(right: IncomeThreshold): TaxableIncome =
         NonNegativeMoney.absoluteDifference(left, right)
@@ -142,7 +160,8 @@ object NonNegMoneys:
   opaque type TaxCredit = NonNegativeMoney
 
   object TaxCredit:
-    val zero: TaxCredit          = NonNegativeMoney.zero
+    val zero: TaxCredit = NonNegativeMoney.zero
+
     def apply(i: Int): TaxCredit = NonNegativeMoney(i)
 
     given Monoid[TaxCredit] = summonAdditionMonoid
@@ -155,7 +174,8 @@ object NonNegMoneys:
   opaque type RefundableTaxCredit = NonNegativeMoney
 
   object RefundableTaxCredit:
-    val zero: RefundableTaxCredit          = NonNegativeMoney.zero
+    val zero: RefundableTaxCredit = NonNegativeMoney.zero
+
     def apply(i: Int): RefundableTaxCredit = NonNegativeMoney(i)
 
     given Monoid[RefundableTaxCredit] = summonAdditionMonoid
@@ -167,7 +187,8 @@ object NonNegMoneys:
 
   opaque type TaxPayable = NonNegativeMoney
   object TaxPayable:
-    val zero: TaxPayable                   = NonNegativeMoney.zero
+    val zero: TaxPayable = NonNegativeMoney.zero
+
     def apply(i: Int): TaxPayable          = NonNegativeMoney(i)
     def apply(d: Double): TaxPayable       = NonNegativeMoney(d)
     def unsafeParse(s: String): TaxPayable = NonNegativeMoney.unsafeParse(s)
@@ -176,16 +197,12 @@ object NonNegMoneys:
     given Ordering[TaxPayable] = summonOrdering
 
     extension (left: TaxPayable)
-      infix def div(i: Int): TaxPayable = NonNegativeMoney.divide(left, i)
-      def isZero: Boolean               = NonNegativeMoney.isZero(left)
-      def asDouble: Double              = NonNegativeMoney.toDouble(left)
-      def asSigned: Double              = NonNegativeMoney.toDouble(left)
-      def nonZero: Boolean              = !isZero
-      def rounded: TaxPayable           = NonNegativeMoney.rounded(left)
+      def isZero: Boolean     = NonNegativeMoney.isZero(left)
+      def asDouble: Double    = NonNegativeMoney.toDouble(left)
+      def nonZero: Boolean    = !isZero
+      def rounded: TaxPayable = NonNegativeMoney.rounded(left)
 
-      def +(right: TaxPayable): TaxPayable                        = left.combine(right)
-      infix def absoluteDifference(right: TaxPayable): TaxPayable =
-        NonNegativeMoney.absoluteDifference(left, right)
+      def +(right: TaxPayable): TaxPayable = left.combine(right)
 
       infix def applyNonRefundableCredits(cs: TaxCredit*): TaxPayable =
         NonNegativeMoney.monus(left, cs.combineAll)
@@ -229,8 +246,6 @@ object NonNegMoneys:
 
       def +(right: TaxRefundable): TaxRefundable = left.combine(right)
 
-      infix def isCloseTo(right: TaxRefundable, tolerance: Int): Boolean =
-        NonNegativeMoney.areClose(left, right, tolerance)
       infix def reduceBy(right: TaxRefundable): TaxRefundable =
         NonNegativeMoney.monus(left, right)
     end extension

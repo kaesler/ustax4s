@@ -1,16 +1,14 @@
 package org.kae.ustax4s.states
 
-import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.federal.{FederalCalcInput, FederalCalcResults}
-import org.kae.ustax4s.money.{Deduction, IncomeThreshold, TaxPayable}
-import org.kae.ustax4s.states.MaritalStatus.{Married, Unmarried}
+import org.kae.ustax4s.money.{Deduction, TaxPayable}
 import org.kae.ustax4s.{FilingStatus, RateFunction}
 import scala.annotation.unused
 
 // Model this: https://docs.google.com/spreadsheets/d/1I_OuA6uuAs7YoZRc02atHCCxpXaGDn9N/edit?gid=201796956#gid=201796956
 
 // TODO:
-//  - MA detqils
+//  - MA details
 //  - std deduction COLA
 //  - brackets COLA
 //(a) Local income taxes are excluded. Ten states have county- or city-level income taxes; the average effective rates expressed as a percentage of AGI within each jurisdiction (data for 2022, the latest year available, come from the IRS and U.S. Census Bureau) are: AL--0.09%; IN--0.49%; IA--0.09%; KY--1.31%; MD--2.51%; MI--0.18%; MO--0.21%; NY--1.68%; OH--1.49%; PA--1.07%. In CA, CO, DE, KS, NJ, OR, and WV some jurisdictions have payroll taxes, flat-rate wage taxes, or interest and dividend income taxes. See Jared Walczak, Janelle Fritts, and Maxwell James, “Local Income Taxes: A Primer,” Tax Foundation, February 23, 2023, https://taxfoundation.org/local-income-taxes-2023/. (b) These states allow some or all of federal income tax paid to be deducted from state taxable income.
@@ -152,28 +150,8 @@ object StateTaxRegime:
       case ME => ProgressiveStateTaxRegime(???, ???, ???, ???, ???, ???)
       case MD => ProgressiveStateTaxRegime(???, ???, ???, ???, ???, ???)
 
-      case MA =>
-        ProgressiveStateTaxRegime(
-          rateFunctions = Map(
-            Unmarried -> List(
-              0         -> 5.0,
-              1_083_159 -> 9.0
-            ).asRateFunction,
-            Married -> List(
-              0         -> 5.0,
-              1_083_159 -> 9.0
-            ).asRateFunction
-          ),
-          personalExemptions = Map(
-            Single          -> Deduction(4000),
-            HeadOfHousehold -> Deduction(6800),
-            Married         -> Deduction(8800)
-          ),
-          oldAgeExemption = (age: Int) => if age >= 65 then Deduction(700) else Deduction.zero,
-          standardDeductions = _ => Deduction.zero,
-          perDependentExemption = Deduction(1000),
-          exemptionsAreCredits = false
-        )
+      case MA => regimes.MA
+
       case MN => ProgressiveStateTaxRegime(???, ???, ???, ???, ???, ???)
       case MS => ProgressiveStateTaxRegime(???, ???, ???, ???, ???, ???)
       case MO => ProgressiveStateTaxRegime(???, ???, ???, ???, ???, ???)
@@ -199,13 +177,6 @@ object StateTaxRegime:
     end match
   end of
 
-  extension (pairs: List[(threshold: Int, percentage: Double)])
-    private def asRateFunction: RateFunction[StateTaxRate] =
-      RateFunction.of(
-        pairs.map: pair =>
-          (IncomeThreshold(pair.threshold), StateTaxRate.unsafeFrom(pair.percentage / 100.0))
-      )
-  end extension
 end StateTaxRegime
 
 sealed trait HasStateTaxCalculator:
@@ -242,7 +213,7 @@ class FlatStateTaxRegime(
 
 end FlatStateTaxRegime
 
-class ProgressiveStateTaxRegime(
+open class ProgressiveStateTaxRegime(
   @unused
   rateFunctions: MaritalStatus => RateFunction[StateTaxRate],
   override val personalExemptions: FilingStatus => Deduction,
@@ -252,8 +223,11 @@ class ProgressiveStateTaxRegime(
   override val exemptionsAreCredits: Boolean
 ) extends StateTaxRegime,
       HasStateTaxCalculator:
+
   override def calculator(
     federalInput: FederalCalcInput,
     federalCalcResults: FederalCalcResults
-  ): HasStateTaxDue = ???
+  ): HasStateTaxDue =
+    ??? // TODO
+
 end ProgressiveStateTaxRegime

@@ -6,6 +6,8 @@ import org.kae.ustax4s.FilingStatus.*
 import org.kae.ustax4s.money.Deduction
 
 object Year2016:
+  import Syntax.*
+
   val values: YearlyValues = YearlyValues(
     year = Year.of(2016),
     regime = PreTCJA,
@@ -19,7 +21,7 @@ object Year2016:
     adjustmentWhenOver65 = Deduction(1250),
     adjustmentWhenOver65AndSingle = Deduction(300),
     ordinaryRateFunctions = Map(
-      MarriedJoint -> Map(
+      MarriedJoint -> List(
         0      -> 10d,
         18550  -> 15d,
         75300  -> 25d,
@@ -27,8 +29,8 @@ object Year2016:
         231450 -> 33d,
         413350 -> 35d,
         466950 -> 39.6d
-      ),
-      HeadOfHousehold -> Map(
+      ).asOrdinaryRateFunction,
+      HeadOfHousehold -> List(
         0      -> 10d,
         13250  -> 15d,
         50400  -> 25d,  //
@@ -36,8 +38,8 @@ object Year2016:
         210800 -> 33d,
         413350 -> 35d,
         441000 -> 39.6d //
-      ),
-      Single -> Map(
+      ).asOrdinaryRateFunction,
+      Single -> List(
         0      -> 10d,
         9275   -> 15d,
         37650  -> 25d,
@@ -45,8 +47,8 @@ object Year2016:
         190150 -> 33d,
         413350 -> 35d,
         415050 -> 39.6d
-      )
-    ).view.mapValues(OrdinaryRateFunction.of).toMap,
+      ).asOrdinaryRateFunction
+    ),
     qualifiedRateFunctions = Map(
       MarriedJoint -> Map(
         0      -> 0,

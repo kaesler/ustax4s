@@ -36,7 +36,7 @@ object RateFunction:
       require(factor >= 1.0, SourceLoc())
       bs.iterator
         .map: (start, rate) =>
-          (start.increaseBy(factor).rounded1, rate)
+          (start.increaseBy(factor).rounded, rate)
         .toMap
 
   given [R] => PartialOrder[RateFunction[R]]:

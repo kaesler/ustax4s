@@ -12,8 +12,8 @@ final case class YearlyValues(
   unadjustedStandardDeduction: FilingStatus => Deduction,
   adjustmentWhenOver65: Deduction,
   adjustmentWhenOver65AndSingle: Deduction,
-  ordinaryRateFunctions: Map[FilingStatus, OrdinaryRateFunction],
-  qualifiedRateFunctions: Map[FilingStatus, QualifiedRateFunction]
+  ordinaryRateFunctions: FilingStatus => OrdinaryRateFunction,
+  qualifiedRateFunctions: FilingStatus => QualifiedRateFunction
 ):
   def previous: Option[YearlyValues] =
     YearlyValues.of(year.minusYears(1L))
@@ -22,8 +22,7 @@ final case class YearlyValues(
     (
       for
         fs                <- FilingStatus.values
-        brackets          <- ordinaryRateFunctions.get(fs).toList
-        (threshold, rate) <- brackets.bracketsAscending
+        (threshold, rate) <- ordinaryRateFunctions(fs).bracketsAscending
         if threshold != IncomeThreshold.zero
       yield (fs, rate) -> threshold
     ).toMap
@@ -32,9 +31,9 @@ final case class YearlyValues(
   def qualifiedNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] =
     (
       for
-        fs                <- FilingStatus.values
-        brackets          <- qualifiedRateFunctions.get(fs).toList
-        (threshold, rate) <- brackets.bracketsAscending
+        fs <- FilingStatus.values
+        // brackets          <- qualifiedRateFunctions(fs).toList
+        (threshold, rate) <- qualifiedRateFunctions(fs).bracketsAscending
         if threshold != IncomeThreshold.zero
       yield (fs, rate) -> threshold
     ).toMap

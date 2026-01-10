@@ -3,9 +3,12 @@ package org.kae.ustax4s.money
 import org.kae.ustax4s.money.cmm.CMM
 import scala.math.BigDecimal.RoundingMode
 
-private[money] type Money = BigDecimal
-private object Money:
-  val zero: Money                   = 0
+// Note: Opaque outside this file.
+private[money] opaque type Money = BigDecimal
+
+private[money] object Money:
+  val zero: Money = 0
+
   def apply(i: Int): Money          = BigDecimal(i)
   def apply(d: Double): Money       = BigDecimal(d)
   def unsafeParse(s: String): Money = BigDecimal(Integer.parseInt(s))
@@ -15,6 +18,8 @@ private object Money:
   inline def toDouble(m: Money): Double = m.toDouble
 
   def absoluteDifference(left: Money, right: Money): Money = (left - right).abs
+  def divide(left: Money, right: Int): Money               = left / right
+  def multiply(m: Money, d: Double): Money                 = m * d
 
   given CMM[Money]      = summonMonus
   given Ordering[Money] = summonOrdering

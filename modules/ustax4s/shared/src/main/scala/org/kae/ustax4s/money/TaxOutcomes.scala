@@ -8,6 +8,7 @@ import scala.annotation.targetName
 export TaxOutcomes.TaxOutcome
 object TaxOutcomes:
   import org.kae.ustax4s.money.NonNegMoneys.{TaxPayable, TaxRefundable}
+
   opaque type TaxOutcome = Either[TaxPayable, TaxRefundable]
 
   object TaxOutcome:
@@ -17,7 +18,8 @@ object TaxOutcomes:
     def of(tr: TaxRefundable): TaxOutcome = tr.asRight
 
     extension (to: TaxOutcome)
-      def +(other: TaxOutcome): TaxOutcome = summon[Monoid[TaxOutcome]].combine(to, other)
+      def +(other: TaxOutcome): TaxOutcome =
+        summon[Monoid[TaxOutcome]].combine(to, other)
 
       def asSignedDouble: Double = to match
         case Left(tp) =>
