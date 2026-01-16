@@ -40,7 +40,7 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         .calculator
 
       val taxResultsBefore = before.apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,
@@ -50,7 +50,7 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         )
       )
       val taxResultsAfter = after.apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,
@@ -114,7 +114,7 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.inflationFactorEstimate
       )
       val taxResultsBefore = before.calculator.apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,
@@ -124,7 +124,7 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         )
       )
       val taxResultsAfter = after.calculator.apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,

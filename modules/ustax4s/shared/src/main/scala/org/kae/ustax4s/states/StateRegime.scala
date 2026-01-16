@@ -1,6 +1,6 @@
 package org.kae.ustax4s.states
 
-import org.kae.ustax4s.federal.{FederalCalcInput, FedCalcResults}
+import org.kae.ustax4s.federal.{CalcInput, FedCalcResults}
 import org.kae.ustax4s.money.{Deduction, TaxPayable}
 import org.kae.ustax4s.{FilingStatus, RateFunction}
 import scala.annotation.unused
@@ -188,7 +188,7 @@ sealed trait HasStateTaxCalculator:
   def standardDeductions: FilingStatus => Deduction
 
   def calculator(
-    federalInput: FederalCalcInput,
+    federalInput: CalcInput,
     federalCalcResults: FedCalcResults
   ): HasStateTaxDue
 
@@ -208,7 +208,7 @@ class FlatStateRegime(
 ) extends StateRegime,
       HasStateTaxCalculator:
   override def calculator(
-    federalInput: FederalCalcInput,
+    federalInput: CalcInput,
     federalCalcResults: FedCalcResults
   ): HasStateTaxDue = ???
 
@@ -228,7 +228,7 @@ open class ProgressiveStateRegime(
       HasStateTaxCalculator:
 
   override def calculator(
-    federalInput: FederalCalcInput,
+    federalInput: CalcInput,
     federalCalcResults: FedCalcResults
   ): HasStateTaxDue = {
     // TODO here

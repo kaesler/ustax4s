@@ -2,7 +2,7 @@ package org.kae.ustax4s.gsheetfacade
 
 import gsheets.cells.Cell
 import gsheets.customfunctions.Input
-import org.kae.ustax4s.federal.{BoundFedRegime, FederalCalcInput, RMDs, TaxableSocialSecurity}
+import org.kae.ustax4s.federal.{BoundFedRegime, CalcInput, RMDs, TaxableSocialSecurity}
 import org.kae.ustax4s.gsheetfacade.Conversions.Output
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
@@ -172,7 +172,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -215,7 +215,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -258,7 +258,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -301,7 +301,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -344,7 +344,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -413,7 +413,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -523,7 +523,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -567,7 +567,7 @@ object Facade:
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,

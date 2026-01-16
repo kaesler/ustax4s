@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import cats.syntax.all.*
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 
-trait FedTaxCalculator() extends (FederalCalcInput => FedCalcResults)
+trait FedTaxCalculator() extends (CalcInput => FedCalcResults)
 
 object FedTaxCalculator:
 
@@ -11,7 +11,7 @@ object FedTaxCalculator:
     new FedTaxCalculator():
       private val thisCalculator = this
 
-      override def apply(input: FederalCalcInput): FedCalcResults =
+      override def apply(input: CalcInput): FedCalcResults =
         new FedCalcResults:
           import input.*
 

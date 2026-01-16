@@ -34,7 +34,7 @@ object TaxCalculator:
       )
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -63,7 +63,7 @@ object TaxCalculator:
       .forAnyYear(year, estimatedAnnualInflationFactor, filingStatus)
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -92,7 +92,7 @@ object TaxCalculator:
       )
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -125,7 +125,7 @@ object TaxCalculator:
       )
       .calculator
       .apply(
-        FederalCalcInput(
+        CalcInput(
           birthDate,
           personalExemptions,
           socSec,

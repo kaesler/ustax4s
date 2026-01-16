@@ -7,7 +7,7 @@ import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 // We may need to include state-relevant stuff
 //   - pensions not taxed by state
 //   - SocSec
-final case class FederalCalcInput(
+final case class CalcInput(
   birthDate: LocalDate,
   personalExemptions: Int,
   socSec: Income,
@@ -16,22 +16,22 @@ final case class FederalCalcInput(
   itemizedDeductions: Deduction = Deduction.zero,
   aotcEligibleTuition: Deduction = Deduction.zero
 ):
-  def withMoreSocSec(inc: Income): FederalCalcInput = copy(socSec = socSec + inc)
-  def withLessSocSec(dec: Income): FederalCalcInput = copy(
+  def withMoreSocSec(inc: Income): CalcInput = copy(socSec = socSec + inc)
+  def withLessSocSec(dec: Income): CalcInput = copy(
     socSec = socSec.reduceBy(dec)
   )
 
-  def withMoreOrdinaryIncome(inc: Income): FederalCalcInput = copy(
+  def withMoreOrdinaryIncome(inc: Income): CalcInput = copy(
     ordinaryIncomeNonSS = ordinaryIncomeNonSS + inc
   )
-  def withLessOrdinaryIncome(dec: Income): FederalCalcInput = copy(
+  def withLessOrdinaryIncome(dec: Income): CalcInput = copy(
     ordinaryIncomeNonSS = ordinaryIncomeNonSS.reduceBy(dec)
   )
 
-  def withMoreQualifiedIncome(inc: TaxableIncome): FederalCalcInput = copy(
+  def withMoreQualifiedIncome(inc: TaxableIncome): CalcInput = copy(
     qualifiedIncome = qualifiedIncome + inc
   )
-  def withLessQualifiedIncome(dec: TaxableIncome): FederalCalcInput = copy(
+  def withLessQualifiedIncome(dec: TaxableIncome): CalcInput = copy(
     qualifiedIncome = qualifiedIncome.reduceBy(dec)
   )
-end FederalCalcInput
+end CalcInput
