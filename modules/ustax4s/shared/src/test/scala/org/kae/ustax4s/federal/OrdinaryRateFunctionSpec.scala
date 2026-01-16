@@ -30,27 +30,27 @@ class OrdinaryRateFunctionSpec
     val orf = ordinaryRateFunctionFor(TheYear, HeadOfHousehold)
 
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.10)).rounded,
       TaxPayable(1420)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.12)).rounded,
       TaxPayable(6220)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.22)).rounded,
       TaxPayable(13293)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.24)).rounded,
       TaxPayable(32145)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.32)).rounded,
       TaxPayable(46385)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.35)).rounded,
       TaxPayable(156355)
     )
   }
@@ -58,27 +58,27 @@ class OrdinaryRateFunctionSpec
   test("taxToEndOfBracket should be correct for 2021 Single") {
     val orf = ordinaryRateFunctionFor(TheYear, Single)
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.10)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.10)).rounded,
       TaxPayable(995)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.12)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.12)).rounded,
       TaxPayable(4664)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.22)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.22)).rounded,
       TaxPayable(14751)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.24)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.24)).rounded,
       TaxPayable(33603)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.32)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.32)).rounded,
       TaxPayable(47843)
     )
     assertEquals(
-      orf.unsafeTaxToEndOfBracket(FederalTaxRate.unsafeFrom(0.35)).rounded,
+      orf.unsafeTaxToEndOfBracket(FedTaxRate.unsafeFrom(0.35)).rounded,
       TaxPayable(157804)
     )
   }

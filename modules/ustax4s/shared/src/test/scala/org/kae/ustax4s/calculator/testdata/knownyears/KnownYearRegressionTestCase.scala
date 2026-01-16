@@ -26,7 +26,7 @@ final case class KnownYearRegressionTestCase(
 
   def run(): Unit =
     assertEquals(
-      TaxCalculator.federalTaxDue(
+      TaxCalculator.federalTaxPayable(
         year,
         filingStatus,
         birthDate,
@@ -52,7 +52,7 @@ final case class KnownYearRegressionTestCase(
           .show
     )
     assertEquals(
-      TaxCalculator.stateTaxDue(
+      TaxCalculator.stateTaxPayable(
         year,
         filingStatus,
         birthDate,

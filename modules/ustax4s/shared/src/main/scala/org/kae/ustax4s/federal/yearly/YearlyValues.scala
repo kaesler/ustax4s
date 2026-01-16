@@ -7,7 +7,7 @@ import org.kae.ustax4s.money.{Deduction, IncomeThreshold}
 
 final case class YearlyValues(
   year: Year,
-  regime: Regime,
+  regime: FedRegime,
   perPersonExemption: Deduction,
   unadjustedStandardDeduction: FilingStatus => Deduction,
   adjustmentWhenOver65: Deduction,
@@ -18,7 +18,7 @@ final case class YearlyValues(
   def previous: Option[YearlyValues] =
     YearlyValues.of(year.minusYears(1L))
 
-  def ordinaryNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] =
+  def ordinaryNonZeroThresholdsMap: Map[(FilingStatus, FedTaxRate), IncomeThreshold] =
     (
       for
         fs                <- FilingStatus.values
@@ -28,7 +28,7 @@ final case class YearlyValues(
     ).toMap
   end ordinaryNonZeroThresholdsMap
 
-  def qualifiedNonZeroThresholdsMap: Map[(FilingStatus, FederalTaxRate), IncomeThreshold] =
+  def qualifiedNonZeroThresholdsMap: Map[(FilingStatus, FedTaxRate), IncomeThreshold] =
     (
       for
         fs <- FilingStatus.values
@@ -56,7 +56,7 @@ object YearlyValues:
   def first: YearlyValues = m.values.toList.min
   def last: YearlyValues  = m.values.toList.max
 
-  def mostRecentFor(regime: Regime): YearlyValues = m.values
+  def mostRecentFor(regime: FedRegime): YearlyValues = m.values
     .filter(_.regime == regime)
     .toList
     .sorted

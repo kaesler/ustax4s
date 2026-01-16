@@ -8,7 +8,7 @@ object MakeTestDataForHaskell extends App:
 
   testCases.foreach {
     case tc @ TestCaseInputs(regime, year, estimate, bd, fs, deps, ss, oi, qi, itm) =>
-      val federalTaxDue = TaxCalculator.federalTaxDueForFutureYear(
+      val federalTaxDue = TaxCalculator.federalTaxPayableForFutureYear(
         regime = regime,
         futureYear = year,
         estimatedAnnualInflationFactor = estimate,
@@ -20,7 +20,7 @@ object MakeTestDataForHaskell extends App:
         qualifiedIncome = qi,
         itemizedDeductions = itm
       )
-      val stateTaxDue = TaxCalculator.stateTaxDue(
+      val stateTaxDue = TaxCalculator.stateTaxPayable(
         year = year,
         birthDate = bd,
         filingStatus = fs,

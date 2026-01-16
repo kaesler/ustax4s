@@ -11,7 +11,7 @@ object MakeTestDataAsCsv extends App:
       "qualifiedIncome,itemizedDeductions,federalTaxDue,stateTaxDue"
   )
   testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, ds, ss, oi, qi, itm) =>
-    val federalTaxDue = TaxCalculator.federalTaxDue(
+    val federalTaxDue = TaxCalculator.federalTaxPayable(
       year = year,
       birthDate = bd,
       filingStatus = fs,
@@ -21,7 +21,7 @@ object MakeTestDataAsCsv extends App:
       qualifiedIncome = qi,
       itemizedDeductions = itm
     )
-    val stateTaxDue = TaxCalculator.stateTaxDue(
+    val stateTaxDue = TaxCalculator.stateTaxPayable(
       year = year,
       birthDate = bd,
       filingStatus = fs,

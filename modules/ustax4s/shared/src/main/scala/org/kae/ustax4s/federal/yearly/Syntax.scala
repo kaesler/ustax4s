@@ -1,7 +1,7 @@
 package org.kae.ustax4s.federal.yearly
 
 import org.kae.ustax4s.RateFunction
-import org.kae.ustax4s.federal.{FederalTaxRate, OrdinaryRateFunction, QualifiedRateFunction}
+import org.kae.ustax4s.federal.{FedTaxRate, OrdinaryRateFunction, QualifiedRateFunction}
 import org.kae.ustax4s.money.NonNegMoneys.IncomeThreshold
 
 private[yearly] object Syntax:
@@ -11,7 +11,7 @@ private[yearly] object Syntax:
       OrdinaryRateFunction(
         RateFunction.of(
           pairs.map: pair =>
-            (IncomeThreshold(pair.threshold), FederalTaxRate.unsafeFrom(pair.percentage / 100.0))
+            (IncomeThreshold(pair.threshold), FedTaxRate.unsafeFrom(pair.percentage / 100.0))
         )
       )
     end asOrdinaryRateFunction
@@ -20,7 +20,7 @@ private[yearly] object Syntax:
       QualifiedRateFunction(
         RateFunction.of(
           pairs.map: pair =>
-            (IncomeThreshold(pair.threshold), FederalTaxRate.unsafeFrom(pair.percentage / 100.0))
+            (IncomeThreshold(pair.threshold), FedTaxRate.unsafeFrom(pair.percentage / 100.0))
         )
       )
     end asQualifiedRateFunction

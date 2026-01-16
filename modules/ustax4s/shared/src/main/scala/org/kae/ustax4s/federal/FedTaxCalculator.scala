@@ -3,27 +3,26 @@ package org.kae.ustax4s.federal
 import cats.syntax.all.*
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 
-trait FederalTaxCalculator() extends (FederalCalcInput => FederalCalcResults)
+trait FedTaxCalculator() extends (FederalCalcInput => FedCalcResults)
 
-object FederalTaxCalculator:
+object FedTaxCalculator:
 
-  def from(br: BoundRegime): FederalTaxCalculator =
-    new FederalTaxCalculator():
+  def from(br: BoundFedRegime): FedTaxCalculator =
+    new FedTaxCalculator():
       private val thisCalculator = this
 
-      override def apply(input: FederalCalcInput): FederalCalcResults =
-        new FederalCalcResults:
+      override def apply(input: FederalCalcInput): FedCalcResults =
+        new FedCalcResults:
           import input.*
-
-          private val ssRelevantOtherIncome =
-            List(ordinaryIncomeNonSS, qualifiedIncome).combineAll
 
           // Note: this does not currently get adjusted for inflation.
           override lazy val taxableSocialSecurity: Income =
-            TaxableSocialSecurity.taxableSocialSecurityBenefits(
-              filingStatus = br.filingStatus,
+            br.taxableSocialSecurityBenefits(
               socialSecurityBenefits = socSec,
-              ssRelevantOtherIncome
+              ssRelevantOtherIncome = List(
+                ordinaryIncomeNonSS,
+                qualifiedIncome
+              ).combineAll
             )
 
           override lazy val agi: Income = List(
@@ -31,21 +30,6 @@ object FederalTaxCalculator:
             qualifiedIncome,
             taxableSocialSecurity
           ).combineAll
-
-          override lazy val taxableOrdinaryIncome: TaxableIncome =
-            List(taxableSocialSecurity, ordinaryIncomeNonSS).combineAll
-              .applyDeductions(netDeduction)
-
-          override lazy val taxOnOrdinaryIncome: TaxPayable =
-            TaxFunctions.taxDueOnOrdinaryIncome(br.ordinaryRateFunction)(taxableOrdinaryIncome)
-
-          override lazy val taxOnQualifiedIncome: TaxPayable =
-            TaxFunctions.taxDueOnQualifiedIncome(br.qualifiedRateFunction)(
-              taxableOrdinaryIncome,
-              qualifiedIncome
-            )
-
-          // TODO: compute the AOTC tax credit
 
           override lazy val personalExemptionDeduction: Deduction =
             br.personalExemptionDeduction(personalExemptions)
@@ -59,30 +43,48 @@ object FederalTaxCalculator:
           override lazy val netDeduction: Deduction =
             br.netDeduction(agi, birthDate, personalExemptions, itemizedDeductions)
 
+          override lazy val taxableOrdinaryIncome: TaxableIncome =
+            List(
+              taxableSocialSecurity,
+              ordinaryIncomeNonSS
+            ).combineAll
+              .applyDeductions(netDeduction)
+
+          override lazy val taxOnOrdinaryIncome: TaxPayable =
+            FedTaxFunctions.taxPayableOnOrdinaryIncome(br.ordinaryRateFunction)(taxableOrdinaryIncome)
+
+          override lazy val taxOnQualifiedIncome: TaxPayable =
+            FedTaxFunctions.taxPayableOnQualifiedIncome(br.qualifiedRateFunction)(
+              taxableOrdinaryIncome,
+              qualifiedIncome
+            )
+
+          // TODO: compute the AOTC tax credit
+
           // Note: we center the deltas over X value.
           private val delta = 200
 
           override lazy val taxSlopeForOrdinaryIncome: Double =
             val deltaX    = Income(delta)
             val halfDelta = deltaX.divInt(2)
-            val highY     = thisCalculator(input.withMoreOrdinaryIncome(halfDelta)).taxDue
-            val lowY      = thisCalculator(input.withLessOrdinaryIncome(halfDelta)).taxDue
+            val highY     = thisCalculator(input.withMoreOrdinaryIncome(halfDelta)).taxPayable
+            val lowY      = thisCalculator(input.withLessOrdinaryIncome(halfDelta)).taxPayable
             highY.reduceBy(lowY).asDouble / deltaX.asDouble
           end taxSlopeForOrdinaryIncome
 
           override lazy val taxSlopeForQualifiedIncome: Double =
             val deltaX    = TaxableIncome(delta)
             val halfDelta = TaxableIncome(delta / 2)
-            val highY     = thisCalculator(input.withMoreQualifiedIncome(halfDelta)).taxDue
-            val lowY      = thisCalculator(input.withLessQualifiedIncome(halfDelta)).taxDue
+            val highY     = thisCalculator(input.withMoreQualifiedIncome(halfDelta)).taxPayable
+            val lowY      = thisCalculator(input.withLessQualifiedIncome(halfDelta)).taxPayable
             highY.reduceBy(lowY).asDouble / deltaX.asDouble
           end taxSlopeForQualifiedIncome
 
           override lazy val taxSlopeForSocSec: Double =
             val deltaX    = Income(delta)
             val halfDelta = deltaX.divInt(2)
-            val highY     = thisCalculator(input.withMoreSocSec(halfDelta)).taxDue
-            val lowY      = thisCalculator(input.withLessSocSec(halfDelta)).taxDue
+            val highY     = thisCalculator(input.withMoreSocSec(halfDelta)).taxPayable
+            val lowY      = thisCalculator(input.withLessSocSec(halfDelta)).taxPayable
             highY.reduceBy(lowY).asDouble / deltaX.asDouble
           end taxSlopeForSocSec
 
@@ -90,4 +92,4 @@ object FederalTaxCalculator:
       end apply
     end new
   end from
-end FederalTaxCalculator
+end FedTaxCalculator

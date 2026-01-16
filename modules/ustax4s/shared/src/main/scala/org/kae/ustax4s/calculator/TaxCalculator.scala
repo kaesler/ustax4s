@@ -12,8 +12,8 @@ import org.kae.ustax4s.state_ma.StateMATaxCalculator
   */
 object TaxCalculator:
 
-  def federalTaxDueForFutureYear(
-    regime: Regime,
+  def federalTaxPayableForFutureYear(
+    regime: FedRegime,
     futureYear: Year,
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus,
@@ -25,7 +25,7 @@ object TaxCalculator:
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
   ): TaxPayable =
-    BoundRegime
+    BoundFedRegime
       .forFutureYear(
         regime,
         futureYear,
@@ -43,9 +43,9 @@ object TaxCalculator:
           itemizedDeductions
         )
       )
-      .taxDue
+      .taxPayable
       .rounded
-  end federalTaxDueForFutureYear
+  end federalTaxPayableForFutureYear
 
   def federalTaxResultsForAnyYear(
     estimatedAnnualInflationFactor: Double,
@@ -58,8 +58,8 @@ object TaxCalculator:
     ordinaryIncomeNonSS: Income,
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
-  ): FederalCalcResults =
-    BoundRegime
+  ): FedCalcResults =
+    BoundFedRegime
       .forAnyYear(year, estimatedAnnualInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -84,8 +84,8 @@ object TaxCalculator:
     ordinaryIncomeNonSS: Income,
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
-  ): FederalCalcResults =
-    BoundRegime
+  ): FedCalcResults =
+    BoundFedRegime
       .forKnownYear(
         year,
         filingStatus
@@ -104,7 +104,7 @@ object TaxCalculator:
   end federalTaxResults
 
   def federalTaxResultsForFutureYear(
-    regime: Regime,
+    regime: FedRegime,
     year: Year,
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus,
@@ -115,8 +115,8 @@ object TaxCalculator:
     ordinaryIncomeNonSS: Income,
     qualifiedIncome: TaxableIncome,
     itemizedDeductions: Deduction
-  ): FederalCalcResults =
-    BoundRegime
+  ): FedCalcResults =
+    BoundFedRegime
       .forFutureYear(
         regime,
         year,
@@ -136,7 +136,7 @@ object TaxCalculator:
       )
   end federalTaxResultsForFutureYear
 
-  def federalTaxDue(
+  def federalTaxPayable(
     year: Year,
     filingStatus: FilingStatus,
     birthDate: LocalDate,
@@ -156,11 +156,11 @@ object TaxCalculator:
       ordinaryIncomeNonSS,
       qualifiedIncome,
       itemizedDeductions
-    ).taxDue.rounded
-  end federalTaxDue
+    ).taxPayable.rounded
+  end federalTaxPayable
 
   // Note: for tests only
-  def federalTaxDueUsingForm1040(
+  def federalTaxPayableUsingForm1040(
     year: Year,
     birthDate: LocalDate,
     filingStatus: FilingStatus,
@@ -169,7 +169,7 @@ object TaxCalculator:
     qualifiedDividends: TaxableIncome,
     verbose: Boolean
   ): TaxPayable =
-    val boundRegime = BoundRegime.forKnownYear(
+    val boundRegime = BoundFedRegime.forKnownYear(
       year,
       filingStatus
     )
@@ -201,9 +201,9 @@ object TaxCalculator:
         yv.qualifiedRateFunctions(filingStatus)
       )
       .rounded
-  end federalTaxDueUsingForm1040
+  end federalTaxPayableUsingForm1040
 
-  def stateTaxDue(
+  def stateTaxPayable(
     year: Year,
     filingStatus: FilingStatus,
     birthDate: LocalDate,
@@ -223,6 +223,6 @@ object TaxCalculator:
         dependents
       )(massachusettsGrossIncome)
       .rounded
-  end stateTaxDue
+  end stateTaxPayable
 
 end TaxCalculator

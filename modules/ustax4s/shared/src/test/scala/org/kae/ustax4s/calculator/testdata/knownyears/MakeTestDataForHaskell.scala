@@ -7,7 +7,7 @@ object MakeTestDataForHaskell extends App:
   import TestDataGeneration.*
 
   testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, qi, itm) =>
-    val federalTaxDue = TaxCalculator.federalTaxDue(
+    val federalTaxDue = TaxCalculator.federalTaxPayable(
       year = year,
       birthDate = bd,
       filingStatus = fs,
@@ -17,7 +17,7 @@ object MakeTestDataForHaskell extends App:
       qualifiedIncome = qi,
       itemizedDeductions = itm
     )
-    val stateTaxDue = TaxCalculator.stateTaxDue(
+    val stateTaxDue = TaxCalculator.stateTaxPayable(
       year = year,
       birthDate = bd,
       filingStatus = fs,

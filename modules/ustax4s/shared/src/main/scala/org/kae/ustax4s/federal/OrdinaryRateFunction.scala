@@ -8,14 +8,14 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 // Note: contain a RateFunction[FederalTaxRate] rather than opaque type
 // so we can precompute and store val properties.
 final case class OrdinaryRateFunction(
-  rateFunction: RateFunction[FederalTaxRate]
+  rateFunction: RateFunction[FedTaxRate]
 ):
   import OrdinaryRateFunction.*
 
   require(rateFunction.isProgressive, SourceLoc())
   require(rateFunction.has(IncomeThreshold.zero), SourceLoc())
 
-  lazy val bracketsAscending: Vector[Bracket[FederalTaxRate]] =
+  lazy val bracketsAscending: Vector[Bracket[FedTaxRate]] =
     rateFunction.bracketsAscending
 
   private lazy val thresholdsDescending = bracketsAscending.reverse
@@ -26,9 +26,9 @@ final case class OrdinaryRateFunction(
     OrdinaryRateFunction(rateFunction.inflatedBy(factor))
 
   lazy val thresholds: Set[IncomeThreshold] = rateFunction.thresholds
-  lazy val rates: Set[FederalTaxRate]       = rateFunction.rates
+  lazy val rates: Set[FedTaxRate]       = rateFunction.rates
 
-  def unsafeTaxableIncomeToEndOfBracket(bracketRate: FederalTaxRate): TaxableIncome =
+  def unsafeTaxableIncomeToEndOfBracket(bracketRate: FedTaxRate): TaxableIncome =
     bracketsAscending
       .sliding(2)
       .collect:
@@ -39,7 +39,7 @@ final case class OrdinaryRateFunction(
       .getOrElse(throw errorForBadRate(bracketRate))
   end unsafeTaxableIncomeToEndOfBracket
 
-  def unsafeTaxToEndOfBracket(bracketRate: FederalTaxRate): TaxPayable =
+  def unsafeTaxToEndOfBracket(bracketRate: FedTaxRate): TaxPayable =
     val taxes = bracketsAscending
       .sliding(2)
       .toList
@@ -53,14 +53,14 @@ final case class OrdinaryRateFunction(
     taxes.foldLeft(TaxPayable.zero)(_ + _)
   end unsafeTaxToEndOfBracket
 
-  lazy val ratesForBoundedBrackets: Vector[FederalTaxRate] =
+  lazy val ratesForBoundedBrackets: Vector[FedTaxRate] =
     thresholdsDescending
       .drop(1)
       .reverse
       .map(_.rate)
   end ratesForBoundedBrackets
 
-  private lazy val bracketWidths: Map[FederalTaxRate, TaxableIncome] =
+  private lazy val bracketWidths: Map[FedTaxRate, TaxableIncome] =
     bracketsAscending
       .zip(bracketsAscending.tail)
       .map: (bracket, successorBracket) =>
@@ -70,25 +70,25 @@ final case class OrdinaryRateFunction(
       .toMap
   end bracketWidths
 
-  def unsafeBracketWidth(bracketRate: FederalTaxRate): TaxableIncome =
+  def unsafeBracketWidth(bracketRate: FedTaxRate): TaxableIncome =
     bracketWidth(bracketRate).getOrElse(
       throw errorForBadRate(bracketRate)
     )
   end unsafeBracketWidth
 
-  def bracketWidth(bracketRate: FederalTaxRate): Option[TaxableIncome] =
+  def bracketWidth(bracketRate: FedTaxRate): Option[TaxableIncome] =
     bracketWidths.get(bracketRate)
 
-  private def errorForBadRate(bracketRate: FederalTaxRate) =
+  private def errorForBadRate(bracketRate: FedTaxRate) =
     if !bracketExists(bracketRate) then NoSuchFederalTaxRate(bracketRate)
     else if bracketIsTop(bracketRate) then BracketHasNoEnd(bracketRate)
     else RuntimeException(s"Unknown error for FederalTaxRate $bracketRate")
   end errorForBadRate
 
-  private def bracketExists(bracketRate: FederalTaxRate): Boolean =
+  private def bracketExists(bracketRate: FedTaxRate): Boolean =
     bracketsAscending.exists(_.rate == bracketRate)
 
-  private def bracketIsTop(bracketRate: FederalTaxRate): Boolean =
+  private def bracketIsTop(bracketRate: FedTaxRate): Boolean =
     bracketRate == bracketsAscending.last.rate
 
 end OrdinaryRateFunction
@@ -96,13 +96,13 @@ end OrdinaryRateFunction
 object OrdinaryRateFunction:
 
   final case class NoSuchFederalTaxRate(
-    federalTaxRate: FederalTaxRate
+    federalTaxRate: FedTaxRate
   ) extends RuntimeException(
         s"No such ordinary income Federal tax rate: $federalTaxRate"
       )
 
   final case class BracketHasNoEnd(
-    federalTaxRate: FederalTaxRate
+    federalTaxRate: FedTaxRate
   ) extends RuntimeException(
         s"Ordinary income bracket for $federalTaxRate has no end"
       )
@@ -119,7 +119,7 @@ object OrdinaryRateFunction:
         pairs.map: (bracketStart, ratePercentage) =>
           require(ratePercentage < 100.0d, SourceLoc())
           IncomeThreshold(bracketStart) ->
-            FederalTaxRate.unsafeFrom(ratePercentage / 100.0d)
+            FedTaxRate.unsafeFrom(ratePercentage / 100.0d)
       )
     )
   end of

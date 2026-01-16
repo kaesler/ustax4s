@@ -6,13 +6,13 @@ import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.{FilingStatus, SourceLoc as SourceLoc}
 import org.kae.ustax4s.calculator.TaxCalculator
-import org.kae.ustax4s.federal.Regime
+import org.kae.ustax4s.federal.FedRegime
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 
 final case class FutureYearRegressionTestCase(
-  regime: Regime,
+  regime: FedRegime,
   futureYear: Year,
   estimatedAnnualInflationFactor: Double,
   birthDate: LocalDate,
@@ -32,7 +32,7 @@ final case class FutureYearRegressionTestCase(
 
   def run(): Unit =
     assertEquals(
-      TaxCalculator.federalTaxDueForFutureYear(
+      TaxCalculator.federalTaxPayableForFutureYear(
         regime,
         futureYear,
         estimatedAnnualInflationFactor,
@@ -62,7 +62,7 @@ final case class FutureYearRegressionTestCase(
           .show
     )
     assertEquals(
-      TaxCalculator.stateTaxDue(
+      TaxCalculator.stateTaxPayable(
         futureYear,
         filingStatus,
         birthDate,
@@ -99,7 +99,7 @@ object FutureYearRegressionTestCase:
 
   private def parseFromCsvLine(s: String): FutureYearRegressionTestCase =
     val fields               = s.split(',')
-    val regime               = Regime.parse(fields(0)).get
+    val regime               = FedRegime.parse(fields(0)).get
     val year: Year           = Year.of(Integer.parseInt(fields(1)))
     val estimate: Double     = java.lang.Double.parseDouble(fields(2))
     val birthDate: LocalDate = LocalDate.parse(fields(3))

@@ -2,7 +2,7 @@ package org.kae.ustax4s.calculator.testdata.futureyears
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.{FilingStatus, SourceLoc}
-import org.kae.ustax4s.federal.Regime
+import org.kae.ustax4s.federal.FedRegime
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 import org.scalacheck.Gen
@@ -18,7 +18,7 @@ object TestDataGeneration:
   private val TheBirthDate = LocalDate.of(1955, 10, 2)
 
   final case class TestCaseInputs(
-    regime: Regime,
+    regime: FedRegime,
     futureYear: Year,
     estimatedAnnualInflationFactor: Double,
     birthDate: LocalDate,
@@ -37,7 +37,7 @@ object TestDataGeneration:
   private val genTestCase: Gen[TestCaseInputs] =
     val earliestYear = YearlyValues.last.year.getValue + 1
     for
-      regime              <- Gen.oneOf(Regime.values.toList)
+      regime              <- Gen.oneOf(FedRegime.values.toList)
       yearNum             <- Gen.chooseNum(earliestYear, earliestYear + 30)
       estimate            <- Gen.chooseNum(1.01, 1.10)
       fs                  <- Gen.oneOf(FilingStatus.values.toSeq)

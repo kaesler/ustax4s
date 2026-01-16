@@ -2,7 +2,7 @@ package org.kae.ustax4s.gsheetfacade
 
 import gsheets.cells.Cell
 import gsheets.customfunctions.Input
-import org.kae.ustax4s.federal.{BoundRegime, FederalCalcInput, RMDs, TaxableSocialSecurity}
+import org.kae.ustax4s.federal.{BoundFedRegime, FederalCalcInput, RMDs, TaxableSocialSecurity}
 import org.kae.ustax4s.gsheetfacade.Conversions.Output
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
@@ -59,7 +59,7 @@ object Facade:
     bracketRatePercentage: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .ordinaryRateFunction
       .unsafeTaxableIncomeToEndOfBracket(
@@ -84,7 +84,7 @@ object Facade:
     bracketRatePercentage: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(
         year,
         bracketInflationFactor,
@@ -109,7 +109,7 @@ object Facade:
     filingStatus: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .qualifiedRateFunction
       .startOfNonZeroQualifiedRateBracket
@@ -132,7 +132,7 @@ object Facade:
     birthDate: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(
         year,
         bracketInflationFactor,
@@ -168,7 +168,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -211,7 +211,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -254,7 +254,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -297,7 +297,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -310,7 +310,7 @@ object Facade:
           itemizedDeductions
         )
       )
-      .taxDue
+      .taxPayable
   end tf_tax_due
 
   /** The Federal tax results. Example: TF_TAX_RESULTS(3%, 2023,
@@ -340,7 +340,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    val r                      = BoundRegime
+    val r                      = BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -377,7 +377,7 @@ object Facade:
       cp("taxSlopeForOrdinaryIncome", r.taxSlopeForOrdinaryIncome),
       cp("taxSlopeForQualifiedIncome", r.taxSlopeForQualifiedIncome),
       cp("taxSlopeForSocSec", r.taxSlopeForSocSec),
-      cp("taxDue", r.taxDue)
+      cp("taxDue", r.taxPayable)
     )
   end tf_tax_results
 
@@ -409,7 +409,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -519,7 +519,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(
@@ -563,7 +563,7 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    BoundRegime
+    BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
       .calculator
       .apply(

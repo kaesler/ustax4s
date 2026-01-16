@@ -16,7 +16,7 @@ class QualifiedRateFunction2018Spec extends FunSuite:
     val qrf = YearlyValues.of(Year.of(2018))
       .get.qualifiedRateFunctions(HeadOfHousehold)
     assertEquals(
-      TaxFunctions.taxDueOnQualifiedIncome(qrf)(
+      FedTaxFunctions.taxPayableOnQualifiedIncome(qrf)(
         114547,
         14777
       ).rounded,

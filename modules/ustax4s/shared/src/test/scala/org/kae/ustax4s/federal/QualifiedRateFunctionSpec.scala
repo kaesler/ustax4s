@@ -14,7 +14,7 @@ class QualifiedRateFunctionSpec
     with QualifiedBracketsGeneration
     with MoneyGeneration:
 
-  import TaxFunctions.*
+  import FedTaxFunctions.*
   import math.Ordering.Implicits.infixOrderingOps
 
   private given Arbitrary[QualifiedRateFunction] = Arbitrary(
@@ -46,14 +46,14 @@ class QualifiedRateFunctionSpec
 
   property("never tax zero gains") {
     forAll { (ordIncome: TaxableIncome, qrf: QualifiedRateFunction) =>
-      taxDueOnQualifiedIncome(qrf)(ordIncome, TaxableIncome.zero).isZero
+      taxPayableOnQualifiedIncome(qrf)(ordIncome, TaxableIncome.zero).isZero
     }
   }
 
   property("never tax gains in the lowest (zero-rate) bracket") {
     forAll { (qrf: QualifiedRateFunction) =>
       val qualifiedIncome = qrf.startOfNonZeroQualifiedRateBracket
-      taxDueOnQualifiedIncome(qrf)(TaxableIncome.zero, qualifiedIncome) == TaxPayable.zero
+      taxPayableOnQualifiedIncome(qrf)(TaxableIncome.zero, qualifiedIncome) == TaxPayable.zero
     }
   }
 
@@ -67,7 +67,7 @@ class QualifiedRateFunctionSpec
           def compare(x: TaxableIncome, y: TaxableIncome): Int =
             summon[Ordering[Income]].compare(x, y)
         val ordinaryIncome = qrf.startOfNonZeroQualifiedRateBracket
-        val f              = taxDueOnQualifiedIncome(qrf)
+        val f              = taxPayableOnQualifiedIncome(qrf)
         if gains1 < gains2 then f(ordinaryIncome, gains1) < f(ordinaryIncome, gains2)
         else if gains1 > gains2 then f(ordinaryIncome, gains1) > f(ordinaryIncome, gains2)
         else f(ordinaryIncome, gains1) == f(ordinaryIncome, gains2)
@@ -87,7 +87,7 @@ class QualifiedRateFunctionSpec
           def compare(x: TaxableIncome, y: TaxableIncome): Int =
             summon[Ordering[Income]].compare(x, y)
             
-        val f = taxDueOnQualifiedIncome(qrf)
+        val f = taxPayableOnQualifiedIncome(qrf)
         val res = {
           if income1 < income2 then f(income1, gains) <= f(income1, gains)
           else if income1 > income2 then f(income1, gains) >= f(income2, gains)
@@ -108,13 +108,13 @@ class QualifiedRateFunctionSpec
   ) {
     forAll { (qrf: QualifiedRateFunction, gains: TaxableIncome) =>
       val ordinaryIncome = qrf.startOfNonZeroQualifiedRateBracket
-      taxDueOnQualifiedIncome(qrf)(ordinaryIncome, gains).nonZero || gains.isZero
+      taxPayableOnQualifiedIncome(qrf)(ordinaryIncome, gains).nonZero || gains.isZero
     }
   }
 
   property("max tax rate is the max tax rate") {
     forAll { (qrf: QualifiedRateFunction, gains: TaxableIncome) =>
       val maxTax = gains taxAt qrf.bracketsAscending.map(_.rate).max
-      taxDueOnQualifiedIncome(qrf)(TaxableIncome.zero, gains) <= maxTax
+      taxPayableOnQualifiedIncome(qrf)(TaxableIncome.zero, gains) <= maxTax
     }
   }

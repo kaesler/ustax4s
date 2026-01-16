@@ -7,16 +7,16 @@ import org.kae.ustax4s.money.IncomeThreshold
 // Note: contain a RateFunction[FederalTaxRate] rather than opaque type
 // so we can precompute and store val properties.
 final case class QualifiedRateFunction(
-  function: RateFunction[FederalTaxRate]
+  function: RateFunction[FedTaxRate]
 ):
   require(function.isProgressive, function.toString + ", at " + SourceLoc())
   require(function.has(IncomeThreshold.zero), SourceLoc())
   require(function.size >= 2, SourceLoc())
 
-  val bracketsAscending: Vector[Bracket[FederalTaxRate]] =
+  val bracketsAscending: Vector[Bracket[FedTaxRate]] =
     function.bracketsAscending
   require(
-    bracketsAscending(0) == (IncomeThreshold.zero, FederalTaxRate.unsafeFrom(0.0)),
+    bracketsAscending(0) == (IncomeThreshold.zero, FedTaxRate.unsafeFrom(0.0)),
     SourceLoc()
   )
 
@@ -38,7 +38,7 @@ object QualifiedRateFunction:
         pairs.map: (bracketStart, ratePercentage) =>
           require(ratePercentage < 100, SourceLoc())
           IncomeThreshold(bracketStart) ->
-            FederalTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
+            FedTaxRate.unsafeFrom(ratePercentage.toDouble / 100.0d)
       )
     )
   end of

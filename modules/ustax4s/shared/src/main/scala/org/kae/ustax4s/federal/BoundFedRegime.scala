@@ -8,19 +8,48 @@ import org.kae.ustax4s.money.*
 import org.kae.ustax4s.{Age, FilingStatus, SourceLoc}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
-trait BoundRegime(
-  val regime: Regime,
+trait BoundFedRegime(
+  val regime: FedRegime,
   val year: Year,
   val filingStatus: FilingStatus
 ):
+  def perPersonExemption: Deduction
   def unadjustedStandardDeduction: Deduction
   def adjustmentWhenOver65: Deduction
   def adjustmentWhenOver65AndSingle: Deduction
-  def perPersonExemption: Deduction
   def ordinaryRateFunction: OrdinaryRateFunction
   def qualifiedRateFunction: QualifiedRateFunction
 
+  def taxableSocialSecurityBenefits(
+    socialSecurityBenefits: Income,
+    ssRelevantOtherIncome: Income
+  ): Income =
+    TaxableSocialSecurity.taxableSocialSecurityBenefits(
+      filingStatus,
+      socialSecurityBenefits,
+      ssRelevantOtherIncome
+    )
+  end taxableSocialSecurityBenefits
+
   def name: String = regime.show
+
+  // TODO: needs property spec
+  final def personalExemptionDeduction(personalExemptions: Int): Deduction =
+    perPersonExemption mul personalExemptions
+
+  // TODO: needs property spec
+  final def standardDeduction(birthDate: LocalDate): Deduction =
+    unadjustedStandardDeduction +
+      (
+        if Age.isAge65OrOlder(birthDate, year) then
+          adjustmentWhenOver65 +
+            (
+              if filingStatus.isSingle then adjustmentWhenOver65AndSingle
+              else Deduction.zero
+            )
+        else Deduction.zero
+      )
+  end standardDeduction
 
   def meansTestedSeniorDeduction(
     agi: Income,
@@ -51,24 +80,6 @@ trait BoundRegime(
   end meansTestedSeniorDeduction
 
   // TODO: needs property spec
-  final def standardDeduction(birthDate: LocalDate): Deduction =
-    unadjustedStandardDeduction +
-      (
-        if Age.isAge65OrOlder(birthDate, year) then
-          adjustmentWhenOver65 +
-            (
-              if filingStatus.isSingle then adjustmentWhenOver65AndSingle
-              else Deduction.zero
-            )
-        else Deduction.zero
-      )
-  end standardDeduction
-
-  // TODO: needs property spec
-  final def personalExemptionDeduction(personalExemptions: Int): Deduction =
-    perPersonExemption mul personalExemptions
-
-  // TODO: needs property spec
   // netDed >= all of ped, stdDm, item
   final def netDeduction(
     agi: Income,
@@ -85,15 +96,15 @@ trait BoundRegime(
   end netDeduction
 
   // TODO: needs property spec
-  final def calculator: FederalTaxCalculator = FederalTaxCalculator.from(this)
+  final def calculator: FedTaxCalculator = FedTaxCalculator.from(this)
 
   def withEstimatedNetInflationFactor(
     targetFutureYear: Year,
     netInflationFactor: Double
-  ): BoundRegime =
+  ): BoundFedRegime =
     require(netInflationFactor >= 1, SourceLoc())
     val base = this
-    new BoundRegime(
+    new BoundFedRegime(
       regime,
       targetFutureYear,
       filingStatus
@@ -124,12 +135,12 @@ trait BoundRegime(
 
   end withEstimatedNetInflationFactor
 
-end BoundRegime
+end BoundFedRegime
 
-object BoundRegime:
+object BoundFedRegime:
 
-  given Show[BoundRegime]:
-    def show(r: BoundRegime): String =
+  given Show[BoundFedRegime]:
+    def show(r: BoundFedRegime): String =
       "BoundRegime:\n" ++
         s"  regime: ${r.regime.show}\n" ++
         s"  year: ${r.year}\n" ++
@@ -145,7 +156,7 @@ object BoundRegime:
     year: Year,
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus
-  ): BoundRegime =
+  ): BoundFedRegime =
     YearlyValues
       .of(year)
       .fold(forFutureYear(TCJA, year, estimatedAnnualInflationFactor, filingStatus))(yv =>
@@ -154,11 +165,11 @@ object BoundRegime:
   end forAnyYear
 
   def forFutureYear(
-    regime: Regime,
+    regime: FedRegime,
     year: Year,
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus
-  ): BoundRegime =
+  ): BoundFedRegime =
     require(year > YearlyValues.last.year, SourceLoc())
     val baseValues         = YearlyValues.mostRecentFor(regime)
     val baseYear           = baseValues.year.getValue
@@ -179,9 +190,9 @@ object BoundRegime:
   def forKnownYearlyValues(
     yv: YearlyValues,
     filingStatus: FilingStatus
-  ): BoundRegime =
+  ): BoundFedRegime =
 
-    new BoundRegime(yv.regime, yv.year, filingStatus):
+    new BoundFedRegime(yv.regime, yv.year, filingStatus):
 
       override def unadjustedStandardDeduction: Deduction =
         yv.unadjustedStandardDeduction(this.filingStatus)
@@ -204,7 +215,7 @@ object BoundRegime:
   def forKnownYear(
     year: Year,
     filingStatus: FilingStatus
-  ): BoundRegime =
+  ): BoundFedRegime =
     forKnownYearlyValues(YearlyValues.of(year).get, filingStatus)
 
-end BoundRegime
+end BoundFedRegime

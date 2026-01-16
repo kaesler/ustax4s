@@ -10,8 +10,8 @@ import org.scalacheck.Prop.forAll
 import org.scalacheck.{Arbitrary, Gen}
 import scala.language.implicitConversions
 
-class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
-  import BoundRegimeFutureEstimationSpec.*
+class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
+  import BoundFedRegimeFutureEstimationSpec.*
   import math.Ordering.Implicits.infixOrderingOps
   import org.kae.ustax4s.money.MoneyConversions.given
 
@@ -23,14 +23,14 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     val birthDate = birthDateUnder65
     forAll { (tc: TestCase2) =>
 
-      val before = BoundRegime
+      val before = BoundFedRegime
         .forKnownYear(
           YearlyValues.mostRecentFor(tc.regime).year,
           tc.filingStatus
         )
         .calculator
 
-      val after = BoundRegime
+      val after = BoundFedRegime
         .forFutureYear(
           tc.regime,
           tc.futureYear,
@@ -59,7 +59,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
           tc.itemizedDeductions
         )
       )
-      val res = taxResultsBefore.taxDue >= taxResultsAfter.taxDue
+      val res = taxResultsBefore.taxPayable >= taxResultsAfter.taxPayable
       if !res then {
         println(taxResultsBefore.show)
         println(taxResultsAfter.show)
@@ -72,12 +72,12 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     val birthDate = birthDateUnder65
     forAll { (tc: TestCase2) =>
 
-      val before = BoundRegime.forKnownYear(
+      val before = BoundFedRegime.forKnownYear(
         YearlyValues.mostRecentFor(tc.regime).year,
         tc.filingStatus
       )
 
-      val after = BoundRegime.forFutureYear(
+      val after = BoundFedRegime.forFutureYear(
         tc.regime,
         tc.futureYear,
         tc.inflationFactorEstimate,
@@ -104,7 +104,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
   ) {
     val birthDate = birthDateUnder65
     forAll { (tc: TestCase1) =>
-      val before = BoundRegime.forKnownYear(
+      val before = BoundFedRegime.forKnownYear(
         tc.baseYear,
         tc.filingStatus
       )
@@ -133,7 +133,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
           tc.itemizedDeductions
         )
       )
-      val res = taxResultsBefore.taxDue >= taxResultsAfter.taxDue
+      val res = taxResultsBefore.taxPayable >= taxResultsAfter.taxPayable
       if !res then {
         println(taxResultsBefore.show)
         println(taxResultsAfter.show)
@@ -147,7 +147,7 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
   ) {
     val birthDate = birthDateUnder65
     forAll { (tc: TestCase1) =>
-      val before = BoundRegime.forKnownYear(
+      val before = BoundFedRegime.forKnownYear(
         tc.baseYear,
         tc.filingStatus
       )
@@ -171,9 +171,9 @@ class BoundRegimeFutureEstimationSpec extends ScalaCheckSuite:
     }
   }
 
-end BoundRegimeFutureEstimationSpec
+end BoundFedRegimeFutureEstimationSpec
 
-object BoundRegimeFutureEstimationSpec:
+object BoundFedRegimeFutureEstimationSpec:
   import org.kae.ustax4s.money.MoneyConversions.given
 
   private val lastKnownYear   = YearlyValues.last.year.getValue
@@ -216,7 +216,7 @@ object BoundRegimeFutureEstimationSpec:
   )
 
   private final case class TestCase2(
-    regime: Regime,
+    regime: FedRegime,
     futureYear: Year,
     inflationFactorEstimate: Double,
     filingStatus: FilingStatus,
@@ -229,7 +229,7 @@ object BoundRegimeFutureEstimationSpec:
 
   private given Arbitrary[TestCase2] = Arbitrary(
     for
-      regime                  <- Gen.oneOf(Regime.values.toList)
+      regime                  <- Gen.oneOf(FedRegime.values.toList)
       futureYear              <- Gen.choose(firstFutureYear, 2055).map(Year.of)
       inflationFactorEstimate <- Gen.choose(1.005, 1.10)
       filingStatus            <- Gen.oneOf(FilingStatus.values.toList)
@@ -251,4 +251,4 @@ object BoundRegimeFutureEstimationSpec:
     )
   )
 
-end BoundRegimeFutureEstimationSpec
+end BoundFedRegimeFutureEstimationSpec

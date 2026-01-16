@@ -3,6 +3,10 @@ package org.kae.ustax4s.federal
 import java.time.LocalDate
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 
+// TODO: Maybe just CalcInput.
+// We may need to include state-relevant stuff
+//   - pensions not taxed by state
+//   - SocSec
 final case class FederalCalcInput(
   birthDate: LocalDate,
   personalExemptions: Int,

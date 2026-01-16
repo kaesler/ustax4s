@@ -4,7 +4,7 @@ import gsheets.cells.{GSheetCellValue, GSheetGrid, ScalaCellGrid}
 import gsheets.customfunctions.Input
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.federal.FederalTaxRate
+import org.kae.ustax4s.federal.FedTaxRate
 import org.kae.ustax4s.money.NonNegMoneys.*
 import scala.scalajs.js
 
@@ -13,10 +13,10 @@ object Conversions:
   type Output = GSheetCellValue | GSheetGrid
 
   // Conversions from Input.
-  given Conversion[Input, FederalTaxRate] =
-    doubleInputConversion[FederalTaxRate](
+  given Conversion[Input, FedTaxRate] =
+    doubleInputConversion[FedTaxRate](
       "FederalTaxRate",
-      FederalTaxRate.unsafeFrom
+      FedTaxRate.unsafeFrom
     )
 
   given Conversion[Input, Int]          = doubleInputConversion("Int", _.toInt)

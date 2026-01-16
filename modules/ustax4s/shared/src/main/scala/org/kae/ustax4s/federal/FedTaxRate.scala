@@ -2,20 +2,20 @@ package org.kae.ustax4s.federal
 
 import org.kae.ustax4s.{SourceLoc, TaxRate}
 
-opaque type FederalTaxRate = Double
+opaque type FedTaxRate = Double
 
-object FederalTaxRate:
+object FedTaxRate:
 
-  def unsafeFrom(d: Double): FederalTaxRate =
+  def unsafeFrom(d: Double): FedTaxRate =
     if d >= 0.0 && d <= 0.40 then d
     else throw OutOfRange(d, SourceLoc())
 
-  given TaxRate[FederalTaxRate]:
+  given TaxRate[FedTaxRate]:
     override def absoluteDifference(
-      left: FederalTaxRate,
-      right: FederalTaxRate
-    ): FederalTaxRate = (left - right).abs
-    override def toDouble(r: FederalTaxRate): Double = r
+      left: FedTaxRate,
+      right: FedTaxRate
+    ): FedTaxRate = (left - right).abs
+    override def toDouble(r: FedTaxRate): Double = r
     override val zero                                = 0.0
 
   private final case class OutOfRange(
@@ -25,4 +25,4 @@ object FederalTaxRate:
         s"Value is out of range for Federal tax rate: $d ($sourceLoc)"
       )
 
-end FederalTaxRate
+end FedTaxRate

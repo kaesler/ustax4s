@@ -3,13 +3,15 @@ package org.kae.ustax4s.federal
 import org.kae.ustax4s.TaxFunction
 import org.kae.ustax4s.money.{TaxPayable, TaxableIncome}
 
-object TaxFunctions:
-  def taxDueOnOrdinaryIncome(ordinaryRateFunction: OrdinaryRateFunction)(
+// TODO: Can these be be subsumed into BoundFedRegime?
+// One less module?
+object FedTaxFunctions:
+  def taxPayableOnOrdinaryIncome(ordinaryRateFunction: OrdinaryRateFunction)(
     taxableOrdinaryIncome: TaxableIncome
   ): TaxPayable =
     TaxFunction.fromRateFunction(ordinaryRateFunction.rateFunction)(taxableOrdinaryIncome)
 
-  def taxDueOnQualifiedIncome(qualifiedRateFunction: QualifiedRateFunction)(
+  def taxPayableOnQualifiedIncome(qualifiedRateFunction: QualifiedRateFunction)(
     taxableOrdinaryIncome: TaxableIncome,
     qualifiedIncome: TaxableIncome
   ): TaxPayable =
@@ -21,6 +23,6 @@ object TaxFunctions:
     val taxFunction = TaxFunction.fromRateFunction(qualifiedRateFunction.function)
     taxFunction(taxableOrdinaryIncome + qualifiedIncome)
       .reduceBy(taxFunction(taxableOrdinaryIncome))
-  end taxDueOnQualifiedIncome
+  end taxPayableOnQualifiedIncome
 
-end TaxFunctions
+end FedTaxFunctions
