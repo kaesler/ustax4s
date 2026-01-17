@@ -3,15 +3,15 @@ package org.kae.ustax4s.federal
 import cats.syntax.all.*
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 
-trait FedTaxCalculator() extends (CalcInput => FedCalcResults)
+trait FedCalculator() extends (FedCalcInput => FedCalcResults)
 
-object FedTaxCalculator:
+object FedCalculator:
 
-  def from(br: BoundFedRegime): FedTaxCalculator =
-    new FedTaxCalculator():
+  def from(br: BoundFedRegime): FedCalculator =
+    new FedCalculator():
       private val thisCalculator = this
 
-      override def apply(input: CalcInput): FedCalcResults =
+      override def apply(input: FedCalcInput): FedCalcResults =
         new FedCalcResults:
           import input.*
 
@@ -51,7 +51,9 @@ object FedTaxCalculator:
               .applyDeductions(netDeduction)
 
           override lazy val taxOnOrdinaryIncome: TaxPayable =
-            FedTaxFunctions.taxPayableOnOrdinaryIncome(br.ordinaryRateFunction)(taxableOrdinaryIncome)
+            FedTaxFunctions.taxPayableOnOrdinaryIncome(br.ordinaryRateFunction)(
+              taxableOrdinaryIncome
+            )
 
           override lazy val taxOnQualifiedIncome: TaxPayable =
             FedTaxFunctions.taxPayableOnQualifiedIncome(br.qualifiedRateFunction)(
@@ -92,4 +94,4 @@ object FedTaxCalculator:
       end apply
     end new
   end from
-end FedTaxCalculator
+end FedCalculator

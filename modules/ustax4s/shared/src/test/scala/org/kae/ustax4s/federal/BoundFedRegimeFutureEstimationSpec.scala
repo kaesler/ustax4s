@@ -28,7 +28,7 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
           YearlyValues.mostRecentFor(tc.regime).year,
           tc.filingStatus
         )
-        .calculator
+        .fedCalculator
 
       val after = BoundFedRegime
         .forFutureYear(
@@ -37,10 +37,10 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
           tc.inflationFactorEstimate,
           tc.filingStatus
         )
-        .calculator
+        .fedCalculator
 
       val taxResultsBefore = before.apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,
@@ -50,7 +50,7 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         )
       )
       val taxResultsAfter = after.apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,
@@ -113,8 +113,8 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.futureYear,
         tc.inflationFactorEstimate
       )
-      val taxResultsBefore = before.calculator.apply(
-        CalcInput(
+      val taxResultsBefore = before.fedCalculator.apply(
+        FedCalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,
@@ -123,8 +123,8 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
           tc.itemizedDeductions
         )
       )
-      val taxResultsAfter = after.calculator.apply(
-        CalcInput(
+      val taxResultsAfter = after.fedCalculator.apply(
+        FedCalcInput(
           birthDate,
           tc.personalExemptions,
           tc.ss,

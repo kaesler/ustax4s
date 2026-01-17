@@ -4,7 +4,7 @@ import cats.syntax.all.*
 import java.time.{LocalDate, Year}
 import munit.ScalaCheckSuite
 import org.kae.ustax4s.FilingStatus.{MarriedJoint, Single}
-import org.kae.ustax4s.calculator.TaxCalculator
+import org.kae.ustax4s.calculator.FedTaxCalculatorForTests
 import org.kae.ustax4s.money.{Deduction, Income, TaxableIncome}
 import org.kae.ustax4s.{Age, FilingStatus}
 import org.scalacheck.Prop.{forAll, propBoolean}
@@ -23,7 +23,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
   property("meansTestedSeniorDeduction is only non-zero 2025-28") {
     forAll { (sc: Scenario) =>
       import sc.*
-      val res = TaxCalculator.federalTaxResultsForAnyYear(
+      val res = FedTaxCalculatorForTests.federalTaxResultsForAnyYear(
         1.03,
         year,
         filingStatus,
@@ -53,7 +53,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
           filingStatus = Single
         )
         import sc.*
-        val res = TaxCalculator.federalTaxResultsForAnyYear(
+        val res = FedTaxCalculatorForTests.federalTaxResultsForAnyYear(
           1.03,
           year,
           filingStatus,
@@ -83,7 +83,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
           filingStatus = MarriedJoint
         )
         import sc.*
-        val res = TaxCalculator.federalTaxResultsForAnyYear(
+        val res = FedTaxCalculatorForTests.federalTaxResultsForAnyYear(
           1.03,
           sc.year,
           filingStatus,
@@ -113,7 +113,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
           filingStatus = Single
         )
         import sc.*
-        val res = TaxCalculator.federalTaxResultsForAnyYear(
+        val res = FedTaxCalculatorForTests.federalTaxResultsForAnyYear(
           1.03,
           year,
           filingStatus,
@@ -143,7 +143,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
           filingStatus = MarriedJoint
         )
         import sc.*
-        val res = TaxCalculator.federalTaxResultsForAnyYear(
+        val res = FedTaxCalculatorForTests.federalTaxResultsForAnyYear(
           1.03,
           year,
           filingStatus,
@@ -173,7 +173,7 @@ class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
           filingStatus = Single
         )
         import sc.*
-        val res = TaxCalculator.federalTaxResultsForAnyYear(
+        val res = FedTaxCalculatorForTests.federalTaxResultsForAnyYear(
           1.03,
           year,
           filingStatus,

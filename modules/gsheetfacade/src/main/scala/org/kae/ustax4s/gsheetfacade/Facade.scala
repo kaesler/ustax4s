@@ -2,7 +2,7 @@ package org.kae.ustax4s.gsheetfacade
 
 import gsheets.cells.Cell
 import gsheets.customfunctions.Input
-import org.kae.ustax4s.federal.{BoundFedRegime, CalcInput, RMDs, TaxableSocialSecurity}
+import org.kae.ustax4s.federal.{BoundFedRegime, FedCalcInput, RMDs, TaxableSocialSecurity}
 import org.kae.ustax4s.gsheetfacade.Conversions.Output
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
@@ -170,9 +170,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -213,9 +213,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -256,9 +256,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -299,9 +299,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -342,9 +342,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     val r                      = BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -411,9 +411,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -521,9 +521,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -565,9 +565,9 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
       .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,

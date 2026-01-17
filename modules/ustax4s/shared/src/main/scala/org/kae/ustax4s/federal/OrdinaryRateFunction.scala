@@ -26,7 +26,7 @@ final case class OrdinaryRateFunction(
     OrdinaryRateFunction(rateFunction.inflatedBy(factor))
 
   lazy val thresholds: Set[IncomeThreshold] = rateFunction.thresholds
-  lazy val rates: Set[FedTaxRate]       = rateFunction.rates
+  lazy val rates: Set[FedTaxRate]           = rateFunction.rates
 
   def unsafeTaxableIncomeToEndOfBracket(bracketRate: FedTaxRate): TaxableIncome =
     bracketsAscending

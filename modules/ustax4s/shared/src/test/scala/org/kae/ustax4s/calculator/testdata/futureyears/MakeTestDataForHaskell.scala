@@ -1,6 +1,6 @@
 package org.kae.ustax4s.calculator.testdata.futureyears
 
-import org.kae.ustax4s.calculator.TaxCalculator
+import org.kae.ustax4s.calculator.FedTaxCalculatorForTests
 
 object MakeTestDataForHaskell extends App:
 
@@ -8,7 +8,7 @@ object MakeTestDataForHaskell extends App:
 
   testCases.foreach {
     case tc @ TestCaseInputs(regime, year, estimate, bd, fs, deps, ss, oi, qi, itm) =>
-      val federalTaxDue = TaxCalculator.federalTaxPayableForFutureYear(
+      val federalTaxDue = FedTaxCalculatorForTests.federalTaxPayableForFutureYear(
         regime = regime,
         futureYear = year,
         estimatedAnnualInflationFactor = estimate,
@@ -20,7 +20,7 @@ object MakeTestDataForHaskell extends App:
         qualifiedIncome = qi,
         itemizedDeductions = itm
       )
-      val stateTaxDue = TaxCalculator.stateTaxPayable(
+      val stateTaxDue = FedTaxCalculatorForTests.stateMATaxPayable(
         year = year,
         birthDate = bd,
         filingStatus = fs,

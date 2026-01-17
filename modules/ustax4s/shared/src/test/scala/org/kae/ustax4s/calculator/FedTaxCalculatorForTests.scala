@@ -8,9 +8,11 @@ import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 
-/** Simplified interface to 1040 calculations. Assume: No deductions credits or other complications.
+/** Simplified interface to 1040 calculations.
+  * Assume: No deductions credits or other complications.
+  * Only used in tests now.
   */
-object TaxCalculator:
+object FedTaxCalculatorForTests:
 
   def federalTaxPayableForFutureYear(
     regime: FedRegime,
@@ -32,9 +34,9 @@ object TaxCalculator:
         estimatedAnnualInflationFactor,
         filingStatus
       )
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -61,9 +63,9 @@ object TaxCalculator:
   ): FedCalcResults =
     BoundFedRegime
       .forAnyYear(year, estimatedAnnualInflationFactor, filingStatus)
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -90,9 +92,9 @@ object TaxCalculator:
         year,
         filingStatus
       )
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -123,9 +125,9 @@ object TaxCalculator:
         estimatedAnnualInflationFactor,
         filingStatus
       )
-      .calculator
+      .fedCalculator
       .apply(
-        CalcInput(
+        FedCalcInput(
           birthDate,
           personalExemptions,
           socSec,
@@ -203,7 +205,7 @@ object TaxCalculator:
       .rounded
   end federalTaxPayableUsingForm1040
 
-  def stateTaxPayable(
+  def stateMATaxPayable(
     year: Year,
     filingStatus: FilingStatus,
     birthDate: LocalDate,
@@ -223,6 +225,6 @@ object TaxCalculator:
         dependents
       )(massachusettsGrossIncome)
       .rounded
-  end stateTaxPayable
+  end stateMATaxPayable
 
-end TaxCalculator
+end FedTaxCalculatorForTests

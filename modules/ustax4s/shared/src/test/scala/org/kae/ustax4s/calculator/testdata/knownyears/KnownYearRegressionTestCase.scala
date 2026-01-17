@@ -5,7 +5,7 @@ import cats.implicits.*
 import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.FilingStatus
-import org.kae.ustax4s.calculator.TaxCalculator
+import org.kae.ustax4s.calculator.FedTaxCalculatorForTests
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.io.Source
 
@@ -26,7 +26,7 @@ final case class KnownYearRegressionTestCase(
 
   def run(): Unit =
     assertEquals(
-      TaxCalculator.federalTaxPayable(
+      FedTaxCalculatorForTests.federalTaxPayable(
         year,
         filingStatus,
         birthDate,
@@ -39,7 +39,7 @@ final case class KnownYearRegressionTestCase(
       federalTaxDue,
       this.show ++
         "\n" ++
-        TaxCalculator.federalTaxResults(
+        FedTaxCalculatorForTests.federalTaxResults(
           year,
           filingStatus,
           birthDate,
@@ -52,7 +52,7 @@ final case class KnownYearRegressionTestCase(
           .show
     )
     assertEquals(
-      TaxCalculator.stateTaxPayable(
+      FedTaxCalculatorForTests.stateMATaxPayable(
         year,
         filingStatus,
         birthDate,

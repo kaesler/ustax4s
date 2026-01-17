@@ -96,7 +96,7 @@ trait BoundFedRegime(
   end netDeduction
 
   // TODO: needs property spec
-  final def calculator: FedTaxCalculator = FedTaxCalculator.from(this)
+  final def fedCalculator: FedCalculator = FedCalculator.from(this)
 
   def withEstimatedNetInflationFactor(
     targetFutureYear: Year,

@@ -1,7 +1,7 @@
 package org.kae.ustax4s.calculator.testdata.futureyears
 
 import cats.implicits.*
-import org.kae.ustax4s.calculator.TaxCalculator
+import org.kae.ustax4s.calculator.FedTaxCalculatorForTests
 
 object MakeTestDataAsCsv extends App:
   import TestDataGeneration.*
@@ -12,7 +12,7 @@ object MakeTestDataAsCsv extends App:
   )
   testCases.foreach {
     case tc @ TestCaseInputs(regime, year, estimate, bd, fs, ds, ss, oi, qi, itm) =>
-      val federalTaxDue = TaxCalculator.federalTaxPayableForFutureYear(
+      val federalTaxDue = FedTaxCalculatorForTests.federalTaxPayableForFutureYear(
         regime,
         futureYear = year,
         estimatedAnnualInflationFactor = estimate,
@@ -24,7 +24,7 @@ object MakeTestDataAsCsv extends App:
         qualifiedIncome = qi,
         itemizedDeductions = itm
       )
-      val stateTaxDue = TaxCalculator.stateTaxPayable(
+      val stateTaxDue = FedTaxCalculatorForTests.stateMATaxPayable(
         year = year,
         birthDate = bd,
         filingStatus = fs,

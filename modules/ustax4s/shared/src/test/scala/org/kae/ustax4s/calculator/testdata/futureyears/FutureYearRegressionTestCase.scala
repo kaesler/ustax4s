@@ -5,7 +5,7 @@ import cats.implicits.*
 import java.time.{LocalDate, Year}
 import munit.Assertions.*
 import org.kae.ustax4s.{FilingStatus, SourceLoc as SourceLoc}
-import org.kae.ustax4s.calculator.TaxCalculator
+import org.kae.ustax4s.calculator.FedTaxCalculatorForTests
 import org.kae.ustax4s.federal.FedRegime
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
@@ -32,7 +32,7 @@ final case class FutureYearRegressionTestCase(
 
   def run(): Unit =
     assertEquals(
-      TaxCalculator.federalTaxPayableForFutureYear(
+      FedTaxCalculatorForTests.federalTaxPayableForFutureYear(
         regime,
         futureYear,
         estimatedAnnualInflationFactor,
@@ -47,7 +47,7 @@ final case class FutureYearRegressionTestCase(
       federalTaxDue,
       this.show ++
         "\n" ++
-        TaxCalculator.federalTaxResultsForFutureYear(
+        FedTaxCalculatorForTests.federalTaxResultsForFutureYear(
           regime,
           futureYear,
           estimatedAnnualInflationFactor,
@@ -62,7 +62,7 @@ final case class FutureYearRegressionTestCase(
           .show
     )
     assertEquals(
-      TaxCalculator.stateTaxPayable(
+      FedTaxCalculatorForTests.stateMATaxPayable(
         futureYear,
         filingStatus,
         birthDate,
