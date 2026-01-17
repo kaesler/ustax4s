@@ -16,6 +16,7 @@ object StateMATaxRate:
       left: StateMATaxRate,
       right: StateMATaxRate
     ): StateMATaxRate = (left - right).abs
+
     override def toDouble(r: StateMATaxRate): Double = r
     override val zero                                = 0.0
 

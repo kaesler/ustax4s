@@ -11,12 +11,13 @@ object FedTaxRate:
     else throw OutOfRange(d, SourceLoc())
 
   given TaxRate[FedTaxRate]:
+    override val zero = 0.0
     override def absoluteDifference(
       left: FedTaxRate,
       right: FedTaxRate
     ): FedTaxRate = (left - right).abs
+
     override def toDouble(r: FedTaxRate): Double = r
-    override val zero                            = 0.0
 
   private final case class OutOfRange(
     d: Double,
