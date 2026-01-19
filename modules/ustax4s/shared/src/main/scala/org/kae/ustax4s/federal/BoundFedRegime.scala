@@ -8,6 +8,8 @@ import org.kae.ustax4s.money.*
 import org.kae.ustax4s.{Age, FilingStatus, SourceLoc}
 import scala.math.Ordering.Implicits.infixOrderingOps
 
+// Note: A FedRegime bound with other not very mutable things pertaining
+// to the person.
 trait BoundFedRegime(
   val regime: FedRegime,
   val year: Year,
@@ -95,8 +97,15 @@ trait BoundFedRegime(
       meansTestedSeniorDeduction(agi, birthDate)
   end netDeduction
 
-  // TODO: needs property spec
-  final def fedCalculator: FedCalculator = FedCalculator.from(this)
+  final def fedCalculator(
+    birthDate: LocalDate,
+    personalExemptions: Int
+  ): FedCalculator = FedCalculator.from(this, birthDate, personalExemptions)
+
+  final def apply(
+    birthDate: LocalDate,
+    personalExemptions: Int
+  ): FedCalculator = fedCalculator(birthDate, personalExemptions)
 
   def withEstimatedNetInflationFactor(
     targetFutureYear: Year,
@@ -187,7 +196,7 @@ object BoundFedRegime:
       .withEstimatedNetInflationFactor(year, netInflationFactor)
   end forFutureYear
 
-  def forKnownYearlyValues(
+  private def forKnownYearlyValues(
     yv: YearlyValues,
     filingStatus: FilingStatus
   ): BoundFedRegime =

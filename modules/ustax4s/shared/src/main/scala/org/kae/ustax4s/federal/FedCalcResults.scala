@@ -4,6 +4,7 @@ import cats.Show
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.collection.mutable
 
+// TODO: Should it include all inputs, e.g. IncomeScenario
 trait FedCalcResults:
 
   def taxableSocialSecurity: Income

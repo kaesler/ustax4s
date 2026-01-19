@@ -3,7 +3,7 @@ package org.kae.ustax4s.federal
 import cats.implicits.*
 import java.time.{LocalDate, Year}
 import munit.{FunSuite, ScalaCheckSuite}
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.scalacheck.Prop.forAll
@@ -22,13 +22,12 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
   property("BoundRegime.forFutureYear affects tax due monotonically decreasing for under 65") {
     val birthDate = birthDateUnder65
     forAll { (tc: TestCase2) =>
-
       val before = BoundFedRegime
         .forKnownYear(
           YearlyValues.mostRecentFor(tc.regime).year,
           tc.filingStatus
         )
-        .fedCalculator
+        .fedCalculator(birthDate, tc.personalExemptions)
 
       val after = BoundFedRegime
         .forFutureYear(
@@ -37,12 +36,10 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
           tc.inflationFactorEstimate,
           tc.filingStatus
         )
-        .fedCalculator
+        .fedCalculator(birthDate, tc.personalExemptions)
 
       val taxResultsBefore = before.apply(
-        FedCalcInput(
-          birthDate,
-          tc.personalExemptions,
+        IncomeScenario(
           tc.ss,
           tc.ordinaryIncomeNonSS,
           tc.qualifiedIncome,
@@ -50,9 +47,7 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         )
       )
       val taxResultsAfter = after.apply(
-        FedCalcInput(
-          birthDate,
-          tc.personalExemptions,
+        IncomeScenario(
           tc.ss,
           tc.ordinaryIncomeNonSS,
           tc.qualifiedIncome,
@@ -71,7 +66,6 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
   property("BoundRegime.forFutureYear affects BoundRegime fields monotonically for under 65") {
     val birthDate = birthDateUnder65
     forAll { (tc: TestCase2) =>
-
       val before = BoundFedRegime.forKnownYear(
         YearlyValues.mostRecentFor(tc.regime).year,
         tc.filingStatus
@@ -113,26 +107,26 @@ class BoundFedRegimeFutureEstimationSpec extends ScalaCheckSuite:
         tc.futureYear,
         tc.inflationFactorEstimate
       )
-      val taxResultsBefore = before.fedCalculator.apply(
-        FedCalcInput(
-          birthDate,
-          tc.personalExemptions,
-          tc.ss,
-          tc.ordinaryIncomeNonSS,
-          tc.qualifiedIncome,
-          tc.itemizedDeductions
+      val taxResultsBefore =
+        before
+          .fedCalculator(birthDate, tc.personalExemptions)
+          .apply(
+            IncomeScenario(
+              tc.ss,
+              tc.ordinaryIncomeNonSS,
+              tc.qualifiedIncome,
+              tc.itemizedDeductions
+            )
+          )
+      val taxResultsAfter =
+        after.fedCalculator(birthDate, tc.personalExemptions).apply(
+          IncomeScenario(
+            tc.ss,
+            tc.ordinaryIncomeNonSS,
+            tc.qualifiedIncome,
+            tc.itemizedDeductions
+          )
         )
-      )
-      val taxResultsAfter = after.fedCalculator.apply(
-        FedCalcInput(
-          birthDate,
-          tc.personalExemptions,
-          tc.ss,
-          tc.ordinaryIncomeNonSS,
-          tc.qualifiedIncome,
-          tc.itemizedDeductions
-        )
-      )
       val res = taxResultsBefore.taxPayable >= taxResultsAfter.taxPayable
       if !res then {
         println(taxResultsBefore.show)

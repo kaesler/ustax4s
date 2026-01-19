@@ -1,7 +1,7 @@
 package org.kae.ustax4s.calculator
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.FilingStatus
+import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 import org.kae.ustax4s.federal.*
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.yearly.YearlyValues
@@ -34,11 +34,9 @@ object FedTaxCalculatorForTests:
         estimatedAnnualInflationFactor,
         filingStatus
       )
-      .fedCalculator
+      .fedCalculator(birthDate, personalExemptions)
       .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -63,11 +61,12 @@ object FedTaxCalculatorForTests:
   ): FedCalcResults =
     BoundFedRegime
       .forAnyYear(year, estimatedAnnualInflationFactor, filingStatus)
-      .fedCalculator
+      .fedCalculator(
+        birthDate,
+        personalExemptions
+      )
       .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -92,11 +91,9 @@ object FedTaxCalculatorForTests:
         year,
         filingStatus
       )
-      .fedCalculator
+      .fedCalculator(birthDate, personalExemptions)
       .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -124,12 +121,11 @@ object FedTaxCalculatorForTests:
         year,
         estimatedAnnualInflationFactor,
         filingStatus
-      )
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      )(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,

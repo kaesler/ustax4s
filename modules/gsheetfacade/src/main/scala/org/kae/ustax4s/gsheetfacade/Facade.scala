@@ -2,7 +2,8 @@ package org.kae.ustax4s.gsheetfacade
 
 import gsheets.cells.Cell
 import gsheets.customfunctions.Input
-import org.kae.ustax4s.federal.{BoundFedRegime, FedCalcInput, RMDs, TaxableSocialSecurity}
+import org.kae.ustax4s.IncomeScenario
+import org.kae.ustax4s.federal.{BoundFedRegime, RMDs, TaxableSocialSecurity}
 import org.kae.ustax4s.gsheetfacade.Conversions.Output
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable}
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
@@ -169,12 +170,15 @@ object Facade:
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      .forAnyYear(
+        year,
+        bracketInflationFactor,
+        filingStatus
+      )(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -212,12 +216,11 @@ object Facade:
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      .forAnyYear(year, bracketInflationFactor, filingStatus)(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -255,12 +258,11 @@ object Facade:
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      .forAnyYear(year, bracketInflationFactor, filingStatus)(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -298,12 +300,11 @@ object Facade:
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      .forAnyYear(year, bracketInflationFactor, filingStatus)(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -340,19 +341,16 @@ object Facade:
     itemizedDeductions: Input
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
-    val r                      = BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
-          socSec,
-          ordinaryIncomeNonSS,
-          qualifiedIncome,
-          itemizedDeductions
+    val r                      =
+      BoundFedRegime
+        .forAnyYear(year, bracketInflationFactor, filingStatus)(birthDate, personalExemptions)(
+          IncomeScenario(
+            socSec,
+            ordinaryIncomeNonSS,
+            qualifiedIncome,
+            itemizedDeductions
+          )
         )
-      )
 
     given Conversion[String, Cell]     = s => Cell(s)
     given Conversion[Deduction, Cell]  = d => Cell(d.asDouble)
@@ -410,12 +408,11 @@ object Facade:
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      .forAnyYear(year, bracketInflationFactor, filingStatus)(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -520,12 +517,11 @@ object Facade:
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      .forAnyYear(year, bracketInflationFactor, filingStatus)(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
@@ -564,12 +560,11 @@ object Facade:
   ): Output =
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     BoundFedRegime
-      .forAnyYear(year, bracketInflationFactor, filingStatus)
-      .fedCalculator
-      .apply(
-        FedCalcInput(
-          birthDate,
-          personalExemptions,
+      .forAnyYear(year, bracketInflationFactor, filingStatus)(
+        birthDate,
+        personalExemptions
+      )(
+        IncomeScenario(
           socSec,
           ordinaryIncomeNonSS,
           qualifiedIncome,
