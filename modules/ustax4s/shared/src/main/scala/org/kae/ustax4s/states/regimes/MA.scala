@@ -26,7 +26,10 @@ object MA
       oldAgeExemption = (age: Int) => if age >= 65 then Deduction(700) else Deduction.zero,
       standardDeductions = _ => Deduction.zero,
       perDependentExemption = Deduction(1000),
-      exemptionsAreCredits = false
+      exemptionsAreCredits = false,
+      stateGrossIncomeFunc = fr =>
+        // TODO: also exclude pensions not taxed by the state
+        fr.agi reduceBy fr.incomeScenario.socSec
     ):
 
 end MA
