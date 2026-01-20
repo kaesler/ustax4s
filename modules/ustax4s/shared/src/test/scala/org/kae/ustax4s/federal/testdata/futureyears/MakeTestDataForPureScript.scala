@@ -1,13 +1,13 @@
-package org.kae.ustax4s.calculator.testdata.futureyears
+package org.kae.ustax4s.federal.testdata.futureyears
 
-import org.kae.ustax4s.calculator.FedTaxCalculatorForTests
+import org.kae.ustax4s.federal.FedCalculatorForTests
 
 object MakeTestDataForPureScript extends App:
   import TestDataGeneration.*
 
   testCases.foreach {
     case tc @ TestCaseInputs(regime, year, estimate, bd, fs, deps, ss, oi, qi, itm) =>
-      val federalTaxDue = FedTaxCalculatorForTests.federalTaxPayableForFutureYear(
+      val federalTaxDue = FedCalculatorForTests.federalTaxPayableForFutureYear(
         regime = regime,
         futureYear = year,
         estimatedAnnualInflationFactor = estimate,
@@ -20,7 +20,7 @@ object MakeTestDataForPureScript extends App:
         itemizedDeductions = itm
       )
 
-      val stateTaxDue = FedTaxCalculatorForTests.stateMATaxPayable(
+      val stateTaxDue = FedCalculatorForTests.stateMATaxPayable(
         year = year,
         birthDate = bd,
         filingStatus = fs,

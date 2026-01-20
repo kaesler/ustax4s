@@ -1,18 +1,18 @@
-package org.kae.ustax4s.calculator
+package org.kae.ustax4s.federal
 
 import java.time.{LocalDate, Year}
-import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 import org.kae.ustax4s.federal.*
 import org.kae.ustax4s.federal.forms.Form1040
 import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
+import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 
 /** Simplified interface to 1040 calculations.
   * Assume: No deductions credits or other complications.
   * Only used in tests now.
   */
-object FedTaxCalculatorForTests:
+object FedCalculatorForTests:
 
   def federalTaxPayableForFutureYear(
     regime: FedRegime,
@@ -223,4 +223,4 @@ object FedTaxCalculatorForTests:
       .rounded
   end stateMATaxPayable
 
-end FedTaxCalculatorForTests
+end FedCalculatorForTests

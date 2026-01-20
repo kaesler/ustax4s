@@ -226,6 +226,7 @@ open class ProgressiveStateRegime(
     scenario: IncomeScenario,
     federalCalcResults: FedCalcResults
   ): StateCalcResults = {
+
     // TODO here
     //  - compute taxable income
     //    - start with AGI? or something else.

@@ -3,9 +3,10 @@ package org.kae.ustax4s.federal
 import cats.syntax.all.*
 import java.time.LocalDate
 import org.kae.ustax4s.IncomeScenario
-import org.kae.ustax4s.calculator.FedAndStateCalcResults
+import org.kae.ustax4s.calculators.FedAndStateCalcResults
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import org.kae.ustax4s.states.State
+import scala.annotation.unused
 
 trait FedCalculator(
 ) extends (IncomeScenario => FedCalcResults):
@@ -81,7 +82,11 @@ object FedCalculator:
               qualifiedIncome
             )
 
-          // TODO: compute the AOTC tax credit
+          // TODO: compute the AOTC refundable tax credit
+          // THis needs to be offset against net tax payable so far
+          @unused
+          private val netTaxPayableBeforeCredits: TaxPayable =
+            taxOnOrdinaryIncome + taxOnQualifiedIncome
 
           // Note: we center the deltas over X value.
           private val delta = 200

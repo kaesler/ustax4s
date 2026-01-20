@@ -1,13 +1,13 @@
-package org.kae.ustax4s.calculator.testdata.knownyears
+package org.kae.ustax4s.federal.testdata.knownyears
 
-import org.kae.ustax4s.calculator.FedTaxCalculatorForTests
+import org.kae.ustax4s.federal.FedCalculatorForTests
 
 object MakeTestDataForPureScript extends App:
   import TestDataGeneration.*
 
   testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, 
   qi, itm) =>
-    val federalTaxDue = FedTaxCalculatorForTests.federalTaxPayable(
+    val federalTaxDue = FedCalculatorForTests.federalTaxPayable(
       year = year,
       birthDate = bd,
       filingStatus = fs,
@@ -17,7 +17,7 @@ object MakeTestDataForPureScript extends App:
       qualifiedIncome = qi,
       itemizedDeductions = itm
     )
-    val stateTaxDue = FedTaxCalculatorForTests.stateMATaxPayable(
+    val stateTaxDue = FedCalculatorForTests.stateMATaxPayable(
       year = year,
       birthDate = bd,
       filingStatus = fs,

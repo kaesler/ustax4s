@@ -1,4 +1,4 @@
-package org.kae.ustax4s.calculator
+package org.kae.ustax4s.calculators
 
 import org.kae.ustax4s.money.TaxOutcome
 
