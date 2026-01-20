@@ -4,8 +4,8 @@ import cats.syntax.all.*
 import java.time.LocalDate
 import org.kae.ustax4s.IncomeScenario
 import org.kae.ustax4s.calculators.FedAndStateCalcResults
-import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
-import org.kae.ustax4s.states.State
+import org.kae.ustax4s.money.*
+import org.kae.ustax4s.states.{State, StateCalculator}
 import scala.annotation.unused
 
 trait FedCalculator(
@@ -30,10 +30,22 @@ object FedCalculator:
       private val thisCalculator = this
 
       override def apply(state: State): IncomeScenario => FedAndStateCalcResults =
-        ??? // TODO
+        scenario =>
+          val fedResults = apply(scenario)
+          StateCalculator(state).fold(
+            FedAndStateCalcResults(fedResults.outcome)
+          ): stateCalculator =>
+            val stateResults = stateCalculator(fedResults)
+            FedAndStateCalcResults(
+              fedResults.outcome,
+              stateResults.outcome
+            )
+      end apply
 
       override def apply(scenario: IncomeScenario): FedCalcResults =
         new FedCalcResults:
+          override val incomeScenario: IncomeScenario = scenario
+
           import scenario.*
 
           // Note: this does not currently get adjusted for inflation.
@@ -82,7 +94,7 @@ object FedCalculator:
               qualifiedIncome
             )
 
-          // TODO: compute the AOTC refundable tax credit
+          // TODO: kae compute the AOTC refundable tax credit
           // THis needs to be offset against net tax payable so far
           @unused
           private val netTaxPayableBeforeCredits: TaxPayable =

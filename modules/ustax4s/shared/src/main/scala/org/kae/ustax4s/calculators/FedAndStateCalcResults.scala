@@ -4,6 +4,7 @@ import org.kae.ustax4s.money.TaxOutcome
 
 case class FedAndStateCalcResults(
   fedOutcome: TaxOutcome,
-  stateOutcome: TaxOutcome
+  stateOutcome: TaxOutcome = TaxOutcome.zero
 ):
   lazy val netOutcome: TaxOutcome = fedOutcome + stateOutcome
+end FedAndStateCalcResults

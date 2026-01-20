@@ -1,13 +1,16 @@
 package org.kae.ustax4s.federal
 
 import cats.Show
+import org.kae.ustax4s.IncomeScenario
 import org.kae.ustax4s.money.NonNegMoneys.TaxRefundable
 import org.kae.ustax4s.money.TaxOutcomes.TaxOutcome
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.collection.mutable
 
-// TODO: Should it include all inputs, e.g. IncomeScenario
 trait FedCalcResults:
+
+  // The inputs to the calculation.
+  def incomeScenario: IncomeScenario
 
   def taxableSocialSecurity: Income
   def agi: Income
@@ -24,9 +27,9 @@ trait FedCalcResults:
 
   def taxPayable: TaxPayable = taxOnOrdinaryIncome + taxOnQualifiedIncome
 
-  // TODO: Complete this so refundable credits can happen.
+  // TODO: kae Complete this so refundable credits can happen.
   def taxRefundable: TaxRefundable = TaxRefundable.zero
-  def taxOutcome: TaxOutcome       =
+  def outcome: TaxOutcome          =
     TaxOutcome.of(taxPayable) + TaxOutcome.of(taxRefundable)
 
 end FedCalcResults

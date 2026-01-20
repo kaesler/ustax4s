@@ -2,7 +2,7 @@ package org.kae.ustax4s.states
 
 import org.kae.ustax4s.federal.FedCalcResults
 import org.kae.ustax4s.money.Deduction
-import org.kae.ustax4s.{FilingStatus, IncomeScenario, RateFunction}
+import org.kae.ustax4s.{FilingStatus, RateFunction}
 import scala.annotation.unused
 
 // Model this: https://docs.google.com/spreadsheets/d/1I_OuA6uuAs7YoZRc02atHCCxpXaGDn9N/edit?gid=201796956#gid=201796956
@@ -183,10 +183,7 @@ sealed trait HasStateTaxCalculator:
   def exemptionsAreCredits: Boolean
   def standardDeductions: FilingStatus => Deduction
 
-  def calculator(
-    incomeScenario: IncomeScenario,
-    federalCalcResults: FedCalcResults
-  ): StateCalcResults
+  def calculator(federalCalcResults: FedCalcResults): StateCalcResults
 
 case object NilStateRegime extends StateRegime
 
@@ -203,7 +200,6 @@ class FlatStateRegime(
       HasStateTaxCalculator:
 
   override def calculator(
-    incomeScenario: IncomeScenario,
     federalCalcResults: FedCalcResults
   ): StateCalcResults = ???
 
@@ -222,12 +218,9 @@ open class ProgressiveStateRegime(
 ) extends StateRegime,
       HasStateTaxCalculator:
 
-  override def calculator(
-    scenario: IncomeScenario,
-    federalCalcResults: FedCalcResults
-  ): StateCalcResults = {
+  override def calculator(federalCalcResults: FedCalcResults): StateCalcResults = {
 
-    // TODO here
+    // TODO here now
     //  - compute taxable income
     //    - start with AGI? or something else.
     //    - exclude SocSec
