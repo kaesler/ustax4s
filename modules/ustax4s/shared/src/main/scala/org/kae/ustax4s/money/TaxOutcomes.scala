@@ -12,6 +12,8 @@ object TaxOutcomes:
   opaque type TaxOutcome = Either[TaxPayable, TaxRefundable]
 
   object TaxOutcome:
+    val zero: TaxOutcome = of(TaxPayable.zero)
+
     @targetName("ofTaxPayable")
     def of(tp: TaxPayable): TaxOutcome = tp.asLeft
     @targetName("ofTaxRefundable")

@@ -1,6 +1,8 @@
 package org.kae.ustax4s.federal
 
 import cats.Show
+import org.kae.ustax4s.money.NonNegMoneys.TaxRefundable
+import org.kae.ustax4s.money.TaxOutcomes.TaxOutcome
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.collection.mutable
 
@@ -21,6 +23,12 @@ trait FedCalcResults:
   def taxSlopeForSocSec: Double
 
   def taxPayable: TaxPayable = taxOnOrdinaryIncome + taxOnQualifiedIncome
+
+  // TODO: Complete this so refundable credits can happen.
+  def taxRefundable: TaxRefundable = TaxRefundable.zero
+  def taxOutcome: TaxOutcome       =
+    TaxOutcome.of(taxPayable) + TaxOutcome.of(taxRefundable)
+
 end FedCalcResults
 
 object FedCalcResults:

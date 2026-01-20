@@ -1,7 +1,7 @@
 package org.kae.ustax4s.states
 
 import org.kae.ustax4s.federal.FedCalcResults
-import org.kae.ustax4s.money.{Deduction, TaxPayable}
+import org.kae.ustax4s.money.Deduction
 import org.kae.ustax4s.{FilingStatus, IncomeScenario, RateFunction}
 import scala.annotation.unused
 
@@ -52,10 +52,6 @@ import scala.annotation.unused
 //(rr) In Massachusetts, rates exclude the paid family and medical leave payroll tax. Employers must withhold 0.46 percent of employees' eligible wages. Additionally, employers with 25 or more employees contribute an extra 0.42 percent of eligible wages.
 //(ss) In Washington, the rate excludes the 0.58 percent payroll tax that funds the long-term care insurance program (WA Cares). Employers withhold this tax from employees' gross wages.
 
-sealed trait HasStateTaxDue:
-  def stateTaxDue: TaxPayable
-end HasStateTaxDue
-
 sealed trait StateRegime
 
 object StateRegime:
@@ -63,7 +59,7 @@ object StateRegime:
 
   def of(state: State): StateRegime =
     state match
-      case AK | FL | NV | NH | SD | TN | TX | WA | WY => NilStateRegime$
+      case AK | FL | NV | NH | SD | TN | TX | WA | WY => NilStateRegime
 
       case CO =>
         // From fed taxable income.
@@ -190,11 +186,9 @@ sealed trait HasStateTaxCalculator:
   def calculator(
     incomeScenario: IncomeScenario,
     federalCalcResults: FedCalcResults
-  ): HasStateTaxDue
+  ): StateCalcResults
 
-case object NilStateRegime$ extends StateRegime, HasStateTaxDue:
-  override val stateTaxDue: TaxPayable = TaxPayable.zero
-end NilStateRegime$
+case object NilStateRegime extends StateRegime
 
 // TODO: Could this benefit from a Bound version of the type?
 class FlatStateRegime(
@@ -207,10 +201,11 @@ class FlatStateRegime(
   override val exemptionsAreCredits: Boolean
 ) extends StateRegime,
       HasStateTaxCalculator:
+
   override def calculator(
     incomeScenario: IncomeScenario,
     federalCalcResults: FedCalcResults
-  ): HasStateTaxDue = ???
+  ): StateCalcResults = ???
 
 end FlatStateRegime
 
@@ -230,10 +225,10 @@ open class ProgressiveStateRegime(
   override def calculator(
     scenario: IncomeScenario,
     federalCalcResults: FedCalcResults
-  ): HasStateTaxDue = {
+  ): StateCalcResults = {
     // TODO here
     //  - compute taxable income
-    //    - start with AGI?
+    //    - start with AGI? or something else.
     //    - exclude SocSec
     //    - exclude pensions not taxed by the state
     //  - apply deductions
