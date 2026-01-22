@@ -27,7 +27,7 @@ trait FedCalcResults:
 
   def taxPayable: TaxPayable = taxOnOrdinaryIncome + taxOnQualifiedIncome
 
-  // TODO: kae Complete this so refundable credits can happen.
+  // TODO: Complete this so refundable credits can happen.
   def taxRefundable: TaxRefundable = TaxRefundable.zero
   def outcome: TaxOutcome          =
     TaxOutcome.of(taxPayable) + TaxOutcome.of(taxRefundable)

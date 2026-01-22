@@ -237,7 +237,7 @@ open class ProgressiveStateRegime(
 
     @unused
     val stateGrossIncome = stateGrossIncomeFunc(fedCalcResults)
-    // TODO here now
+    // TODO kae here now
     //  - apply deductions => TaxableIncome
     //  - apply brackets   => TaxPayable
     //  - apply credits    => TaxOutcome

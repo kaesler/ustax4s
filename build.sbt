@@ -5,7 +5,7 @@ import scala.collection.Seq
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"
-ThisBuild / scalaVersion := "3.7.2"
+ThisBuild / scalaVersion := "3.8.1"
 
 val fastCompileRenderer = taskKey[File]("Return main file")
 
@@ -18,6 +18,7 @@ lazy val fullCompileCreateFunctions =
   taskKey[Unit]("Full compile, and adds to the compiled file the created functions")
 
 lazy val commonScalacOptions = Seq(
+  "-Werror",
   "-Wnonunit-statement",
   "-Wunused:explicits",
   "-Wunused:implicits",
@@ -26,7 +27,6 @@ lazy val commonScalacOptions = Seq(
   "-Wunused:params",
   "-Wunused:privates",
   "-Wvalue-discard",
-  "-Xfatal-warnings",
   "-Xmigration",
   "-deprecation",
   "-explain-types",

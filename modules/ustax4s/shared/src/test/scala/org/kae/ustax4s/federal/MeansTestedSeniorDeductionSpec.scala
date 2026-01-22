@@ -14,7 +14,7 @@ import scala.math.Ordered.orderingToOrdered
 class MeansTestedSeniorDeductionSpec extends ScalaCheckSuite:
   import MeansTestedSeniorDeductionSpec.{*, given}
 
-  implicit val params: Parameters = Parameters.default
+  given params: Parameters = Parameters.default
     .withMinSuccessfulTests(5000)
 
   val yearsWhenItIsInForce: Gen[Year] = Gen.oneOf(2025.to(2028).map(Year.of))

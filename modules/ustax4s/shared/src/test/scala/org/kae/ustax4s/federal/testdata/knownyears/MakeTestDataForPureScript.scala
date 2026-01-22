@@ -2,38 +2,39 @@ package org.kae.ustax4s.federal.testdata.knownyears
 
 import org.kae.ustax4s.federal.FedCalculatorForTests
 
-object MakeTestDataForPureScript extends App:
+object MakeTestDataForPureScript:
   import TestDataGeneration.*
 
-  testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, 
-  qi, itm) =>
-    val federalTaxDue = FedCalculatorForTests.federalTaxPayable(
-      year = year,
-      birthDate = bd,
-      filingStatus = fs,
-      tc.personalExemptions,
-      socSec = ss,
-      ordinaryIncomeNonSS = oi,
-      qualifiedIncome = qi,
-      itemizedDeductions = itm
-    )
-    val stateTaxDue = FedCalculatorForTests.stateMATaxPayable(
-      year = year,
-      birthDate = bd,
-      filingStatus = fs,
-      dependents = deps,
-      massachusettsGrossIncome = oi + qi
-    )
-    val bdRep   = s"(unsafeMakeDate ${bd.getYear} ${bd.getMonthValue} ${bd
-      .getDayOfMonth})"
-    val yearRep = s"(unsafeMakeYear ${year.getValue})"
-    println(
-      s"  TestCase { year: $yearRep, birthDate: $bdRep, " +
-        s"personalExemptions: ${tc.personalExemptions}, filingStatus: $fs, " +
-        s"socSec: makeFromInt $ss, ordinaryIncomeNonSS: makeFromInt $oi, " +
-        s"qualifiedIncome: makeFromInt $qi, " +
-        s"itemizedDeductions: makeFromInt $itm, " +
-        s"federalTaxDue: makeFromInt $federalTaxDue, stateTaxDue: makeFromInt" +
-        s" $stateTaxDue },"
-    )
-  }
+  def main(args: Array[String]): Unit =
+    testCases.foreach { case tc @ TestCaseInputs(year, bd, fs, deps, ss, oi, qi, itm) =>
+      val federalTaxDue = FedCalculatorForTests.federalTaxPayable(
+        year = year,
+        birthDate = bd,
+        filingStatus = fs,
+        tc.personalExemptions,
+        socSec = ss,
+        ordinaryIncomeNonSS = oi,
+        qualifiedIncome = qi,
+        itemizedDeductions = itm
+      )
+      val stateTaxDue = FedCalculatorForTests.stateMATaxPayable(
+        year = year,
+        birthDate = bd,
+        filingStatus = fs,
+        dependents = deps,
+        massachusettsGrossIncome = oi + qi
+      )
+      val bdRep   = s"(unsafeMakeDate ${bd.getYear} ${bd.getMonthValue} ${bd.getDayOfMonth})"
+      val yearRep = s"(unsafeMakeYear ${year.getValue})"
+      println(
+        s"  TestCase { year: $yearRep, birthDate: $bdRep, " +
+          s"personalExemptions: ${tc.personalExemptions}, filingStatus: $fs, " +
+          s"socSec: makeFromInt $ss, ordinaryIncomeNonSS: makeFromInt $oi, " +
+          s"qualifiedIncome: makeFromInt $qi, " +
+          s"itemizedDeductions: makeFromInt $itm, " +
+          s"federalTaxDue: makeFromInt $federalTaxDue, stateTaxDue: makeFromInt" +
+          s" $stateTaxDue },"
+      )
+    }
+  end main
+end MakeTestDataForPureScript

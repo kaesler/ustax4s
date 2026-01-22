@@ -94,7 +94,7 @@ object FedCalculator:
               qualifiedIncome
             )
 
-          // TODO: kae compute the AOTC refundable tax credit
+          // TODO: compute the AOTC refundable tax credit
           // THis needs to be offset against net tax payable so far
           @unused
           private val netTaxPayableBeforeCredits: TaxPayable =
