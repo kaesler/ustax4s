@@ -5,7 +5,7 @@ import java.time.LocalDate
 import org.kae.ustax4s.IncomeScenario
 import org.kae.ustax4s.calculators.FedAndStateCalcResults
 import org.kae.ustax4s.money.*
-import org.kae.ustax4s.states.{State, StateCalculator}
+import org.kae.ustax4s.states.{State, StateCalculator, StatePersonProperties}
 import scala.annotation.unused
 
 trait FedCalculator(
@@ -13,7 +13,10 @@ trait FedCalculator(
   def birthDate: LocalDate
   def personalExemptions: Int
 
-  def apply(state: State): IncomeScenario => FedAndStateCalcResults
+  def apply(
+    state: State,
+    statePersonProperties: StatePersonProperties
+  ): IncomeScenario => FedAndStateCalcResults
 end FedCalculator
 
 object FedCalculator:
@@ -29,10 +32,13 @@ object FedCalculator:
 
       private val thisCalculator = this
 
-      override def apply(state: State): IncomeScenario => FedAndStateCalcResults =
+      override def apply(
+        state: State,
+        statePersonProperties: StatePersonProperties
+      ): IncomeScenario => FedAndStateCalcResults =
         scenario =>
           val fedResults = apply(scenario)
-          StateCalculator(state).fold(
+          StateCalculator(state, statePersonProperties).fold(
             FedAndStateCalcResults(fedResults.outcome)
           ): stateCalculator =>
             val stateResults = stateCalculator(fedResults)

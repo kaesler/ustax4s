@@ -27,9 +27,13 @@ object MA
       standardDeductions = _ => Deduction.zero,
       perDependentExemption = Deduction(1000),
       exemptionsAreCredits = false,
-      stateGrossIncomeFunc = fr =>
+      computeStateGrossIncome = fr =>
         // TODO: also exclude pensions not taxed by the state
-        fr.agi reduceBy fr.incomeScenario.socSec
+        fr.agi reduceBy fr.incomeScenario.socSec,
+      // TODO:
+      computeStateDeductions = ???,
+      computeStateCredits = ???,
+      computeStateRefundableCredits = ???
     ):
 
 end MA

@@ -9,11 +9,14 @@ import org.kae.ustax4s.federal.FedCalcResults
 type StateCalculator = FedCalcResults => StateCalcResults
 
 object StateCalculator:
-  def apply(state: State): Option[StateCalculator] =
+  def apply(
+    state: State, 
+    statePersonProperties: StatePersonProperties
+  ): Option[StateCalculator] =
     StateRegime.of(state) match
       case NilStateRegime                 => None
-      case regime: FlatStateRegime        => regime.calculator.some
-      case regime: ProgressiveStateRegime => regime.calculator.some
+      case regime: FlatStateRegime        => regime.calculator(statePersonProperties).some
+      case regime: ProgressiveStateRegime => regime.calculator(statePersonProperties).some
     end match
   end apply
 

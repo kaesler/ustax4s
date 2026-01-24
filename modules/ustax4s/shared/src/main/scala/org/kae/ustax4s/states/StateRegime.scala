@@ -2,7 +2,7 @@ package org.kae.ustax4s.states
 
 import org.kae.ustax4s.federal.FedCalcResults
 import org.kae.ustax4s.money.Deduction
-import org.kae.ustax4s.money.NonNegMoneys.Income
+import org.kae.ustax4s.money.NonNegMoneys.{Income, RefundableTaxCredit, TaxCredit}
 import org.kae.ustax4s.{FilingStatus, RateFunction}
 import scala.annotation.unused
 
@@ -68,124 +68,90 @@ object StateRegime:
     state match
       case AK | FL | NV | NH | SD | TN | TX | WA | WY => NilStateRegime
 
-      case CO =>
-        // From fed taxable income.
-        FlatStateRegime(
-          StateTaxRate.unsafeFrom(4.4 / 100),
-          ???,
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
-        )
-      case IL =>
-        FlatStateRegime(
-          StateTaxRate.unsafeFrom(4.95 / 100),
-          ???,
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
-        )
-      case IN =>
-        FlatStateRegime(
-          StateTaxRate.unsafeFrom(3.05 / 100),
-          ???,
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
-        )
-      case MI =>
-        FlatStateRegime(
-          StateTaxRate.unsafeFrom(4.25 / 100),
-          ???,
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
-        )
-      case NC =>
-        FlatStateRegime(
-          StateTaxRate.unsafeFrom(4.25 / 100),
-          ???,
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
-        )
-      case PA =>
-        FlatStateRegime(
-          StateTaxRate.unsafeFrom(3.07 / 100),
-          ???,
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
-        )
-      case UT =>
-        FlatStateRegime(
-          StateTaxRate.unsafeFrom(4.85 / 100),
-          ???,
-          ???,
-          ???,
-          ???,
-          ???,
-          ???
-        )
+      case CO => nyiFlat(StateTaxRate.unsafeFrom(4.4 / 100))
+      case IL => nyiFlat(StateTaxRate.unsafeFrom(4.95 / 100))
+      case IN => nyiFlat(StateTaxRate.unsafeFrom(3.05 / 100))
+      case MI => nyiFlat(StateTaxRate.unsafeFrom(4.25 / 100))
+      case NC => nyiFlat(StateTaxRate.unsafeFrom(4.25 / 100))
+      case PA => nyiFlat(StateTaxRate.unsafeFrom(3.07 / 100))
+      case UT => nyiFlat(StateTaxRate.unsafeFrom(4.85 / 100))
 
       // Progressive: TODO
-      case AL => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case AZ => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case AR => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case AS => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case CA => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case CT => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case DE => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case DC => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case GA => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case GU => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case HI => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case ID => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case IA => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case KS => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case KY => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case LA => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case ME => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case MD => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
+      case AL => nyiProgressive
+      case AZ => nyiProgressive
+      case AR => nyiProgressive
+      case AS => nyiProgressive
+      case CA => nyiProgressive
+      case CT => nyiProgressive
+      case DE => nyiProgressive
+      case DC => nyiProgressive
+      case GA => nyiProgressive
+      case GU => nyiProgressive
+      case HI => nyiProgressive
+      case ID => nyiProgressive
+      case IA => nyiProgressive
+      case KS => nyiProgressive
+      case KY => nyiProgressive
+      case LA => nyiProgressive
+      case ME => nyiProgressive
+      case MD => nyiProgressive
 
       case MA => regimes.MA
 
-      case MN => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case MS => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case MO => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case MT => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case NE => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case NJ => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case NM => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case NY => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case ND => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case MP => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case OH => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case OK => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case OR => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case PR => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case RI => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case SC => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case TT => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case VT => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case VA => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case VI => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case WV => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
-      case WI => ProgressiveStateRegime(???, ???, ???, ???, ???, ???, ???)
+      case MN => nyiProgressive
+      case MS => nyiProgressive
+      case MO => nyiProgressive
+      case MT => nyiProgressive
+      case NE => nyiProgressive
+      case NJ => nyiProgressive
+      case NM => nyiProgressive
+      case NY => nyiProgressive
+      case ND => nyiProgressive
+      case MP => nyiProgressive
+      case OH => nyiProgressive
+      case OK => nyiProgressive
+      case OR => nyiProgressive
+      case PR => nyiProgressive
+      case RI => nyiProgressive
+      case SC => nyiProgressive
+      case TT => nyiProgressive
+      case VT => nyiProgressive
+      case VA => nyiProgressive
+      case VI => nyiProgressive
+      case WV => nyiProgressive
+      case WI => nyiProgressive
     end match
   end of
+
+  private def nyiFlat(rate: StateTaxRate): FlatStateRegime =
+    FlatStateRegime(
+      rate = rate,
+      standardDeductions = ???,
+      personalExemptions = ???,
+      oldAgeExemption = ???,
+      perDependentExemption = ???,
+      exemptionsAreCredits = ???,
+      computeStateGrossIncome = ???,
+      computeStateDeductions = ???,
+      computeStateCredits = ???,
+      computeStateRefundableCredits = ???
+    )
+  end nyiFlat
+
+  private val nyiProgressive: ProgressiveStateRegime =
+    ProgressiveStateRegime(
+      rateFunctions = ???,
+      personalExemptions = ???,
+      oldAgeExemption = ???,
+      standardDeductions = ???,
+      perDependentExemption = ???,
+      exemptionsAreCredits = ???,
+      computeStateGrossIncome = ???,
+      computeStateDeductions = ???,
+      computeStateCredits = ???,
+      computeStateRefundableCredits = ???
+    )
+  end nyiProgressive
 
 end StateRegime
 
@@ -197,8 +163,15 @@ sealed trait HasStateTaxCalculator:
   def exemptionsAreCredits: Boolean
   def standardDeductions: FilingStatus => Deduction
 
-  def stateGrossIncomeFunc: FedCalcResults => Income
-  def calculator(federalCalcResults: FedCalcResults): StateCalcResults
+  // Note: These methods should encompass all state-specific behaviour.
+  def computeStateGrossIncome: FedCalcResults => Income
+  def computeStateDeductions: (FedCalcResults, StatePersonProperties) => Deduction
+  def computeStateCredits: (FedCalcResults, StatePersonProperties) => TaxCredit
+  def computeStateRefundableCredits: (FedCalcResults, StatePersonProperties) => RefundableTaxCredit
+
+  def calculator(statePersonProperties: StatePersonProperties)(
+    federalCalcResults: FedCalcResults
+  ): StateCalcResults
 
 case object NilStateRegime extends StateRegime
 
@@ -210,11 +183,17 @@ class FlatStateRegime(
   override val oldAgeExemption: Int => Deduction,
   override val perDependentExemption: Deduction,
   override val exemptionsAreCredits: Boolean,
-  override val stateGrossIncomeFunc: FedCalcResults => Income
+  override val computeStateGrossIncome: FedCalcResults => Income,
+  override val computeStateDeductions: (FedCalcResults, StatePersonProperties) => Deduction,
+  override val computeStateCredits: (FedCalcResults, StatePersonProperties) => TaxCredit,
+  override val computeStateRefundableCredits: (
+    FedCalcResults,
+    StatePersonProperties
+  ) => RefundableTaxCredit
 ) extends StateRegime,
       HasStateTaxCalculator:
 
-  override def calculator(
+  override def calculator(statePersonProperties: StatePersonProperties)(
     federalCalcResults: FedCalcResults
   ): StateCalcResults = ???
 
@@ -229,15 +208,23 @@ open class ProgressiveStateRegime(
   override val standardDeductions: FilingStatus => Deduction,
   override val perDependentExemption: Deduction,
   override val exemptionsAreCredits: Boolean,
-  override val stateGrossIncomeFunc: FedCalcResults => Income
+  override val computeStateGrossIncome: FedCalcResults => Income,
+  override val computeStateDeductions: (FedCalcResults, StatePersonProperties) => Deduction,
+  override val computeStateCredits: (FedCalcResults, StatePersonProperties) => TaxCredit,
+  override val computeStateRefundableCredits: (
+    FedCalcResults,
+    StatePersonProperties
+  ) => RefundableTaxCredit
 ) extends StateRegime,
       HasStateTaxCalculator:
 
-  override def calculator(fedCalcResults: FedCalcResults): StateCalcResults = {
+  override def calculator(
+    statePersonProperties: StatePersonProperties
+  )(fedCalcResults: FedCalcResults): StateCalcResults = {
 
     @unused
-    val stateGrossIncome = stateGrossIncomeFunc(fedCalcResults)
-    // TODO kae here now
+    val stateGrossIncome = computeStateGrossIncome(fedCalcResults)
+    // TODO  here now
     //  - apply deductions => TaxableIncome
     //  - apply brackets   => TaxPayable
     //  - apply credits    => TaxOutcome

@@ -2,7 +2,7 @@ package org.kae.ustax4s.calculators
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.federal.{BoundFedRegime, FedCalcResults, FedCalculator}
-import org.kae.ustax4s.states.State
+import org.kae.ustax4s.states.{State, StatePersonProperties}
 import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 
 // TODO
@@ -54,7 +54,8 @@ object Calculators:
     filingStatus: FilingStatus,
     birthDate: LocalDate,
     personalExemptions: Int,
-    state: State
+    state: State,
+    stateQualifiedDependents: Int
   ): FedAndStateCalculator =
     BoundFedRegime.forAnyYear(
       year,
@@ -64,7 +65,8 @@ object Calculators:
       birthDate,
       personalExemptions
     )(
-      state
+      state,
+      StatePersonProperties(stateQualifiedDependents)
     )
 
   end fedAndStateCalculator
@@ -76,6 +78,8 @@ object Calculators:
     birthDate: LocalDate,
     personalExemptions: Int,
     state: State,
+    // Inject state-only inputs here
+    stateQualifiedDependents: Int,
     scenario: IncomeScenario
   ): FedAndStateCalcResults =
     fedAndStateCalculator(
@@ -84,7 +88,8 @@ object Calculators:
       filingStatus,
       birthDate,
       personalExemptions,
-      state
+      state,
+      stateQualifiedDependents
     )(scenario)
   end calcFedAndState
 
