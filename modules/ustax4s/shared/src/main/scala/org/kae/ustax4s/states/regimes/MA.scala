@@ -1,9 +1,10 @@
 package org.kae.ustax4s.states.regimes
 
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
-import org.kae.ustax4s.money.NonNegMoneys.Deduction
+import org.kae.ustax4s.federal.FedCalcResults
+import org.kae.ustax4s.money.NonNegMoneys.{Deduction, Income, RefundableTaxCredit, TaxCredit}
 import org.kae.ustax4s.states.MaritalStatus.{Married, Unmarried}
-import org.kae.ustax4s.states.ProgressiveStateRegime
+import org.kae.ustax4s.states.{ProgressiveStateRegime, StatePersonProperties}
 import org.kae.ustax4s.states.Syntax.*
 
 object MA
@@ -27,13 +28,39 @@ object MA
       standardDeductions = _ => Deduction.zero,
       perDependentExemption = Deduction(1000),
       exemptionsAreCredits = false,
-      computeStateGrossIncome = fr =>
-        // TODO: also exclude pensions not taxed by the state
-        fr.agi reduceBy fr.incomeScenario.socSec,
-      // TODO:
-      computeStateDeductions = ???,
-      computeStateCredits = ???,
-      computeStateRefundableCredits = ???
+      computeStateGrossIncome = funcs.computeStateGrossIncome,
+      computeStateDeductions = funcs.computeStateDeductions,
+      computeStateCredits = funcs.computeStateCredits,
+      computeStateRefundableCredits = funcs.computeStateRefundableCredits
     ):
 
 end MA
+
+private object funcs:
+
+  def computeStateGrossIncome(fr: FedCalcResults): Income =
+    // TODO: also exclude pensions not taxed by the state
+    fr.agi reduceBy fr.incomeScenario.socSec
+
+  def computeStateDeductions(
+    fr: FedCalcResults,
+    props: StatePersonProperties
+  ): Deduction =
+    // TODO
+    ???
+
+  def computeStateCredits(
+    fr: FedCalcResults,
+    props: StatePersonProperties
+  ): TaxCredit =
+    // TODO
+    ???
+    
+  def computeStateRefundableCredits(
+    fr: FedCalcResults,
+    props: StatePersonProperties
+  ): RefundableTaxCredit =
+    // TODO
+    ???
+    
+end funcs
