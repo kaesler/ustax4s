@@ -10,7 +10,7 @@ type StateCalculator = FedCalcResults => StateCalcResults
 
 object StateCalculator:
   def apply(
-    state: State, 
+    state: State,
     statePersonProperties: StatePersonProperties
   ): Option[StateCalculator] =
     StateRegime.of(state) match

@@ -1,66 +1,106 @@
 package org.kae.ustax4s.states.regimes
 
+import cats.syntax.all.*
+import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
+import org.kae.ustax4s.RateFunction.RateFunction
 import org.kae.ustax4s.federal.FedCalcResults
 import org.kae.ustax4s.money.NonNegMoneys.{Deduction, Income, RefundableTaxCredit, TaxCredit}
+import org.kae.ustax4s.money.TaxOutcomes.TaxOutcome
 import org.kae.ustax4s.states.MaritalStatus.{Married, Unmarried}
-import org.kae.ustax4s.states.{ProgressiveStateRegime, StatePersonProperties}
 import org.kae.ustax4s.states.Syntax.*
+import org.kae.ustax4s.states.*
+import org.kae.ustax4s.{Age, FilingStatus, TaxFunction}
 
-object MA
-    extends ProgressiveStateRegime(
-      rateFunctions = Map(
-        Unmarried -> List(
-          0         -> 5.0,
-          1_083_159 -> 9.0
-        ).asRateFunction,
-        Married -> List(
-          0         -> 5.0,
-          1_083_159 -> 9.0
-        ).asRateFunction
-      ),
-      personalExemptions = Map(
-        Single          -> Deduction(4000),
-        HeadOfHousehold -> Deduction(6800),
-        Married         -> Deduction(8800)
-      ),
-      oldAgeExemption = (age: Int) => if age >= 65 then Deduction(700) else Deduction.zero,
-      standardDeductions = _ => Deduction.zero,
-      perDependentExemption = Deduction(1000),
-      exemptionsAreCredits = false,
-      computeStateGrossIncome = funcs.computeStateGrossIncome,
-      computeStateDeductions = funcs.computeStateDeductions,
-      computeStateCredits = funcs.computeStateCredits,
-      computeStateRefundableCredits = funcs.computeStateRefundableCredits
-    ):
+object MA extends ProgressiveStateRegime:
 
-end MA
+  override val rateFunctions: MaritalStatus => RateFunction[StateTaxRate] =
+    Map(
+      Unmarried -> List(
+        0         -> 5.0,
+        1_083_159 -> 9.0
+      ).asRateFunction,
+      Married -> List(
+        0         -> 5.0,
+        1_083_159 -> 9.0
+      ).asRateFunction
+    )
 
-private object funcs:
+  override val personalExemptions: FilingStatus => Deduction =
+    Map(
+      Single          -> Deduction(4000),
+      HeadOfHousehold -> Deduction(6800),
+      Married         -> Deduction(8800)
+    )
 
-  def computeStateGrossIncome(fr: FedCalcResults): Income =
+  override val exemptionForAge: Int => Deduction =
+    (age: Int) => if age >= 65 then Deduction(700) else Deduction.zero
+
+  override val standardDeductions: FilingStatus => Deduction =
+    Function.const(Deduction.zero)
+
+  override val perDependentExemption: Deduction = Deduction(1000)
+
+  override val exemptionsAreCredits: Boolean = false
+
+  override def computeStateGrossIncome(fr: FedCalcResults): Income =
     // TODO: also exclude pensions not taxed by the state
     fr.agi reduceBy fr.incomeScenario.socSec
 
-  def computeStateDeductions(
+  override def computeStateDeductions(
     fr: FedCalcResults,
     props: StatePersonProperties
   ): Deduction =
-    // TODO
+    // TODO kae
     ???
 
-  def computeStateCredits(
+  override def computeStateCredits(
     fr: FedCalcResults,
     props: StatePersonProperties
   ): TaxCredit =
     // TODO
     ???
-    
-  def computeStateRefundableCredits(
+
+  override def computeStateRefundableCredits(
     fr: FedCalcResults,
     props: StatePersonProperties
   ): RefundableTaxCredit =
     // TODO
     ???
-    
-end funcs
+
+  private def totalExemptions(
+    year: Year,
+    filingStatus: FilingStatus,
+    birthDate: LocalDate,
+    dependents: Int
+  ): Deduction =
+    List(
+      personalExemptions(filingStatus),
+      exemptionForAge(Age.ageAtEndOfYear(birthDate, year)),
+      perDependentExemption mul dependents
+    ).combineAll
+  end totalExemptions
+
+  override def calculator(statePersonProperties: StatePersonProperties)(
+    fr: FedCalcResults
+  ): StateCalcResults =
+    val stateGross   = computeStateGrossIncome(fr)
+    val stateTaxable = stateGross
+      .applyDeductions(
+        totalExemptions(
+          fr.year,
+          fr.filingStatus,
+          fr.birthDate,
+          dependents = statePersonProperties.stateQualifiedDependents
+        )
+      )
+    val rateFunction = rateFunctions(fr.filingStatus.maritalStatus)
+    val taxFunction  = TaxFunction.fromRateFunction(rateFunction)
+    val taxPayable   = taxFunction(stateTaxable)
+    StateCalcResults(
+      // TODO Also apply credits
+      TaxOutcome.of(taxPayable)
+    )
+  end calculator
+
+end MA

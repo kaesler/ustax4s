@@ -104,7 +104,7 @@ trait BoundFedRegime(
 
   final def apply(
     birthDate: LocalDate,
-    personalExemptions: Int,
+    personalExemptions: Int
   ): FedCalculator = fedCalculator(birthDate, personalExemptions)
 
   def withEstimatedNetInflationFactor(

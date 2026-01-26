@@ -1,8 +1,8 @@
 package org.kae.ustax4s.federal
 
 import cats.syntax.all.*
-import java.time.LocalDate
-import org.kae.ustax4s.IncomeScenario
+import java.time.{LocalDate, Year}
+import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 import org.kae.ustax4s.calculators.FedAndStateCalcResults
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.states.{State, StateCalculator, StatePersonProperties}
@@ -50,6 +50,10 @@ object FedCalculator:
 
       override def apply(scenario: IncomeScenario): FedCalcResults =
         new FedCalcResults:
+          override val year: Year                 = br.year
+          override val filingStatus: FilingStatus = br.filingStatus
+          override val birthDate: LocalDate       = _birthDate
+
           override val incomeScenario: IncomeScenario = scenario
 
           import scenario.*

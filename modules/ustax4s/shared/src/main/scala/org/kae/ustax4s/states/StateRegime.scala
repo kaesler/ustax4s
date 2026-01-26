@@ -59,7 +59,7 @@ import scala.annotation.unused
 //   ProgressiveStateRegime
 // and then to parametrize each class with each way in which they differ
 // within the class.
-sealed trait StateRegime
+trait StateRegime
 
 object StateRegime:
   import State.*
@@ -123,113 +123,110 @@ object StateRegime:
     end match
   end of
 
-  private def nyiFlat(rate: StateTaxRate): FlatStateRegime =
-    FlatStateRegime(
-      rate = rate,
-      standardDeductions = ???,
-      personalExemptions = ???,
-      oldAgeExemption = ???,
-      perDependentExemption = ???,
-      exemptionsAreCredits = ???,
-      computeStateGrossIncome = ???,
-      computeStateDeductions = ???,
-      computeStateCredits = ???,
-      computeStateRefundableCredits = ???
-    )
+  private def nyiFlat(rate: StateTaxRate): FlatStateRegime = {
+    new FlatStateRegime(rate = rate):
+      override val standardDeductions: FilingStatus => Deduction = ???
+      override val personalExemptions: FilingStatus => Deduction = ???
+      override val exemptionForAge: Int => Deduction             = ???
+      override val perDependentExemption: Deduction              = ???
+      override val exemptionsAreCredits: Boolean                 = ???
+
+      override def computeStateGrossIncome(fr: FedCalcResults): Income = ???
+
+      override def computeStateDeductions(
+        fr: FedCalcResults,
+        props: StatePersonProperties
+      ): Deduction = ???
+
+      override def computeStateCredits(
+        fr: FedCalcResults,
+        props: StatePersonProperties
+      ): TaxCredit = ???
+
+      override def computeStateRefundableCredits(
+        fr: FedCalcResults,
+        props: StatePersonProperties
+      ): RefundableTaxCredit = ???
+
+      override def calculator(statePersonProperties: StatePersonProperties)(
+        federalCalcResults: FedCalcResults
+      ): StateCalcResults = ???
+    end new
+
+  }
   end nyiFlat
 
   private val nyiProgressive: ProgressiveStateRegime =
-    ProgressiveStateRegime(
-      rateFunctions = ???,
-      personalExemptions = ???,
-      oldAgeExemption = ???,
-      standardDeductions = ???,
-      perDependentExemption = ???,
-      exemptionsAreCredits = ???,
-      computeStateGrossIncome = ???,
-      computeStateDeductions = ???,
-      computeStateCredits = ???,
-      computeStateRefundableCredits = ???
-    )
+    new ProgressiveStateRegime:
+      override def rateFunctions: MaritalStatus => RateFunction[StateTaxRate] = ???
+      override def personalExemptions: FilingStatus => Deduction              = ???
+      override def perDependentExemption: Deduction                           = ???
+      override def exemptionForAge: Int => Deduction                          = ???
+      override def exemptionsAreCredits: Boolean                              = ???
+      override def standardDeductions: FilingStatus => Deduction              = ???
+
+      override def computeStateGrossIncome(fr: FedCalcResults): Income = ???
+
+      override def computeStateDeductions(
+        fr: FedCalcResults,
+        props: StatePersonProperties
+      ): Deduction = ???
+
+      override def computeStateCredits(
+        fr: FedCalcResults,
+        props: StatePersonProperties
+      ): TaxCredit = ???
+
+      override def computeStateRefundableCredits(
+        fr: FedCalcResults,
+        props: StatePersonProperties
+      ): RefundableTaxCredit = ???
+
+      override def calculator(statePersonProperties: StatePersonProperties)(
+        federalCalcResults: FedCalcResults
+      ): StateCalcResults = ???
+
   end nyiProgressive
 
 end StateRegime
 
-sealed trait HasStateTaxCalculator:
+trait HasStateTaxCalculator extends StateRegime:
   // MA has these and they are not inflation-adjusted.
   def personalExemptions: FilingStatus => Deduction
   def perDependentExemption: Deduction
-  def oldAgeExemption: Int => Deduction
+  def exemptionForAge: Int => Deduction
   def exemptionsAreCredits: Boolean
   def standardDeductions: FilingStatus => Deduction
-
-  // Note: These methods should encompass all state-specific behaviour.
-  def computeStateGrossIncome: FedCalcResults => Income
-  def computeStateDeductions: (FedCalcResults, StatePersonProperties) => Deduction
-  def computeStateCredits: (FedCalcResults, StatePersonProperties) => TaxCredit
-  def computeStateRefundableCredits: (FedCalcResults, StatePersonProperties) => RefundableTaxCredit
+  //
+  def computeStateGrossIncome(fr: FedCalcResults): Income
+  def computeStateDeductions(
+    fr: FedCalcResults,
+    props: StatePersonProperties
+  ): Deduction
+  def computeStateCredits(
+    fr: FedCalcResults,
+    props: StatePersonProperties
+  ): TaxCredit
+  def computeStateRefundableCredits(
+    fr: FedCalcResults,
+    props: StatePersonProperties
+  ): RefundableTaxCredit
 
   def calculator(statePersonProperties: StatePersonProperties)(
     federalCalcResults: FedCalcResults
   ): StateCalcResults
 
+end HasStateTaxCalculator
+
 case object NilStateRegime extends StateRegime
 
-class FlatStateRegime(
+trait FlatStateRegime(
   @unused
-  rate: StateTaxRate,
-  override val standardDeductions: FilingStatus => Deduction,
-  override val personalExemptions: FilingStatus => Deduction,
-  override val oldAgeExemption: Int => Deduction,
-  override val perDependentExemption: Deduction,
-  override val exemptionsAreCredits: Boolean,
-  override val computeStateGrossIncome: FedCalcResults => Income,
-  override val computeStateDeductions: (FedCalcResults, StatePersonProperties) => Deduction,
-  override val computeStateCredits: (FedCalcResults, StatePersonProperties) => TaxCredit,
-  override val computeStateRefundableCredits: (
-    FedCalcResults,
-    StatePersonProperties
-  ) => RefundableTaxCredit
-) extends StateRegime,
-      HasStateTaxCalculator:
-
-  override def calculator(statePersonProperties: StatePersonProperties)(
-    federalCalcResults: FedCalcResults
-  ): StateCalcResults = ???
-
+  rate: StateTaxRate
+) extends HasStateTaxCalculator
 end FlatStateRegime
 
-open class ProgressiveStateRegime(
+trait ProgressiveStateRegime extends HasStateTaxCalculator:
   // TODO: should it be FilingStatus?
-  @unused
-  rateFunctions: MaritalStatus => RateFunction[StateTaxRate],
-  override val personalExemptions: FilingStatus => Deduction,
-  override val oldAgeExemption: Int => Deduction,
-  override val standardDeductions: FilingStatus => Deduction,
-  override val perDependentExemption: Deduction,
-  override val exemptionsAreCredits: Boolean,
-  override val computeStateGrossIncome: FedCalcResults => Income,
-  override val computeStateDeductions: (FedCalcResults, StatePersonProperties) => Deduction,
-  override val computeStateCredits: (FedCalcResults, StatePersonProperties) => TaxCredit,
-  override val computeStateRefundableCredits: (
-    FedCalcResults,
-    StatePersonProperties
-  ) => RefundableTaxCredit
-) extends StateRegime,
-      HasStateTaxCalculator:
-
-  override def calculator(
-    statePersonProperties: StatePersonProperties
-  )(fedCalcResults: FedCalcResults): StateCalcResults = {
-
-    @unused
-    val stateGrossIncome = computeStateGrossIncome(fedCalcResults)
-    // TODO  here now
-    //  - apply deductions => TaxableIncome
-    //  - apply brackets   => TaxPayable
-    //  - apply credits    => TaxOutcome
-    // To test compare with old calc for MA
-    ???
-  }
-
+  def rateFunctions: MaritalStatus => RateFunction[StateTaxRate]
 end ProgressiveStateRegime

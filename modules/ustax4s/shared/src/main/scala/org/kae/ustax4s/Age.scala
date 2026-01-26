@@ -1,5 +1,6 @@
 package org.kae.ustax4s
 
+import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, Month, Year}
 
 object Age:
@@ -12,5 +13,14 @@ object Age:
         .of(taxYear.getValue + 1, Month.JANUARY.getValue, 1)
         .minusYears(65)
     )
+  def ageAtEndOfYear(birthDate: LocalDate, year: Year): Int =
+    ChronoUnit.YEARS
+      .between(
+        birthDate,
+        // Birthday this year
+        LocalDate.of(year.getValue, birthDate.getMonth, birthDate.getDayOfMonth)
+      )
+      .toInt
+  end ageAtEndOfYear
 
 end Age

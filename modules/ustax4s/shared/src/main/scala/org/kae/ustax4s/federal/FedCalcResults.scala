@@ -1,13 +1,18 @@
 package org.kae.ustax4s.federal
 
 import cats.Show
-import org.kae.ustax4s.IncomeScenario
+import java.time.{LocalDate, Year}
+import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 import org.kae.ustax4s.money.NonNegMoneys.TaxRefundable
 import org.kae.ustax4s.money.TaxOutcomes.TaxOutcome
 import org.kae.ustax4s.money.{Deduction, Income, TaxPayable, TaxableIncome}
 import scala.collection.mutable
 
 trait FedCalcResults:
+  // Needed by State calcs
+  def year: Year
+  def filingStatus: FilingStatus
+  def birthDate: LocalDate
 
   // The inputs to the calculation.
   def incomeScenario: IncomeScenario

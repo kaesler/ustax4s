@@ -24,7 +24,7 @@ object TaxFunction:
 
   /** Return a function to apply a set of progressive tax brackets.
     */
-  def fromRateFunction[R: TaxRate](brackets: RateFunction[R]): TaxFunction =
+  def fromRateFunction[R: TaxRate](rateFunction: RateFunction[R]): TaxFunction =
     // How this works:
     // Because taxes are progressive, with higher rates applying
     // in higher brackets, for each bracket threshold we pre-compute the
@@ -35,20 +35,22 @@ object TaxFunction:
     //   - 10% of all income above the 10% threshold, PLUS
     //   - (20% - 10%) of all income above the 20% threshold.
 
-    asRateDeltas(brackets)
+    asRateDeltas(rateFunction)
       .map(makeThresholdTax[R].tupled)
       // Note: TaxFunction has a natural Monoid because TaxPayable has one.
       .combineAll
   end fromRateFunction
 
-  private def asRateDeltas[R: TaxRate](brackets: RateFunction[R]): Vector[(IncomeThreshold, R)] =
-    brackets.thresholdsAscending
-      .zip(rateDeltas(brackets))
+  private def asRateDeltas[R: TaxRate](
+    rateFunction: RateFunction[R]
+  ): Vector[(IncomeThreshold, R)] =
+    rateFunction.thresholdsAscending
+      .zip(rateDeltas(rateFunction))
   end asRateDeltas
 
-  private def rateDeltas[R: TaxRate](brackets: RateFunction[R]): List[R] =
+  private def rateDeltas[R: TaxRate](rateFunction: RateFunction[R]): List[R] =
     val ratesWithZeroAtFront =
-      summon[TaxRate[R]].zero :: brackets.rates.toList.sorted
+      summon[TaxRate[R]].zero :: rateFunction.rates.toList.sorted
     ratesWithZeroAtFront
       .zip(ratesWithZeroAtFront.tail)
       .map: (previousRate, currentRate) =>

@@ -4,4 +4,3 @@ package org.kae.ustax4s.states
 final case class StatePersonProperties(
   stateQualifiedDependents: Int
 )
-
