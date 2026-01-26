@@ -51,8 +51,12 @@ object MA extends ProgressiveStateRegime:
     fr: FedCalcResults,
     props: StatePersonProperties
   ): Deduction =
-    // TODO kae
-    ???
+    List(
+      personalExemptions(fr.filingStatus),
+      exemptionForAge(Age.ageAtEndOfYear(fr.birthDate, fr.year)),
+      perDependentExemption mul props.stateQualifiedDependents
+    ).combineAll
+  end computeStateDeductions
 
   override def computeStateCredits(
     fr: FedCalcResults,
@@ -68,31 +72,13 @@ object MA extends ProgressiveStateRegime:
     // TODO
     ???
 
-  private def totalExemptions(
-    year: Year,
-    filingStatus: FilingStatus,
-    birthDate: LocalDate,
-    dependents: Int
-  ): Deduction =
-    List(
-      personalExemptions(filingStatus),
-      exemptionForAge(Age.ageAtEndOfYear(birthDate, year)),
-      perDependentExemption mul dependents
-    ).combineAll
-  end totalExemptions
-
   override def calculator(statePersonProperties: StatePersonProperties)(
     fr: FedCalcResults
   ): StateCalcResults =
     val stateGross   = computeStateGrossIncome(fr)
     val stateTaxable = stateGross
       .applyDeductions(
-        totalExemptions(
-          fr.year,
-          fr.filingStatus,
-          fr.birthDate,
-          dependents = statePersonProperties.stateQualifiedDependents
-        )
+        computeStateDeductions(fr, statePersonProperties)
       )
     val rateFunction = rateFunctions(fr.filingStatus.maritalStatus)
     val taxFunction  = TaxFunction.fromRateFunction(rateFunction)
