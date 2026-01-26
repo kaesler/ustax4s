@@ -1,15 +1,14 @@
 package org.kae.ustax4s.states.regimes
 
 import cats.syntax.all.*
-import java.time.{LocalDate, Year}
 import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.RateFunction.RateFunction
 import org.kae.ustax4s.federal.FedCalcResults
 import org.kae.ustax4s.money.NonNegMoneys.{Deduction, Income, RefundableTaxCredit, TaxCredit}
 import org.kae.ustax4s.money.TaxOutcomes.TaxOutcome
+import org.kae.ustax4s.states.*
 import org.kae.ustax4s.states.MaritalStatus.{Married, Unmarried}
 import org.kae.ustax4s.states.Syntax.*
-import org.kae.ustax4s.states.*
 import org.kae.ustax4s.{Age, FilingStatus, TaxFunction}
 
 object MA extends ProgressiveStateRegime:
@@ -62,14 +61,14 @@ object MA extends ProgressiveStateRegime:
     fr: FedCalcResults,
     props: StatePersonProperties
   ): TaxCredit =
-    // TODO
+    // TODO kae
     ???
 
   override def computeStateRefundableCredits(
     fr: FedCalcResults,
     props: StatePersonProperties
   ): RefundableTaxCredit =
-    // TODO
+    // TODO kae
     ???
 
   override def calculator(statePersonProperties: StatePersonProperties)(
