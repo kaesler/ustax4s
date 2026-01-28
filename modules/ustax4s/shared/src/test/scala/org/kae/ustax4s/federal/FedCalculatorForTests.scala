@@ -2,8 +2,6 @@ package org.kae.ustax4s.federal
 
 import java.time.{LocalDate, Year}
 import org.kae.ustax4s.federal.*
-import org.kae.ustax4s.federal.forms.Form1040
-import org.kae.ustax4s.federal.yearly.YearlyValues
 import org.kae.ustax4s.money.*
 import org.kae.ustax4s.state_ma.StateMATaxCalculator
 import org.kae.ustax4s.{FilingStatus, IncomeScenario}
@@ -156,50 +154,6 @@ object FedCalculatorForTests:
       itemizedDeductions
     ).taxPayable.rounded
   end federalTaxPayable
-
-  // Note: for tests only
-  def federalTaxPayableUsingForm1040(
-    year: Year,
-    birthDate: LocalDate,
-    filingStatus: FilingStatus,
-    socSec: Income,
-    ordinaryIncomeNonSS: Income,
-    qualifiedDividends: TaxableIncome,
-    verbose: Boolean
-  ): TaxPayable =
-    val boundRegime = BoundFedRegime.forKnownYear(
-      year,
-      filingStatus
-    )
-
-    val form = Form1040(
-      filingStatus,
-      taxableIraDistributions = ordinaryIncomeNonSS,
-      socialSecurityBenefits = socSec,
-      // The rest not applicable in retirement.
-      standardDeduction = boundRegime.standardDeduction(birthDate),
-      schedule1 = None,
-      schedule3 = None,
-      schedule4 = None,
-      schedule5 = None,
-      childTaxCredit = TaxCredit.zero,
-      wages = Income.zero,
-      taxExemptInterest = Income.zero,
-      taxableInterest = Income.zero,
-      qualifiedDividends = qualifiedDividends,
-      ordinaryDividends = qualifiedDividends
-    )
-    if verbose then println(form.showValues)
-
-    val yv = YearlyValues.of(year).get
-    Form1040
-      .totalFederalTax(
-        form,
-        yv.ordinaryRateFunctions(filingStatus),
-        yv.qualifiedRateFunctions(filingStatus)
-      )
-      .rounded
-  end federalTaxPayableUsingForm1040
 
   def stateMATaxPayable(
     year: Year,
