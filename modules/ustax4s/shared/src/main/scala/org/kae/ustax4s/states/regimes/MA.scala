@@ -23,6 +23,7 @@ object MA extends ProgressiveStateRegime:
         1_083_159 -> 9.0
       ).asRateFunction
     )
+  end rateFunctions
 
   override val personalExemptions: FilingStatus => Deduction =
     Map(
@@ -30,6 +31,7 @@ object MA extends ProgressiveStateRegime:
       HeadOfHousehold -> Deduction(6800),
       Married         -> Deduction(8800)
     )
+  end personalExemptions
 
   override val exemptionForAge: Int => Deduction =
     (age: Int) => if age >= 65 then Deduction(700) else Deduction.zero
