@@ -5,11 +5,10 @@ import org.kae.ustax4s.FilingStatus.{HeadOfHousehold, Single}
 import org.kae.ustax4s.RateFunction.RateFunction
 import org.kae.ustax4s.federal.FedCalcResults
 import org.kae.ustax4s.money.NonNegMoneys.{Deduction, Income, RefundableTaxCredit, TaxCredit}
-import org.kae.ustax4s.money.TaxOutcomes.TaxOutcome
 import org.kae.ustax4s.states.*
 import org.kae.ustax4s.states.MaritalStatus.{Married, Unmarried}
 import org.kae.ustax4s.states.Syntax.*
-import org.kae.ustax4s.{Age, FilingStatus, TaxFunction}
+import org.kae.ustax4s.{Age, FilingStatus}
 
 object MA extends ProgressiveStateRegime:
 
@@ -70,26 +69,5 @@ object MA extends ProgressiveStateRegime:
   ): RefundableTaxCredit =
     // TODO
     RefundableTaxCredit.zero
-
-  // TODO: lift this into ProgressiveStateRegime
-  override def calculator(props: StatePersonProperties)(
-    fr: FedCalcResults
-  ): StateCalcResults =
-    val stateGross   = computeStateGrossIncome(fr)
-    val stateTaxable = stateGross
-      .applyDeductions(
-        computeStateDeductions(fr, props)
-      )
-
-    val taxFunction = TaxFunction.fromRateFunction(
-      rateFunction = rateFunctions(fr.filingStatus.maritalStatus)
-    )
-
-    StateCalcResults(
-      outcome = taxFunction(stateTaxable).asOutcome
-        .applyNonRefundableCredits(computeStateCredits(fr, props))
-        .applyRefundableCredits(computeStateRefundableCredits(fr, props))
-    )
-  end calculator
 
 end MA

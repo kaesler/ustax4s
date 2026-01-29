@@ -3,7 +3,7 @@ package org.kae.ustax4s.states
 import org.kae.ustax4s.federal.FedCalcResults
 import org.kae.ustax4s.money.Deduction
 import org.kae.ustax4s.money.NonNegMoneys.{Income, RefundableTaxCredit, TaxCredit}
-import org.kae.ustax4s.{FilingStatus, RateFunction}
+import org.kae.ustax4s.{FilingStatus, RateFunction, TaxFunction}
 import scala.annotation.unused
 
 // Model this: https://docs.google.com/spreadsheets/d/1I_OuA6uuAs7YoZRc02atHCCxpXaGDn9N/edit?gid=201796956#gid=201796956
@@ -229,4 +229,25 @@ end FlatStateRegime
 trait ProgressiveStateRegime extends HasStateTaxCalculator:
   // TODO: should it be FilingStatus?
   def rateFunctions: MaritalStatus => RateFunction[StateTaxRate]
+
+  override def calculator(props: StatePersonProperties)(
+    fr: FedCalcResults
+  ): StateCalcResults =
+    val stateGross   = computeStateGrossIncome(fr)
+    val stateTaxable = stateGross
+      .applyDeductions(
+        computeStateDeductions(fr, props)
+      )
+
+    val taxFunction = TaxFunction.fromRateFunction(
+      rateFunction = rateFunctions(fr.filingStatus.maritalStatus)
+    )
+
+    StateCalcResults(
+      outcome = taxFunction(stateTaxable).asOutcome
+        .applyNonRefundableCredits(computeStateCredits(fr, props))
+        .applyRefundableCredits(computeStateRefundableCredits(fr, props))
+    )
+  end calculator
+
 end ProgressiveStateRegime
