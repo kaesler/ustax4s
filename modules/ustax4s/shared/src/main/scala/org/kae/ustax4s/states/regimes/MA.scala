@@ -83,8 +83,7 @@ object MA extends ProgressiveStateRegime:
     val rateFunction = rateFunctions(fr.filingStatus.maritalStatus)
     val taxFunction  = TaxFunction.fromRateFunction(rateFunction)
     StateCalcResults(
-      outcome = taxFunction(stateTaxable)
-        .asOutcome
+      outcome = taxFunction(stateTaxable).asOutcome
         .applyNonRefundableCredits(computeStateCredits(fr, props))
         .applyRefundableCredits(computeStateRefundableCredits(fr, props))
     )
