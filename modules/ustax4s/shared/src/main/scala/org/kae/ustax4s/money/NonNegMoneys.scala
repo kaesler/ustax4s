@@ -74,8 +74,6 @@ object NonNegMoneys:
 
       infix def amountAbove(threshold: IncomeThreshold): Income =
         NonNegativeMoney.monus(left, threshold)
-      infix def applyAdjustments(deductions: Deduction*): Income =
-        NonNegativeMoney.monus(left, deductions.combineAll)
       infix def applyDeductions(deductions: Deduction*): TaxableIncome =
         NonNegativeMoney.monus(left, deductions.combineAll)
 
@@ -225,11 +223,11 @@ object NonNegMoneys:
   opaque type TaxRefundable = NonNegativeMoney
 
   object TaxRefundable:
-    val zero: TaxRefundable                            = NonNegativeMoney.zero
-    def apply(i: Int): TaxRefundable                   = NonNegativeMoney(i)
-    def apply(d: Double): TaxRefundable                = NonNegativeMoney(d)
-    def apply(rfc: RefundableTaxCredit): TaxRefundable = rfc
-    def unsafeParse(s: String): TaxRefundable          = NonNegativeMoney.unsafeParse(s)
+    val zero: TaxRefundable                               = NonNegativeMoney.zero
+    def apply(i: Int): TaxRefundable                      = NonNegativeMoney(i)
+    def apply(d: Double): TaxRefundable                   = NonNegativeMoney(d)
+    def apply(credit: RefundableTaxCredit): TaxRefundable = credit
+    def unsafeParse(s: String): TaxRefundable             = NonNegativeMoney.unsafeParse(s)
 
     given Monoid[TaxRefundable]   = summonAdditionMonoid
     given Ordering[TaxRefundable] = summonOrdering
@@ -237,9 +235,9 @@ object NonNegMoneys:
     extension (left: TaxRefundable)
       infix def div(i: Int): TaxRefundable = NonNegativeMoney.divide(left, i)
       def isZero: Boolean                  = NonNegativeMoney.isZero(left)
+      def nonZero: Boolean                 = !isZero
       def asDouble: Double                 = NonNegativeMoney.toDouble(left)
       def asSigned: Double                 = -NonNegativeMoney.toDouble(left)
-      def nonZero: Boolean                 = !isZero
       def rounded: TaxRefundable           = NonNegativeMoney.rounded(left)
 
       def +(right: TaxRefundable): TaxRefundable = left.combine(right)
