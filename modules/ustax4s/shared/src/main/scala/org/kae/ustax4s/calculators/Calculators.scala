@@ -5,14 +5,10 @@ import org.kae.ustax4s.federal.{BoundFedRegime, FedCalcResults, FedCalculator}
 import org.kae.ustax4s.states.{State, StatePersonProperties}
 import org.kae.ustax4s.{FilingStatus, IncomeScenario}
 
-// TODO
-// We may need to include state-relevant stuff
-//   - pensions not taxed by state
-
 // Expressed as successive partial application of a curried function.
 object Calculators:
 
-  def fedCalculator(
+  private def fedCalculator(
     year: Year,
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus,
@@ -48,7 +44,7 @@ object Calculators:
     )
   end calcFed
 
-  def fedAndStateCalculator(
+  private def fedAndStateCalculator(
     year: Year,
     estimatedAnnualInflationFactor: Double,
     filingStatus: FilingStatus,
@@ -56,6 +52,9 @@ object Calculators:
     personalExemptions: Int,
     state: State,
     stateQualifiedDependents: Int
+    // TODO
+    // We may need to include more, e.g.
+    //   - pensions not taxed by state
   ): FedAndStateCalculator =
     BoundFedRegime.forAnyYear(
       year,
