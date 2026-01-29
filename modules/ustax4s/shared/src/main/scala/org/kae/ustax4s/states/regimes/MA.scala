@@ -44,7 +44,7 @@ object MA extends ProgressiveStateRegime:
 
   override def computeStateGrossIncome(fr: FedCalcResults): Income =
     // TODO: also exclude pensions not taxed by the state
-    fr.agi reduceBy fr.incomeScenario.socSec
+    fr.agi monus fr.incomeScenario.socSec
 
   override def computeStateDeductions(
     fr: FedCalcResults,
@@ -81,7 +81,7 @@ object MA extends ProgressiveStateRegime:
         computeStateDeductions(fr, props)
       )
 
-    val taxFunction  = TaxFunction.fromRateFunction(
+    val taxFunction = TaxFunction.fromRateFunction(
       rateFunction = rateFunctions(fr.filingStatus.maritalStatus)
     )
 

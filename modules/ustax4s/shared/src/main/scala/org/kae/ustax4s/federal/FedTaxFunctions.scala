@@ -22,7 +22,7 @@ object FedTaxFunctions:
     // ordinary income.
     val taxFunction = TaxFunction.fromRateFunction(qualifiedRateFunction.function)
     taxFunction(taxableOrdinaryIncome + qualifiedIncome)
-      .reduceBy(taxFunction(taxableOrdinaryIncome))
+      .monus(taxFunction(taxableOrdinaryIncome))
   end taxPayableOnQualifiedIncome
 
 end FedTaxFunctions

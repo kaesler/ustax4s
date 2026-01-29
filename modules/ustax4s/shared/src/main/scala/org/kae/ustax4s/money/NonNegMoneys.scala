@@ -83,8 +83,8 @@ object NonNegMoneys:
       infix def isBelow(threshold: IncomeThreshold): Boolean =
         summon[Ordering[Income]].lt(left, threshold)
 
-      infix def mul(d: Double): Income          = NonNegativeMoney.multiply(left, d)
-      infix def reduceBy(right: Income): Income = NonNegativeMoney.monus(left, right)
+      infix def mul(d: Double): Income       = NonNegativeMoney.multiply(left, d)
+      infix def monus(right: Income): Income = NonNegativeMoney.monus(left, right)
     end extension
   end Income
 
@@ -126,7 +126,7 @@ object NonNegMoneys:
       def +(right: TaxableIncome): TaxableIncome                       = left.combine(right)
       infix def amountAbove(threshold: IncomeThreshold): TaxableIncome =
         NonNegativeMoney.monus(left, threshold)
-      infix def reduceBy(right: TaxableIncome): TaxableIncome =
+      infix def monus(right: TaxableIncome): TaxableIncome =
         NonNegativeMoney.monus(left, right)
       infix def taxAt[T: TaxRate](rate: T): TaxPayable =
         NonNegativeMoney.multiply(left, rate.asDouble)
@@ -183,7 +183,7 @@ object NonNegMoneys:
       def +(right: RefundableTaxCredit): RefundableTaxCredit = left.combine(right)
       def asDouble: Double                                   = NonNegativeMoney.toDouble(left)
       def size: Double                                       = asDouble
-      infix def reduceByTaxPayable(tp: TaxPayable): RefundableTaxCredit =
+      infix def monusTaxPayable(tp: TaxPayable): RefundableTaxCredit =
         NonNegativeMoney.monus(left, tp)
       def asTaxRefundable: TaxRefundable = left
   end RefundableTaxCredit
@@ -211,11 +211,11 @@ object NonNegMoneys:
 
       infix def isCloseTo(right: TaxPayable, tolerance: Int): Boolean =
         NonNegativeMoney.areClose(left, right, tolerance)
-      infix def reduceBy(right: TaxPayable): TaxPayable =
+      infix def monus(right: TaxPayable): TaxPayable =
         NonNegativeMoney.monus(left, right)
-      infix def reduceByCredit(right: TaxCredit): TaxPayable =
+      infix def monusTaxCredit(right: TaxCredit): TaxPayable =
         NonNegativeMoney.monus(left, right)
-      infix def reduceByRefundableCredit(right: RefundableTaxCredit): TaxPayable =
+      infix def monusRefundableTaxCredit(right: RefundableTaxCredit): TaxPayable =
         NonNegativeMoney.monus(left, right)
     end extension
   end TaxPayable
@@ -242,7 +242,7 @@ object NonNegMoneys:
 
       def +(right: TaxRefundable): TaxRefundable = left.combine(right)
 
-      infix def reduceBy(right: TaxRefundable): TaxRefundable =
+      infix def monus(right: TaxRefundable): TaxRefundable =
         NonNegativeMoney.monus(left, right)
     end extension
   end TaxRefundable

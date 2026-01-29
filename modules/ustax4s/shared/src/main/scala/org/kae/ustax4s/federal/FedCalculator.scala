@@ -118,7 +118,7 @@ object FedCalculator:
             val halfDelta = deltaX.divInt(2)
             val highY     = thisCalculator(scenario.withMoreOrdinaryIncome(halfDelta)).taxPayable
             val lowY      = thisCalculator(scenario.withLessOrdinaryIncome(halfDelta)).taxPayable
-            highY.reduceBy(lowY).asDouble / deltaX.asDouble
+            highY.monus(lowY).asDouble / deltaX.asDouble
           end taxSlopeForOrdinaryIncome
 
           override lazy val taxSlopeForQualifiedIncome: Double =
@@ -126,7 +126,7 @@ object FedCalculator:
             val halfDelta = TaxableIncome(delta / 2)
             val highY     = thisCalculator(scenario.withMoreQualifiedIncome(halfDelta)).taxPayable
             val lowY      = thisCalculator(scenario.withLessQualifiedIncome(halfDelta)).taxPayable
-            highY.reduceBy(lowY).asDouble / deltaX.asDouble
+            highY.monus(lowY).asDouble / deltaX.asDouble
           end taxSlopeForQualifiedIncome
 
           override lazy val taxSlopeForSocSec: Double =
@@ -134,7 +134,7 @@ object FedCalculator:
             val halfDelta = deltaX.divInt(2)
             val highY     = thisCalculator(scenario.withMoreSocSec(halfDelta)).taxPayable
             val lowY      = thisCalculator(scenario.withLessSocSec(halfDelta)).taxPayable
-            highY.reduceBy(lowY).asDouble / deltaX.asDouble
+            highY.monus(lowY).asDouble / deltaX.asDouble
           end taxSlopeForSocSec
 
         end new

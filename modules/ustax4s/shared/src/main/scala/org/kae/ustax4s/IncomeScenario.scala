@@ -11,20 +11,20 @@ final case class IncomeScenario(
 ):
   def withMoreSocSec(inc: Income): IncomeScenario = copy(socSec = socSec + inc)
   def withLessSocSec(dec: Income): IncomeScenario = copy(
-    socSec = socSec.reduceBy(dec)
+    socSec = socSec.monus(dec)
   )
 
   def withMoreOrdinaryIncome(inc: Income): IncomeScenario = copy(
     ordinaryIncomeNonSS = ordinaryIncomeNonSS + inc
   )
   def withLessOrdinaryIncome(dec: Income): IncomeScenario = copy(
-    ordinaryIncomeNonSS = ordinaryIncomeNonSS.reduceBy(dec)
+    ordinaryIncomeNonSS = ordinaryIncomeNonSS.monus(dec)
   )
 
   def withMoreQualifiedIncome(inc: TaxableIncome): IncomeScenario = copy(
     qualifiedIncome = qualifiedIncome + inc
   )
   def withLessQualifiedIncome(dec: TaxableIncome): IncomeScenario = copy(
-    qualifiedIncome = qualifiedIncome.reduceBy(dec)
+    qualifiedIncome = qualifiedIncome.monus(dec)
   )
 end IncomeScenario

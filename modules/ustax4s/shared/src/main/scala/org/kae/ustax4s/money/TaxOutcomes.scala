@@ -23,7 +23,11 @@ object TaxOutcomes:
       def applyNonRefundableCredits(credits: TaxCredit*): TaxOutcome =
         val netCredit = credits.combineAll
         self match
-          case Left(taxPayable)              => Left(taxPayable reduceByCredit netCredit)
+          // Non-refundable so cannot reduce tax payable below zero,
+          // hence "monusTaxCredit".
+          case Left(taxPayable) => Left(taxPayable monusTaxCredit netCredit)
+
+          // Non-refundable so cannot augment an existing refund.
           case refund @ Right(taxRefundable) => refund
       end applyNonRefundableCredits
 
@@ -33,10 +37,15 @@ object TaxOutcomes:
         self match
           case Left(taxPayable) =>
             if taxPayable.size <= netCredit.size then
-              (netCredit reduceByTaxPayable taxPayable).asTaxRefundable.asRight
-            else (taxPayable reduceByRefundableCredit netCredit).asLeft
+              // Refundable so eliminates the smaller tax-payable,
+              // and the rest is a refund
+              (netCredit monusTaxPayable taxPayable).asTaxRefundable.asRight
+            else
+              // Eliminates a portion of the larger tax payable.
+              (taxPayable monusRefundableTaxCredit netCredit).asLeft
 
           case Right(taxRefundable) =>
+            // Existing refund is augmented by the credit
             (taxRefundable + netCredit.asTaxRefundable).asRight
         end match
       end applyRefundableCredits

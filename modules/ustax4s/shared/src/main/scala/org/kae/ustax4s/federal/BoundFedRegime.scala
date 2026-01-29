@@ -74,7 +74,7 @@ trait BoundFedRegime(
         Deduction(
           fullAmount -
             agi
-              .reduceBy(Income(phaseOutStart))
+              .monus(Income(phaseOutStart))
               .mul(phaseOutRate)
               .asDouble
         )
