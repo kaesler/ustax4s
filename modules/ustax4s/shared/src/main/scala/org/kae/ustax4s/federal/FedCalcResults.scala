@@ -35,7 +35,7 @@ trait FedCalcResults:
   // TODO: Complete this so refundable credits can happen.
   def taxRefundable: TaxRefundable = TaxRefundable.zero
   def outcome: TaxOutcome          =
-    TaxOutcome.of(taxPayable) + TaxOutcome.of(taxRefundable)
+    TaxOutcome.ofPayable(taxPayable) + TaxOutcome.ofRefundable(taxRefundable)
 
 end FedCalcResults
 

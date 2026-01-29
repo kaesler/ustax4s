@@ -183,6 +183,11 @@ object NonNegMoneys:
     extension (left: RefundableTaxCredit)
       @targetName("combine")
       def +(right: RefundableTaxCredit): RefundableTaxCredit = left.combine(right)
+      def asDouble: Double                                   = NonNegativeMoney.toDouble(left)
+      def size: Double                                       = asDouble
+      infix def reduceByTaxPayable(tp: TaxPayable): RefundableTaxCredit =
+        NonNegativeMoney.monus(left, tp)
+      def asTaxRefundable: TaxRefundable = left
   end RefundableTaxCredit
 
   opaque type TaxPayable = NonNegativeMoney
@@ -197,30 +202,22 @@ object NonNegMoneys:
     given Ordering[TaxPayable] = summonOrdering
 
     extension (left: TaxPayable)
-      def isZero: Boolean     = NonNegativeMoney.isZero(left)
-      def asDouble: Double    = NonNegativeMoney.toDouble(left)
-      def nonZero: Boolean    = !isZero
-      def rounded: TaxPayable = NonNegativeMoney.rounded(left)
+      def isZero: Boolean       = NonNegativeMoney.isZero(left)
+      def asDouble: Double      = NonNegativeMoney.toDouble(left)
+      def asOutcome: TaxOutcome = TaxOutcome.ofPayable(left)
+      def size: Double          = asDouble
+      def nonZero: Boolean      = !isZero
+      def rounded: TaxPayable   = NonNegativeMoney.rounded(left)
 
       def +(right: TaxPayable): TaxPayable = left.combine(right)
 
-      infix def applyNonRefundableCredits(cs: TaxCredit*): TaxPayable =
-        NonNegativeMoney.monus(left, cs.combineAll)
-
-      infix def applyRefundableCredits(cs: RefundableTaxCredit*): TaxPayable = {
-        // left - cs.combineAll
-        // TODO:
-        //  First reduce TaxPayable as far as we can. THis produces TaxPayable.
-        //  Then use the rest, if any, to produce TaxRefundable
-        // Seems like the result is TaxOutcome?
-        // is tax already PAID a refundable credit?
-        // seems must be or TaxPayable needs to be negative
-        //
-        ???
-      }
       infix def isCloseTo(right: TaxPayable, tolerance: Int): Boolean =
         NonNegativeMoney.areClose(left, right, tolerance)
       infix def reduceBy(right: TaxPayable): TaxPayable =
+        NonNegativeMoney.monus(left, right)
+      infix def reduceByCredit(right: TaxCredit): TaxPayable =
+        NonNegativeMoney.monus(left, right)
+      infix def reduceByRefundableCredit(right: RefundableTaxCredit): TaxPayable =
         NonNegativeMoney.monus(left, right)
     end extension
   end TaxPayable
@@ -228,10 +225,11 @@ object NonNegMoneys:
   opaque type TaxRefundable = NonNegativeMoney
 
   object TaxRefundable:
-    val zero: TaxRefundable                   = NonNegativeMoney.zero
-    def apply(i: Int): TaxRefundable          = NonNegativeMoney(i)
-    def apply(d: Double): TaxRefundable       = NonNegativeMoney(d)
-    def unsafeParse(s: String): TaxRefundable = NonNegativeMoney.unsafeParse(s)
+    val zero: TaxRefundable                            = NonNegativeMoney.zero
+    def apply(i: Int): TaxRefundable                   = NonNegativeMoney(i)
+    def apply(d: Double): TaxRefundable                = NonNegativeMoney(d)
+    def apply(rfc: RefundableTaxCredit): TaxRefundable = rfc
+    def unsafeParse(s: String): TaxRefundable          = NonNegativeMoney.unsafeParse(s)
 
     given Monoid[TaxRefundable]   = summonAdditionMonoid
     given Ordering[TaxRefundable] = summonOrdering
@@ -254,4 +252,5 @@ object NonNegMoneys:
   // Note: must be outside the object scopes above.
   private def summonAdditionMonoid = summon[Monoid[NonNegativeMoney]]
   private def summonOrdering       = summon[Ordering[NonNegativeMoney]]
+
 end NonNegMoneys

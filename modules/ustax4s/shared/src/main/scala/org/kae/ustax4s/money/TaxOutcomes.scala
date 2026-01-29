@@ -2,7 +2,6 @@ package org.kae.ustax4s.money
 
 import cats.Monoid
 import cats.syntax.all.*
-import scala.annotation.targetName
 
 // Type for the ultimate outcome for State or Federal, or both.
 export TaxOutcomes.TaxOutcome
@@ -12,18 +11,37 @@ object TaxOutcomes:
   opaque type TaxOutcome = Either[TaxPayable, TaxRefundable]
 
   object TaxOutcome:
-    val zero: TaxOutcome = of(TaxPayable.zero)
+    val zero: TaxOutcome = ofPayable(TaxPayable.zero)
 
-    @targetName("ofTaxPayable")
-    def of(tp: TaxPayable): TaxOutcome = tp.asLeft
-    @targetName("ofTaxRefundable")
-    def of(tr: TaxRefundable): TaxOutcome = tr.asRight
+    def ofPayable(tp: TaxPayable): TaxOutcome       = tp.asLeft
+    def ofRefundable(tr: TaxRefundable): TaxOutcome = tr.asRight
 
-    extension (to: TaxOutcome)
+    extension (self: TaxOutcome)
       def +(other: TaxOutcome): TaxOutcome =
-        summon[Monoid[TaxOutcome]].combine(to, other)
+        summon[Monoid[TaxOutcome]].combine(self, other)
 
-      def asSignedDouble: Double = to match
+      def applyNonRefundableCredits(credits: TaxCredit*): TaxOutcome =
+        val netCredit = credits.combineAll
+        self match
+          case Left(taxPayable)              => Left(taxPayable reduceByCredit netCredit)
+          case refund @ Right(taxRefundable) => refund
+      end applyNonRefundableCredits
+
+      def applyRefundableCredits(credits: RefundableTaxCredit*): TaxOutcome =
+        val netCredit = credits.combineAll
+
+        self match
+          case Left(taxPayable) =>
+            if taxPayable.size <= netCredit.size then
+              (netCredit reduceByTaxPayable taxPayable).asTaxRefundable.asRight
+            else (taxPayable reduceByRefundableCredit netCredit).asLeft
+
+          case Right(taxRefundable) =>
+            (taxRefundable + netCredit.asTaxRefundable).asRight
+        end match
+      end applyRefundableCredits
+
+      private def asSignedDouble: Double = self match
         case Left(tp) =>
           // Positive: tax is payable.
           tp.asDouble
@@ -34,12 +52,12 @@ object TaxOutcomes:
     end extension
 
     given Monoid[TaxOutcome] = Monoid.instance(
-      emptyValue = of(TaxPayable(0)),
+      emptyValue = ofPayable(TaxPayable(0)),
       cmb = (x, y) =>
         val dbl = x.asSignedDouble + y.asSignedDouble
         if dbl < 0.0
-        then of(TaxRefundable(-dbl))
-        else of(TaxPayable(dbl))
+        then ofRefundable(TaxRefundable(-dbl))
+        else ofPayable(TaxPayable(dbl))
     )
   end TaxOutcome
 

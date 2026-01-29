@@ -61,30 +61,32 @@ object MA extends ProgressiveStateRegime:
     fr: FedCalcResults,
     props: StatePersonProperties
   ): TaxCredit =
-    // TODO kae
-    ???
+    // TODO
+    TaxCredit.zero
 
   override def computeStateRefundableCredits(
     fr: FedCalcResults,
     props: StatePersonProperties
   ): RefundableTaxCredit =
-    // TODO kae
-    ???
+    // TODO
+    RefundableTaxCredit.zero
 
-  override def calculator(statePersonProperties: StatePersonProperties)(
+  // TODO: lift this into ProgressiveStateRegime
+  override def calculator(props: StatePersonProperties)(
     fr: FedCalcResults
   ): StateCalcResults =
     val stateGross   = computeStateGrossIncome(fr)
     val stateTaxable = stateGross
       .applyDeductions(
-        computeStateDeductions(fr, statePersonProperties)
+        computeStateDeductions(fr, props)
       )
     val rateFunction = rateFunctions(fr.filingStatus.maritalStatus)
     val taxFunction  = TaxFunction.fromRateFunction(rateFunction)
-    val taxPayable   = taxFunction(stateTaxable)
     StateCalcResults(
-      // TODO Also apply credits
-      TaxOutcome.of(taxPayable)
+      outcome = taxFunction(stateTaxable)
+        .asOutcome
+        .applyNonRefundableCredits(computeStateCredits(fr, props))
+        .applyRefundableCredits(computeStateRefundableCredits(fr, props))
     )
   end calculator
 
