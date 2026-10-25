@@ -46,7 +46,7 @@ object TaxableSocialSecurity:
 
       List(
         // Half in previous bracket and .85 in this bracket,
-        // but no more than 0.85 of SS benes.
+        // but no more than 0.85 of SS benefits.
         (middleBracketWidth divInt 2) +
           ((combinedIncome amountAbove highThreshold) mul fractionTaxable),
         maxSocSecTaxable

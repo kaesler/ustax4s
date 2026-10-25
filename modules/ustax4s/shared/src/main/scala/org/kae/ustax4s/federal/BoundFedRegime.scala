@@ -186,7 +186,7 @@ object BoundFedRegime:
     val inflationFactors   = yearsWithInflation
       .map: year =>
         YearlyValues.averageThresholdChangeOverPrevious(year) match
-          // Use known inflation for each year where we have it...
+          // Use known inflation for each year when we have it...
           case Some(knownFactor) => knownFactor
           // ...otherwise use estimate.
           case _ => estimatedAnnualInflationFactor

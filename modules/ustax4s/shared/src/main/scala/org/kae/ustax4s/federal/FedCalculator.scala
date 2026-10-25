@@ -30,7 +30,7 @@ object FedCalculator:
       override val birthDate: LocalDate    = _birthDate
       override val personalExemptions: Int = _personalExemptions
 
-      private val thisCalculator = this
+      private val thisCalculator: FedCalculator = this
 
       override def apply(
         state: State,
@@ -105,7 +105,7 @@ object FedCalculator:
             )
 
           // TODO: compute the AOTC refundable tax credit
-          // THis needs to be offset against net tax payable so far
+          // This needs to be offset against net tax payable so far
           @unused
           private val netTaxPayableBeforeCredits: TaxPayable =
             taxOnOrdinaryIncome + taxOnQualifiedIncome

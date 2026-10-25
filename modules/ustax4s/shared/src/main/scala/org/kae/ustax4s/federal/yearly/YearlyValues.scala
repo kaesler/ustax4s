@@ -15,7 +15,7 @@ final case class YearlyValues(
   ordinaryRateFunctions: FilingStatus => OrdinaryRateFunction,
   qualifiedRateFunctions: FilingStatus => QualifiedRateFunction
 ):
-  def previous: Option[YearlyValues] =
+  private def previous: Option[YearlyValues] =
     YearlyValues.of(year.minusYears(1L))
 
   def ordinaryNonZeroThresholdsMap: Map[(FilingStatus, FedTaxRate), IncomeThreshold] =

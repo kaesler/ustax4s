@@ -76,7 +76,7 @@ final case class OrdinaryRateFunction(
     )
   end unsafeBracketWidth
 
-  def bracketWidth(bracketRate: FedTaxRate): Option[TaxableIncome] =
+  private def bracketWidth(bracketRate: FedTaxRate): Option[TaxableIncome] =
     bracketWidths.get(bracketRate)
 
   private def errorForBadRate(bracketRate: FedTaxRate) =
@@ -95,13 +95,13 @@ end OrdinaryRateFunction
 
 object OrdinaryRateFunction:
 
-  final case class NoSuchFederalTaxRate(
+  private final case class NoSuchFederalTaxRate(
     federalTaxRate: FedTaxRate
   ) extends RuntimeException(
         s"No such ordinary income Federal tax rate: $federalTaxRate"
       )
 
-  final case class BracketHasNoEnd(
+  private final case class BracketHasNoEnd(
     federalTaxRate: FedTaxRate
   ) extends RuntimeException(
         s"Ordinary income bracket for $federalTaxRate has no end"
