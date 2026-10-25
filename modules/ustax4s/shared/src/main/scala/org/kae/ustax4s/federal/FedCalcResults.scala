@@ -58,5 +58,5 @@ object FedCalcResults:
     b.append(s"  taxSlopeForOrdinaryIncome: $taxSlopeForOrdinaryIncome\n")
     b.append(s"  taxSlopeForQualifiedIncome: $taxSlopeForQualifiedIncome\n")
 
-    b.result
+    b.result()
 end FedCalcResults

@@ -69,7 +69,7 @@ object MA extends ProgressiveStateRegime:
     fr: FedCalcResults,
     props: StatePersonProperties
   ): RefundableTaxCredit =
-    // TODO
+    // TODO: circuit breaker tax credit
     RefundableTaxCredit.zero
 
 end MA

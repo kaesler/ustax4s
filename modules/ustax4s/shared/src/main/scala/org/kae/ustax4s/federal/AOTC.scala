@@ -1,7 +1,8 @@
 package org.kae.ustax4s.federal
 
-import org.kae.ustax4s.money.NonNegMoneys.RefundableTaxCredit
+import org.kae.ustax4s.money.NonNegMoneys.{Income, RefundableTaxCredit}
 import org.kae.ustax4s.money.{Deduction, TaxCredit}
+import scala.annotation.unused
 
 object AOTC:
 
@@ -32,8 +33,15 @@ object AOTC:
   //  is applied to totalTax
   //  produces netTax? which can be negative (i.e. a refund0
   def apply(
-    aotcEligibleTuition: Deduction
+    aotcEligibleExpenses: Deduction,
+    agi: Income,
+    aotcMagiModification: Income
   ): (totalCredit: TaxCredit, refundable: RefundableTaxCredit) = {
+    @unused
+    val magi                 = agi + aotcMagiModification
+    val maxCreditForExpenses = ???
+    val phaseOutAdjustment   = ???
+    val maxCredit            = ???
     ???
   }
 end AOTC

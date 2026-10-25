@@ -13,9 +13,9 @@ object Dependencies {
 
   object MUnit {
     val munit: ModuleID =
-      "org.scalameta" %% "munit" % "1.2.2" exclude ("org.scala-lang", "scala3-library_3")
+      "org.scalameta" %% "munit" % "1.3.6" exclude ("org.scala-lang", "scala3-library_3")
     val scalacheck: ModuleID =
-      "org.scalameta" %% "munit-scalacheck" % "1.2.0" exclude ("org.scala-lang", "scala3-library_3")
+      "org.scalameta" %% "munit-scalacheck" % "1.3.1" exclude ("org.scala-lang", "scala3-library_3")
   }
 
   object Scalacheck {
@@ -23,7 +23,7 @@ object Dependencies {
   }
 
   object ScalajsTime {
-    val time: ModuleID = "io.github.cquiroz" %% "scala-java-time" % "2.6.0"
+    val time: ModuleID = "io.github.cquiroz" %% "scala-java-time" % "2.8.0"
   }
 
 }

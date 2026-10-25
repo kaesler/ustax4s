@@ -5,7 +5,7 @@ import scala.collection.Seq
 
 ThisBuild / organization := "org.kae"
 ThisBuild / version      := "1.1-SNAPSHOT"
-ThisBuild / scalaVersion := "3.8.1"
+ThisBuild / scalaVersion := "3.10.0"
 
 val fastCompileRenderer = taskKey[File]("Return main file")
 
