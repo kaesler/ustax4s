@@ -23,7 +23,7 @@ object Dependencies {
   }
 
   object ScalajsTime {
-    val time: ModuleID = "io.github.cquiroz" %% "scala-java-time" % "2.8.0"
+    val time: ModuleID = "io.github.cquiroz" %% "scala-java-time" % "2.9.0"
   }
 
 }
