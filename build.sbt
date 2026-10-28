@@ -1,17 +1,18 @@
 import org.kae.Dependencies.*
 import org.scalajs.linker.interface.ESVersion
 import sbt.Keys.libraryDependencies
-import scala.collection.Seq
 
-ThisBuild / organization := "org.kae"
-ThisBuild / version      := "1.1-SNAPSHOT"
-ThisBuild / scalaVersion := "3.10.0"
+organization := "org.kae"
+version      := "1.1-SNAPSHOT"
+scalaVersion := "3.10.0"
 
+@transient
 val fastCompileRenderer = taskKey[File]("Return main file")
 
 lazy val fastCompileCreateFunctions =
   taskKey[Unit]("Fast compile, and adds to the compiled file the created functions")
 
+@transient
 val fullCompileRenderer = taskKey[File]("Return full optimized main file")
 
 lazy val fullCompileCreateFunctions =
@@ -85,7 +86,7 @@ lazy val gsheetfacade = project
     },
     libraryDependencies ++=
       Seq(
-        "org.kae" %%% "cells" % "0.1-SNAPSHOT"
+        "org.kae" %% "cells" % "0.1-SNAPSHOT"
       )
   )
 
@@ -95,19 +96,13 @@ lazy val ustax4s = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/ustax4s"))
   .settings(
     name := "ustax4s",
-    libraryDependencies ++= {
-      def triplePercent(m: ModuleID): ModuleID = {
-        import m.*
-        organization %%% name % revision
-      }
-
+    libraryDependencies ++=
       Seq(
-        triplePercent(Cats.core withSources ()),
-        triplePercent(MUnit.munit      % Test withSources ()),
-        triplePercent(MUnit.scalacheck % Test withSources ()),
-        triplePercent(ScalajsTime.time)
-      )
-    },
+        Cats.core.withSources(),
+        (MUnit.munit      % Test).withSources(),
+        (MUnit.scalacheck % Test).withSources(),
+        ScalajsTime.time
+      ),
     excludeDependencies ++= Seq(
       ExclusionRule("scala-lang.org")
     ),
@@ -127,19 +122,13 @@ lazy val roth = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/roth"))
   .settings(
     name := "roth",
-    libraryDependencies ++= {
-      def triplePercent(m: ModuleID): ModuleID = {
-        import m.*
-        organization %%% name % revision
-      }
-
+    libraryDependencies ++=
       Seq(
-        triplePercent(Cats.core withSources ()),
-        triplePercent(MUnit.munit      % Test withSources ()),
-        triplePercent(MUnit.scalacheck % Test withSources ()),
-        triplePercent(ScalajsTime.time)
-      )
-    },
+        Cats.core.withSources(),
+        (MUnit.munit      % Test).withSources(),
+        (MUnit.scalacheck % Test).withSources(),
+        ScalajsTime.time
+      ),
     excludeDependencies ++= Seq(
       ExclusionRule("scala-lang.org")
     ),
