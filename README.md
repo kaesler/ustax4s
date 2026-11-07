@@ -10,6 +10,9 @@ Ignored:
 In my repo called Scala-Google-Spreadsheets:
  - publishLocal
 
-In this repo
-  - sbt fullCompileCreateFunctions
+In this repo (for SBT 1.x)
+  - sbt
+    - project gsheetfacade
+    - fullCompileCreateFunctions
+  - This writes a google.js at /gsheetfacade/target/scalaXX/google.js
 
