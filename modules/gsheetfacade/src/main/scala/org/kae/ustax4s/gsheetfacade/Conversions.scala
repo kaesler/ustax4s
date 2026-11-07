@@ -19,9 +19,9 @@ object Conversions:
       FedTaxRate.unsafeFrom
     )
 
-  given Conversion[Input, Int]          = doubleInputConversion("Int", _.toInt)
-  given Conversion[Input, Double]       = doubleInputConversion("Double", identity)
-  given Conversion[Input, Deduction]    = doubleInputConversion("Deduction", Deduction.apply)
+  given Conversion[Input, Int]       = doubleInputConversion("Int", _.toInt)
+  given Conversion[Input, Double]    = doubleInputConversion("Double", identity)
+  given Conversion[Input, Deduction] = doubleInputConversion("Deduction", Deduction.apply)
   given Conversion[Input, FilingStatus] =
     stringInputConversion("FilingStatus", FilingStatus.valueOf)
   given Conversion[Input, Income] =

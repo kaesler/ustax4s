@@ -5,44 +5,37 @@ import cats.implicits.*
 import org.kae.ustax4s.{SourceLoc, TaxRate}
 import scala.annotation.targetName
 
-/** Module for various types for non-negative money.
-  * They are all distinct opaque types
+/** Module for various types for non-negative money. They are all distinct opaque types
   *   - over NonNegativeMoney
   *   - which is opaque over Money,
   *   - which is opaque over BigDecimal.
   *
   * All have a Monoid which is the addition Monoid Cats provides for BigDecimal.
   *
-  * Money itself has a CommutativeMonoid enhanced with the monus operator,
-  * i.e. subtraction truncated so the result is non-negative.
+  * Money itself has a CommutativeMonoid enhanced with the monus operator, i.e.
+  * subtraction truncated so the result is non-negative.
   *
-  *  Hierarchy:
-  *    Money
-  *      NonNegativeMoney
-  *        Income
-  *          TaxableIncome
-  *            - after Deductions are applied
-  *            - is a subtype so that we can consider that an instance
-  *              "is-an" Income.
-  *            IncomeThreshold
-  *              - these appear in Bracket
-  *        Deduction
-  *        TaxCredit
-  *          - not refundable, i.e. can only reduce tax payable to zero,
-  *            and cannot produce a refund.
-  *        RefundableTaxCredit
-  *          - can produce a refund
-  *        TaxPayable
-  *          - amount of tax owed, if any
-  *        TaxRefundable
-  *           - amount of tax to be refunded, if any
+  * Hierarchy: Money NonNegativeMoney Income TaxableIncome
+  *   - after Deductions are applied
+  *   - is a subtype so that we can consider that an instance "is-an" Income.
+  *     IncomeThreshold
+  *     - these appear in Bracket
+  * Deduction TaxCredit
+  *   - not refundable, i.e. can only reduce tax payable to zero, and cannot produce a
+  *     refund.
+  * RefundableTaxCredit
+  *   - can produce a refund
+  * TaxPayable
+  *   - amount of tax owed, if any
+  * TaxRefundable
+  *   - amount of tax to be refunded, if any
   * Some of the important functions defined:
   *   - applyAdjustments: (Income, List[Deduction]) -> Income
   *   - applyDeductions: (Income, List[Deduction]) -> TaxableIncome
   *   - TaxFunction: TaxableIncome -> TaxPayable
   *   - applyCredits: (TaxPayable, List[TaxCredit]) -> TaxPayable
-  *   - applyRefundableCredits:
-  *     (TaxPayable, List[RefundableTaxCredit]) -> TaxPayable | TaxRefundable
+  *   - applyRefundableCredits: (TaxPayable, List[RefundableTaxCredit]) -> TaxPayable |
+  *     TaxRefundable
   */
 export NonNegMoneys.Deduction
 export NonNegMoneys.Income
@@ -123,7 +116,7 @@ object NonNegMoneys:
       def isZero: Boolean  = NonNegativeMoney.isZero(left)
       def asDouble: Double = NonNegativeMoney.toDouble(left)
 
-      def +(right: TaxableIncome): TaxableIncome                       = left.combine(right)
+      def +(right: TaxableIncome): TaxableIncome = left.combine(right)
       infix def amountAbove(threshold: IncomeThreshold): TaxableIncome =
         NonNegativeMoney.monus(left, threshold)
       infix def monus(right: TaxableIncome): TaxableIncome =
@@ -181,8 +174,8 @@ object NonNegMoneys:
     extension (left: RefundableTaxCredit)
       @targetName("combine")
       def +(right: RefundableTaxCredit): RefundableTaxCredit = left.combine(right)
-      def asDouble: Double                                   = NonNegativeMoney.toDouble(left)
-      def size: Double                                       = asDouble
+      def asDouble: Double = NonNegativeMoney.toDouble(left)
+      def size: Double     = asDouble
       infix def monusTaxPayable(tp: TaxPayable): RefundableTaxCredit =
         NonNegativeMoney.monus(left, tp)
       def asTaxRefundable: TaxRefundable = left
@@ -227,7 +220,7 @@ object NonNegMoneys:
     def apply(i: Int): TaxRefundable                      = NonNegativeMoney(i)
     def apply(d: Double): TaxRefundable                   = NonNegativeMoney(d)
     def apply(credit: RefundableTaxCredit): TaxRefundable = credit
-    def unsafeParse(s: String): TaxRefundable             = NonNegativeMoney.unsafeParse(s)
+    def unsafeParse(s: String): TaxRefundable = NonNegativeMoney.unsafeParse(s)
 
     given Monoid[TaxRefundable]   = summonAdditionMonoid
     given Ordering[TaxRefundable] = summonOrdering

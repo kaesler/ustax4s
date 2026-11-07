@@ -14,21 +14,27 @@ object Facade:
 
   /** The RMD fraction for a given age. Example: TIR_RMD_FRACTION_FOR_AGE(76)
     *
-    * @param {number} age age of the taxpayer
-    * @returns {number} the RMD fraction
+    * @param {number}
+    *   age age of the taxpayer
+    * @returns
+    *   {number} the RMD fraction
     */
   @JSExportTopLevel("tf_rmd_fraction_for_age")
   def tf_rmd_fraction_for_age(age: Input): Output =
     RMDs.fractionForAge(age)
   end tf_rmd_fraction_for_age
 
-  /** The amount of Social Security income that is taxable.
-    * Example: TF_TAXABLE_SOCIAL_SECURITY("HeadOfHousehold", 20000, 52000)
+  /** The amount of Social Security income that is taxable. Example:
+    * TF_TAXABLE_SOCIAL_SECURITY("HeadOfHousehold", 20000, 52000)
     *
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {number} ssRelevantOtherIncome all income apart from Social Security
-    * @param {number} socSec Social Security benefits received
-    * @returns {number} the amount of Social Security income that is taxable
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number}
+    *   ssRelevantOtherIncome all income apart from Social Security
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @returns
+    *   {number} the amount of Social Security income that is taxable
     */
   @JSExportTopLevel("tf_taxable_social_security")
   def tf_taxable_social_security(
@@ -43,14 +49,19 @@ object Facade:
     )
   end tf_taxable_social_security
 
-  /** End of an ordinary income tax bracket. Example:
-    * TF_ORDINARY_BRACKET_END(3%, 2030, "HeadOfHousehold", 10)
+  /** End of an ordinary income tax bracket. Example: TF_ORDINARY_BRACKET_END(3%, 2030,
+    * "HeadOfHousehold", 10)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year the tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {number} ordinaryRatePercentage rate for a tax bracket e.g. 22
-    * @returns {number} The end of the specified ordinary income bracket.
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year the tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number}
+    *   ordinaryRatePercentage rate for a tax bracket e.g. 22
+    * @returns
+    *   {number} The end of the specified ordinary income bracket.
     */
   @JSExportTopLevel("tf_ordinary_bracket_end")
   def tf_ordinary_bracket_end(
@@ -68,14 +79,19 @@ object Facade:
       )
   end tf_ordinary_bracket_end
 
-  /** Width of an ordinary income tax bracket. Example:
-    * TF_ORDINARY_BRACKET_WIDTH(3%, 2030, "HeadOfHousehold", 10)
+  /** Width of an ordinary income tax bracket. Example: TF_ORDINARY_BRACKET_WIDTH(3%,
+    * 2030, "HeadOfHousehold", 10)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {number} ordinaryRatePercentage rate for a tax bracket e.g. 22
-    * @returns {number} The width of the specified ordinary income bracket.
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {number}
+    *   ordinaryRatePercentage rate for a tax bracket e.g. 22
+    * @returns
+    *   {number} The width of the specified ordinary income bracket.
     */
   @JSExportTopLevel("tf_ordinary_bracket_width")
   def tf_ordinary_bracket_width(
@@ -98,10 +114,14 @@ object Facade:
   /** Threshold above which long term capital gains are taxed. Example:
     * TF_LTCG_TAX_START(3%, 2027, "HeadOfHousehold")
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year the tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @returns {number} the end of the zero tax rate on qualified investment income
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year the tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @returns
+    *   {number} the end of the zero tax rate on qualified investment income
     */
   @JSExportTopLevel("tf_ltcg_tax_start")
   def tf_ltcg_tax_start(
@@ -116,14 +136,19 @@ object Facade:
       .startOfNonZeroQualifiedRateBracket
   end tf_ltcg_tax_start
 
-  /** Standard deduction. Example: TF_STD_DEDUCTION(3%, 2030,
-    * "HeadOfHousehold", 1955-10-02)
+  /** Standard deduction. Example: TF_STD_DEDUCTION(3%, 2030, "HeadOfHousehold",
+    * 1955-10-02)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year the tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @returns {number} The standard deduction
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year the tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @returns
+    *   {number} The standard deduction
     */
   @JSExportTopLevel("tf_std_deduction")
   def tf_std_deduction(
@@ -142,19 +167,29 @@ object Facade:
       .standardDeduction(birthDate)
   end tf_std_deduction
 
-  /** The Federal AGI. Example: TF_AGI(0.34, 2023,
-    * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
+  /** The Federal AGI. Example: TF_AGI(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000,
+    * 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year the tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {number} the Federal AGI
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year the tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the Federal AGI
     */
   @JSExportTopLevel("tf_agi")
   def tf_agi(
@@ -191,16 +226,26 @@ object Facade:
   /** The Federal means tested senior deduction. Example: TF_SENIOR_DEDUCTION(0.34, 2023,
     * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year the tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {number} the means tested senior deduction
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year the tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the means tested senior deduction
     */
   @JSExportTopLevel("tf_senior_deduction")
   def tf_senior_deduction(
@@ -230,19 +275,29 @@ object Facade:
       .meansTestedSeniorDeduction
   end tf_senior_deduction
 
-  /** The Federal net deduction. Example: TF_NET_DEDUCTION(0.34, 2023,
-    * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
+  /** The Federal net deduction. Example: TF_NET_DEDUCTION(0.34, 2023, "Single",
+    * 1955-10-02, 0, 10000, 40000, 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {number} the net deduction
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the net deduction
     */
   @JSExportTopLevel("tf_net_deduction")
   def tf_net_deduction(
@@ -272,19 +327,29 @@ object Facade:
       .netDeduction
   end tf_net_deduction
 
-  /** The Federal tax due. Example: TF_TAX_DUE(3%, 2023,
-    * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
+  /** The Federal tax due. Example: TF_TAX_DUE(3%, 2023, "Single", 1955-10-02, 0, 10000,
+    * 40000, 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year the tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {number} the Federal tax due
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year the tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the Federal tax due
     */
   @JSExportTopLevel("tf_tax_due")
   def tf_tax_due(
@@ -314,19 +379,29 @@ object Facade:
       .taxPayable
   end tf_tax_due
 
-  /** The Federal tax results. Example: TF_TAX_RESULTS(3%, 2023,
-    * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
+  /** The Federal tax results. Example: TF_TAX_RESULTS(3%, 2023, "Single", 1955-10-02, 0,
+    * 10000, 40000, 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year the tax year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {grid} the Federal tax results
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year the tax year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {grid} the Federal tax results
     */
   @JSExportTopLevel("tf_tax_results")
   def tf_tax_results(
@@ -343,7 +418,10 @@ object Facade:
     val bracketInflationFactor = 1.0 + (bracketInflationRate: Double)
     val r                      =
       BoundFedRegime
-        .forAnyYear(year, bracketInflationFactor, filingStatus)(birthDate, personalExemptions)(
+        .forAnyYear(year, bracketInflationFactor, filingStatus)(
+          birthDate,
+          personalExemptions
+        )(
           IncomeScenario(
             socSec,
             ordinaryIncomeNonSS,
@@ -379,20 +457,29 @@ object Facade:
     )
   end tf_tax_results
 
-  /** The marginal tax rate on ordinary income. Example:
-    * TF_TAX_SLOPE_ORDINARY(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000,
-    * 0)
+  /** The marginal tax rate on ordinary income. Example: TF_TAX_SLOPE_ORDINARY(0.34, 2023,
+    * "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year a year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {number} the marginal tax rate as a factor
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year a year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the marginal tax rate as a factor
     */
   @JSExportTopLevel("tf_tax_slope_ordinary")
   def tf_tax_slope_ordinary(
@@ -427,17 +514,28 @@ object Facade:
     * TF_TAX_SLOPE_ORDINARY_DELTA(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000,
     * 0, -2000)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year a year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @param {number} delta the delta to ordinary income
-    * @returns {number} the marginal tax rate as a factor
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year a year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @param {number}
+    *   delta the delta to ordinary income
+    * @returns
+    *   {number} the marginal tax rate as a factor
     */
   @JSExportTopLevel("tf_tax_slope_ordinary_delta")
   def tf_tax_slope_ordinary_delta(
@@ -488,20 +586,29 @@ object Facade:
     (taxDueAtEnd - taxDueAtStart) / math.abs(ordinaryIncomeNonSSDelta: Double)
   end tf_tax_slope_ordinary_delta
 
-  /** The marginal tax rate on ordinary income. Example:
-    * TF_TAX_SLOPE_QUALIFIED(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000,
-    * 0)
+  /** The marginal tax rate on ordinary income. Example: TF_TAX_SLOPE_QUALIFIED(0.34,
+    * 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year a year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {number} the marginal tax rate as a factor
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year a year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the marginal tax rate as a factor
     */
   @JSExportTopLevel("tf_tax_slope_qualified")
   def tf_tax_slope_qualified(
@@ -531,20 +638,29 @@ object Facade:
       .taxSlopeForQualifiedIncome
   end tf_tax_slope_qualified
 
-  /** The marginal tax rate on Social Security income. Example:
-    * TF_TAX_SLOPE_SOCSEC(0.34, 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000,
-    * 0)
+  /** The marginal tax rate on Social Security income. Example: TF_TAX_SLOPE_SOCSEC(0.34,
+    * 2023, "Single", 1955-10-02, 0, 10000, 40000, 5000, 0)
     *
-    * @param {number} bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
-    * @param {number} year a year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} personalExemptions self plus dependents, only relevant in a PreTCJA year
-    * @param {number} socSec Social Security benefits received
-    * @param {number} ordinaryIncomeNonSS ordinary income excluding Social Security
-    * @param {number} qualifiedIncome qualified dividends and long term capital gains
-    * @param {number} itemizedDeductions total of any itemized deductions
-    * @returns {number} the marginal tax rate as a factor
+    * @param {number}
+    *   bracketInflationRate estimate of future tax bracket inflation, e.g. 2%
+    * @param {number}
+    *   year a year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   personalExemptions self plus dependents, only relevant in a PreTCJA year
+    * @param {number}
+    *   socSec Social Security benefits received
+    * @param {number}
+    *   ordinaryIncomeNonSS ordinary income excluding Social Security
+    * @param {number}
+    *   qualifiedIncome qualified dividends and long term capital gains
+    * @param {number}
+    *   itemizedDeductions total of any itemized deductions
+    * @returns
+    *   {number} the marginal tax rate as a factor
     */
   @JSExportTopLevel("tf_tax_slope_socsec")
   def tf_tax_slope_socsec(
@@ -574,15 +690,21 @@ object Facade:
       .taxSlopeForSocSec
   end tf_tax_slope_socsec
 
-  /** The MA state income tax due.
-    * Example: TS_MA_TAX_DUE(2022, "Married", 1955-10-02, 0, 130000)
+  /** The MA state income tax due. Example: TS_MA_TAX_DUE(2022, "Married", 1955-10-02, 0,
+    * 130000)
     *
-    * @param {number} year a year between 2016 and the current year
-    * @param {string} filingStatus one of "Single", "HeadOfHousehold", "Married"
-    * @param {object} birthDate tax payer's date of birth
-    * @param {number} dependents
-    * @param {number} massachusettsGrossIncome
-    * @returns {number} the MA state income tax due.
+    * @param {number}
+    *   year a year between 2016 and the current year
+    * @param {string}
+    *   filingStatus one of "Single", "HeadOfHousehold", "Married"
+    * @param {object}
+    *   birthDate tax payer's date of birth
+    * @param {number}
+    *   dependents
+    * @param {number}
+    *   massachusettsGrossIncome
+    * @returns
+    *   {number} the MA state income tax due.
     */
   @JSExportTopLevel("ts_ma_tax_due")
   def ts_ma_tax_due(

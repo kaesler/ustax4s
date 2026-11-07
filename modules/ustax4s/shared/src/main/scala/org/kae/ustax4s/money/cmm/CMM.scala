@@ -36,5 +36,6 @@ object CMM extends CMMOps:
 end CMM
 
 trait CMMOps:
-  extension [A: CMM](left: A) infix def monus(right: A): A = summon[CMM[A]].monus(left, right)
+  extension [A: CMM](left: A)
+    infix def monus(right: A): A = summon[CMM[A]].monus(left, right)
 end CMMOps

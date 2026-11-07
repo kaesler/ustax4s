@@ -11,7 +11,10 @@ private[yearly] object Syntax:
       OrdinaryRateFunction(
         RateFunction.of(
           pairs.map: pair =>
-            (IncomeThreshold(pair.threshold), FedTaxRate.unsafeFrom(pair.percentage / 100.0))
+            (
+              IncomeThreshold(pair.threshold),
+              FedTaxRate.unsafeFrom(pair.percentage / 100.0)
+            )
         )
       )
     end asOrdinaryRateFunction
@@ -20,7 +23,10 @@ private[yearly] object Syntax:
       QualifiedRateFunction(
         RateFunction.of(
           pairs.map: pair =>
-            (IncomeThreshold(pair.threshold), FedTaxRate.unsafeFrom(pair.percentage / 100.0))
+            (
+              IncomeThreshold(pair.threshold),
+              FedTaxRate.unsafeFrom(pair.percentage / 100.0)
+            )
         )
       )
     end asQualifiedRateFunction

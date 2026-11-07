@@ -75,7 +75,7 @@ object TaxableSocialSecurity:
       inflatedSocialSecurityBenefits,
       inflatedSsRelevantOtherIncome
     )
-    val fractionTaxable             = inflatedTaxableAmount div inflatedSocialSecurityBenefits
+    val fractionTaxable = inflatedTaxableAmount div inflatedSocialSecurityBenefits
     val amountTaxableInCurrentMoney = socialSecurityBenefits mul fractionTaxable
     amountTaxableInCurrentMoney
   end taxableSocialSecurityBenefitsInflated

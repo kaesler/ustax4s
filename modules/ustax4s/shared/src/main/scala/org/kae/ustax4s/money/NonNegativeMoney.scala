@@ -12,12 +12,18 @@ private[money] object NonNegativeMoney:
   // TODO: use refined types to check statically.
   // https://github.com/Iltotore/iron
   def apply(i: Int): NonNegativeMoney =
-    require(i >= 0, s"attempt to create negative NonNegativeMoney from $i, at " + SourceLoc())
+    require(
+      i >= 0,
+      s"attempt to create negative NonNegativeMoney from $i, at " + SourceLoc()
+    )
     Money(i)
   end apply
 
   def apply(d: Double): NonNegativeMoney =
-    require(d >= 0, s"attempt to create negative NonNegativeMoney from $d, at " + SourceLoc())
+    require(
+      d >= 0,
+      s"attempt to create negative NonNegativeMoney from $d, at " + SourceLoc()
+    )
     Money(d)
   end apply
 

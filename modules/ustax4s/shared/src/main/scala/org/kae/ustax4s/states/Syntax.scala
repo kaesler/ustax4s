@@ -9,7 +9,10 @@ object Syntax:
     def asRateFunction: RateFunction[StateTaxRate] =
       RateFunction.of(
         pairs.map: pair =>
-          (IncomeThreshold(pair.threshold), StateTaxRate.unsafeFrom(pair.percentage / 100.0))
+          (
+            IncomeThreshold(pair.threshold),
+            StateTaxRate.unsafeFrom(pair.percentage / 100.0)
+          )
       )
   end extension
 
